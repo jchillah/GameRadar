@@ -70,4 +70,13 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization)
 
+    implementation (libs.material3)
+    implementation (libs.androidx.material3.window.size.class1)
+
+    implementation (libs.adaptive)
+    implementation (libs.adaptive.layout)
+    implementation (libs.androidx.adaptive.navigation)
+
+    implementation (libs.androidx.ui.text.google.fonts)
+
 }
