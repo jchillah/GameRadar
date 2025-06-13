@@ -8,13 +8,13 @@ import de.syntax_institut.androidabschlussprojekt.ui.screens.*
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-        composable(Screen.Home.route) {
+    NavHost(navController = navController, startDestination = Routes.Home.route) {
+        composable(Routes.Home.route) {
             HomeScreen(onNavigateToSettings = {
-                navController.navigate(Screen.Settings.route)
+                navController.navigate(Routes.Settings.route)
             })
         }
-        composable(Screen.Settings.route) {
+        composable(Routes.Settings.route) {
             SettingsScreen(onNavigateBack = {
                 navController.popBackStack()
             })
