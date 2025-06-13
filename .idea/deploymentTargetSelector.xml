@@ -4,11 +4,16 @@
     <selectionStates>
       <SelectionState runConfigName="AndroidAbschlussprojekt.app">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-06-13T16:45:41.441798Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=/Users/jchillah/.android/avd/Pixel_9.avd" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="NavigationTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="testNavigationToSettings()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
