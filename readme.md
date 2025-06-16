@@ -17,10 +17,10 @@ GameRadar ist deine persönliche Game-Entdeckungsplattform für Android. Egal ob
 
 ## Features
 
-- [x] Spiele suchen und filtern nach Genre, Plattform und Bewertung  
-- [x] Detailansicht mit Screenshots, Beschreibung und Infos zum Spiel  
-- [x] Favoritenliste lokal speichern (Room Datenbank)  
-- [x] Neuerscheinungen und Top-Bewertungen anzeigen  
+- [ ] Spiele suchen und filtern nach Genre, Plattform und Bewertung  
+- [ ] Detailansicht mit Screenshots, Beschreibung und Infos zum Spiel  
+- [ ] Favoritenliste lokal speichern (Room Datenbank)  
+- [ ] Neuerscheinungen und Top-Bewertungen anzeigen  
 - [ ] Offline-Cache für favorisierte Spiele  
 
 ---
