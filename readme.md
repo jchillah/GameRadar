@@ -1,51 +1,73 @@
-# Name der App
+# GameRadar 🎮
 
-**Füge hier einen kurzen, knackigen Slogan ein, um deine App zu bewerben.**
+**Finde dein nächstes Lieblingsspiel – entdecke, speichere und teile spannende Videospiele!**
 
-Beschreibe hier in ein paar Sätzen, was deine App bietet.
+GameRadar ist deine persönliche Game-Entdeckungsplattform für Android. Egal ob du nach den neuesten Spielen suchst, Klassiker nochmal erleben möchtest oder einfach neue Titel entdecken willst: Unsere App liefert dir Infos, Screenshots, Bewertungen und eine einfache Möglichkeit, deine Favoriten zu verwalten. GameRadar ist perfekt für Gamer:innen, die stets up to date bleiben wollen, ohne lange suchen zu müssen. Dabei ist die App intuitiv, schnell und optisch ansprechend gestaltet – für den optimalen Spielspaß.
 
-Für wen ist sie geeignet? Welches Problem löst sie? Was macht deine App anders/besser als andere Apps?
-Vermeide es, hier allzusehr in technische Details zu gehen.
-
+---
 
 ## Design
-Füge hier am Ende die Screenshots deiner App ein.
-
 <p>
   <img src="./img/screen1.png" width="200">
   <img src="./img/screen2.png" width="200">
   <img src="./img/screen3.png" width="200">
 </p>
 
+---
 
 ## Features
-Hier kommen alle Features rein, welche deine App bietet.
 
-**Tipp: Du kannst diese Punkte mit der Zeit abhaken, sodass am Ende eine vollständige Liste entsteht.**
+- [x] Spiele suchen und filtern nach Genre, Plattform und Bewertung  
+- [x] Detailansicht mit Screenshots, Beschreibung und Infos zum Spiel  
+- [x] Favoritenliste lokal speichern (Room Datenbank)  
+- [x] Neuerscheinungen und Top-Bewertungen anzeigen  
+- [ ] Offline-Cache für favorisierte Spiele  
 
-- [x] Feature 1
-- [x] Feature 2
-- [ ] ...
+---
 
+## Ausblick
+
+- [ ] Spiele über soziale Netzwerke teilen  
+- [ ] Benachrichtigungen zu neuen Spielen der Lieblingsgenres  
+- [ ] Offline-Modus erweitern und Daten synchronisieren  
+- [ ] User-Accounts und Cloud-Synchronisation mit Firebase  
+- [ ] Erweiterte Filterfunktionen (Preis, Release-Datum)  
+- [ ] Dark Mode und UI-Feinschliff  
+
+---
 
 ## Technischer Aufbau
 
-#### Projektaufbau
-Eine kurze Beschreibung deiner Ordnerstruktur und Architektur (MVVM, Repositories) um Außenstehenden zu helfen, sich in deinem Projekt zurecht zu finden.
+### Projektaufbau  
+Die App folgt der MVVM-Architektur mit sauberer Trennung in drei Schichten:  
+- `data` (API-Calls, Datenbank-Entities und Repository-Implementierung)  
+- `domain` (Modelle und UseCases zur Geschäftslogik)  
+- `presentation` (UI-Komponenten, ViewModels, Navigation mit Jetpack Compose)  
 
-#### Datenspeicherung
-Welche Daten speicherst du? Wo und wie (Firebase, Core Data)? Erkläre hier auch, warum du den jeweiligen Dienst nutzt (offline-first, Sync usw.).
+### Datenspeicherung  
+Favoriten und zuletzt geladene Spieldaten werden lokal mit Room gespeichert, um schnelle Ladezeiten und Offline-Funktionalität zu ermöglichen. Room bietet eine stabile und performante Lösung mit einfacher Integration in Kotlin Coroutines.
 
-#### API Calls
-Welche APIs verwendest du?
+### API Calls  
+Die App verwendet die RAWG Video Games API (https://rawg.io/apidocs) für aktuelle Spieldaten, Bewertungen, Screenshots und weitere Metadaten. Retrofit mit Moshi wird für die API-Kommunikation eingesetzt.
 
-#### 3rd-Party Frameworks
-Verwendest du Frameworks/Libraries, die nicht von dir stammen?
+### 3rd-Party Frameworks  
+- Retrofit & Moshi (API-Integration)  
+- Room (lokale Datenbank)  
+- Coil (Bildladen)  
+- Koin (Dependency Injection)  
+- Jetpack Compose (UI)  
 
+---
 
-## Ausblick
-Beschreibe hier, wo die Reise nach deinem Praxisprojekt hin geht. Was möchtest du in Zukunft noch ergänzen?
+## Getting Started
 
-- [ ] Geplantes Feature 1
-- [ ] Geplantes Feature 2
-- [ ] ...
+1. RAWG API Key beantragen: https://rawg.io/apidocs  
+2. App lokal bauen und starten  
+3. Features nach und nach implementieren, Tickets im GitHub Project erstellen und zuweisen  
+4. Regelmäßig pushen und Review-Termine wahrnehmen  
+
+---
+
+## Lizenz
+
+Dieses Projekt ist lizenziert unter der MIT License – siehe LICENSE Datei für Details.
