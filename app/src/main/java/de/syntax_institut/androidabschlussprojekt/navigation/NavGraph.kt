@@ -1,23 +1,26 @@
 package de.syntax_institut.androidabschlussprojekt.navigation
 
-import androidx.compose.runtime.*
-import androidx.navigation.*
-import androidx.navigation.compose.*
-import de.syntax_institut.androidabschlussprojekt.ui.screens.*
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import de.syntax_institut.androidabschlussprojekt.ui.screens.DetailScreen
+import de.syntax_institut.androidabschlussprojekt.ui.screens.SearchScreen
 
-
+/**
+ * Navigation Graph.
+ */
 @Composable
-fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Routes.Home.route) {
-        composable(Routes.Home.route) {
-            HomeScreen(onNavigateToSettings = {
-                navController.navigate(Routes.Settings.route)
-            })
-        }
-        composable(Routes.Settings.route) {
-            SettingsScreen(onNavigateBack = {
-                navController.popBackStack()
-            })
+fun NavGraph(navController: androidx.navigation.NavHostController) {
+    NavHost(navController, startDestination = "search") {
+        composable("search") { SearchScreen(navController) }
+        composable(
+            route = "detail/{gameId}",
+            arguments = listOf(navArgument("gameId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("gameId") ?: return@composable
+            DetailScreen(id, navController)
         }
     }
 }

@@ -15,16 +15,10 @@ import de.syntax_institut.androidabschlussprojekt.ui.theme.AppTheme
  */
 @Composable
 fun App() {
-    AppTheme(
-        darkTheme = true,
-        dynamicColor = true
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
+    AppTheme(darkTheme = true, dynamicColor = true) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             val navController = rememberNavController()
-            NavGraph(navController = navController)
+            NavGraph(navController)
         }
     }
 }

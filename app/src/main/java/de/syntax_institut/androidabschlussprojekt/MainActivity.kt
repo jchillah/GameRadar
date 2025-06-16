@@ -1,8 +1,8 @@
 package de.syntax_institut.androidabschlussprojekt
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.os.*
+import androidx.activity.*
+import androidx.activity.compose.*
 
 /**
  * MainActivity
@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             App()
         }
