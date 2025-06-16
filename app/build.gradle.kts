@@ -1,13 +1,38 @@
+import com.android.build.api.dsl.Packaging
+import java.io.FileInputStream
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+val apiKey = localProperties.getProperty("API_KEY") ?: ""
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
     namespace = "de.syntax_institut.androidabschlussprojekt"
     compileSdk = 35
+
+    packaging {
+        resources {
+            excludes += "META-INF/gradle/incremental.annotation.processors"
+            excludes += "/META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/notice.txt"
+        }
+    }
 
     defaultConfig {
         applicationId = "de.syntax_institut.androidabschlussprojekt"
@@ -20,8 +45,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        }
         release {
             isMinifyEnabled = false
+            buildConfigField("String", "API_KEY", "\"$apiKey\"")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -36,11 +65,15 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
 
 dependencies {
+
+    implementation(libs.guava)
+    api(libs.juneau.marshall)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -50,21 +83,33 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
+    implementation(libs.firebase.components)
+    implementation(libs.play.services.games)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Koin für Tests
+    testImplementation(libs.insert.koin.koin.test)
+    testImplementation(libs.koin.test.junit4)
+
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
+
+// Für Compose UI-Testing
+    debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.robolectric)
+    debugImplementation(libs.ui.tooling)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    // Compose UI Tests (Unit‑ und Instrumented‑Tests)
-    debugImplementation(libs.ui.tooling)
     androidTestImplementation(libs.ui.test.junit4)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    // Für Hilt Tests (falls du Hilt nutzt)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
 
     implementation(libs.androidx.navigation.compose)
@@ -79,4 +124,54 @@ dependencies {
 
     implementation (libs.androidx.ui.text.google.fonts)
 
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation(libs.moshi)
+
+    implementation(libs.retrofit)
+    implementation(libs.converterMoshi)
+
+    implementation(libs.logging.interceptor)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    implementation(libs.moshi.kotlin.vmoshiversion)
+    implementation(libs.logging.interceptor.vokhttpversion)
+
+    implementation(libs.androidx.datastore.preferences)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    // Hilt implementation(libs.hilt.android)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Koin
+    implementation(libs.insert.koin.koin.android)
+    implementation(libs.insert.koin.koin.androidx.compose)
+
+    // Koin für App
+    implementation(libs.insert.koin.koin.android)
+    implementation(libs.insert.koin.koin.androidx.compose)
+    implementation(project.dependencies.platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.insert.koin.koin.android)
+    implementation(libs.insert.koin.koin.androidx.compose)
+    implementation(libs.insert.koin.koin.core)
+
+    implementation(libs.compose.shimmer)
+
+    androidTestImplementation(libs.androidx.compose.ui.ui.test.junit4)
+    debugImplementation(libs.ui.test.manifest)
+
+}
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
