@@ -1,4 +1,3 @@
-// CardItem.kt
 package de.syntax_institut.androidabschlussprojekt.ui.components
 
 import androidx.compose.foundation.layout.*

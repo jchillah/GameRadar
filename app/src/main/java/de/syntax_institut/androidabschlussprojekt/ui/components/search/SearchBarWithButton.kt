@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components
+package de.syntax_institut.androidabschlussprojekt.ui.components.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,11 +10,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchBarWithButton(
+    modifier: Modifier = Modifier,
     searchText: TextFieldValue,
     onTextChange: (TextFieldValue) -> Unit,
     onSearchClick: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         TextField(
             value = searchText,
             onValueChange = onTextChange,

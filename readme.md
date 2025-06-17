@@ -84,14 +84,10 @@ de.syntax-institut.androidabschlussprojekt
 
 ---
 
-## 👣 Nächste Schritte  
+## Setup  
 
 1. **API Key** erstellen: [RAWG API Docs](https://rawg.io/apidocs) :contentReference[oaicite:2]{index=2}  
-2. Key in `local.properties` eintragen  
-3. Retrofit + Moshi konfigurieren  
-4. Erste API-Abfrage (`searchGames`) implementieren  
-5. DTOs, Entities & Converter für Domain-Modelle erstellen  
-6. Room-Datenbank & Repository integrieren  
+2. Key in `local.properties` eintragen
 
 ---
 

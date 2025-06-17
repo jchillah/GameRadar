@@ -14,6 +14,10 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.DetailViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.ui.platform.testTag
+import de.syntax_institut.androidabschlussprojekt.ui.components.detail.FavoriteButton
+import de.syntax_institut.androidabschlussprojekt.ui.components.detail.GameDescription
+import de.syntax_institut.androidabschlussprojekt.ui.components.detail.GameHeaderImage
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.GameMetaInfo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import de.syntax_institut.androidabschlussprojekt.ui.components.SearchBarWithButton
-import de.syntax_institut.androidabschlussprojekt.ui.components.SearchResultContent
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchBarWithButton
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchResultContent
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
 

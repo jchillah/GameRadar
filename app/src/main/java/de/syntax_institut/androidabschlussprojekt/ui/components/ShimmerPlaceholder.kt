@@ -27,11 +27,12 @@ fun ShimmerPlaceholder() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         repeat(3) {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(24.dp)
-                .padding(vertical = 4.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(24.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(vertical = 4.dp)
             )
         }
     }
