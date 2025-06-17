@@ -1,20 +1,17 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.remote.RawgApi
-import de.syntax_institut.androidabschlussprojekt.data.repositories.GameRepository
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import android.util.*
+import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.states.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 /**
- * ViewModel für die Suche.
- */
+
+* ViewModel für die Suche.
+*/
 class SearchViewModel(
     private val repo: GameRepository
 ) : ViewModel() {
@@ -23,19 +20,20 @@ class SearchViewModel(
     val uiState: StateFlow<SearchUiState> = _uiState
 
     fun search(query: String) {
-        viewModelScope.launch {
+        Log.d("SearchViewModel", "Search gestartet mit Query: $query")
+        viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = SearchUiState(isLoading = true)
             when (val res = repo.searchGames(query)) {
-                is Resource.Success -> _uiState.value = SearchUiState(games = res.data ?: emptyList())
-                is Resource.Error -> _uiState.value = SearchUiState(error = res.message)
+                is Resource.Success -> {
+                    Log.d("SearchViewModel", "Erfolgreiche Suche: ${res.data?.size} Ergebnisse")
+                    _uiState.value = SearchUiState(games = res.data ?: emptyList())
+                }
+                is Resource.Error -> {
+                    Log.e("SearchViewModel", "Fehler bei der Suche: ${res.message}")
+                    _uiState.value = SearchUiState(error = res.message)
+                }
                 else -> {}
             }
         }
     }
 }
-
-data class SearchUiState(
-    val isLoading: Boolean = false,
-    val games: List<Game> = emptyList(),
-    val error: String? = null
-)

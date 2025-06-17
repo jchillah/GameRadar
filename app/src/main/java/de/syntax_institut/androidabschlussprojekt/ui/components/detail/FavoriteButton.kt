@@ -1,8 +1,9 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components
+package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
@@ -23,4 +24,10 @@ fun FavoriteButton(
             contentDescription = if (isFavorite) "Favorit entfernen" else "Zu Favoriten hinzufügen"
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FavoriteButtonPreview() {
+    FavoriteButton()
 }

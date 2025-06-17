@@ -1,42 +1,44 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import kotlinx.coroutines.flow.MutableStateFlow
+
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.remote.RawgApi
 import de.syntax_institut.androidabschlussprojekt.data.repositories.GameRepository
+import de.syntax_institut.androidabschlussprojekt.ui.states.DetailUiState
 import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 /**
- * ViewModel für Spieldetails.
- */
+
+* ViewModel für Spieldetails.
+*/
 class DetailViewModel(
-    private val api: RawgApi
-) : ViewModel(), KoinComponent {
-    private val repo: GameRepository by inject()
+    private val repo: GameRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState: StateFlow<DetailUiState> = _uiState
 
     fun loadDetail(id: Int) {
-        viewModelScope.launch {
+        Log.d("DetailViewModel", "Lade Spieldetails für ID: $id")
+        viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = DetailUiState(isLoading = true)
             when (val res = repo.getGameDetail(id)) {
-                is Resource.Success -> _uiState.value = DetailUiState(game = res.data)
-                is Resource.Error -> _uiState.value = DetailUiState(error = res.message)
+                is Resource.Success -> {
+                    Log.d("DetailViewModel", "Erfolgreich geladen: ${res.data}")
+                    _uiState.value = DetailUiState(game = res.data)
+                }
+                is Resource.Error -> {
+                    Log.e("DetailViewModel", "Fehler beim Laden: ${res.message}")
+                    _uiState.value = DetailUiState(error = res.message)
+                }
                 else -> {}
             }
         }
     }
 }
 
-data class DetailUiState(
-    val isLoading: Boolean = false,
-    val game: Game? = null,
-    val error: String? = null
-)

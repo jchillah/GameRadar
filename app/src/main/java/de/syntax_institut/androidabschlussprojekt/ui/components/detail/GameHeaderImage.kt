@@ -1,10 +1,11 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components
+package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.rememberAsyncImagePainter
 
@@ -15,7 +16,13 @@ fun GameHeaderImage(imageUrl: String) {
         contentDescription = null,
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
-        contentScale = ContentScale.Crop
+            .height(250.dp),
+        contentScale = ContentScale.Crop,
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameHeaderImagePreview() {
+    GameHeaderImage(imageUrl = "https://example.com/game_image.jpg")
 }
