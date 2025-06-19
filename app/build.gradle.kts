@@ -103,6 +103,9 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
 
+    // accompanist-flowlayout
+    implementation(libs.accompanist.flowlayout)
+
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
