@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.search
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,8 +15,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.rememberAsyncImagePainter
@@ -24,9 +29,12 @@ import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
 
 @Composable
 fun GameItem(game: Game, onClick: () -> Unit) {
+    val showShimmer = remember { mutableStateOf(true) }
+
     val painter = rememberAsyncImagePainter(
         model = game.imageUrl,
-        error = painterResource(R.drawable.ic_broken_image)
+        error = painterResource(R.drawable.ic_broken_image),
+        onSuccess = { showShimmer.value = false }
     )
 
     Card(
@@ -40,9 +48,16 @@ fun GameItem(game: Game, onClick: () -> Unit) {
             Image(
                 painter = painter,
                 contentDescription = game.title,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(80.dp)
-                    .padding(all = 8.dp),
+                    .background(
+                        shimmerBrush(
+                            targetValue = 1300f,
+                            showShimmer = showShimmer.value
+                        )
+                    )
+                    .padding(all = 8.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -56,7 +71,6 @@ fun GameItem(game: Game, onClick: () -> Unit) {
     }
 }
 
-/**
 @Preview(showBackground = true)
 @Composable
 fun GameItemPreview() {
@@ -64,13 +78,9 @@ fun GameItemPreview() {
         id = 1,
         title = "Sample Game",
         releaseDate = "2021-01-01",
-        rating =  ,
+        rating = 4.5F,
         imageUrl = "https://example.com/game_image.jpg",
         description = "This is a sample game description."
     )
     GameItem(game = game, onClick = {})
 }
-
-}
-
- */

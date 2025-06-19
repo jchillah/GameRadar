@@ -36,4 +36,12 @@ class SearchViewModel(
             }
         }
     }
+
+    fun updateFilters(platforms: List<String>, genres: List<String>, rating: Float) {
+        _uiState.update { it.copy(
+            selectedPlatforms = platforms,
+            selectedGenres = genres,
+            rating = rating
+        )}
+    }
 }
