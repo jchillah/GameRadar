@@ -18,7 +18,9 @@ class SearchViewModel(
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState
-
+ private val _selectedPlatformIds = MutableStateFlow<List<Int>>(emptyList())
+ private val _selectedGenreIds = MutableStateFlow<List<Int>>(emptyList())
+ private val _rating = MutableStateFlow<Float>(0f)
     init {
         loadFilterOptions()
     }
@@ -31,15 +33,14 @@ class SearchViewModel(
             val currentFilters = _uiState.value
 
             when (val res = repo.searchGames(
- query = query,
- platforms = currentFilters.selectedPlatformIds, // Use stored platform IDs
- genres = currentFilters.selectedGenreIds, // Use stored genre IDs
- rating = currentFilters.rating // Use stored rating
-            )) {
-                is Resource.Success -> {
-                    Log.d("SearchViewModel", "Erfolgreiche Suche: ${res.data?.size} Ergebnisse")
-                    _uiState.update { it.copy(games = res.data ?: emptyList(), isLoading = false, error = null) }
-                }
+                query = query,
+                platforms = _selectedPlatformIds.value, // Use stored platform IDs
+                genres = _selectedGenreIds.value, // Use stored genre IDs
+                rating = _rating.value // Use stored rating
+                           )) {
+                               is Resource.Success -> {
+                                   Log.d("SearchViewModel", "Erfolgreiche Suche: ${res.data?.size} Ergebnisse")
+               }
                 is Resource.Error -> {
                     Log.e("SearchViewModel", "Fehler bei der Suche: ${res.message}")
                     _uiState.value = SearchUiState(error = res.message)
@@ -49,26 +50,13 @@ class SearchViewModel(
         }
     }
 
-    fun updateFilters(selectedPlatformNames: List<String>, selectedGenreNames: List<String>, rating: Float) {
-        // Map the selected names back to IDs for the API call.
-        // This assumes that the `availablePlatforms` and `availableGenres` in the state
-        // are lists of strings representing the names, and we need to find their corresponding IDs.
-        // In a real application, you would likely want to store available platforms and genres
-        // as data classes containing both name and ID.
-        val platformMap = _uiState.value.availablePlatforms.associateWith { /* Add logic to get platform ID by name */ 0 } // TODO: Implement platform name to ID mapping
- val genreMap = _uiState.value.availableGenres.associateWith { /* Add logic to get genre ID by name */ 0 } // TODO: Implement genre name to ID mapping
-
-        _uiState.update {
-            it.copy(
- selectedPlatformNames = selectedPlatformNames,
- selectedGenreNames = selectedGenreNames,
- selectedPlatformIds = selectedPlatformNames.map { platformMap[it] ?: 0 }, // TODO: Use actual mapped IDs
- selectedGenreIds = selectedGenreNames.map { genreMap[it] ?: 0 }, // TODO: Use actual mapped IDs
-            )
-        }
-        // Trigger search with updated filters
-        search(_uiState.value.searchQuery) // Assuming you store the last search query in the state
-    }
+    fun updateFilters(selectedPlatformIds: List<Int>, selectedGenreIds: List<Int>, rating: Float) {
+        _selectedPlatformIds.value = selectedPlatformIds
+        _selectedGenreIds.value = selectedGenreIds
+        _rating.value = rating
+               // Trigger search with updated filters and store in state
+               search(_uiState.value.searchQuery)
+           }
 
     private fun loadFilterOptions() {
         viewModelScope.launch(Dispatchers.IO) {

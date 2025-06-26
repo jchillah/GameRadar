@@ -15,7 +15,7 @@ fun FilterBottomSheet(
  selectedPlatforms: Set<Int>,
     selectedGenres: Set<Int>,
     rating: Float,
-    onFilterChange: (List<String>, List<String>, Float) -> Unit
+    onFilterChange: (List<Int>, List<Int>, Float) -> Unit
 ) {
     var selectedPlatformState by remember { mutableStateOf(selectedPlatforms.toSet()) }
     var selectedGenreState by remember { mutableStateOf(selectedGenres.toSet()) }
@@ -32,11 +32,11 @@ fun FilterBottomSheet(
                         selectedPlatformState = if (isSelected) {
  selectedPlatformState - platformId
                         } else {
-                            selectedPlatformState + platform
+ selectedPlatformState + platformId
                         }
                     },
-                    label = { Text(platform) },
-                    modifier = Modifier.padding(4.dp)
+                    label = { Text(platformName) },
+                    modifier = Modifier.padding(4.dp),
                 )
             }
         }
@@ -53,11 +53,11 @@ fun FilterBottomSheet(
                         selectedGenreState = if (isSelected) {
  selectedGenreState - genreId
                         } else {
-                            selectedGenreState + genre
+ selectedGenreState + genreId
                         }
                     },
-                    label = { Text(genre) },
-                    modifier = Modifier.padding(4.dp)
+                    label = { Text(genreName) },
+                    modifier = Modifier.padding(4.dp),
                 )
             }
         }

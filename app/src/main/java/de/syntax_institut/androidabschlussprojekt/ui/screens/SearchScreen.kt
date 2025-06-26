@@ -11,10 +11,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.paging.compose.collectAsLazyPagingItems
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchBarWithButton
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchResultContent
 import de.syntax_institut.androidabschlussprojekt.ui.components.FilterBottomSheet
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.PagingSearchResultContent
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -25,6 +27,7 @@ fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val games = viewModel.games.collectAsLazyPagingItems()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
 
@@ -57,22 +60,13 @@ fun SearchScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SearchResultContent(
-                    isLoading = state.isLoading,
-                    error = state.error,
-                    games = state.games,
+                PagingSearchResultContent(
+ games = games,
                     onGameClick = { game ->
                         navController.navigate("detail/${game.id}")
                     }
                 )
             }
-
-            // Handle loading states
-            if (state.isLoading || state.isPlatformsLoading || state.isGenresLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-
-            // Handle error states
             if (state.error != null) {
                 Text(
                     text = "Error: ${state.error}",
