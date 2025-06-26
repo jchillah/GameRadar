@@ -9,10 +9,11 @@ import kotlin.math.roundToInt
 
 @Composable
 fun FilterBottomSheet(
-    platforms: List<String>,
-    genres: List<String>,
-    selectedPlatforms: List<String>,
-    selectedGenres: List<String>,
+    allPlatforms: List<Pair<Int, String>>, // List of available platforms (ID, Name)
+    allGenres: List<Pair<Int, String>>, // List of available genres (ID, Name)
+    // Using Set<Int> to store selected IDs
+ selectedPlatforms: Set<Int>,
+    selectedGenres: Set<Int>,
     rating: Float,
     onFilterChange: (List<String>, List<String>, Float) -> Unit
 ) {
@@ -23,13 +24,13 @@ fun FilterBottomSheet(
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Plattformen", style = MaterialTheme.typography.titleMedium)
         FlowRow {
-            platforms.forEach { platform ->
-                val isSelected = selectedPlatformState.contains(platform)
+            allPlatforms.forEach { (platformId, platformName) ->
+                val isSelected = selectedPlatformState.contains(platformId)
                 FilterChip(
                     selected = isSelected,
                     onClick = {
                         selectedPlatformState = if (isSelected) {
-                            selectedPlatformState - platform
+ selectedPlatformState - platformId
                         } else {
                             selectedPlatformState + platform
                         }
@@ -44,13 +45,13 @@ fun FilterBottomSheet(
 
         Text("Genres", style = MaterialTheme.typography.titleMedium)
         FlowRow {
-            genres.forEach { genre ->
-                val isSelected = selectedGenreState.contains(genre)
+            allGenres.forEach { (genreId, genreName) ->
+                val isSelected = selectedGenreState.contains(genreId)
                 FilterChip(
                     selected = isSelected,
                     onClick = {
                         selectedGenreState = if (isSelected) {
-                            selectedGenreState - genre
+ selectedGenreState - genreId
                         } else {
                             selectedGenreState + genre
                         }
@@ -75,8 +76,8 @@ fun FilterBottomSheet(
 
         Button(onClick = {
             onFilterChange(
-                selectedPlatformState.toList(),
-                selectedGenreState.toList(),
+                selectedPlatformState.toList(), // Pass selected platform IDs
+                selectedGenreState.toList(), // Pass selected genre IDs
                 ratingState
             )
         }) {

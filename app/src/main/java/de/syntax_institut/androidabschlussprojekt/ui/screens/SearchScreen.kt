@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchBarWithButton
@@ -53,6 +54,7 @@ fun SearchScreen(
                     }
                 )
 
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 SearchResultContent(
@@ -64,6 +66,19 @@ fun SearchScreen(
                     }
                 )
             }
+
+            // Handle loading states
+            if (state.isLoading || state.isPlatformsLoading || state.isGenresLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+
+            // Handle error states
+            if (state.error != null) {
+                Text(
+                    text = "Error: ${state.error}",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
     }
 
@@ -72,8 +87,8 @@ fun SearchScreen(
             onDismissRequest = { showFilters = false }
         ) {
             FilterBottomSheet(
-                platforms = listOf("PC", "PlayStation", "Xbox", "Switch"),
-                genres = listOf("Action", "RPG", "Shooter", "Strategy", "Indie"),
+ platforms = state.availablePlatforms,
+ genres = state.availableGenres,
                 selectedPlatforms = state.selectedPlatforms,
                 selectedGenres = state.selectedGenres,
                 rating = state.rating,
