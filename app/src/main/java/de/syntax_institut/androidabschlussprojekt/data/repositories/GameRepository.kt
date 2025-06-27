@@ -44,25 +44,25 @@ class GameRepository @Inject constructor(
     }
 
     suspend fun getPlatforms(): Resource<List<String>> = try {
- val resp = api.getPlatforms()
+        val resp = api.getPlatforms()
         if (resp.isSuccessful) {
- Resource.Success(resp.body()?.results?.mapNotNull { it.name } ?: emptyList())
+            Resource.Success(resp.body()?.platforms?.mapNotNull { it.name } ?: emptyList())
         } else {
- Resource.Error("Server Error ${resp.code()}")
+            Resource.Error("Server Error ${resp.code()}")
         }
     } catch (e: Exception) {
- Resource.Error("Network Error: ${e.localizedMessage}")
+        Resource.Error("Network Error: ${e.localizedMessage}")
     }
 
     suspend fun getGenres(): Resource<List<String>> = try {
- val resp = api.getGenres()
+        val resp = api.getGenres()
         if (resp.isSuccessful) {
- Resource.Success(resp.body()?.results?.mapNotNull { it.name } ?: emptyList())
+            Resource.Success(resp.body()?.genres?.mapNotNull { it.name } ?: emptyList())
         } else {
- Resource.Error("Server Error ${resp.code()}")
+            Resource.Error("Server Error ${resp.code()}")
         }
     } catch (e: Exception) {
- Resource.Error("Network Error: ${e.localizedMessage}")
+        Resource.Error("Network Error: ${e.localizedMessage}")
     }
 
     suspend fun getGameDetail(id: Int): Resource<Game> = try {

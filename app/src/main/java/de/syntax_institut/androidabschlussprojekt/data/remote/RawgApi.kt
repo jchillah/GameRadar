@@ -8,7 +8,8 @@ import com.squareup.moshi.Json
 import de.syntax_institut.androidabschlussprojekt.BuildConfig
 import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GameDto
 import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GamesResponse
-
+import de.syntax_institut.androidabschlussprojekt.data.remote.dto.PlatformResponse
+import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GenreResponse
 
 interface RawgApi {
     @GET("games")
