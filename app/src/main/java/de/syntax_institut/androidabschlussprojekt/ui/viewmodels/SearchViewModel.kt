@@ -4,9 +4,14 @@ import android.util.*
 import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
-import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import androidx.paging.PagingData
+import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
+import de.syntax_institut.androidabschlussprojekt.domain.model.Platform
+import de.syntax_institut.androidabschlussprojekt.domain.model.Genre
+import androidx.paging.cachedIn
+import de.syntax_institut.androidabschlussprojekt.data.local.models.SearchParams
 
 /**
 
@@ -18,60 +23,110 @@ class SearchViewModel(
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState
- private val _selectedPlatformIds = MutableStateFlow<List<Int>>(emptyList())
- private val _selectedGenreIds = MutableStateFlow<List<Int>>(emptyList())
- private val _rating = MutableStateFlow<Float>(0f)
+
+    var platforms: List<Platform> = emptyList()
+    var genres: List<Genre> = emptyList()
+
+    // Paging-Flow für die UI
+    private val _pagingFlow = MutableStateFlow<PagingData<Game>>(PagingData.empty())
+    val pagingFlow: StateFlow<PagingData<Game>> = _pagingFlow.asStateFlow()
+
+    private val _searchParams = MutableStateFlow(SearchParams())
+    
+    // Aktueller Suchtext für automatische Neuausführung
+    private var currentSearchQuery: String = ""
+
     init {
-        loadFilterOptions()
+        val platformsList = listOf(
+            Platform(1, "PC"),
+            Platform(5, "macOS"),
+            Platform(6, "Linux"),
+            Platform(4, "iOS"),
+            Platform(8, "Android"),
+            Platform(39, "iPad"),
+            Platform(40, "Android Tablet"),
+            Platform(2, "PlayStation"),
+            Platform(16, "PlayStation 3"),
+            Platform(18, "PlayStation 4"),
+            Platform(23, "PlayStation 5"),
+            Platform(22, "PlayStation 2"),
+            Platform(27, "PlayStation 1"),
+            Platform(37, "PlayStation Vita"),
+            Platform(38, "PSP"),
+            Platform(3, "Xbox"),
+            Platform(19, "Xbox 360"),
+            Platform(21, "Xbox One"),
+            Platform(24, "Xbox Series S/X"),
+            Platform(7, "Nintendo Switch"),
+            Platform(33, "Wii"),
+            Platform(34, "Wii U"),
+            Platform(35, "Nintendo DS"),
+            Platform(36, "Nintendo 3DS"),
+            Platform(32, "Nintendo 64"),
+            Platform(31, "GameCube"),
+            Platform(30, "Game Boy Advance"),
+            Platform(28, "Game Boy"),
+            Platform(29, "SNES"),
+            Platform(14, "Web")
+        )
+        val genresList = listOf(
+            Genre(1, "Action"),
+            Genre(2, "Adventure"),
+            Genre(3, "RPG"),
+            Genre(4, "Strategy")
+        )
+        _uiState.update { it.copy(platforms = platformsList, genres = genresList) }
     }
 
     fun search(query: String) {
-        Log.d("SearchViewModel", "Search gestartet mit Query: $query")
-        viewModelScope.launch(Dispatchers.IO) {
-            _uiState.update { it.copy(isLoading = true) }
-
-            val currentFilters = _uiState.value
-
-            when (val res = repo.searchGames(
-                query = query,
-                platforms = _selectedPlatformIds.value, // Use stored platform IDs
-                genres = _selectedGenreIds.value, // Use stored genre IDs
-                rating = _rating.value // Use stored rating
-                           )) {
-                               is Resource.Success -> {
-                                   Log.d("SearchViewModel", "Erfolgreiche Suche: ${res.data?.size} Ergebnisse")
-               }
-                is Resource.Error -> {
-                    Log.e("SearchViewModel", "Fehler bei der Suche: ${res.message}")
-                    _uiState.value = SearchUiState(error = res.message)
-                }
-                else -> {}
+        Log.d("SearchViewModel", "Paging-Search gestartet mit Query: $query")
+        currentSearchQuery = query
+        val state = _uiState.value
+        val platformIds = state.selectedPlatforms.joinToString(",")
+        val genreIds = state.selectedGenres.joinToString(",")
+        val ordering = state.ordering
+        val rating = if (state.rating > 0f) state.rating else null
+        _uiState.update { it.copy(hasSearched = true) }
+        _searchParams.value = SearchParams(
+            query = query,
+            platforms = if (platformIds.isNotBlank()) platformIds else null,
+            genres = if (genreIds.isNotBlank()) genreIds else null,
+            ordering = if (ordering.isNotBlank()) ordering else null
+        )
+        viewModelScope.launch {
+            repo.getPagedGames(
+                query = _searchParams.value.query,
+                platforms = _searchParams.value.platforms,
+                genres = _searchParams.value.genres,
+                ordering = _searchParams.value.ordering,
+                rating = rating
+            )
+            .cachedIn(viewModelScope)
+            .collect {
+                _pagingFlow.value = it
             }
         }
     }
 
-    fun updateFilters(selectedPlatformIds: List<Int>, selectedGenreIds: List<Int>, rating: Float) {
-        _selectedPlatformIds.value = selectedPlatformIds
-        _selectedGenreIds.value = selectedGenreIds
-        _rating.value = rating
-               // Trigger search with updated filters and store in state
-               search(_uiState.value.searchQuery)
-           }
+    fun updateFilters(platforms: List<String>, genres: List<String>, rating: Float) {
+        _uiState.update { it.copy(
+            selectedPlatforms = platforms,
+            selectedGenres = genres,
+            rating = rating
+        )}
+        
+        // Automatisch die Suche neu ausführen, wenn ein Suchtext vorhanden ist
+        if (currentSearchQuery.isNotBlank()) {
+            search(currentSearchQuery)
+        }
+    }
 
-    private fun loadFilterOptions() {
-        viewModelScope.launch(Dispatchers.IO) {
-            // Load platforms
-            when (val res = repo.getPlatforms()) {
-                is Resource.Success -> _uiState.update { it.copy(availablePlatforms = res.data ?: emptyList()) }
-                is Resource.Error -> Log.e("SearchViewModel", "Error loading platforms: ${res.message}")
-                else -> {}
-            }
-            // Load genres
-            when (val res = repo.getGenres()) {
-                is Resource.Success -> _uiState.update { it.copy(availableGenres = res.data ?: emptyList()) }
-                is Resource.Error -> Log.e("SearchViewModel", "Error loading genres: ${res.message}")
-                else -> {}
-            }
+    fun updateOrdering(ordering: String) {
+        _uiState.update { it.copy(ordering = ordering) }
+        
+        // Automatisch die Suche neu ausführen, wenn ein Suchtext vorhanden ist
+        if (currentSearchQuery.isNotBlank()) {
+            search(currentSearchQuery)
         }
     }
 }

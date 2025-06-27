@@ -103,3 +103,5 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 # VSCode
 .vscode
+
+/.kotlin/sessions/*

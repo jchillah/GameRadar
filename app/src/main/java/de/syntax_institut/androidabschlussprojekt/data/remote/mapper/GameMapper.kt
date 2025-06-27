@@ -9,5 +9,16 @@ fun GameDto.toDomain(): Game = Game(
     releaseDate = released,
     imageUrl = backgroundImage,
     rating = rating,
-    description = description
+    description = description,
+    metacritic = metacritic,
+    website = website,
+    esrbRating = esrbRating?.name,
+    genres = genres?.map { it.name } ?: emptyList(),
+    platforms = platforms?.map { it.platform.name } ?: emptyList(),
+    developers = developers?.map { it.name } ?: emptyList(),
+    publishers = publishers?.map { it.name } ?: emptyList(),
+    tags = tags?.map { it.name } ?: emptyList(),
+    screenshots = shortScreenshots?.map { it.image } ?: emptyList(),
+    stores = stores?.map { it.store.name } ?: emptyList(),
+    playtime = playtime
 )
