@@ -4,9 +4,11 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import com.squareup.moshi.Json
 import de.syntax_institut.androidabschlussprojekt.BuildConfig
 import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GameDto
 import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GamesResponse
+
 
 interface RawgApi {
     @GET("games")
@@ -25,4 +27,14 @@ interface RawgApi {
         @Path("id") gameId: Int,
         @Query("key") apiKey: String = BuildConfig.API_KEY
     ): Response<GameDto>
+
+    @GET("platforms")
+    suspend fun getPlatforms(
+        @Query("key") apiKey: String = BuildConfig.API_KEY
+    ): Response<PlatformResponse>
+
+    @GET("genres")
+    suspend fun getGenres(
+        @Query("key") apiKey: String = BuildConfig.API_KEY
+    ): Response<GenreResponse>
 }
