@@ -14,7 +14,10 @@ interface RawgApi {
         @Query("key") apiKey: String = BuildConfig.API_KEY,
         @Query("search") query: String,
         @Query("page") page: Int = 1,
-        @Query("page_size") pageSize: Int = 20
+        @Query("page_size") pageSize: Int = 20,
+        @Query("platforms") platforms: String? = null,
+        @Query("genres") genres: String? = null,
+        @Query("ordering") ordering: String? = null
     ): Response<GamesResponse>
 
     @GET("games/{id}")

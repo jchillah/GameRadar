@@ -7,16 +7,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import de.syntax_institut.androidabschlussprojekt.ui.screens.DetailScreen
 import de.syntax_institut.androidabschlussprojekt.ui.screens.SearchScreen
+import de.syntax_institut.androidabschlussprojekt.navigation.Routes
 
 /**
  * Navigation Graph.
  */
 @Composable
 fun NavGraph(navController: androidx.navigation.NavHostController) {
-    NavHost(navController, startDestination = "search") {
-        composable("search") { SearchScreen(navController) }
+    NavHost(navController, startDestination = Routes.SEARCH) {
+        composable(Routes.SEARCH) { SearchScreen(navController) }
         composable(
-            route = "detail/{gameId}",
+            route = Routes.DETAIL,
             arguments = listOf(navArgument("gameId") { type = NavType.IntType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("gameId") ?: return@composable

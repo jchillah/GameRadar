@@ -28,7 +28,10 @@ import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
 
 @Composable
-fun GameItem(game: Game, onClick: () -> Unit) {
+fun GameItem(
+    game: Game,
+    onClick: () -> Unit
+) {
     val showShimmer = remember { mutableStateOf(true) }
 
     val painter = rememberAsyncImagePainter(

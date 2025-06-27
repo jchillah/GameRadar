@@ -1,12 +1,16 @@
 package de.syntax_institut.androidabschlussprojekt.ui.states
 
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
+import de.syntax_institut.androidabschlussprojekt.domain.model.Platform
+import de.syntax_institut.androidabschlussprojekt.domain.model.Genre
 
 data class SearchUiState(
     val isLoading: Boolean = false,
-    val games: List<Game> = emptyList(),
     val error: String? = null,
     val selectedPlatforms: List<String> = emptyList(),
     val selectedGenres: List<String> = emptyList(),
-    val rating: Float = 0f
+    val rating: Float = 0f,
+    val platforms: List<Platform> = emptyList(),
+    val genres: List<Genre> = emptyList(),
+    val ordering: String = "",
+    val hasSearched: Boolean = false
 )

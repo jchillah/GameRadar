@@ -1,20 +1,20 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
-import android.annotation.SuppressLint
+import android.annotation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.twotone.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchBarWithButton
-import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchResultContent
-import de.syntax_institut.androidabschlussprojekt.ui.components.FilterBottomSheet
-import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel
-import org.koin.androidx.compose.koinViewModel
+import androidx.compose.ui.*
+import androidx.compose.ui.text.input.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.navigation.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import org.koin.androidx.compose.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,13 +26,14 @@ fun SearchScreen(
     val state by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
+    val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
 
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("Search Games") },
             actions = {
                 IconButton(onClick = { showFilters = true }) {
-                    Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Filter anzeigen")
+                    Icon(Icons.TwoTone.MoreVert, contentDescription = "Filter anzeigen")
                 }
             }
         )
@@ -56,11 +57,10 @@ fun SearchScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 SearchResultContent(
-                    isLoading = state.isLoading,
-                    error = state.error,
-                    games = state.games,
+                    pagingItems = pagingItems,
+                    hasSearched = state.hasSearched,
                     onGameClick = { game ->
-                        navController.navigate("detail/${game.id}")
+                        navController.navigate(Routes.detail(game.id))
                     }
                 )
             }
@@ -72,11 +72,15 @@ fun SearchScreen(
             onDismissRequest = { showFilters = false }
         ) {
             FilterBottomSheet(
-                platforms = listOf("PC", "PlayStation", "Xbox", "Switch"),
-                genres = listOf("Action", "RPG", "Shooter", "Strategy", "Indie"),
+                platforms = state.platforms,
+                genres = state.genres,
                 selectedPlatforms = state.selectedPlatforms,
                 selectedGenres = state.selectedGenres,
                 rating = state.rating,
+                ordering = state.ordering,
+                onOrderingChange = { newOrdering ->
+                    viewModel.updateOrdering(newOrdering)
+                },
                 onFilterChange = { newPlatforms, newGenres, newRating ->
                     viewModel.updateFilters(newPlatforms, newGenres, newRating)
                     showFilters = false

@@ -1,6 +1,5 @@
-import com.android.build.api.dsl.Packaging
-import java.io.FileInputStream
-import java.util.Properties
+import java.io.*
+import java.util.*
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
@@ -103,6 +102,10 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
 
+    // Paging
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
+
     // accompanist-flowlayout
     implementation(libs.accompanist.flowlayout)
 
@@ -183,9 +186,6 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
 
     testImplementation(libs.retrofit)
-
-
-
 
 }
 java {
