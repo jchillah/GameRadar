@@ -8,8 +8,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import androidx.paging.PagingData
 import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.domain.model.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.model.Genre
+import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
+import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
 import androidx.paging.cachedIn
 import de.syntax_institut.androidabschlussprojekt.data.local.models.SearchParams
 

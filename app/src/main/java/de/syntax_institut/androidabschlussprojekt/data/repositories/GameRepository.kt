@@ -15,55 +15,6 @@ import kotlinx.coroutines.flow.Flow
 class GameRepository @Inject constructor(
     private val api: RawgApi
 ) {
-    suspend fun searchGames(
-        query: String,
-        platforms: String? = null,
-        genres: String? = null,
-        ordering: String? = null,
-        rating: Float? = null
-    ): Resource<List<Game>> = try {
-        val resp = api.searchGames(
-            query = query,
-            platforms = platforms,
-            genres = genres,
-            ordering = ordering
-        )
-        if (resp.isSuccessful) {
-            val games = resp.body()?.results?.map { it.toDomain() } ?: emptyList()
-            val filteredGames = if (rating != null && rating > 0f) {
-                games.filter { it.rating >= rating }
-            } else {
-                games
-            }
-            Resource.Success(filteredGames)
-        } else {
-            Resource.Error("Server Error "+resp.code())
-        }
-    } catch (e: Exception) {
-        Resource.Error("Network Error: ${e.localizedMessage}")
-    }
-
-    suspend fun getPlatforms(): Resource<List<String>> = try {
-        val resp = api.getPlatforms()
-        if (resp.isSuccessful) {
-            Resource.Success(resp.body()?.platforms?.mapNotNull { it.name } ?: emptyList())
-        } else {
-            Resource.Error("Server Error ${resp.code()}")
-        }
-    } catch (e: Exception) {
-        Resource.Error("Network Error: ${e.localizedMessage}")
-    }
-
-    suspend fun getGenres(): Resource<List<String>> = try {
-        val resp = api.getGenres()
-        if (resp.isSuccessful) {
-            Resource.Success(resp.body()?.genres?.mapNotNull { it.name } ?: emptyList())
-        } else {
-            Resource.Error("Server Error ${resp.code()}")
-        }
-    } catch (e: Exception) {
-        Resource.Error("Network Error: ${e.localizedMessage}")
-    }
 
     suspend fun getGameDetail(id: Int): Resource<Game> = try {
         val resp = api.getGameDetail(gameId = id)
@@ -75,13 +26,6 @@ class GameRepository @Inject constructor(
         }
     } catch (e: Exception) {
         Resource.Error("Network Error: ${e.localizedMessage}")
-    }
-
-    // Smoke‑Test:
-    suspend fun smokeTest(): Boolean {
-        // Einfach mal den Endpunkt ohne Query aufrufen
-        val response = api.searchGames(query = "")
-        return response.isSuccessful
     }
 
     // PagingSource für die Suche

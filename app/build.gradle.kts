@@ -105,6 +105,9 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime)
+    
+    // Paging Testing für End-to-End Tests
+    androidTestImplementation(libs.androidx.paging.testing)
 
     // accompanist-flowlayout
     implementation(libs.accompanist.flowlayout)
@@ -167,6 +170,8 @@ dependencies {
     // Koin für Tests
     testImplementation(libs.insert.koin.koin.test)
     testImplementation(libs.koin.test.junit4)
+    androidTestImplementation(libs.insert.koin.koin.test)
+    androidTestImplementation(libs.koin.test.junit4)
 
     testImplementation(libs.mockk)
     androidTestImplementation(libs.mockk.android)
