@@ -1,7 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.states
 
-import de.syntax_institut.androidabschlussprojekt.domain.model.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.model.Genre
+import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
+import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
 
 data class SearchUiState(
     val isLoading: Boolean = false,
