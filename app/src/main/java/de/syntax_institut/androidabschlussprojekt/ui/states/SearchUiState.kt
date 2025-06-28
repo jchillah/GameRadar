@@ -12,5 +12,14 @@ data class SearchUiState(
     val platforms: List<Platform> = emptyList(),
     val genres: List<Genre> = emptyList(),
     val ordering: String = "",
-    val hasSearched: Boolean = false
+    val hasSearched: Boolean = false,
+    // Offline-Funktionalität
+    val isOffline: Boolean = false,
+    val cacheSize: Int = 0,
+    val isLoadingPlatforms: Boolean = false,
+    val isLoadingGenres: Boolean = false,
+    val platformsError: String? = null,
+    val genresError: String? = null,
+    val isApplyingFilters: Boolean = false,
+    val filterError: String? = null
 )

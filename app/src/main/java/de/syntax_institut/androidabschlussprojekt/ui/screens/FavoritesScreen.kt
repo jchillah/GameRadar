@@ -37,11 +37,18 @@ fun FavoritesScreen(
                 title = { Text("Meine Favoriten") },
                 actions = {
                     if (state.favorites.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.clearAllFavorites() }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Alle Favoriten löschen"
-                            )
+                        Row(
+                            modifier = modifier,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Anzahl: ${state.favorites.size}")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            IconButton(onClick = { viewModel.clearAllFavorites() }) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = "Alle Favoriten löschen"
+                                )
+                            }
                         }
                     }
                 }

@@ -1,6 +1,10 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import android.content.Context
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
+import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
+import de.syntax_institut.androidabschlussprojekt.utils.Resource
 import io.mockk.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
@@ -11,18 +15,22 @@ class SearchViewModelPagingTest {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var mockRepository: GameRepository
+    private lateinit var mockContext: Context
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         mockRepository = mockk(relaxed = true)
-        viewModel = SearchViewModel(mockRepository)
+        mockContext = mockk(relaxed = true)
+        viewModel = SearchViewModel(mockRepository, mockContext)
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain()
+        // ViewModel aufräumen
+        viewModel.onCleared()
     }
 
     @Test
@@ -35,8 +43,8 @@ class SearchViewModelPagingTest {
         assert(initialState.selectedGenres.isEmpty())
         assert(initialState.rating == 0f)
         assert(!initialState.hasSearched)
-        assert(initialState.platforms.isNotEmpty())
-        assert(initialState.genres.isNotEmpty())
+        assert(initialState.platforms.isEmpty())
+        assert(initialState.genres.isEmpty())
     }
 
     @Test
@@ -73,23 +81,45 @@ class SearchViewModelPagingTest {
     }
 
     @Test
-    fun `platforms should be initialized with correct data`() {
+    fun `loadPlatforms should load platforms from repository`() = runTest {
+        // Given
+        val mockPlatforms = listOf(
+            Platform(1, "PC"),
+            Platform(2, "PlayStation 5"),
+            Platform(3, "Xbox Series S/X")
+        )
+        coEvery { mockRepository.getPlatforms() } returns Resource.Success(mockPlatforms)
+
+        // When
+        viewModel.loadPlatforms()
+        advanceUntilIdle()
+
+        // Then
         val uiState = viewModel.uiState.value
-        
-        assert(uiState.platforms.isNotEmpty())
-        assert(uiState.platforms.any { it.name == "PC" })
-        assert(uiState.platforms.any { it.name == "PlayStation 5" })
-        assert(uiState.platforms.any { it.name == "Xbox Series S/X" })
+        assert(uiState.platforms == mockPlatforms)
+        assert(!uiState.isLoadingPlatforms)
+        assert(uiState.platformsError == null)
     }
 
     @Test
-    fun `genres should be initialized with correct data`() {
+    fun `loadGenres should load genres from repository`() = runTest {
+        // Given
+        val mockGenres = listOf(
+            Genre(1, "Action"),
+            Genre(2, "RPG"),
+            Genre(3, "Strategy")
+        )
+        coEvery { mockRepository.getGenres() } returns Resource.Success(mockGenres)
+
+        // When
+        viewModel.loadGenres()
+        advanceUntilIdle()
+
+        // Then
         val uiState = viewModel.uiState.value
-        
-        assert(uiState.genres.isNotEmpty())
-        assert(uiState.genres.any { it.name == "Action" })
-        assert(uiState.genres.any { it.name == "RPG" })
-        assert(uiState.genres.any { it.name == "Strategy" })
+        assert(uiState.genres == mockGenres)
+        assert(!uiState.isLoadingGenres)
+        assert(uiState.genresError == null)
     }
 
     @Test

@@ -18,7 +18,7 @@ fun App() {
     AppTheme(darkTheme = true, dynamicColor = true) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             val navController = rememberNavController()
-            NavGraph(navController)
+            NavGraph(navController = navController)
         }
     }
 }

@@ -5,18 +5,21 @@ import de.syntax_institut.androidabschlussprojekt.data.repositories.GameReposito
 import de.syntax_institut.androidabschlussprojekt.data.repositories.FavoritesRepository
 import de.syntax_institut.androidabschlussprojekt.data.local.GameDatabase
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.FavoriteGameDao
+import de.syntax_institut.androidabschlussprojekt.data.local.dao.GameCacheDao
+import android.content.Context
 
 /**
  * Modul für Repositories und Datenbank.
  */
 val repositoryModule = module {
     // Room Database
-    single { GameDatabase.getDatabase(get()) }
+    single { GameDatabase.getDatabase(get<Context>()) }
     
     // DAOs
     single<FavoriteGameDao> { get<GameDatabase>().favoriteGameDao() }
+    single<GameCacheDao> { get<GameDatabase>().gameCacheDao() }
     
     // Repositories
-    single { GameRepository(get()) }
+    single { GameRepository(get(), get(), get()) }
     single { FavoritesRepository(get()) }
 }

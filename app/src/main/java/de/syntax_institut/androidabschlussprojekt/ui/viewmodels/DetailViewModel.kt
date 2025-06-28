@@ -38,9 +38,14 @@ class DetailViewModel(
             
             when (gameResult) {
                 is Resource.Success -> {
-                    Log.d("DetailViewModel", "Erfolgreich geladen: ${gameResult.data}")
-                    _uiState.value = DetailUiState(game = gameResult.data)
-                    _isFavorite.value = favoriteResult
+                    val game = gameResult.data
+                    Log.d("DetailViewModel", "Erfolgreich geladen: ${game?.title}")
+                    Log.d("DetailViewModel", "Screenshots: ${game?.screenshots?.size ?: 0}")
+                    game?.screenshots?.forEachIndexed { index, url ->
+                        Log.d("DetailViewModel", "Screenshot $index: $url")
+                    }
+                    _uiState.value = DetailUiState(game = game)
+                    _isFavorite.value = favoriteResult ?: false
                 }
                 is Resource.Error -> {
                     Log.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")
