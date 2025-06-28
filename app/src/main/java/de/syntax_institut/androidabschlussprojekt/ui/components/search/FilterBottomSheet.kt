@@ -6,8 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
-import de.syntax_institut.androidabschlussprojekt.domain.model.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.model.Genre
+import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
+import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
 
 @Composable
 fun FilterBottomSheet(
