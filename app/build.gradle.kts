@@ -11,7 +11,6 @@ val apiKey = localProperties.getProperty("API_KEY") ?: ""
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.plugin.compose") version "2.1.21"
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
 }
@@ -68,7 +67,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
+        kotlinCompilerExtensionVersion = "2.1.21"
     }
 }
 
@@ -79,7 +78,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     
     // Compose
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)

@@ -29,8 +29,7 @@ class SearchViewModelPagingTest {
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-        // ViewModel aufräumen
-        viewModel.onCleared()
+        // ViewModel wird automatisch aufgeräumt wenn es aus dem Scope fällt
     }
 
     @Test

@@ -19,14 +19,19 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
 import de.syntax_institut.androidabschlussprojekt.data.local.models.SearchParams
+import java.lang.ref.WeakReference
 
 /**
  * ViewModel für die Suche mit Offline-Support.
+ * Folgt MVVM-Pattern und Clean Code Prinzipien.
  */
 class SearchViewModel(
     private val repo: GameRepository,
-    private val context: Context
+    context: Context
 ) : ViewModel() {
+
+    // WeakReference um Context-Leak zu vermeiden
+    private val contextRef = WeakReference(context)
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState
@@ -49,15 +54,22 @@ class SearchViewModel(
     val cacheSize: StateFlow<Int> = _cacheSize.asStateFlow()
 
     init {
-        // Netzwerkstatus überwachen
+        initializeNetworkMonitoring()
+        initializeCacheMonitoring()
+    }
+
+    private fun initializeNetworkMonitoring() {
         viewModelScope.launch {
-            NetworkUtils.observeNetworkStatus(context).collect { isOnline ->
-                _isOffline.value = !isOnline
-                Log.d("SearchViewModel", "Netzwerkstatus geändert: ${if (isOnline) "Online" else "Offline"}")
+            contextRef.get()?.let { context ->
+                NetworkUtils.observeNetworkStatus(context).collect { isOnline ->
+                    _isOffline.value = !isOnline
+                    Log.d("SearchViewModel", "Netzwerkstatus geändert: ${if (isOnline) "Online" else "Offline"}")
+                }
             }
         }
-        
-        // Cache-Größe regelmäßig aktualisieren
+    }
+
+    private fun initializeCacheMonitoring() {
         viewModelScope.launch {
             while (true) {
                 try {

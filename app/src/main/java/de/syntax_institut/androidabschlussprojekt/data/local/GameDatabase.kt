@@ -34,7 +34,7 @@ abstract class GameDatabase : RoomDatabase() {
                     GameDatabase::class.java,
                     "game_database"
                 )
-                .fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigration(true)
                 .build()
                 INSTANCE = instance
                 instance

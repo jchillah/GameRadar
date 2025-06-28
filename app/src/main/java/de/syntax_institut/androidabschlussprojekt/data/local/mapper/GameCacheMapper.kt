@@ -62,37 +62,37 @@ object GameCacheMapper {
             esrbRating = esrbRating,
             genres = try {
                 listAdapter.fromJson(genres) ?: emptyList()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emptyList()
             },
             platforms = try {
                 listAdapter.fromJson(platforms) ?: emptyList()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emptyList()
             },
             developers = try {
                 listAdapter.fromJson(developers) ?: emptyList()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emptyList()
             },
             publishers = try {
                 listAdapter.fromJson(publishers) ?: emptyList()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emptyList()
             },
             tags = try {
                 listAdapter.fromJson(tags) ?: emptyList()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emptyList()
             },
             screenshots = try {
                 listAdapter.fromJson(screenshots) ?: emptyList()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emptyList()
             },
             stores = try {
                 listAdapter.fromJson(stores) ?: emptyList()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 emptyList()
             },
             playtime = playtime
