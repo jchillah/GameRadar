@@ -10,9 +10,9 @@ import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun FavoriteButton(
+    modifier: Modifier = Modifier,
     isFavorite: Boolean = false,
     onFavoriteChanged: (Boolean) -> Unit = {},
-    modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
     IconButton(

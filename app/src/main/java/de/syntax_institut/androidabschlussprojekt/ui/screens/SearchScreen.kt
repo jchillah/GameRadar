@@ -20,7 +20,8 @@ import org.koin.androidx.compose.*
 @Composable
 fun SearchScreen(
     navController: NavHostController,
-    viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel(),
+    modifier: Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }

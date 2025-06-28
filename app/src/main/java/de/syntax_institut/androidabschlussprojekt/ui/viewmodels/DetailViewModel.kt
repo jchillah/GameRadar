@@ -40,7 +40,7 @@ class DetailViewModel(
                 is Resource.Success -> {
                     Log.d("DetailViewModel", "Erfolgreich geladen: ${gameResult.data}")
                     _uiState.value = DetailUiState(game = gameResult.data)
-                    _isFavorite.value = favoriteResult ?: false
+                    _isFavorite.value = favoriteResult
                 }
                 is Resource.Error -> {
                     Log.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")

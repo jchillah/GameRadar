@@ -41,7 +41,7 @@ class SearchViewModelPagingTest {
 
     @Test
     fun `pagingFlow should be initialized with empty PagingData`() {
-        val initialPagingFlow = viewModel.pagingFlow.value
+        viewModel.pagingFlow.value
         
         assert(true)
     }

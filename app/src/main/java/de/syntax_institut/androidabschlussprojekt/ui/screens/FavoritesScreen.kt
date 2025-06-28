@@ -21,7 +21,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun FavoritesScreen(
     navController: NavHostController,
-    viewModel: FavoritesViewModel = koinViewModel()
+    viewModel: FavoritesViewModel = koinViewModel(),
+    modifier: Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -30,6 +31,7 @@ fun FavoritesScreen(
     }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text("Meine Favoriten") },
@@ -105,6 +107,9 @@ fun FavoritesScreen(
                                 game = game,
                                 onClick = {
                                     navController.navigate(Routes.detail(game.id))
+                                },
+                                onDelete = {
+                                    viewModel.removeFavorite(game.id)
                                 }
                             )
                         }
