@@ -105,6 +105,9 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime)
+    
+    // Paging Testing für End-to-End Tests
+    androidTestImplementation(libs.androidx.paging.testing)
 
     // accompanist-flowlayout
     implementation(libs.accompanist.flowlayout)

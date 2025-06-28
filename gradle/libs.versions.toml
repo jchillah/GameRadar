@@ -40,6 +40,7 @@ moshiKotlin = "<MOSHI_VERSION>"
 okhttp = "4.12.0"
 pagingCompose = "3.3.6"
 pagingRuntime = "3.3.6"
+pagingTesting = "3.3.6"
 robolectric = "4.11.1"
 uiTestJunit4 = "1.8.3"
 navigationCompose = "2.9.0"
@@ -65,6 +66,7 @@ androidx-compose-ui-ui-test-manifest = { module = "androidx.compose.ui:ui-test-m
 androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
+androidx-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "pagingTesting" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
 hilt-android = { module = "com.google.dagger:hilt-android", version = "2.56.2" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version = "2.56.2" }
