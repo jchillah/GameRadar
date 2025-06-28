@@ -2,11 +2,10 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import android.annotation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.*
-import androidx.compose.material.icons.twotone.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
@@ -30,10 +29,13 @@ fun SearchScreen(
 
     Scaffold(topBar = {
         TopAppBar(
-            title = { Text("Search Games") },
+            title = { Text("Spielsuche") },
             actions = {
                 IconButton(onClick = { showFilters = true }) {
-                    Icon(Icons.TwoTone.MoreVert, contentDescription = "Filter anzeigen")
+                    Icon(
+                        painter = painterResource(id = de.syntax_institut.androidabschlussprojekt.R.drawable.ic_filter),
+                        contentDescription = "Filter anzeigen"
+                    )
                 }
             }
         )

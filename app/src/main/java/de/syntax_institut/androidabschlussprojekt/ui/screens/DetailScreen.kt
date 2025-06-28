@@ -27,6 +27,7 @@ fun DetailScreen(
     vm: DetailViewModel = koinViewModel(),
 ) {
     val state by vm.uiState.collectAsState()
+    val isFavorite by vm.isFavorite.collectAsState()
     val context = LocalContext.current
     val emptyString = ""
 
@@ -46,7 +47,11 @@ fun DetailScreen(
                 }
             },
             actions = {
-                FavoriteButton()
+                FavoriteButton(
+                    isFavorite = isFavorite,
+                    onFavoriteChanged = { vm.toggleFavorite() },
+                    enabled = state.game != null
+                )
             }
         )
     }) { innerPadding ->

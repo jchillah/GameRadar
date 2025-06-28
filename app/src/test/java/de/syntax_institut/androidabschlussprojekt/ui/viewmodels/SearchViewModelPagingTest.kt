@@ -1,6 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import io.mockk.*
 import kotlinx.coroutines.*
