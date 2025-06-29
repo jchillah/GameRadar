@@ -12,7 +12,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import androidx.paging.PagingData
@@ -198,30 +197,6 @@ class SearchViewModel(
             } catch (e: Exception) {
                 Log.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
             }
-        }
-    }
-    
-    fun clearOldCache() {
-        viewModelScope.launch {
-            try {
-                repo.clearOldCache()
-                _cacheSize.value = repo.getCacheSize()
-                Log.d("SearchViewModel", "Alter Cache erfolgreich geleert")
-            } catch (e: Exception) {
-                Log.e("SearchViewModel", "Fehler beim Leeren des alten Caches", e)
-            }
-        }
-    }
-    
-    /**
-     * Prüft ob Query im Cache verfügbar ist
-     */
-    suspend fun isQueryCached(query: String): Boolean {
-        return try {
-            repo.isQueryCached(query)
-        } catch (e: Exception) {
-            Log.e("SearchViewModel", "Fehler beim Prüfen des Cache-Status", e)
-            false
         }
     }
 }

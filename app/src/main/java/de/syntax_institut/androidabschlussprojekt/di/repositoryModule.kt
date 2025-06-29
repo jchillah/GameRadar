@@ -20,6 +20,12 @@ val repositoryModule = module {
     single<GameCacheDao> { get<GameDatabase>().gameCacheDao() }
     
     // Repositories
-    single { GameRepository(get(), get(), get()) }
+    single {
+        GameRepository(
+            api = get(),
+            gameCacheDao = get(),
+            context = get()
+        )
+    }
     single { FavoritesRepository(get()) }
 }

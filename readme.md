@@ -1,5 +1,5 @@
 # GameRadar 🎮  
-**„Entdecke deine nächste Gaming-Leidenschaft“**
+**„Entdecke deine nächste Gaming-Leidenschaft"**
 
 GameRadar hilft dir, neue Spiele zu entdecken, nach Plattformen, Genre und Bewertung zu filtern, Favoriten zu speichern und direkt zu teilen. Ideal für Gamer:innen, die schnell passende Spiele finden und im Blick behalten möchten – übersichtlich, modern und mobil optimiert.
 
@@ -12,9 +12,9 @@ Keine überfrachteten Inhalte, keine gesponserten Spiele – nur echte Nutzer-Em
 Füge am Ende echte Screenshots ein:
 
 <p>
-  <img src="./img/screen1.png" width="200">
-  <img src="./img/screen2.png" width="200">
-  <img src="./img/screen3.png" width="200">
+  <img src="./img/screen1.png" width="300" alt="GameRadar Suchbildschirm mit Spieleliste und Suchleiste">
+  <img src="./img/screen2.png" width="300" alt="GameRadar Detailansicht eines Spiels mit Screenshots und Informationen">
+  <img src="./img/screen3.png" width="300" alt="GameRadar Favoriten-Liste mit gespeicherten Spielen">
 </p>
 
 ## Features

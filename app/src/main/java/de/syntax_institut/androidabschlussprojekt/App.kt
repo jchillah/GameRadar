@@ -1,13 +1,13 @@
 package de.syntax_institut.androidabschlussprojekt
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
-import de.syntax_institut.androidabschlussprojekt.navigation.NavGraph
-import de.syntax_institut.androidabschlussprojekt.ui.theme.AppTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.navigation.*
+import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 
 /**
  * App Composable
@@ -15,8 +15,8 @@ import de.syntax_institut.androidabschlussprojekt.ui.theme.AppTheme
  */
 @Composable
 fun App() {
-    AppTheme(darkTheme = true, dynamicColor = true) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+    MyAppTheme(darkTheme = true, dynamicColor = true) {
+        Surface(modifier = Modifier.fillMaxSize(), color = colorScheme.background) {
             val navController = rememberNavController()
             NavGraph(navController = navController)
         }
