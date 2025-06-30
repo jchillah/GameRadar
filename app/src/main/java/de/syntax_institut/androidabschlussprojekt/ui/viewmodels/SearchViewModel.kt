@@ -199,4 +199,38 @@ class SearchViewModel(
             }
         }
     }
+
+    fun removePlatformFilter(platformId: String) {
+        val newPlatforms = _uiState.value.selectedPlatforms.filterNot { it == platformId }
+        _uiState.update { it.copy(selectedPlatforms = newPlatforms) }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun removeGenreFilter(genreId: String) {
+        val newGenres = _uiState.value.selectedGenres.filterNot { it == genreId }
+        _uiState.update { it.copy(selectedGenres = newGenres) }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun removeRatingFilter() {
+        _uiState.update { it.copy(rating = 0f) }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun removeOrderingFilter() {
+        _uiState.update { it.copy(ordering = "") }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun clearAllFilters() {
+        _uiState.update {
+            it.copy(
+                selectedPlatforms = emptyList(),
+                selectedGenres = emptyList(),
+                rating = 0f,
+                ordering = ""
+            )
+        }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
 }

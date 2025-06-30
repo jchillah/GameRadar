@@ -69,12 +69,8 @@ fun SearchScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Cache-Info und Status
-                CacheInfoCard(
-                    cacheSize = cacheSize,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                CacheStatusIndicator(
+                // Kompakte Cache-Banner-Leiste
+                CacheBanner(
                     cacheSize = cacheSize,
                     maxCacheSize = 1000,
                     modifier = Modifier.padding(bottom = 8.dp)
@@ -106,7 +102,27 @@ fun SearchScreen(
                         if (searchText.text.isNotBlank()) {
                             viewModel.search(searchText.text.trim())
                         }
+                    },
+                    isLoading = state.isLoading,
+                    onClear = {
+                        searchText = TextFieldValue("")
+                        viewModel.resetSearch()
                     }
+                )
+
+                // Aktive Filter als Chips anzeigen
+                ActiveFiltersRow(
+                    selectedPlatformIds = state.selectedPlatforms,
+                    selectedGenreIds = state.selectedGenres,
+                    allPlatforms = state.platforms,
+                    allGenres = state.genres,
+                    rating = state.rating,
+                    ordering = state.ordering,
+                    onRemovePlatform = { id -> viewModel.removePlatformFilter(id) },
+                    onRemoveGenre = { id -> viewModel.removeGenreFilter(id) },
+                    onRemoveRating = { viewModel.removeRatingFilter() },
+                    onRemoveOrdering = { viewModel.removeOrderingFilter() },
+                    onClearAll = { viewModel.clearAllFilters() }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
