@@ -1,17 +1,12 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import kotlinx.coroutines.flow.MutableStateFlow
-
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import de.syntax_institut.androidabschlussprojekt.data.repositories.GameRepository
-import de.syntax_institut.androidabschlussprojekt.data.repositories.FavoritesRepository
-import de.syntax_institut.androidabschlussprojekt.ui.states.DetailUiState
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import android.util.*
+import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.states.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 /**
  * ViewModel für Spieldetails.
@@ -45,7 +40,7 @@ class DetailViewModel(
                         Log.d("DetailViewModel", "Screenshot $index: $url")
                     }
                     _uiState.value = DetailUiState(game = game)
-                    _isFavorite.value = favoriteResult ?: false
+                    _isFavorite.value = favoriteResult
                 }
                 is Resource.Error -> {
                     Log.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")
@@ -62,7 +57,7 @@ class DetailViewModel(
             viewModelScope.launch(Dispatchers.IO) {
                 when (val result = favoritesRepo.toggleFavorite(currentGame)) {
                     is Resource.Success -> {
-                        _isFavorite.value = result.data ?: false
+                        _isFavorite.value = result.data == true
                         Log.d("DetailViewModel", "Favorit umgeschaltet: ${result.data}")
                     }
                     is Resource.Error -> {
@@ -73,6 +68,18 @@ class DetailViewModel(
                 }
             }
         }
+    }
+
+    fun clearCache() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.clearCache()
+            Log.d("DetailViewModel", "Cache gelöscht")
+        }
+    }
+
+    fun updateUserRating(rating: Float) {
+        _uiState.value = _uiState.value.copy(userRating = rating)
+        Log.d("DetailViewModel", "User Rating aktualisiert: $rating")
     }
 }
 

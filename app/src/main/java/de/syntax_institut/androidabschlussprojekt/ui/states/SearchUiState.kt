@@ -16,6 +16,7 @@ data class SearchUiState(
     // Offline-Funktionalität
     val isOffline: Boolean = false,
     val cacheSize: Int = 0,
+    val lastSyncTime: Long? = null,
     val isLoadingPlatforms: Boolean = false,
     val isLoadingGenres: Boolean = false,
     val platformsError: String? = null,

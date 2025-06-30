@@ -1,8 +1,8 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.dao
 
 import androidx.room.*
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.GameCacheEntity
-import kotlinx.coroutines.flow.Flow
+import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
+import kotlinx.coroutines.flow.*
 
 /**
  * DAO für Game-Cache Operationen.
@@ -87,4 +87,7 @@ interface GameCacheDao {
      */
     @Query("SELECT MIN(cachedAt) FROM game_cache")
     suspend fun getOldestCacheTime(): Long?
+
+    @Query("DELETE FROM game_cache WHERE cachedAt < :timestamp")
+    suspend fun deleteExpiredGames(timestamp: Long)
 } 

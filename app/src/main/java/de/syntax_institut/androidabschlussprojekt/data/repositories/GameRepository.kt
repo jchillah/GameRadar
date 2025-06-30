@@ -1,25 +1,18 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
-import android.content.Context
-import de.syntax_institut.androidabschlussprojekt.data.remote.RawgApi
-import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.toDomain
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.local.dao.GameCacheDao
+import android.content.*
+import android.util.*
+import androidx.paging.*
+import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toGame
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import de.syntax_institut.androidabschlussprojekt.utils.NetworkUtils
-import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
-import javax.inject.Inject
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import android.util.Log
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
+import de.syntax_institut.androidabschlussprojekt.domain.models.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.flow.*
+import javax.inject.*
 
 class GameRepository @Inject constructor(
     private val api: RawgApi,
@@ -27,18 +20,19 @@ class GameRepository @Inject constructor(
     private val context: Context
 ) {
 
-    suspend fun getGameDetail(id: Int): Resource<Game> {
-        Log.d("GameRepository", "Lade Spieldetails für ID: $id")
-        
-        // Zuerst versuchen aus Cache zu laden
-        val cachedGame = gameCacheDao.getGameById(id)
+    suspend fun getGameDetail(gameId: Int): Resource<Game> {
+        Log.d("GameRepository", "Lade Spieldetails für ID: $gameId")
+
+        // Prüfe zuerst den Cache
+        val cachedGame = gameCacheDao.getGameById(gameId)
         if (cachedGame != null && NetworkUtils.isCacheValid(cachedGame.cachedAt)) {
             Log.d("GameRepository", "Verwende gecachte Daten")
             val game = cachedGame.toGame()
             Log.d("GameRepository", "Gecachte Screenshots: ${game.screenshots.size}")
+            Log.d("GameRepository", "Gecachte Website: '${game.website}'")
             return Resource.Success(game)
         }
-        
+
         // Wenn kein Netzwerk verfügbar und Cache vorhanden, verwende Cache auch wenn abgelaufen
         if (!NetworkUtils.isNetworkAvailable(context)) {
             Log.d("GameRepository", "Kein Netzwerk verfügbar")
@@ -50,26 +44,52 @@ class GameRepository @Inject constructor(
                 Resource.Error("Keine Internetverbindung und keine gecachten Daten verfügbar")
             }
         }
-        
-        // Versuche API-Call
-        Log.d("GameRepository", "API-Call für Spieldetails")
+
         return try {
-            val resp = api.getGameDetail(gameId = id)
+            Log.d("GameRepository", "API-Call für Spieldetails")
+            val resp = api.getGameDetail(gameId)
+            
             if (resp.isSuccessful) {
                 resp.body()?.let { gameDto ->
                     Log.d("GameRepository", "API-Antwort erhalten: ${gameDto.name}")
                     Log.d("GameRepository", "API Screenshots: ${gameDto.shortScreenshots?.size ?: 0}")
+                    Log.d("GameRepository", "API Website: '${gameDto.website}'")
                     gameDto.shortScreenshots?.forEachIndexed { index, screenshot ->
                         Log.d("GameRepository", "API Screenshot $index: ${screenshot.image}")
                     }
-                    
-                    val game = gameDto.toDomain()
+
+                    // Lade Screenshots separat, da sie nicht automatisch mitgeliefert werden
+                    val screenshots = try {
+                        Log.d("GameRepository", "Lade Screenshots separat für ID: $gameId")
+                        val screenshotsResp = api.getGameScreenshots(gameId)
+                        if (screenshotsResp.isSuccessful) {
+                            screenshotsResp.body()?.map { it.image } ?: emptyList()
+                        } else {
+                            Log.w(
+                                "GameRepository",
+                                "Fehler beim Laden der Screenshots: ${screenshotsResp.code()}"
+                            )
+                            emptyList()
+                        }
+                    } catch (e: Exception) {
+                        Log.w(
+                            "GameRepository",
+                            "Exception beim Laden der Screenshots: ${e.message}"
+                        )
+                        emptyList()
+                    }
+
+                    Log.d("GameRepository", "Separate Screenshots geladen: ${screenshots.size}")
+
+                    val game = gameDto.toDomain().copy(screenshots = screenshots)
                     Log.d("GameRepository", "Konvertiert zu Domain: ${game.screenshots.size} Screenshots")
-                    
-                    // Speichere in Cache
+                    Log.d("GameRepository", "Domain Website: '${game.website}'")
+
+                    // Cache das Spiel
                     gameCacheDao.insertGame(game.toCacheEntity())
+
                     Resource.Success(game)
-                } ?: Resource.Error("Keine Daten erhalten")
+                } ?: Resource.Error("Leere Antwort von der API")
             } else {
                 Log.e("GameRepository", "API-Fehler: ${resp.code()}")
                 // Fallback auf Cache wenn API fehlschlägt
@@ -276,6 +296,7 @@ class GameRepository @Inject constructor(
      * Cache verwalten
      */
     suspend fun clearCache() {
+        Log.d("GameRepository", "Lösche gesamten Cache")
         gameCacheDao.clearAllGames()
     }
     

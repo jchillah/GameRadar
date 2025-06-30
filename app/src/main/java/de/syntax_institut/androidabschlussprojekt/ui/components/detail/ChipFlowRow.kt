@@ -10,13 +10,8 @@ import com.google.accompanist.flowlayout.FlowRow
 @Composable
 fun ChipFlowRow(
     items: List<String>,
-    label: String,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        label,
-        style = MaterialTheme.typography.titleMedium
-    )
     if (items.isNotEmpty()) {
         FlowRow(
             mainAxisSpacing = 4.dp,

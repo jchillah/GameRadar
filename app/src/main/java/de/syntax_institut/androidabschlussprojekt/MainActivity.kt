@@ -3,6 +3,8 @@ package de.syntax_institut.androidabschlussprojekt
 import android.os.*
 import androidx.activity.*
 import androidx.activity.compose.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.*
 
 /**
  * MainActivity
@@ -13,7 +15,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            App()
+            App(
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

@@ -30,7 +30,9 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.Routes
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.CacheInfoCard
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.OfflineIndicator
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.NetworkErrorHandler
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.IntelligentCacheIndicator
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.EmptyState
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.FilterBottomSheet
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchBarWithButton
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchResultContent
@@ -43,7 +45,6 @@ import org.koin.androidx.compose.koinViewModel
 fun SearchScreen(
     navController: NavHostController,
     viewModel: SearchViewModel = koinViewModel(),
-    modifier: Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
     val isOffline by viewModel.isOffline.collectAsState()
@@ -90,13 +91,19 @@ fun SearchScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Offline-Indikator
-                OfflineIndicator(isOffline = isOffline)
+                // Network Error Handler
+                NetworkErrorHandler(
+                    isOffline = isOffline,
+                    onRetry = { viewModel.search(searchText.text.trim()) }
+                )
                 
-                // Cache-Info Card (wenn aktiviert)
-                if (showCacheInfo) {
-                    CacheInfoCard(cacheSize = cacheSize)
-                }
+                // Intelligenter Cache-Indikator statt einfachem Offline-Indikator
+                IntelligentCacheIndicator(
+                    isOffline = isOffline,
+                    cacheSize = cacheSize,
+                    lastSyncTime = state.lastSyncTime,
+                    onSyncRequest = { viewModel.clearCache() }
+                )
                 
                 SearchBarWithButton(
                     searchText = searchText,
@@ -110,13 +117,21 @@ fun SearchScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SearchResultContent(
-                    pagingItems = pagingItems,
-                    hasSearched = state.hasSearched,
-                    onGameClick = { game ->
-                        navController.navigate(Routes.detail(game.id))
-                    }
-                )
+                if (!state.hasSearched) {
+                    EmptyState(
+                        title = "Suche nach Spielen",
+                        message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    SearchResultContent(
+                        pagingItems = pagingItems,
+                        hasSearched = state.hasSearched,
+                        onGameClick = { game ->
+                            navController.navigate(Routes.detail(game.id))
+                        }
+                    )
+                }
             }
         }
     }

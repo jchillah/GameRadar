@@ -73,6 +73,8 @@ class SearchViewModel(
             while (true) {
                 try {
                     _cacheSize.value = repo.getCacheSize()
+                    // Aktualisiere lastSyncTime basierend auf dem aktuellen Zeitstempel
+                    _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
                 } catch (e: Exception) {
                     Log.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
                 }

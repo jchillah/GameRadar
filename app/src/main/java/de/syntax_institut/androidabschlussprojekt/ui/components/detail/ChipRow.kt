@@ -11,13 +11,8 @@ import androidx.compose.ui.text.style.TextOverflow
 @Composable
 fun ChipRow(
     items: List<String>,
-    label: String,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        label,
-        style = MaterialTheme.typography.titleMedium
-    )
     if (items.isNotEmpty()) {
         FlowRow(
             mainAxisSpacing = 4.dp,

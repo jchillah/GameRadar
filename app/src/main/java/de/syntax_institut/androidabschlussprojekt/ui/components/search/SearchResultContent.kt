@@ -10,6 +10,7 @@ import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.LoadState
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.ShimmerPlaceholder
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.PerformanceOptimizedLazyColumn
 
 @Composable
 fun SearchResultContent(
@@ -32,9 +33,8 @@ fun SearchResultContent(
             }
         }
         hasSearched -> {
-            androidx.compose.foundation.lazy.LazyColumn(
+            PerformanceOptimizedLazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(16.dp)
             ) {
                 items(pagingItems.itemCount) { idx ->

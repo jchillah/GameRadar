@@ -12,7 +12,7 @@ fun GameMetaInfo(
     releaseDate: String,
     rating: Double
 ) {
-    Column() {
+    Column {
         Text(title, style = MaterialTheme.typography.titleLarge)
         Text(releaseDate, style = MaterialTheme.typography.bodyMedium)
         Text("Rating: $rating", style = MaterialTheme.typography.bodySmall)
