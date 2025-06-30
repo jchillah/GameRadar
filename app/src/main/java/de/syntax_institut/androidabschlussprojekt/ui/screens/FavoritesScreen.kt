@@ -1,21 +1,19 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.foundation.lazy.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import de.syntax_institut.androidabschlussprojekt.navigation.Routes
-import de.syntax_institut.androidabschlussprojekt.ui.components.search.GameItem
-import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.FavoritesViewModel
-import org.koin.androidx.compose.koinViewModel
+import androidx.compose.ui.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import de.syntax_institut.androidabschlussprojekt.navigation.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import org.koin.androidx.compose.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +23,7 @@ fun FavoritesScreen(
     modifier: Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadFavorites()
@@ -37,11 +36,18 @@ fun FavoritesScreen(
                 title = { Text("Meine Favoriten") },
                 actions = {
                     if (state.favorites.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.clearAllFavorites() }) {
-                            Icon(
-                                Icons.Default.Delete,
-                                contentDescription = "Alle Favoriten löschen"
-                            )
+                        Row(
+                            modifier = modifier,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Anzahl: ${state.favorites.size}")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            IconButton(onClick = { showDeleteConfirmation = true }) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = "Alle Favoriten löschen"
+                                )
+                            }
                         }
                     }
                 }
@@ -117,5 +123,48 @@ fun FavoritesScreen(
                 }
             }
         }
+    }
+
+    // Bestätigungsdialog für das Löschen aller Favoriten
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = {
+                Text("Alle Favoriten löschen?")
+            },
+            text = {
+                Text(
+                    "Möchten Sie wirklich alle ${state.favorites.size} Favoriten löschen? " +
+                            "Diese Aktion kann nicht rückgängig gemacht werden."
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.clearAllFavorites()
+                        showDeleteConfirmation = false
+                    },
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("Alle löschen")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteConfirmation = false }
+                ) {
+                    Text("Abbrechen")
+                }
+            },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        )
     }
 } 

@@ -1,31 +1,36 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.unit.*
+import com.google.accompanist.flowlayout.*
 
 @Composable
 fun ChipRow(
     items: List<String>,
-    label: String,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        label,
-        style = MaterialTheme.typography.titleMedium
-    )
     if (items.isNotEmpty()) {
-        Row(
+        FlowRow(
+            mainAxisSpacing = 4.dp,
+            crossAxisSpacing = 4.dp,
             modifier = modifier.padding(vertical = 4.dp)
         ) {
             items.forEach {
                 AssistChip(
                     onClick = {},
-                    label = { Text(it) },
-                    modifier = Modifier.padding(end = 4.dp))
+                    label = {
+                        Text(
+                            it,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    modifier = Modifier.padding(end = 4.dp)
+                )
             }
         }
     } else {
