@@ -17,8 +17,7 @@ import androidx.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
-import de.syntax_institut.androidabschlussprojekt.utils.Analytics
-import de.syntax_institut.androidabschlussprojekt.utils.PerformanceMonitor
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +55,7 @@ fun DetailScreen(
         TopAppBar(
             title = { Text(state.game?.title ?: emptyString) },
             navigationIcon = {
-                IconButton(onClick = { 
+                IconButton(onClick = {
                     navController.popBackStack()
                     Analytics.trackUserAction("back_button_pressed", gameId)
                 }) {
@@ -75,7 +74,7 @@ fun DetailScreen(
                         modifier = Modifier.padding(end = 8.dp)
                     )
                 }
-                
+
                 // Debug-Button zum Cache löschen
                 IconButton(onClick = {
                     vm.clearCache()
@@ -90,10 +89,10 @@ fun DetailScreen(
                 
                 FavoriteButton(
                     isFavorite = isFavorite,
-                    onFavoriteChanged = { 
+                    onFavoriteChanged = {
                         vm.toggleFavorite()
                         Analytics.trackUserAction(
-                            if (isFavorite) "favorite_removed" else "favorite_added", 
+                            if (isFavorite) "favorite_removed" else "favorite_added",
                             gameId
                         )
                     },
@@ -113,7 +112,7 @@ fun DetailScreen(
                 state.error != null -> {
                     ErrorCard(
                         error = state.error ?: "Unbekannter Fehler",
-                        onRetry = { 
+                        onRetry = {
                             vm.loadDetail(gameId)
                             Analytics.trackUserAction("retry_loading", gameId)
                         }
@@ -174,12 +173,14 @@ fun DetailScreen(
                                 }
                             }
 
-                            SectionCard("Screenshots") { 
+                            SectionCard("Screenshots") {
                                 ScreenshotGallery(game.screenshots)
-                                Analytics.trackEvent("screenshots_viewed", mapOf(
-                                    "game_id" to gameId,
-                                    "screenshot_count" to game.screenshots.size
-                                ))
+                                Analytics.trackEvent(
+                                    "screenshots_viewed", mapOf(
+                                        "game_id" to gameId,
+                                        "screenshot_count" to game.screenshots.size
+                                    )
+                                )
                             }
 
                             game.website?.takeIf { it.isNotBlank() }?.let { url ->

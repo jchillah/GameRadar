@@ -1,12 +1,12 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.padding
-import com.google.accompanist.flowlayout.FlowRow
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.unit.*
+import com.google.accompanist.flowlayout.*
 
 @Composable
 fun ChipRow(

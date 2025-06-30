@@ -11,11 +11,11 @@ import androidx.compose.ui.unit.*
 
 @Composable
 fun GameStatsCard(
+    modifier: Modifier = Modifier,
     playtime: Int?,
     metacritic: Int?,
     userRating: Float,
     onRatingChanged: (Float) -> Unit = {},
-    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier

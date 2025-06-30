@@ -104,7 +104,7 @@ fun IntelligentCacheIndicator(
 private fun formatSyncTime(timestamp: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - timestamp
-    
+
     return when {
         diff < 60000 -> "Gerade eben"
         diff < 3600000 -> "${diff / 60000} Minuten"

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
@@ -53,18 +52,18 @@ fun CacheStatusIndicator(
                         MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 LinearProgressIndicator(
-                progress = { cachePercentage / 100f },
-                modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(4.dp),
-                color = if (isCacheFull)
-                                        MaterialTheme.colorScheme.error
-                                    else
-                                        MaterialTheme.colorScheme.primary,
-                trackColor = if (isCacheFull)
-                                        MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
-                                    else
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    progress = { cachePercentage / 100f },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp),
+                    color = if (isCacheFull)
+                        MaterialTheme.colorScheme.error
+                    else
+                        MaterialTheme.colorScheme.primary,
+                    trackColor = if (isCacheFull)
+                        MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
+                    else
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                 )
             }
         }

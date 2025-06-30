@@ -13,7 +13,7 @@ fun
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
     value: String,
-    color: Color
+    color: Color,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally

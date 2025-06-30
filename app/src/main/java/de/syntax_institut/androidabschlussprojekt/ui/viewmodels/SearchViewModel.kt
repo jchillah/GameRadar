@@ -1,24 +1,16 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.content.Context
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import de.syntax_institut.androidabschlussprojekt.data.repositories.GameRepository
-import de.syntax_institut.androidabschlussprojekt.ui.states.SearchUiState
-import de.syntax_institut.androidabschlussprojekt.utils.NetworkUtils
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.local.models.SearchParams
-import java.lang.ref.WeakReference
+import android.content.*
+import android.util.*
+import androidx.lifecycle.*
+import androidx.paging.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.states.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import java.lang.ref.*
 
 /**
  * ViewModel für die Suche mit Offline-Support.
@@ -185,6 +177,12 @@ class SearchViewModel(
         if (currentSearchQuery.isNotBlank()) {
             search(currentSearchQuery)
         }
+    }
+
+    fun resetSearch() {
+        _uiState.update { it.copy(hasSearched = false) }
+        _pagingFlow.value = PagingData.empty()
+        currentSearchQuery = ""
     }
     
     /**

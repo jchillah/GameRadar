@@ -19,16 +19,16 @@ fun FavoriteButton(
     isFavorite: Boolean = false,
     onFavoriteChanged: (Boolean) -> Unit = {},
     enabled: Boolean = true,
-    showAnimation: Boolean = true
+    showAnimation: Boolean = true,
 ) {
     var isPressed by remember { mutableStateOf(false) }
-    
+
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.8f else 1f,
         animationSpec = tween(100),
         label = "scale"
     )
-    
+
     val rotation by animateFloatAsState(
         targetValue = if (isFavorite && showAnimation) 360f else 0f,
         animationSpec = tween(500, easing = EaseOutBack),
@@ -53,7 +53,8 @@ fun FavoriteButton(
                 rotationZ = rotation
             }
             .semantics {
-                contentDescription = if (isFavorite) "Favorit entfernen" else "Zu Favoriten hinzufügen"
+                contentDescription =
+                    if (isFavorite) "Favorit entfernen" else "Zu Favoriten hinzufügen"
             },
         enabled = enabled
     ) {
@@ -65,9 +66,9 @@ fun FavoriteButton(
                     animationSpec = tween(200)
                 ) + fadeIn(animationSpec = tween(200))).togetherWith(
                     scaleOut(
-                                targetScale = 0.5f,
-                                animationSpec = tween(200)
-                            ) + fadeOut(animationSpec = tween(200))
+                        targetScale = 0.5f,
+                        animationSpec = tween(200)
+                    ) + fadeOut(animationSpec = tween(200))
                 )
             }
         ) { favorite ->

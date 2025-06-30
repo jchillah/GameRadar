@@ -1,43 +1,21 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.paging.compose.collectAsLazyPagingItems
+import android.annotation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.res.*
+import androidx.compose.ui.text.input.*
+import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
-import de.syntax_institut.androidabschlussprojekt.navigation.Routes
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.CacheInfoCard
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.NetworkErrorHandler
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.IntelligentCacheIndicator
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.EmptyState
-import de.syntax_institut.androidabschlussprojekt.ui.components.search.FilterBottomSheet
-import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchBarWithButton
-import de.syntax_institut.androidabschlussprojekt.ui.components.search.SearchResultContent
-import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel
-import org.koin.androidx.compose.koinViewModel
+import de.syntax_institut.androidabschlussprojekt.navigation.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import org.koin.androidx.compose.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,12 +69,23 @@ fun SearchScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
+                // Cache-Info und Status
+                CacheInfoCard(
+                    cacheSize = cacheSize,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                CacheStatusIndicator(
+                    cacheSize = cacheSize,
+                    maxCacheSize = 1000,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
                 // Network Error Handler
                 NetworkErrorHandler(
                     isOffline = isOffline,
                     onRetry = { viewModel.search(searchText.text.trim()) }
                 )
-                
+
                 // Intelligenter Cache-Indikator statt einfachem Offline-Indikator
                 IntelligentCacheIndicator(
                     isOffline = isOffline,
@@ -107,7 +96,12 @@ fun SearchScreen(
                 
                 SearchBarWithButton(
                     searchText = searchText,
-                    onTextChange = { searchText = it },
+                    onTextChange = {
+                        searchText = it
+                        if (it.text.isBlank()) {
+                            viewModel.resetSearch()
+                        }
+                    },
                     onSearchClick = {
                         if (searchText.text.isNotBlank()) {
                             viewModel.search(searchText.text.trim())
@@ -126,7 +120,6 @@ fun SearchScreen(
                 } else {
                     SearchResultContent(
                         pagingItems = pagingItems,
-                        hasSearched = state.hasSearched,
                         onGameClick = { game ->
                             navController.navigate(Routes.detail(game.id))
                         }

@@ -1,7 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.states
 
-import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
+import de.syntax_institut.androidabschlussprojekt.domain.models.*
 
 data class SearchUiState(
     val isLoading: Boolean = false,
@@ -22,5 +21,5 @@ data class SearchUiState(
     val platformsError: String? = null,
     val genresError: String? = null,
     val isApplyingFilters: Boolean = false,
-    val filterError: String? = null
+    val filterError: String? = null,
 )

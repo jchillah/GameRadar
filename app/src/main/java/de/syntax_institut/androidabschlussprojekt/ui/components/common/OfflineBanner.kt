@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.*
 @Composable
 fun OfflineBanner(
     isOffline: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     if (isOffline) {
         Surface(

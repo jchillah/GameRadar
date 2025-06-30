@@ -300,19 +300,7 @@ class GameRepository @Inject constructor(
         gameCacheDao.clearAllGames()
     }
     
-    suspend fun clearOldCache() {
-        val maxAge = System.currentTimeMillis() - NetworkUtils.CACHE_INVALIDATION_TIME
-        gameCacheDao.clearOldCache(maxAge)
-    }
-    
     suspend fun getCacheSize(): Int {
         return gameCacheDao.getCacheSize()
-    }
-    
-    /**
-     * Prüft ob Daten für Query im Cache verfügbar sind
-     */
-    suspend fun isQueryCached(query: String): Boolean {
-        return gameCacheDao.isQueryCached(query)
     }
 }

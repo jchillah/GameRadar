@@ -6,16 +6,15 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material.icons.filled.BrokenImage
-import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.unit.*
-import androidx.compose.ui.platform.*
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.semantics.*
+import androidx.compose.ui.unit.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
@@ -47,7 +46,7 @@ fun ScreenshotGallery(screenshots: List<String>) {
                     text = "Screenshots (${screenshots.size})",
                     style = MaterialTheme.typography.titleMedium
                 )
-                
+
                 // Accessibility-Info
                 Text(
                     text = "Tippen Sie auf ein Bild für Vollbildansicht",
@@ -141,7 +140,7 @@ private fun OptimizedScreenshotItem(
     imageUrl: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
-    index: Int = 0
+    index: Int = 0,
 ) {
     val context = LocalContext.current
     var isPressed by remember { mutableStateOf(false) }
@@ -213,7 +212,7 @@ private fun OptimizedScreenshotItem(
                     }
                 }
             )
-            
+
             // Overlay für bessere UX
             Box(
                 modifier = Modifier

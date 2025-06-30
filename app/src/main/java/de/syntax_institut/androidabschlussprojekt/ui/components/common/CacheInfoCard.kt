@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.*
 @Composable
 fun CacheInfoCard(
     cacheSize: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier

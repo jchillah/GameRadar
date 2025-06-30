@@ -13,13 +13,12 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
-import androidx.compose.ui.platform.LocalContext
-import coil3.compose.SubcomposeAsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import coil3.size.Size
+import coil3.compose.*
+import coil3.request.*
+import coil3.size.*
 
 @Composable
 fun FullscreenScreenshotGallery(

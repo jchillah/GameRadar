@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.*
 fun RatingDialog(
     currentRating: Float,
     onRatingChanged: (Float) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     var selectedRating by remember { mutableFloatStateOf(currentRating) }
 
