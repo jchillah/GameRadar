@@ -1,21 +1,20 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import de.syntax_institut.androidabschlussprojekt.data.repositories.FavoritesRepository
-import de.syntax_institut.androidabschlussprojekt.ui.states.FavoritesUiState
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import android.util.*
+import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.states.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 /**
  * ViewModel für die Favoriten-Liste.
  */
 class FavoritesViewModel(
-    private val favoritesRepo: FavoritesRepository
+    private val favoritesRepo: FavoritesRepository,
+    private val rawgApi: RawgApi,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
@@ -23,6 +22,14 @@ class FavoritesViewModel(
 
     init {
         loadFavorites()
+        syncFavorites()
+        // Periodische Synchronisierung alle 12h
+        viewModelScope.launch {
+            while (true) {
+                delay(12 * 60 * 60 * 1000L)
+                syncFavorites()
+            }
+        }
     }
 
     fun loadFavorites() {
@@ -72,6 +79,17 @@ class FavoritesViewModel(
                     _uiState.value = _uiState.value.copy(error = result.message)
                 }
                 else -> {}
+            }
+        }
+    }
+
+    fun syncFavorites() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                favoritesRepo.syncFavoritesWithApi(rawgApi)
+                loadFavorites()
+            } catch (e: Exception) {
+                Log.e("FavoritesViewModel", "Fehler bei Favoriten-Sync", e)
             }
         }
     }
