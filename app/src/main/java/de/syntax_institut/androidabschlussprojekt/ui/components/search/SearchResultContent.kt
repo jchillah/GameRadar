@@ -1,66 +1,77 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.search
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.LoadState
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.ShimmerPlaceholder
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.unit.*
+import androidx.paging.*
+import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun SearchResultContent(
     pagingItems: LazyPagingItems<Game>,
-    hasSearched: Boolean,
     onGameClick: (Game) -> Unit
 ) {
-    when {
-        hasSearched && pagingItems.loadState.refresh is LoadState.Loading -> {
+    when (pagingItems.loadState.refresh) {
+        is LoadState.Loading -> {
             ShimmerPlaceholder()
         }
-        hasSearched && pagingItems.loadState.refresh is LoadState.Error -> {
+
+        is LoadState.Error -> {
             val error = (pagingItems.loadState.refresh as LoadState.Error).error
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Fehler: ${error.localizedMessage}", color = MaterialTheme.colorScheme.error)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    "Fehler: ${error.localizedMessage}",
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center
+                )
                 Spacer(Modifier.height(8.dp))
                 Button(onClick = { pagingItems.retry() }) {
                     Text("Erneut versuchen")
                 }
             }
         }
-        hasSearched -> {
-            androidx.compose.foundation.lazy.LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                items(pagingItems.itemCount) { idx ->
-                    pagingItems[idx]?.let { game ->
-                        GameItem(game = game, onClick = { onGameClick(game) })
-                    }
-                }
-                if (pagingItems.loadState.append is LoadState.Loading) {
-                    item {
-                        ShimmerPlaceholder()
-                    }
-                }
-            }
-        }
+
         else -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Bitte gib einen Suchbegriff ein.",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+            if (pagingItems.itemCount == 0) {
+                EmptyState(
+                    title = "Keine Ergebnisse",
+                    message = "Für deine Suche konnten keine Spiele gefunden werden.",
+                    icon = Icons.Default.SearchOff
                 )
+            } else {
+                PerformanceOptimizedLazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    items(pagingItems.itemCount) { idx ->
+                        pagingItems[idx]?.let { game ->
+                            GameItem(game = game, onClick = { onGameClick(game) })
+                        }
+                    }
+                    if (pagingItems.loadState.append is LoadState.Loading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                    }
+                }
             }
         }
     }

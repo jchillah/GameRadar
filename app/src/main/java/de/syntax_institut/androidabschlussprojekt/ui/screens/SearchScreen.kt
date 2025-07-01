@@ -2,15 +2,17 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import android.annotation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.res.*
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.compose.*
@@ -20,20 +22,46 @@ import org.koin.androidx.compose.*
 @Composable
 fun SearchScreen(
     navController: NavHostController,
-    viewModel: SearchViewModel = koinViewModel()
+    viewModel: SearchViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val isOffline by viewModel.isOffline.collectAsState()
+    val cacheSize by viewModel.cacheSize.collectAsState()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
+    var showCacheInfo by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
+
+    // Lade Plattformen und Genres beim ersten Start
+    LaunchedEffect(Unit) {
+        if (state.platforms.isEmpty()) {
+            viewModel.loadPlatforms()
+        }
+        if (state.genres.isEmpty()) {
+            viewModel.loadGenres()
+        }
+    }
+
+    // Tabs für Listenansicht
+    var selectedTab by remember { mutableIntStateOf(0) }
+    val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
+
 
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("Spielsuche") },
             actions = {
+                // Cache-Info Button
+                IconButton(onClick = { showCacheInfo = !showCacheInfo }) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = "Cache-Info"
+                    )
+                }
+                // Filter Button
                 IconButton(onClick = { showFilters = true }) {
                     Icon(
-                        painter = painterResource(id = de.syntax_institut.androidabschlussprojekt.R.drawable.ic_filter),
+                        imageVector = Icons.Default.FilterList,
                         contentDescription = "Filter anzeigen"
                     )
                 }
@@ -46,25 +74,100 @@ fun SearchScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
+                TabRow(selectedTabIndex = selectedTab) {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            selected = selectedTab == index,
+                            onClick = {
+                                selectedTab = index
+                                when (index) {
+                                    0 -> viewModel.updateOrdering("") // Alle
+                                    1 -> viewModel.updateOrdering("-released") // Neuerscheinungen
+                                    2 -> viewModel.updateOrdering("-rating") // Top-rated
+                                }
+                                // Immer Liste laden, auch ohne Suchtext
+                                viewModel.search(searchText.text.trim())
+                            },
+                            text = { Text(title) }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Kompakte Cache-Banner-Leiste
+                CacheBanner(
+                    cacheSize = cacheSize,
+                    maxCacheSize = 1000,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                // Network Error Handler
+                NetworkErrorHandler(
+                    isOffline = isOffline,
+                    onRetry = { viewModel.search(searchText.text.trim()) }
+                )
+
+                // Intelligenter Cache-Indikator statt einfachem Offline-Indikator
+                IntelligentCacheIndicator(
+                    isOffline = isOffline,
+                    cacheSize = cacheSize,
+                    lastSyncTime = state.lastSyncTime,
+                    onSyncRequest = { viewModel.clearCache() }
+                )
+                
                 SearchBarWithButton(
                     searchText = searchText,
-                    onTextChange = { searchText = it },
+                    onTextChange = {
+                        searchText = it
+                        if (it.text.isBlank()) {
+                            viewModel.resetSearch()
+                        }
+                    },
                     onSearchClick = {
                         if (searchText.text.isNotBlank()) {
                             viewModel.search(searchText.text.trim())
                         }
+                    },
+                    isLoading = state.isLoading,
+                    onClear = {
+                        searchText = TextFieldValue("")
+                        viewModel.resetSearch()
                     }
+                )
+
+                // Aktive Filter als Chips anzeigen
+                ActiveFiltersRow(
+                    selectedPlatformIds = state.selectedPlatforms,
+                    selectedGenreIds = state.selectedGenres,
+                    allPlatforms = state.platforms,
+                    allGenres = state.genres,
+                    rating = state.rating,
+                    ordering = state.ordering,
+                    onRemovePlatform = { id -> viewModel.removePlatformFilter(id) },
+                    onRemoveGenre = { id -> viewModel.removeGenreFilter(id) },
+                    onRemoveRating = { viewModel.removeRatingFilter() },
+                    onRemoveOrdering = { viewModel.removeOrderingFilter() },
+                    onClearAll = { viewModel.clearAllFilters() }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SearchResultContent(
-                    pagingItems = pagingItems,
-                    hasSearched = state.hasSearched,
-                    onGameClick = { game ->
-                        navController.navigate(Routes.detail(game.id))
-                    }
-                )
+                if (!state.hasSearched) {
+                    EmptyState(
+                        title = "Suche nach Spielen",
+                        message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    // Wenn keine Suche durchgeführt wurde, trotzdem Listen anzeigen
+                    SearchResultContent(
+                        pagingItems = pagingItems,
+                        onGameClick = { game ->
+                            navController.navigate(Routes.detail(game.id))
+                        }
+                    )
+                }
             }
         }
     }
@@ -80,13 +183,21 @@ fun SearchScreen(
                 selectedGenres = state.selectedGenres,
                 rating = state.rating,
                 ordering = state.ordering,
+                isLoadingPlatforms = state.isLoadingPlatforms,
+                isLoadingGenres = state.isLoadingGenres,
+                platformsError = state.platformsError,
+                genresError = state.genresError,
+                isOffline = isOffline,
                 onOrderingChange = { newOrdering ->
                     viewModel.updateOrdering(newOrdering)
                 },
                 onFilterChange = { newPlatforms, newGenres, newRating ->
                     viewModel.updateFilters(newPlatforms, newGenres, newRating)
                     showFilters = false
-                }
+                },
+                onRetryPlatforms = { viewModel.loadPlatforms() },
+                onRetryGenres = { viewModel.loadGenres() },
+                onClearCache = { viewModel.clearCache() }
             )
         }
     }

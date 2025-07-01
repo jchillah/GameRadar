@@ -1,31 +1,31 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import android.content.*
 import android.util.*
 import androidx.lifecycle.*
+import androidx.paging.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import androidx.paging.PagingData
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
-import androidx.paging.cachedIn
-import de.syntax_institut.androidabschlussprojekt.data.local.models.SearchParams
+import java.lang.ref.*
 
 /**
-
-* ViewModel für die Suche.
-*/
+ * ViewModel für die Suche mit Offline-Support.
+ * Folgt MVVM-Pattern und Clean Code Prinzipien.
+ */
 class SearchViewModel(
-    private val repo: GameRepository
+    private val repo: GameRepository,
+    context: Context
 ) : ViewModel() {
+
+    // WeakReference um Context-Leak zu vermeiden
+    private val contextRef = WeakReference(context)
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState
-
-    var platforms: List<Platform> = emptyList()
-    var genres: List<Genre> = emptyList()
 
     // Paging-Flow für die UI
     private val _pagingFlow = MutableStateFlow<PagingData<Game>>(PagingData.empty())
@@ -35,47 +35,96 @@ class SearchViewModel(
     
     // Aktueller Suchtext für automatische Neuausführung
     private var currentSearchQuery: String = ""
+    
+    // Netzwerkstatus
+    private val _isOffline = MutableStateFlow(false)
+    val isOffline: StateFlow<Boolean> = _isOffline.asStateFlow()
+    
+    // Cache-Informationen
+    private val _cacheSize = MutableStateFlow(0)
+    val cacheSize: StateFlow<Int> = _cacheSize.asStateFlow()
 
     init {
-        val platformsList = listOf(
-            Platform(1, "PC"),
-            Platform(5, "macOS"),
-            Platform(6, "Linux"),
-            Platform(4, "iOS"),
-            Platform(8, "Android"),
-            Platform(39, "iPad"),
-            Platform(40, "Android Tablet"),
-            Platform(2, "PlayStation"),
-            Platform(16, "PlayStation 3"),
-            Platform(18, "PlayStation 4"),
-            Platform(23, "PlayStation 5"),
-            Platform(22, "PlayStation 2"),
-            Platform(27, "PlayStation 1"),
-            Platform(37, "PlayStation Vita"),
-            Platform(38, "PSP"),
-            Platform(3, "Xbox"),
-            Platform(19, "Xbox 360"),
-            Platform(21, "Xbox One"),
-            Platform(24, "Xbox Series S/X"),
-            Platform(7, "Nintendo Switch"),
-            Platform(33, "Wii"),
-            Platform(34, "Wii U"),
-            Platform(35, "Nintendo DS"),
-            Platform(36, "Nintendo 3DS"),
-            Platform(32, "Nintendo 64"),
-            Platform(31, "GameCube"),
-            Platform(30, "Game Boy Advance"),
-            Platform(28, "Game Boy"),
-            Platform(29, "SNES"),
-            Platform(14, "Web")
-        )
-        val genresList = listOf(
-            Genre(1, "Action"),
-            Genre(2, "Adventure"),
-            Genre(3, "RPG"),
-            Genre(4, "Strategy")
-        )
-        _uiState.update { it.copy(platforms = platformsList, genres = genresList) }
+        initializeNetworkMonitoring()
+        initializeCacheMonitoring()
+    }
+
+    private fun initializeNetworkMonitoring() {
+        viewModelScope.launch {
+            contextRef.get()?.let { context ->
+                NetworkUtils.observeNetworkStatus(context).collect { isOnline ->
+                    _isOffline.value = !isOnline
+                    Log.d("SearchViewModel", "Netzwerkstatus geändert: ${if (isOnline) "Online" else "Offline"}")
+                }
+            }
+        }
+    }
+
+    private fun initializeCacheMonitoring() {
+        viewModelScope.launch {
+            while (true) {
+                try {
+                    _cacheSize.value = repo.getCacheSize()
+                    // Aktualisiere lastSyncTime basierend auf dem aktuellen Zeitstempel
+                    _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
+                } catch (e: Exception) {
+                    Log.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
+                }
+                delay(30000) // Alle 30 Sekunden aktualisieren
+            }
+        }
+    }
+
+    fun loadPlatforms() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingPlatforms = true, platformsError = null) }
+            try {
+                val platformResponse = repo.getPlatforms()
+                if (platformResponse is Resource.Success) {
+                    _uiState.update { it.copy(platforms = platformResponse.data ?: emptyList(), isLoadingPlatforms = false) }
+                } else {
+                    _uiState.update { 
+                        it.copy(
+                            platformsError = platformResponse.message ?: "Unbekannter Fehler",
+                            isLoadingPlatforms = false
+                        ) 
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { 
+                    it.copy(
+                        platformsError = "Fehler beim Laden der Plattformen: ${e.localizedMessage}",
+                        isLoadingPlatforms = false
+                    ) 
+                }
+            }
+        }
+    }
+
+    fun loadGenres() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoadingGenres = true, genresError = null) }
+            try {
+                val genreResponse = repo.getGenres()
+                if (genreResponse is Resource.Success) {
+                    _uiState.update { it.copy(genres = genreResponse.data ?: emptyList(), isLoadingGenres = false) }
+                } else {
+                    _uiState.update { 
+                        it.copy(
+                            genresError = genreResponse.message ?: "Unbekannter Fehler",
+                            isLoadingGenres = false
+                        ) 
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update { 
+                    it.copy(
+                        genresError = "Fehler beim Laden der Genres: ${e.localizedMessage}",
+                        isLoadingGenres = false
+                    ) 
+                }
+            }
+        }
     }
 
     fun search(query: String) {
@@ -128,5 +177,60 @@ class SearchViewModel(
         if (currentSearchQuery.isNotBlank()) {
             search(currentSearchQuery)
         }
+    }
+
+    fun resetSearch() {
+        _uiState.update { it.copy(hasSearched = false) }
+        _pagingFlow.value = PagingData.empty()
+        currentSearchQuery = ""
+    }
+    
+    /**
+     * Cache verwalten
+     */
+    fun clearCache() {
+        viewModelScope.launch {
+            try {
+                repo.clearCache()
+                _cacheSize.value = 0
+                Log.d("SearchViewModel", "Cache erfolgreich geleert")
+            } catch (e: Exception) {
+                Log.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
+            }
+        }
+    }
+
+    fun removePlatformFilter(platformId: String) {
+        val newPlatforms = _uiState.value.selectedPlatforms.filterNot { it == platformId }
+        _uiState.update { it.copy(selectedPlatforms = newPlatforms) }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun removeGenreFilter(genreId: String) {
+        val newGenres = _uiState.value.selectedGenres.filterNot { it == genreId }
+        _uiState.update { it.copy(selectedGenres = newGenres) }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun removeRatingFilter() {
+        _uiState.update { it.copy(rating = 0f) }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun removeOrderingFilter() {
+        _uiState.update { it.copy(ordering = "") }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
+    }
+
+    fun clearAllFilters() {
+        _uiState.update {
+            it.copy(
+                selectedPlatforms = emptyList(),
+                selectedGenres = emptyList(),
+                rating = 0f,
+                ordering = ""
+            )
+        }
+        if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
     }
 }

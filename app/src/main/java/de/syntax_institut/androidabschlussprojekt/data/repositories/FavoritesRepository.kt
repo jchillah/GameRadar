@@ -1,13 +1,13 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
-import de.syntax_institut.androidabschlussprojekt.data.local.dao.FavoriteGameDao
+import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toFavoriteEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toGame
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import javax.inject.Inject
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.flow.*
+import javax.inject.*
 
 /**
  * Repository für Favoriten-Operationen.
@@ -106,6 +106,30 @@ class FavoritesRepository @Inject constructor(
     fun searchFavorites(query: String): Flow<List<Game>> {
         return favoriteGameDao.searchFavorites(query).map { entities ->
             entities.map { it.toGame() }
+        }
+    }
+
+    /**
+     * Synchronisiert alle Favoriten mit den aktuellen Daten aus der API.
+     * Aktualisiert lokale Einträge, wenn sich etwas geändert hat.
+     */
+    suspend fun syncFavoritesWithApi(rawgApi: de.syntax_institut.androidabschlussprojekt.data.remote.RawgApi) {
+        val localFavorites =
+            favoriteGameDao.getAllFavorites().firstOrNull()?.map { it.toGame() } ?: return
+        for (fav in localFavorites) {
+            try {
+                val response = rawgApi.getGameDetail(fav.id)
+                if (response.isSuccessful) {
+                    val apiGameDto = response.body()
+                    if (apiGameDto != null) {
+                        val apiGame = apiGameDto.toDomain()
+                        if (apiGame != fav) {
+                            favoriteGameDao.insertFavorite(apiGame.toFavoriteEntity())
+                        }
+                    }
+                }
+            } catch (_: Exception) { /* Fehler ignorieren, nächster Favorit */
+            }
         }
     }
 } 

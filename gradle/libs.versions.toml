@@ -1,153 +1,132 @@
 [versions]
-accompanistFlowlayout = "0.30.1"
-adaptive = "1.2.0-alpha07"
-adaptiveLayout = "1.2.0-alpha07"
-adaptiveNavigation = "1.2.0-alpha07"
 agp = "8.9.3"
-composeShimmer = "1.0.5"
-converterMoshi = "<RETROFIT_VERSION>"
-core = "1.6.1"
-googleHiltCompiler = "<HILT_VERSION>"
-guava = "33.2.1-jre"
-hiltAndroid = "<HILT_VERSION>"
-hiltAndroidTesting = "2.46.1"
-hiltAndroidVersion = "<HILT_VERSION>"
-hiltCompiler = "<HILT_VERSION>"
-hiltCompilerVersion = "<HILT_VERSION>"
-juneauMarshall = "8.2.0"
-koinAndroid = "3.x.x"
-koinCore = "3.5.3"
-koinCoreVersion = "3.5.1"
-koinTest = "3.5.3"
-koinTestJunit4 = "3.5.1"
-koinTestVersion = "3.5.1"
 kotlin = "2.1.21"
 coreKtx = "1.16.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-kotlinxCoroutinesTest = "1.8.1"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2025.06.01"
-loggingInterceptorVersion = "<OKHTTP_VERSION>"
-material3AdaptiveNavigationSuite = "1.4.0-alpha15"
+navigationCompose = "2.9.0"
+lifecycleViewmodelCompose = "2.9.1"
+datastorePreferences = "1.1.7"
+pagingCompose = "3.3.6"
+pagingRuntime = "3.3.6"
+room = "2.7.2"
+retrofit = "2.11.0"
+okhttp = "4.12.0"
+moshi = "1.15.0"
+coilCompose = "3.0.0-rc02"
+coilNetworkOkhttp = "3.0.0-rc02"
+koinAndroid = "3.5.3"
+composeShimmer = "1.0.5"
+accompanistFlowlayout = "0.30.1"
 material3WindowSizeClass = "1.3.2"
+uiTextGoogleFonts = "1.8.3"
+kotlinxSerialization = "1.7.3"
+firebaseComponents = "18.0.1"
+playServicesGames = "23.2.0"
+guava = "33.2.1-jre"
+juneauMarshall = "8.2.0"
+
+# Testing
+junit = "4.13.2"
+androidxJunit = "1.2.1"
+espressoCore = "3.6.1"
+pagingTesting = "3.3.6"
+kotlinxCoroutinesTest = "1.8.1"
 mockk = "1.13.9"
 mockkAndroid = "1.13.8"
 mockwebserver = "4.12.0"
-moshiKotlin = "<MOSHI_VERSION>"
-okhttp = "4.12.0"
-pagingCompose = "3.3.6"
-pagingRuntime = "3.3.6"
-pagingTesting = "3.3.6"
-robolectric = "4.11.1"
+robolectric = "4.12"
 uiTestJunit4 = "1.8.3"
-navigationCompose = "2.9.0"
-kotlinSerialization = "1.7.3"
-uiTextGoogleFonts = "1.8.3"
-moshiVersion = "1.15.0"
-retrofitVersion = "2.11.0"
-loggingInterceptor = "4.9.3"
-coilCompose = "3.0.0-rc02"
-datastorePreferences = "1.1.7"
-roomRuntime = "2.7.2"
-kspVersion = "2.1.21-2.0.1"
-koinBom = "4.1.0-Beta4"
-firebaseComponents = "18.0.1"
-playServicesGames = "23.2.0"
-
-
+uiTestManifest = "1.8.3"
+uiTooling = "1.8.3"
 
 [libraries]
-accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
-androidx-compose-ui-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
-androidx-compose-ui-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
-androidx-core = { module = "androidx.test:core", version.ref = "core" }
-androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
-androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
-androidx-paging-testing = { module = "androidx.paging:paging-testing", version.ref = "pagingTesting" }
-compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
-hilt-android = { module = "com.google.dagger:hilt-android", version = "2.56.2" }
-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version = "2.56.2" }
-
-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptiveLayout" }
-androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptiveNavigation" }
+# Core Android
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-material3-window-size-class1 = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3WindowSizeClass" }
-androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
-hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
-insert-koin-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
-insert-koin-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroid" }
-insert-koin-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinAndroid" }
-insert-koin-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinTestVersion" }
-juneau-marshall = { module = "org.apache.juneau:juneau-marshall", version.ref = "juneauMarshall" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+
+# Compose
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-koin-core-v351 = { module = "io.insert-koin:koin-core", version.ref = "koinCoreVersion" }
-koin-test = { module = "org.koin:koin-test", version.ref = "koinTest" }
-koin-koin-core = { module = "org.koin:koin-core", version.ref = "koinCore" }
-koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinTestJunit4" }
-kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
-logging-interceptor-vokhttpversion = { module = "com.squareup.okhttp3:logging-interceptor", version = "5.0.0-alpha.16" }
-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3WindowSizeClass" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkAndroid" }
-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
-moshi-kotlin-vmoshiversion = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+androidx-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3WindowSizeClass" }
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
+# Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 
-androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+# Lifecycle
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 
-moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiVersion" }
-
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion" }
-converterMoshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofitVersion" }
-
-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
-
-coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
-coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilCompose" }
-
+# Data Storage
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 
-androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomRuntime" }
-androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomRuntime" }
-androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+# Room Database
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
-koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
-koin-core = { module = "io.insert-koin:koin-core" }
-koin-android = { module = "io.insert-koin:koin-android" }
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
+# Paging
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "pagingCompose" }
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "pagingRuntime" }
+
+# Networking
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+
+# JSON Serialization
+moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# Image Loading
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coilCompose" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
+
+# Dependency Injection
+insert-koin-koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
+insert-koin-koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koinAndroid" }
+insert-koin-koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinAndroid" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinAndroid" }
+
+# Google Services
 firebase-components = { group = "com.google.firebase", name = "firebase-components", version.ref = "firebaseComponents" }
 play-services-games = { group = "com.google.android.gms", name = "play-services-games", version.ref = "playServicesGames" }
 
+# UI Components
+compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "composeShimmer" }
+accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanistFlowlayout" }
 
+# Utilities
+guava = { group = "com.google.guava", name = "guava", version.ref = "guava" }
+juneau-marshall = { group = "org.apache.juneau", name = "juneau-marshall", version.ref = "juneauMarshall" }
+
+# Testing Dependencies
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "coreKtx" }
+
+# Android Testing
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "pagingTesting" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockkAndroid" }
+ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunit4" }
+ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "uiTestManifest" }
+ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version = "2.1.21-2.0.1" }
 

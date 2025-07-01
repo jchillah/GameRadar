@@ -1,15 +1,9 @@
 package de.syntax_institut.androidabschlussprojekt.data.remote
 
-import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
-import com.squareup.moshi.Json
-import de.syntax_institut.androidabschlussprojekt.BuildConfig
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GameDto
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GamesResponse
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.PlatformResponse
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GenreResponse
+import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
+import retrofit2.*
+import retrofit2.http.*
 
 interface RawgApi {
     @GET("games")
@@ -28,6 +22,13 @@ interface RawgApi {
         @Path("id") gameId: Int,
         @Query("key") apiKey: String = BuildConfig.API_KEY
     ): Response<GameDto>
+
+    @GET("games/{id}/screenshots")
+    suspend fun getGameScreenshots(
+        @Path("id") gameId: Int,
+        @Query("key") apiKey: String = BuildConfig.API_KEY,
+        @Query("page_size") pageSize: Int = 20,
+    ): Response<List<ScreenshotDto>>
 
     @GET("platforms")
     suspend fun getPlatforms(

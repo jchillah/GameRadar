@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.compose) apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.21"
+    alias(libs.plugins.jetbrains.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.ksp) apply false
 }
