@@ -2,15 +2,15 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import android.annotation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.res.*
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.paging.compose.*
-import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -42,6 +42,11 @@ fun SearchScreen(
         }
     }
 
+    // Tabs für Listenansicht
+    var selectedTab by remember { mutableIntStateOf(0) }
+    val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
+
+
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("Spielsuche") },
@@ -49,14 +54,14 @@ fun SearchScreen(
                 // Cache-Info Button
                 IconButton(onClick = { showCacheInfo = !showCacheInfo }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_filter),
+                        imageVector = Icons.Default.Info,
                         contentDescription = "Cache-Info"
                     )
                 }
                 // Filter Button
                 IconButton(onClick = { showFilters = true }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_filter),
+                        imageVector = Icons.Default.FilterList,
                         contentDescription = "Filter anzeigen"
                     )
                 }
@@ -69,6 +74,27 @@ fun SearchScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
+                TabRow(selectedTabIndex = selectedTab) {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            selected = selectedTab == index,
+                            onClick = {
+                                selectedTab = index
+                                when (index) {
+                                    0 -> viewModel.updateOrdering("") // Alle
+                                    1 -> viewModel.updateOrdering("-released") // Neuerscheinungen
+                                    2 -> viewModel.updateOrdering("-rating") // Top-rated
+                                }
+                                // Immer Liste laden, auch ohne Suchtext
+                                viewModel.search(searchText.text.trim())
+                            },
+                            text = { Text(title) }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 // Kompakte Cache-Banner-Leiste
                 CacheBanner(
                     cacheSize = cacheSize,
@@ -134,6 +160,7 @@ fun SearchScreen(
                         modifier = Modifier.weight(1f)
                     )
                 } else {
+                    // Wenn keine Suche durchgeführt wurde, trotzdem Listen anzeigen
                     SearchResultContent(
                         pagingItems = pagingItems,
                         onGameClick = { game ->
