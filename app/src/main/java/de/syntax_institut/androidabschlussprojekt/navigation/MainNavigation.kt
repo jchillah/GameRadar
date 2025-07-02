@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt
+package de.syntax_institut.androidabschlussprojekt.navigation
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -9,27 +9,9 @@ import androidx.compose.ui.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import androidx.paging.compose.*
-import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.screens.*
-import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.compose.*
-
-/**
- * App Composable
- * Hauptcontainer für die gesamte App mit Navigation und Theme.
- */
-@Composable
-fun App(modifier: Modifier) {
-    MyAppTheme(darkTheme = true, dynamicColor = true) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            MainNavigation(modifier = modifier)
-        }
-    }
-}
 
 /**
  * Hauptnavigation der App
@@ -37,7 +19,11 @@ fun App(modifier: Modifier) {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigation(modifier: Modifier) {
+fun MainNavigation(
+    modifier: Modifier,
+    isDarkTheme: Boolean = false,
+    setDarkTheme: (Boolean) -> Unit = {},
+) {
     val navController = rememberNavController()
     var selectedTab by remember { mutableIntStateOf(0) }
 
@@ -49,6 +35,9 @@ fun MainNavigation(modifier: Modifier) {
     val favoritesState by favoritesViewModel.uiState.collectAsState()
     val searchState by searchViewModel.uiState.collectAsState()
     val lazyPagingItems = searchViewModel.pagingFlow.collectAsLazyPagingItems()
+    val cacheSize by searchViewModel.cacheSize.collectAsState()
+    val isOffline by searchViewModel.isOffline.collectAsState()
+    val lastSyncTime = searchState.lastSyncTime
 
     // Anzahl der Favoriten im Badge
     val favoritesCount = favoritesState.favorites.size
@@ -131,6 +120,23 @@ fun MainNavigation(modifier: Modifier) {
                         }
                     }
                 )
+                NavigationBarItem(
+                    icon = {
+                        Icon(Icons.Filled.Settings, contentDescription = "Einstellungen")
+                    },
+                    label = { Text("Einstellungen") },
+                    selected = currentRoute == "settings",
+                    onClick = {
+                        selectedTab = 2
+                        navController.navigate("settings") {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
             }
         }
     ) { innerPadding ->
@@ -156,6 +162,17 @@ fun MainNavigation(modifier: Modifier) {
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("gameId") ?: return@composable
                 DetailScreen(id, navController)
+            }
+
+            // Settings Screen
+            composable("settings") {
+                SettingsScreen(
+                    isDarkTheme = isDarkTheme,
+                    setDarkTheme = setDarkTheme,
+                    cacheSize = cacheSize,
+                    isOffline = isOffline,
+                    lastSyncTime = lastSyncTime
+                )
             }
         }
     }

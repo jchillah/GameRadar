@@ -6,9 +6,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 
+/**
+ * Zeigt einen Ladezustand mit Spinner und Nachricht.
+ */
 @Composable
 fun LoadingState(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     message: String = "Lade Daten...",
 ) {
     Box(
@@ -32,4 +35,4 @@ fun LoadingState(
             )
         }
     }
-}
+} 
