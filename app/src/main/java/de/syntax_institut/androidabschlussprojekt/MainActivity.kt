@@ -5,6 +5,7 @@ import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.*
+import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 
 /**
  * MainActivity
@@ -13,11 +14,13 @@ import androidx.compose.ui.*
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(2, 1))
         setContent {
-            App(
-                modifier = Modifier.fillMaxWidth()
-            )
+            MyAppTheme {
+                App(
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }

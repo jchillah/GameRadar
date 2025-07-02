@@ -26,13 +26,10 @@ fun SearchScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val isOffline by viewModel.isOffline.collectAsState()
-    val cacheSize by viewModel.cacheSize.collectAsState()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
-    var showCacheInfo by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
 
-    // Lade Plattformen und Genres beim ersten Start
     LaunchedEffect(Unit) {
         if (state.platforms.isEmpty()) {
             viewModel.loadPlatforms()
@@ -42,7 +39,6 @@ fun SearchScreen(
         }
     }
 
-    // Tabs für Listenansicht
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
 
@@ -51,21 +47,17 @@ fun SearchScreen(
         TopAppBar(
             title = { Text("Spielsuche") },
             actions = {
-                // Cache-Info Button
-                IconButton(onClick = { showCacheInfo = !showCacheInfo }) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = "Cache-Info"
-                    )
-                }
-                // Filter Button
                 IconButton(onClick = { showFilters = true }) {
                     Icon(
                         imageVector = Icons.Default.FilterList,
                         contentDescription = "Filter anzeigen"
                     )
                 }
-            }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                titleContentColor = MaterialTheme.colorScheme.onBackground
+            )
         )
     }) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -81,11 +73,10 @@ fun SearchScreen(
                             onClick = {
                                 selectedTab = index
                                 when (index) {
-                                    0 -> viewModel.updateOrdering("") // Alle
-                                    1 -> viewModel.updateOrdering("-released") // Neuerscheinungen
-                                    2 -> viewModel.updateOrdering("-rating") // Top-rated
+                                    0 -> viewModel.updateOrdering("")
+                                    1 -> viewModel.updateOrdering("-released")
+                                    2 -> viewModel.updateOrdering("-rating")
                                 }
-                                // Immer Liste laden, auch ohne Suchtext
                                 viewModel.search(searchText.text.trim())
                             },
                             text = { Text(title) }
@@ -95,27 +86,6 @@ fun SearchScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Kompakte Cache-Banner-Leiste
-                CacheBanner(
-                    cacheSize = cacheSize,
-                    maxCacheSize = 1000,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                // Network Error Handler
-                NetworkErrorHandler(
-                    isOffline = isOffline,
-                    onRetry = { viewModel.search(searchText.text.trim()) }
-                )
-
-                // Intelligenter Cache-Indikator statt einfachem Offline-Indikator
-                IntelligentCacheIndicator(
-                    isOffline = isOffline,
-                    cacheSize = cacheSize,
-                    lastSyncTime = state.lastSyncTime,
-                    onSyncRequest = { viewModel.clearCache() }
-                )
-                
                 SearchBarWithButton(
                     searchText = searchText,
                     onTextChange = {
@@ -136,7 +106,6 @@ fun SearchScreen(
                     }
                 )
 
-                // Aktive Filter als Chips anzeigen
                 ActiveFiltersRow(
                     selectedPlatformIds = state.selectedPlatforms,
                     selectedGenreIds = state.selectedGenres,
@@ -160,7 +129,6 @@ fun SearchScreen(
                         modifier = Modifier.weight(1f)
                     )
                 } else {
-                    // Wenn keine Suche durchgeführt wurde, trotzdem Listen anzeigen
                     SearchResultContent(
                         pagingItems = pagingItems,
                         onGameClick = { game ->

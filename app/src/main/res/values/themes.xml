@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.AndroidAbschlussprojekt" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.AndroidAbschlussprojekt" parent="Theme.Material3.DayNight">
+        <!-- Keine expliziten Systembar-Farben mehr, Standard verwenden -->
+    </style>
 </resources>

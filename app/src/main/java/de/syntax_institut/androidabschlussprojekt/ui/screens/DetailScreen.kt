@@ -20,6 +20,13 @@ import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
 
+
+/**
+ * Zeigt die Detailansicht eines Spiels mit allen relevanten Informationen.
+ * @param gameId Die ID des anzuzeigenden Spiels
+ * @param navController Navigation Controller für Back-Navigation
+ * @param vm ViewModel für die Spieldetails
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
@@ -32,7 +39,6 @@ fun DetailScreen(
     val context = LocalContext.current
     val emptyString = ""
 
-    // Analytics-Tracking
     LaunchedEffect(gameId) {
         Analytics.trackScreenView("DetailScreen")
         Analytics.trackEvent("game_viewed", mapOf("game_id" to gameId))
@@ -43,7 +49,6 @@ fun DetailScreen(
         vm.loadDetail(gameId)
     }
 
-    // Performance-Monitoring
     LaunchedEffect(state.game) {
         state.game?.let {
             PerformanceMonitor.endTimer("detail_screen_load")
@@ -66,7 +71,6 @@ fun DetailScreen(
                 }
             },
             actions = {
-                // Share Button
                 state.game?.let { game ->
                     ShareButton(
                         gameTitle = game.title,
@@ -75,7 +79,6 @@ fun DetailScreen(
                     )
                 }
 
-                // Debug-Button zum Cache löschen
                 IconButton(onClick = {
                     vm.clearCache()
                     vm.loadDetail(gameId)
@@ -98,7 +101,11 @@ fun DetailScreen(
                     },
                     enabled = state.game != null
                 )
-            }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                titleContentColor = MaterialTheme.colorScheme.onBackground
+            )
         )
     }) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
