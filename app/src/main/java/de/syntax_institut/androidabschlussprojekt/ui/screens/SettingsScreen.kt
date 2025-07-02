@@ -8,9 +8,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.ui.components.settings.CacheBanner
-import de.syntax_institut.androidabschlussprojekt.ui.components.settings.IntelligentCacheIndicator
-import de.syntax_institut.androidabschlussprojekt.ui.components.settings.NetworkErrorHandler
+import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 
 @Composable
 fun SettingsScreen(
@@ -21,56 +19,76 @@ fun SettingsScreen(
     isOffline: Boolean,
     lastSyncTime: Long?,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
-        // Cache-Banner und Cache-Status
-        CacheBanner(
-            cacheSize = cacheSize,
-            maxCacheSize = maxCacheSize,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        IntelligentCacheIndicator(
-            isOffline = isOffline,
-            cacheSize = cacheSize,
-            lastSyncTime = lastSyncTime,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        NetworkErrorHandler(
-            isOffline = isOffline,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-        Text(
-            "Einstellungen",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onPrimary
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Dark Mode", color = MaterialTheme.colorScheme.onPrimary)
-            Spacer(modifier = Modifier.width(16.dp))
-            val borderColor = MaterialTheme.colorScheme.onPrimary
-            Box(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 40.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Cache-Banner und Cache-Status
+            CacheBanner(
+                cacheSize = cacheSize,
+                maxCacheSize = maxCacheSize,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            IntelligentCacheIndicator(
+                isOffline = isOffline,
+                cacheSize = cacheSize,
+                lastSyncTime = lastSyncTime,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            NetworkErrorHandler(
+                isOffline = isOffline,
+                modifier = Modifier.padding(bottom = 32.dp)
+            )
+            Text(
+                "Einstellungen",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.weight(1f))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .border(width = 3.dp, color = borderColor, shape = MaterialTheme.shapes.medium)
-                    .padding(2.dp)
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             ) {
-                Switch(
-                    checked = isDarkTheme,
-                    onCheckedChange = setDarkTheme,
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        uncheckedThumbColor = Color.White,
-                        checkedTrackColor = borderColor.copy(alpha = 0.5f),
-                        uncheckedTrackColor = borderColor.copy(alpha = 0.2f),
-                        checkedBorderColor = borderColor,
-                        uncheckedBorderColor = borderColor
-                    )
+                Text(
+                    "Dark Mode",
+                    color = MaterialTheme.colorScheme.onBackground
                 )
+                val borderColor = if (isDarkTheme) Color(0xFF00FF41) else Color(0xFFD4AF37)
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .border(
+                            width = 3.dp,
+                            color = borderColor,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .padding(2.dp)
+                ) {
+                    Switch(
+                        checked = isDarkTheme,
+                        onCheckedChange = setDarkTheme,
+                        modifier = Modifier.size(48.dp),
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            uncheckedThumbColor = Color.White,
+                            checkedTrackColor = borderColor.copy(alpha = 0.5f),
+                            uncheckedTrackColor = borderColor.copy(alpha = 0.2f),
+                            checkedBorderColor = borderColor,
+                            uncheckedBorderColor = borderColor
+                        )
+                    )
+                }
             }
         }
     }
