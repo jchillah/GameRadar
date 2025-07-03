@@ -88,7 +88,6 @@ fun App(modifier: Modifier) {
                             saveDarkMode(it)
                         }
                     )
-                    // SnackbarHost für globale Snackbars
                     SnackbarHost(
                         hostState = snackbarHostState,
                         modifier = Modifier.align(Alignment.BottomCenter)

@@ -24,7 +24,6 @@ fun ActiveFiltersRow(
     onRemoveOrdering: () -> Unit,
     onClearAll: () -> Unit,
 ) {
-    // Prüfe, ob überhaupt Filter aktiv sind
     val hasFilters =
         selectedPlatformIds.isNotEmpty() || selectedGenreIds.isNotEmpty() || rating > 0f || ordering.isNotBlank()
     if (!hasFilters) return

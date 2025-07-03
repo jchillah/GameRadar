@@ -68,7 +68,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlin.get()
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
 }
 
@@ -77,15 +77,20 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
+    // Material 3)
+    implementation(libs.material3)
     
     // Compose
+    implementation(libs.accompanist.navigation.animation)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
-    
+    implementation(libs.androidx.material)
+
     // Navigation
     implementation(libs.androidx.navigation.compose)
     
