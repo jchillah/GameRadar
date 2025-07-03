@@ -77,9 +77,9 @@ de.syntax-institut.androidabschlussprojekt
 ## Ausblick
 
 - [ ] Push-Notifikationen zu neuen Top-Spielen  
-- [ ] Dark Mode  
-- [ ] Vollbild-Screenshot-Galerie in Detailseite  
-- [ ] Erweiterte Paging-Unterstützung  
+- [x] Dark Mode  
+- [x] Vollbild-Screenshot-Galerie in Detailseite  
+- [x] Erweiterte Paging-Unterstützung  
 - [ ] Firebase-Integration für Sync & Analytics
 
 ---
