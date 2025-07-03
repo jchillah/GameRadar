@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -10,9 +10,9 @@ import androidx.compose.ui.unit.*
 
 @Composable
 fun CacheBanner(
+    modifier: Modifier = Modifier,
     cacheSize: Int,
     maxCacheSize: Int = 1000,
-    modifier: Modifier = Modifier,
 ) {
     val cachePercentage = (cacheSize.toFloat() / maxCacheSize) * 100f
     val isCacheFull = cachePercentage >= 90f
@@ -73,7 +73,7 @@ fun CacheBanner(
                 color = if (isCacheFull)
                     MaterialTheme.colorScheme.error
                 else
-                    MaterialTheme.colorScheme.onSecondaryContainer
+                    MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }

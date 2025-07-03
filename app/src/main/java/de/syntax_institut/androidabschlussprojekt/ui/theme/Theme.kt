@@ -95,15 +95,27 @@ fun MyAppTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            val activity = view.context as? Activity
+            if (activity != null) {
+                val window = activity.window
+                if (darkTheme) {
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                        false
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
+                        false
+                } else {
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                        true
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
+                        true
+                }
+            }
         }
     }
 

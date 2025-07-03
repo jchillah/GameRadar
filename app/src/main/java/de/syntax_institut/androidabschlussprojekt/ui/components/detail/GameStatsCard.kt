@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -8,7 +8,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
+/**
+ * Zeigt die wichtigsten Statistiken eines Spiels (Spielzeit, Metacritic, User-Rating).
+ */
 @Composable
 fun GameStatsCard(
     modifier: Modifier = Modifier,
@@ -68,4 +72,4 @@ fun GameStatsCard(
             }
         }
     }
-}
+} 

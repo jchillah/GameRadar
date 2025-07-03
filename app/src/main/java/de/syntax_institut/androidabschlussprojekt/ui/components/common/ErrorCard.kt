@@ -10,6 +10,9 @@ import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 
+/**
+ * Zeigt eine Fehlerkarte mit Retry- und Dismiss-Option.
+ */
 @Composable
 fun ErrorCard(
     modifier: Modifier = Modifier,
@@ -87,4 +90,4 @@ fun ErrorCard(
     if (error.isNotBlank()) {
         Analytics.trackError(error, "ErrorCard")
     }
-}
+} 

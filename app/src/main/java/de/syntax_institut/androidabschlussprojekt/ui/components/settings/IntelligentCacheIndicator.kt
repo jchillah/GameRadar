@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -14,7 +14,6 @@ fun IntelligentCacheIndicator(
     isOffline: Boolean,
     cacheSize: Int,
     lastSyncTime: Long?,
-    onSyncRequest: () -> Unit = {},
 ) {
     Card(
         modifier = modifier
@@ -78,30 +77,11 @@ fun IntelligentCacheIndicator(
                         MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
                 )
             }
-
-            if (!isOffline) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = onSyncRequest,
-                    modifier = Modifier.align(Alignment.End),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Synchronisieren")
-                }
-            }
         }
     }
 }
 
-private fun formatSyncTime(timestamp: Long): String {
+fun formatSyncTime(timestamp: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - timestamp
 
@@ -111,4 +91,4 @@ private fun formatSyncTime(timestamp: Long): String {
         diff < 86400000 -> "${diff / 3600000} Stunden"
         else -> "${diff / 86400000} Tage"
     }
-}
+} 

@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
@@ -18,9 +19,9 @@ import org.koin.androidx.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    modifier: Modifier,
     navController: NavHostController,
     viewModel: FavoritesViewModel = koinViewModel(),
-    modifier: Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -29,95 +30,116 @@ fun FavoritesScreen(
         viewModel.loadFavorites()
     }
 
-    Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text("Meine Favoriten") },
-                actions = {
-                    if (state.favorites.isNotEmpty()) {
-                        Row(
-                            modifier = modifier,
-                            verticalAlignment = Alignment.CenterVertically
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Meine Favoriten",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                if (state.favorites.isNotEmpty()) {
+                    Button(
+                        onClick = { showDeleteConfirmation = true },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        ),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier.semantics {
+                            contentDescription = "Alle Favoriten löschen"
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Alle löschen")
+                    }
+                }
+            }
+            HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.surfaceVariant)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Box(modifier = Modifier.weight(1f)) {
+                when {
+                    state.isLoading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text("Anzahl: ${state.favorites.size}")
-                            Spacer(modifier = Modifier.width(8.dp))
-                            IconButton(onClick = { showDeleteConfirmation = true }) {
-                                Icon(
-                                    Icons.Default.Delete,
-                                    contentDescription = "Alle Favoriten löschen"
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    state.error != null -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "Fehler: ${state.error}",
+                                    color = MaterialTheme.colorScheme.error,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(onClick = { viewModel.loadFavorites() }) {
+                                    Text("Erneut versuchen")
+                                }
+                            }
+                        }
+                    }
+
+                    state.favorites.isEmpty() -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "Keine Favoriten vorhanden",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    textAlign = TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Füge Spiele zu deinen Favoriten hinzu, um sie hier zu sehen.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
                     }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            when {
-                state.isLoading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
-                state.error != null -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Fehler: ${state.error}",
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Button(onClick = { viewModel.loadFavorites() }) {
-                            Text("Erneut versuchen")
-                        }
-                    }
-                }
-                state.favorites.isEmpty() -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = "Keine Favoriten vorhanden",
-                            style = MaterialTheme.typography.headlineSmall,
-                            textAlign = TextAlign.Center
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Füge Spiele zu deinen Favoriten hinzu, um sie hier zu sehen.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(state.favorites) { game ->
-                            GameItem(
-                                game = game,
-                                onClick = {
-                                    navController.navigate(Routes.detail(game.id))
-                                },
-                                onDelete = {
-                                    viewModel.removeFavorite(game.id)
-                                }
-                            )
+
+                    else -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(state.favorites) { game ->
+                                GameItem(
+                                    game = game,
+                                    onClick = {
+                                        navController.navigate(Routes.detail(game.id))
+                                    },
+                                    onDelete = {
+                                        viewModel.removeFavorite(game.id)
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -125,7 +147,6 @@ fun FavoritesScreen(
         }
     }
 
-    // Bestätigungsdialog für das Löschen aller Favoriten
     if (showDeleteConfirmation) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
@@ -167,4 +188,4 @@ fun FavoritesScreen(
             }
         )
     }
-} 
+}

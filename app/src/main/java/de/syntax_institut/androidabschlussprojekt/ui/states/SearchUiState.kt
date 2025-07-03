@@ -8,11 +8,10 @@ data class SearchUiState(
     val selectedPlatforms: List<String> = emptyList(),
     val selectedGenres: List<String> = emptyList(),
     val rating: Float = 0f,
+    val ordering: String = "",
     val platforms: List<Platform> = emptyList(),
     val genres: List<Genre> = emptyList(),
-    val ordering: String = "",
     val hasSearched: Boolean = false,
-    // Offline-Funktionalität
     val isOffline: Boolean = false,
     val cacheSize: Int = 0,
     val lastSyncTime: Long? = null,

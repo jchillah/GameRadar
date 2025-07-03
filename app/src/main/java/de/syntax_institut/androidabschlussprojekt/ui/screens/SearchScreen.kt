@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.paging.compose.*
@@ -26,13 +28,10 @@ fun SearchScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val isOffline by viewModel.isOffline.collectAsState()
-    val cacheSize by viewModel.cacheSize.collectAsState()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
-    var showCacheInfo by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
 
-    // Lade Plattformen und Genres beim ersten Start
     LaunchedEffect(Unit) {
         if (state.platforms.isEmpty()) {
             viewModel.loadPlatforms()
@@ -42,136 +41,125 @@ fun SearchScreen(
         }
     }
 
-    // Tabs für Listenansicht
-    var selectedTab by remember { mutableIntStateOf(0) }
+    var selectedTab by remember { mutableIntStateOf(-1) }
     val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
 
-
-    Scaffold(topBar = {
-        TopAppBar(
-            title = { Text("Spielsuche") },
-            actions = {
-                // Cache-Info Button
-                IconButton(onClick = { showCacheInfo = !showCacheInfo }) {
-                    Icon(
-                        imageVector = Icons.Default.Info,
-                        contentDescription = "Cache-Info"
-                    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "Spielsuche",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            IconButton(onClick = { showFilters = true }) {
+                Icon(
+                    imageVector = Icons.Default.FilterList,
+                    contentDescription = "Filter anzeigen"
+                )
+            }
+        }
+        TabRow(
+            selectedTabIndex = selectedTab,
+            modifier = Modifier
+                .fillMaxWidth(),
+            indicator = { tabPositions ->
+                if (selectedTab >= 0) TabRowDefaults.SecondaryIndicator(
+                    Modifier.tabIndicatorOffset(tabPositions[selectedTab])
+                )
+            },
+            divider = {}
+        ) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(
+                    modifier = Modifier
+                        .height(56.dp),
+                    selected = selectedTab == index,
+                    onClick = {
+                        if (selectedTab != index) {
+                            selectedTab = index
+                            when (index) {
+                                0 -> viewModel.updateOrdering("name")
+                                1 -> viewModel.updateOrdering("-released")
+                                2 -> viewModel.updateOrdering("-rating")
+                            }
+                            val query =
+                                if (searchText.text.isNotBlank()) searchText.text.trim() else " "
+                            viewModel.search(query)
+                        }
+                    },
+                    text = {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    enabled = true
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        SearchBarWithButton(
+            searchText = searchText,
+            onTextChange = {
+                searchText = it
+                if (it.text.isBlank()) {
+                    viewModel.resetSearch()
                 }
-                // Filter Button
-                IconButton(onClick = { showFilters = true }) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filter anzeigen"
-                    )
+            },
+            onSearchClick = {
+                if (searchText.text.isNotBlank()) {
+                    viewModel.search(searchText.text.trim())
                 }
+            },
+            isLoading = state.isLoading,
+            onClear = {
+                searchText = TextFieldValue("")
+                viewModel.resetSearch()
             }
         )
-    }) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                TabRow(selectedTabIndex = selectedTab) {
-                    tabTitles.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTab == index,
-                            onClick = {
-                                selectedTab = index
-                                when (index) {
-                                    0 -> viewModel.updateOrdering("") // Alle
-                                    1 -> viewModel.updateOrdering("-released") // Neuerscheinungen
-                                    2 -> viewModel.updateOrdering("-rating") // Top-rated
-                                }
-                                // Immer Liste laden, auch ohne Suchtext
-                                viewModel.search(searchText.text.trim())
-                            },
-                            text = { Text(title) }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Kompakte Cache-Banner-Leiste
-                CacheBanner(
-                    cacheSize = cacheSize,
-                    maxCacheSize = 1000,
-                    modifier = Modifier.padding(bottom = 8.dp)
+        ActiveFiltersRow(
+            selectedPlatformIds = state.selectedPlatforms,
+            selectedGenreIds = state.selectedGenres,
+            allPlatforms = state.platforms,
+            allGenres = state.genres,
+            rating = state.rating,
+            ordering = state.ordering,
+            onRemovePlatform = { id -> viewModel.removePlatformFilter(id) },
+            onRemoveGenre = { id -> viewModel.removeGenreFilter(id) },
+            onRemoveRating = { viewModel.removeRatingFilter() },
+            onRemoveOrdering = { viewModel.removeOrderingFilter() },
+            onClearAll = { viewModel.clearAllFilters() }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(modifier = Modifier.weight(1f)) {
+            if (!state.hasSearched) {
+                EmptyState(
+                    title = "Suche nach Spielen",
+                    message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
+                    modifier = Modifier.fillMaxSize()
                 )
-
-                // Network Error Handler
-                NetworkErrorHandler(
-                    isOffline = isOffline,
-                    onRetry = { viewModel.search(searchText.text.trim()) }
-                )
-
-                // Intelligenter Cache-Indikator statt einfachem Offline-Indikator
-                IntelligentCacheIndicator(
-                    isOffline = isOffline,
-                    cacheSize = cacheSize,
-                    lastSyncTime = state.lastSyncTime,
-                    onSyncRequest = { viewModel.clearCache() }
-                )
-                
-                SearchBarWithButton(
-                    searchText = searchText,
-                    onTextChange = {
-                        searchText = it
-                        if (it.text.isBlank()) {
-                            viewModel.resetSearch()
-                        }
-                    },
-                    onSearchClick = {
-                        if (searchText.text.isNotBlank()) {
-                            viewModel.search(searchText.text.trim())
-                        }
-                    },
-                    isLoading = state.isLoading,
-                    onClear = {
-                        searchText = TextFieldValue("")
-                        viewModel.resetSearch()
+            } else {
+                SearchResultContent(
+                    pagingItems = pagingItems,
+                    onGameClick = { game ->
+                        navController.navigate(Routes.detail(game.id))
                     }
                 )
-
-                // Aktive Filter als Chips anzeigen
-                ActiveFiltersRow(
-                    selectedPlatformIds = state.selectedPlatforms,
-                    selectedGenreIds = state.selectedGenres,
-                    allPlatforms = state.platforms,
-                    allGenres = state.genres,
-                    rating = state.rating,
-                    ordering = state.ordering,
-                    onRemovePlatform = { id -> viewModel.removePlatformFilter(id) },
-                    onRemoveGenre = { id -> viewModel.removeGenreFilter(id) },
-                    onRemoveRating = { viewModel.removeRatingFilter() },
-                    onRemoveOrdering = { viewModel.removeOrderingFilter() },
-                    onClearAll = { viewModel.clearAllFilters() }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (!state.hasSearched) {
-                    EmptyState(
-                        title = "Suche nach Spielen",
-                        message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
-                        modifier = Modifier.weight(1f)
-                    )
-                } else {
-                    // Wenn keine Suche durchgeführt wurde, trotzdem Listen anzeigen
-                    SearchResultContent(
-                        pagingItems = pagingItems,
-                        onGameClick = { game ->
-                            navController.navigate(Routes.detail(game.id))
-                        }
-                    )
-                }
             }
         }
     }
-
     if (showFilters) {
         ModalBottomSheet(
             onDismissRequest = { showFilters = false }

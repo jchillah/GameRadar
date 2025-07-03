@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -57,4 +57,4 @@ fun NetworkErrorHandler(
             }
         }
     }
-}
+} 

@@ -12,8 +12,9 @@ Keine überfrachteten Inhalte, keine gesponserten Spiele – nur echte Nutzer-Em
 Ich Füge am Ende echte Screenshots ein:
 
 <p>
-  <img src="./img/screen1.png" width="300" alt="GameRadar Suchbildschirm mit Spieleliste und Suchleiste">
-  <img src="./img/screen2.png" width="300" alt="GameRadar Detailansicht eines Spiels mit Screenshots und Informationen">
+  <img src="./img/screen1.png" width="300" alt="GameRadar Suchbildschirm mit Spieleliste und Suchleiste im LightMode">
+  <img src="./img/screen2.png" width="300" alt="GameRadar Suchbildschirm mit Spieleliste und Suchleiste im DarkMode">
+  <img src="./img/screen4.png" width="300" alt="GameRadar Detailansicht eines Spiels mit Screenshots und Informationen">
   <img src="./img/screen3.png" width="300" alt="GameRadar Favoriten-Liste mit gespeicherten Spielen">
 </p>
 
