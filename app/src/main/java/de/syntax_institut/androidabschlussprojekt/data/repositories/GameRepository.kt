@@ -53,7 +53,10 @@ class GameRepository @Inject constructor(
                 resp.body()?.let { gameDto ->
                     Log.d("GameRepository", "API-Antwort erhalten: ${gameDto.name}")
                     Log.d("GameRepository", "API Screenshots: ${gameDto.shortScreenshots?.size ?: 0}")
-                    Log.d("GameRepository", "API Website: '${gameDto.website}'")
+                    Log.d(
+                        "GameRepository",
+                        "API Website: '${gameDto.website}' (Typ: ${if (gameDto.website == null) "null" else "'${gameDto.website}'"})"
+                    )
                     gameDto.shortScreenshots?.forEachIndexed { index, screenshot ->
                         Log.d("GameRepository", "API Screenshot $index: ${screenshot.image}")
                     }
@@ -83,7 +86,10 @@ class GameRepository @Inject constructor(
 
                     val game = gameDto.toDomain().copy(screenshots = screenshots)
                     Log.d("GameRepository", "Konvertiert zu Domain: ${game.screenshots.size} Screenshots")
-                    Log.d("GameRepository", "Domain Website: '${game.website}'")
+                    Log.d(
+                        "GameRepository",
+                        "Domain Website: '${game.website}' (Typ: ${if (game.website == null) "null" else "'${game.website}'"})"
+                    )
 
                     // Cache das Spiel
                     gameCacheDao.insertGame(game.toCacheEntity())

@@ -163,20 +163,12 @@ class SearchViewModel(
             selectedGenres = genres,
             rating = rating
         )}
-        
-        // Automatisch die Suche neu ausführen, wenn ein Suchtext vorhanden ist
-        if (currentSearchQuery.isNotBlank()) {
-            search(currentSearchQuery)
-        }
+        // KEINE automatische Suche mehr hier!
     }
 
     fun updateOrdering(ordering: String) {
         _uiState.update { it.copy(ordering = ordering) }
-        
-        // Automatisch die Suche neu ausführen, wenn ein Suchtext vorhanden ist
-        if (currentSearchQuery.isNotBlank()) {
-            search(currentSearchQuery)
-        }
+        // KEINE automatische Suche mehr hier!
     }
 
     fun resetSearch() {

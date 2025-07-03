@@ -22,7 +22,6 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun ScreenshotGallery(screenshots: List<String>) {
-    // Debug-Logging für Entwicklung
     LaunchedEffect(screenshots) {
         Log.d("ScreenshotGallery", "Screenshots erhalten: ${screenshots.size}")
         screenshots.forEachIndexed { index, url ->

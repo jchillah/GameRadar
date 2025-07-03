@@ -8,8 +8,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
 
 @Composable
-fun
-        StatItem(
+fun StatItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
     value: String,

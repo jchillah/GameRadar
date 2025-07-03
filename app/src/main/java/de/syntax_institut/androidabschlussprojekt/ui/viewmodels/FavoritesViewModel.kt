@@ -40,7 +40,9 @@ class FavoritesViewModel(
             try {
                 favoritesRepo.getAllFavorites().collect { favorites ->
                     Log.d("FavoritesViewModel", "Favoriten geladen: ${favorites.size}")
-                    _uiState.value = FavoritesUiState(favorites = favorites)
+                    // Favoriten alphabetisch sortieren
+                    val sortedFavorites = favorites.sortedBy { it.title.lowercase() }
+                    _uiState.value = FavoritesUiState(favorites = sortedFavorites)
                 }
             } catch (e: Exception) {
                 Log.e("FavoritesViewModel", "Fehler beim Laden der Favoriten", e)
