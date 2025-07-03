@@ -22,30 +22,77 @@ class DetailViewModel(
     private val _isFavorite = MutableStateFlow(false)
     val isFavorite: StateFlow<Boolean> = _isFavorite
 
-    fun loadDetail(id: Int) {
-        Log.d("DetailViewModel", "Lade Spieldetails für ID: $id")
+    fun loadDetail(id: Int, forceReload: Boolean = false) {
+        Log.d(
+            "DetailViewModel",
+            "[DEBUG] loadDetail() aufgerufen für ID: $id, forceReload=$forceReload"
+        )
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = DetailUiState(isLoading = true)
-            
-            // Lade Spieldetails und Favoriten-Status parallel
+
+            if (forceReload) {
+                repo.clearCache()
+                Log.d("DetailViewModel", "Cache für Detailansicht gelöscht")
+            }
+
+            val cachedGame = repo.getGameFromCache(id)
+            Log.d(
+                "DetailViewModel",
+                "[DEBUG] cachedGame: ${cachedGame != null}, Screenshots: ${cachedGame?.screenshots?.size ?: 0}"
+            )
             val gameResult = repo.getGameDetail(id)
+            Log.d(
+                "DetailViewModel",
+                "[DEBUG] gameResult: ${gameResult is Resource.Success}, error: ${(gameResult as? Resource.Error)?.message}"
+            )
             val favoriteResult = favoritesRepo.isFavorite(id)
-            
+
             when (gameResult) {
                 is Resource.Success -> {
-                    val game = gameResult.data
-                    Log.d("DetailViewModel", "Erfolgreich geladen: ${game?.title}")
-                    Log.d("DetailViewModel", "Screenshots: ${game?.screenshots?.size ?: 0}")
-                    game?.screenshots?.forEachIndexed { index, url ->
-                        Log.d("DetailViewModel", "Screenshot $index: $url")
+                    var game = gameResult.data
+                    Log.d(
+                        "DetailViewModel",
+                        "[DEBUG] Resource.Success: Website='${game?.website}', Screenshots=${game?.screenshots?.size ?: 0}"
+                    )
+                    if (forceReload && cachedGame != null && cachedGame.screenshots.isNotEmpty()) {
+                        Log.d(
+                            "DetailViewModel",
+                            "[DEBUG] forceReload: Übernehme gecachte Screenshots (${cachedGame.screenshots.size})"
+                        )
+                        game = game?.copy(screenshots = cachedGame.screenshots)
                     }
-                    _uiState.value = DetailUiState(game = game)
-                    _isFavorite.value = favoriteResult
+                    Log.d(
+                        "DetailViewModel",
+                        "Geladen: Website='${game?.website}', Screenshots=${game?.screenshots?.size ?: 0}"
+                    )
+
+                    if ((game?.website.isNullOrBlank() == true && game?.screenshots.isNullOrEmpty() == true) && !forceReload) {
+                        Log.d(
+                            "DetailViewModel",
+                            "[DEBUG] Website und Screenshots leer, versuche forceReload für $id"
+                        )
+                        loadDetail(id, forceReload = true)
+                    } else {
+                        val warnMsg = when {
+                            game?.website.isNullOrBlank() == true && (game?.screenshots?.isNotEmpty() == true) -> "Website nicht verfügbar."
+                            (game?.website?.isNotBlank() == true) && (game.screenshots.isEmpty() == true) -> "Screenshots nicht verfügbar."
+                            else -> null
+                        }
+                        Log.d("DetailViewModel", "[DEBUG] warnMsg: $warnMsg")
+                        _uiState.value = if (warnMsg != null) {
+                            DetailUiState(game = game, error = warnMsg)
+                        } else {
+                            DetailUiState(game = game)
+                        }
+                        _isFavorite.value = favoriteResult
+                    }
                 }
+
                 is Resource.Error -> {
-                    Log.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")
+                    Log.e("DetailViewModel", "[ERROR] Fehler beim Laden: ${gameResult.message}")
                     _uiState.value = DetailUiState(error = gameResult.message)
                 }
+
                 else -> {}
             }
         }

@@ -3,6 +3,7 @@ package de.syntax_institut.androidabschlussprojekt.data.repositories
 import android.content.*
 import android.util.*
 import androidx.paging.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toGame
@@ -21,12 +22,17 @@ class GameRepository @Inject constructor(
 ) {
 
     suspend fun getGameDetail(gameId: Int): Resource<Game> {
+        Log.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
         Log.d("GameRepository", "Lade Spieldetails für ID: $gameId")
 
         // Prüfe zuerst den Cache
         val cachedGame = gameCacheDao.getGameById(gameId)
+        Log.d(
+            "GameRepository",
+            "[DEBUG] cachedGame: ${cachedGame != null}, Screenshots: ${cachedGame?.toGame()?.screenshots?.size ?: 0}"
+        )
         if (cachedGame != null && NetworkUtils.isCacheValid(cachedGame.cachedAt)) {
-            Log.d("GameRepository", "Verwende gecachte Daten")
+            Log.d("GameRepository", "[DEBUG] Gültiger Cache gefunden für $gameId")
             val game = cachedGame.toGame()
             Log.d("GameRepository", "Gecachte Screenshots: ${game.screenshots.size}")
             Log.d("GameRepository", "Gecachte Website: '${game.website}'")
@@ -35,6 +41,7 @@ class GameRepository @Inject constructor(
 
         // Wenn kein Netzwerk verfügbar und Cache vorhanden, verwende Cache auch wenn abgelaufen
         if (!NetworkUtils.isNetworkAvailable(context)) {
+            Log.d("GameRepository", "[DEBUG] Kein Netzwerk, prüfe Offline-Cache für $gameId")
             Log.d("GameRepository", "Kein Netzwerk verfügbar")
             return if (cachedGame != null) {
                 val game = cachedGame.toGame()
@@ -46,13 +53,16 @@ class GameRepository @Inject constructor(
         }
 
         return try {
-            Log.d("GameRepository", "API-Call für Spieldetails")
+            Log.d("GameRepository", "[DEBUG] Starte API-Call für Spieldetails $gameId")
             val resp = api.getGameDetail(gameId)
             
             if (resp.isSuccessful) {
                 resp.body()?.let { gameDto ->
-                    Log.d("GameRepository", "API-Antwort erhalten: ${gameDto.name}")
-                    Log.d("GameRepository", "API Screenshots: ${gameDto.shortScreenshots?.size ?: 0}")
+                    Log.d("GameRepository", "[DEBUG] API-Response erhalten: ${gameDto.name}")
+                    Log.d(
+                        "GameRepository",
+                        "[DEBUG] API-Response Screenshots: ${gameDto.shortScreenshots?.size ?: 0}"
+                    )
                     Log.d(
                         "GameRepository",
                         "API Website: '${gameDto.website}' (Typ: ${if (gameDto.website == null) "null" else "'${gameDto.website}'"})"
@@ -63,10 +73,11 @@ class GameRepository @Inject constructor(
 
                     // Lade Screenshots separat, da sie nicht automatisch mitgeliefert werden
                     val screenshots = try {
-                        Log.d("GameRepository", "Lade Screenshots separat für ID: $gameId")
-                        val screenshotsResp = api.getGameScreenshots(gameId)
+                        Log.d("GameRepository", "[DEBUG] Lade separate Screenshots für $gameId")
+                        val screenshotsResp = api.getGameScreenshots(gameId, BuildConfig.API_KEY)
                         if (screenshotsResp.isSuccessful) {
-                            screenshotsResp.body()?.map { it.image } ?: emptyList()
+                            val screenshotResponse = screenshotsResp.body()
+                            screenshotResponse?.results?.map { it.image } ?: emptyList()
                         } else {
                             Log.w(
                                 "GameRepository",
@@ -75,14 +86,14 @@ class GameRepository @Inject constructor(
                             emptyList()
                         }
                     } catch (e: Exception) {
-                        Log.w(
-                            "GameRepository",
-                            "Exception beim Laden der Screenshots: ${e.message}"
-                        )
+                        Log.e("GameRepository", "[ERROR] Exception beim Laden der Screenshots", e)
                         emptyList()
                     }
 
-                    Log.d("GameRepository", "Separate Screenshots geladen: ${screenshots.size}")
+                    Log.d(
+                        "GameRepository",
+                        "[DEBUG] Separate Screenshots geladen: ${screenshots.size}"
+                    )
 
                     val game = gameDto.toDomain().copy(screenshots = screenshots)
                     Log.d("GameRepository", "Konvertiert zu Domain: ${game.screenshots.size} Screenshots")
@@ -92,12 +103,27 @@ class GameRepository @Inject constructor(
                     )
 
                     // Cache das Spiel
-                    gameCacheDao.insertGame(game.toCacheEntity())
+                    // Screenshots nur überschreiben, wenn sie nicht schon im Cache vorhanden sind oder nicht leer sind
+                    val cachedEntity = gameCacheDao.getGameById(game.id)
+                    Log.d(
+                        "GameRepository",
+                        "[DEBUG] cachedEntity für Speicherung: ${cachedEntity != null}, Screenshots: ${cachedEntity?.toGame()?.screenshots?.size ?: 0}"
+                    )
+                    val cachedScreenshots = cachedEntity?.toGame()?.screenshots ?: emptyList()
+                    val finalScreenshots =
+                        if (cachedScreenshots.isNotEmpty()) cachedScreenshots else game.screenshots
+                    val gameToCache = game.copy(screenshots = finalScreenshots)
+                    gameCacheDao.insertGame(gameToCache.toCacheEntity())
+
+                    Log.d(
+                        "GameRepository",
+                        "[DEBUG] Spiel wird gecacht: ${gameToCache.screenshots.size} Screenshots"
+                    )
 
                     Resource.Success(game)
                 } ?: Resource.Error("Leere Antwort von der API")
             } else {
-                Log.e("GameRepository", "API-Fehler: ${resp.code()}")
+                Log.e("GameRepository", "[ERROR] API-Fehler: ${resp.code()} für $gameId")
                 // Fallback auf Cache wenn API fehlschlägt
                 if (cachedGame != null) {
                     val game = cachedGame.toGame()
@@ -118,6 +144,7 @@ class GameRepository @Inject constructor(
                 Resource.Error("Netzwerkfehler: ${e.localizedMessage}")
             }
         }
+        Log.d("GameRepository", "[DEBUG] getGameDetail() fertig für $gameId")
     }
 
     suspend fun getPlatforms(): Resource<List<Platform>> {
@@ -170,7 +197,7 @@ class GameRepository @Inject constructor(
         private val ordering: String?,
         private val rating: Float?
     ) : PagingSource<Int, Game>() {
-        
+
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Game> {
             val page = params.key ?: 1
             val filterHash = NetworkUtils.createFilterHash(platforms, genres, ordering, rating)
@@ -308,5 +335,10 @@ class GameRepository @Inject constructor(
     
     suspend fun getCacheSize(): Int {
         return gameCacheDao.getCacheSize()
+    }
+
+    suspend fun getGameFromCache(id: Int): Game? {
+        val entity = gameCacheDao.getGameById(id)
+        return entity?.toGame()
     }
 }

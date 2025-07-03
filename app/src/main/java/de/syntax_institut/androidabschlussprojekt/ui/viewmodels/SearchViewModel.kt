@@ -163,7 +163,6 @@ class SearchViewModel(
             selectedGenres = genres,
             rating = rating
         )}
-        // KEINE automatische Suche mehr hier!
     }
 
     fun updateOrdering(ordering: String) {

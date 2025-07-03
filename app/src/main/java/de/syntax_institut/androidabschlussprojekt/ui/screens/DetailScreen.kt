@@ -46,7 +46,7 @@ fun DetailScreen(
     }
 
     LaunchedEffect(gameId) {
-        vm.loadDetail(gameId)
+        vm.loadDetail(gameId, forceReload = true)
     }
 
     LaunchedEffect(state.game) {
@@ -122,8 +122,7 @@ fun DetailScreen(
                                     gameUrl = game.website
                                 )
                                 IconButton(onClick = {
-                                    vm.clearCache()
-                                    vm.loadDetail(gameId)
+                                    vm.loadDetail(gameId, forceReload = true)
                                     Analytics.trackUserAction("cache_cleared", gameId)
                                 }) {
                                     Icon(
@@ -176,13 +175,27 @@ fun DetailScreen(
                             }
                         }
                         SectionCard("Screenshots") {
-                            ScreenshotGallery(game.screenshots)
-                            Analytics.trackEvent(
-                                "screenshots_viewed", mapOf(
-                                    "game_id" to gameId,
-                                    "screenshot_count" to game.screenshots.size
+                            if (game.screenshots.isEmpty()) {
+                                if (!NetworkUtils.isNetworkAvailable(context)) {
+                                    ErrorCard(
+                                        error = "Keine Screenshots verfügbar. Prüfe deine Internetverbindung und versuche es erneut.",
+                                        onRetry = { vm.loadDetail(gameId, forceReload = true) }
+                                    )
+                                } else {
+                                    EmptyState(
+                                        title = "Keine Screenshots verfügbar",
+                                        message = "Für dieses Spiel wurden keine Screenshots gefunden."
+                                    )
+                                }
+                            } else {
+                                ScreenshotGallery(game.screenshots)
+                                Analytics.trackEvent(
+                                    "screenshots_viewed", mapOf(
+                                        "game_id" to gameId,
+                                        "screenshot_count" to game.screenshots.size
+                                    )
                                 )
-                            )
+                            }
                         }
                         game.website?.takeIf { it.isNotBlank() }?.let { url ->
                             SectionCard("Website") {

@@ -24,11 +24,13 @@ interface RawgApi {
     ): Response<GameDto>
 
     @GET("games/{id}/screenshots")
+    suspend fun getGameScreenshots(@Path("id") gameId: Int): Response<ScreenshotResponse>
+
+    @GET("games/{id}/screenshots")
     suspend fun getGameScreenshots(
         @Path("id") gameId: Int,
         @Query("key") apiKey: String = BuildConfig.API_KEY,
-        @Query("page_size") pageSize: Int = 20,
-    ): Response<List<ScreenshotDto>>
+    ): Response<ScreenshotResponse>
 
     @GET("platforms")
     suspend fun getPlatforms(
