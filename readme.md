@@ -9,7 +9,6 @@ GameRadar ist anders:
 Keine überfrachteten Inhalte, keine gesponserten Spiele – nur echte Nutzer-Empfehlungen, blitzschnell gefiltert nach deinen Bedürfnissen.
 
 ## Design
-Ich Füge am Ende echte Screenshots ein:
 
 <p>
   <img src="./img/screen1.png" width="300" alt="GameRadar Suchbildschirm mit Spieleliste und Suchleiste im LightMode">
