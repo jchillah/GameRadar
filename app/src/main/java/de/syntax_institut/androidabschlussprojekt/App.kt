@@ -25,7 +25,6 @@ private val DARK_MODE_KEY = booleanPreferencesKey("dark_mode")
 @Composable
 fun AppStart(modifier: Modifier) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var isDarkTheme by rememberSaveable { mutableStateOf(false) }
     var isLoaded by remember { mutableStateOf(false) }
 
@@ -44,20 +43,6 @@ fun AppStart(modifier: Modifier) {
         }
     }
 
-    fun saveDarkMode(enabled: Boolean) {
-        scope.launch {
-            try {
-                delay(10) // Kurze Verzögerung für stabile Operationen
-                context.dataStore.edit { prefs ->
-                    prefs[DARK_MODE_KEY] = enabled
-                }
-            } catch (e: Exception) {
-                // Ignoriere Fehler beim Speichern
-                Log.w("AppStart", "Fehler beim Speichern der Theme-Einstellungen", e)
-            }
-        }
-    }
-
     if (!isLoaded) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -71,12 +56,7 @@ fun AppStart(modifier: Modifier) {
                 color = MaterialTheme.colorScheme.background
             ) {
                 MainNavigation(
-                    modifier = modifier,
-                    isDarkTheme = isDarkTheme,
-                    setDarkTheme = {
-                        isDarkTheme = it
-                        saveDarkMode(it)
-                    }
+                    modifier = modifier
                 )
             }
         }

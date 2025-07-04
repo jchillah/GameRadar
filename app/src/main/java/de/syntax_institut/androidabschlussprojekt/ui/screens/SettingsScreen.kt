@@ -16,105 +16,69 @@ import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 
 @Composable
 fun SettingsScreen(
-    isDarkTheme: Boolean,
-    setDarkTheme: (Boolean) -> Unit,
-    cacheSize: Int,
-    maxCacheSize: Int = 1000,
-    isOffline: Boolean,
-    lastSyncTime: Long?,
-    // Neue Einstellungen
-    notificationsEnabled: Boolean = true,
-    setNotificationsEnabled: (Boolean) -> Unit = {},
-    autoRefreshEnabled: Boolean = true,
-    setAutoRefreshEnabled: (Boolean) -> Unit = {},
-    imageQuality: ImageQuality = ImageQuality.HIGH,
-    setImageQuality: (ImageQuality) -> Unit = {},
-    language: String = "Deutsch",
-    setLanguage: (String) -> Unit = {},
-    clearCache: () -> Unit = {},
-    aboutApp: () -> Unit = {},
-    privacyPolicy: () -> Unit = {},
-    // Gaming-Features
-    gamingModeEnabled: Boolean = false,
-    setGamingModeEnabled: (Boolean) -> Unit = {},
-    performanceModeEnabled: Boolean = true,
-    setPerformanceModeEnabled: (Boolean) -> Unit = {},
-    shareGamesEnabled: Boolean = true,
-    setShareGamesEnabled: (Boolean) -> Unit = {},
-    optimizeCache: () -> Unit = {},
     modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel(),
 ) {
-    val settingsViewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel()
-    val showAboutDialog by settingsViewModel.showAboutDialog.collectAsState()
-    val showPrivacyDialog by settingsViewModel.showPrivacyDialog.collectAsState()
+    val notificationsEnabled by viewModel.notificationsEnabled.collectAsState()
+    val autoRefreshEnabled by viewModel.autoRefreshEnabled.collectAsState()
+    val imageQuality by viewModel.imageQuality.collectAsState()
+    val language by viewModel.language.collectAsState()
+    val gamingModeEnabled by viewModel.gamingModeEnabled.collectAsState()
+    val performanceModeEnabled by viewModel.performanceModeEnabled.collectAsState()
+    val shareGamesEnabled by viewModel.shareGamesEnabled.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Header
         SettingsHeader()
 
-        // Cache-Status
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
-            cacheSize = cacheSize,
-            maxCacheSize = maxCacheSize,
+            cacheSize = 0,
+            maxCacheSize = 1,
         )
 
         IntelligentCacheIndicator(
             modifier = Modifier.fillMaxWidth(),
-            isOffline = isOffline,
-            cacheSize = cacheSize,
-            lastSyncTime = lastSyncTime,
+            isOffline = false,
+            cacheSize = 0,
+            lastSyncTime = 0,
         )
 
         NetworkErrorHandler(
             modifier = Modifier.fillMaxWidth(),
-            isOffline = isOffline,
+            isOffline = false,
         )
 
-        // Erweiterte Cache-Verwaltung
         CacheManagementCard(
             modifier = Modifier.fillMaxWidth(),
-            cacheSize = cacheSize,
-            maxCacheSize = maxCacheSize,
-            lastSyncTime = lastSyncTime,
-            onClearCache = clearCache,
-            onOptimizeCache = optimizeCache
+            cacheSize = 0,
+            maxCacheSize = 1,
+            lastSyncTime = 0,
+            onClearCache = {},
+            onOptimizeCache = {}
         )
 
-        // Erscheinungsbild
-        SettingsSection(title = "Erscheinungsbild") {
-            SettingsSwitchItem(
-                icon = Icons.Default.DarkMode,
-                title = "Dark Mode",
-                subtitle = "Dunkles Design aktivieren",
-                checked = isDarkTheme,
-                onCheckedChange = setDarkTheme
-            )
-        }
-
-        // Benachrichtigungen
         SettingsSection(title = "Benachrichtigungen") {
             SettingsSwitchItem(
                 icon = Icons.Default.Notifications,
                 title = "Push-Benachrichtigungen",
                 subtitle = "Neue Spiele und Updates erhalten",
                 checked = notificationsEnabled,
-                onCheckedChange = setNotificationsEnabled
+                onCheckedChange = viewModel::setNotificationsEnabled
             )
         }
 
-        // Daten & Synchronisation
         SettingsSection(title = "Daten & Synchronisation") {
             SettingsSwitchItem(
                 icon = Icons.Default.Sync,
                 title = "Auto-Refresh",
                 subtitle = "Automatisch nach neuen Spielen suchen",
                 checked = autoRefreshEnabled,
-                onCheckedChange = setAutoRefreshEnabled
+                onCheckedChange = viewModel::setAutoRefreshEnabled
             )
 
             SettingsDropdownItem(
@@ -122,31 +86,29 @@ fun SettingsScreen(
                 title = "Bildqualität",
                 subtitle = "Qualität der Spielbilder",
                 selectedValue = imageQuality.displayName,
-                onValueChange = { setImageQuality(ImageQuality.fromDisplayName(it)) },
+                onValueChange = { viewModel.setImageQuality(ImageQuality.fromDisplayName(it)) },
                 options = ImageQuality.entries.map { it.displayName }
             )
         }
 
-        // Sprache
         SettingsSection(title = "Sprache") {
             SettingsDropdownItem(
                 icon = Icons.Default.Language,
                 title = "App-Sprache",
                 subtitle = "Sprache der Benutzeroberfläche",
                 selectedValue = language,
-                onValueChange = setLanguage,
+                onValueChange = viewModel::setLanguage,
                 options = listOf("Deutsch", "English", "Français", "Español")
             )
         }
 
-        // Gaming-Features
         SettingsSection(title = "Gaming-Features") {
             SettingsSwitchItem(
                 icon = Icons.Default.Games,
                 title = "Gaming-Modus",
                 subtitle = "Optimierte Darstellung für Gaming",
                 checked = gamingModeEnabled,
-                onCheckedChange = setGamingModeEnabled
+                onCheckedChange = viewModel::setGamingModeEnabled
             )
 
             SettingsSwitchItem(
@@ -154,7 +116,7 @@ fun SettingsScreen(
                 title = "Performance-Modus",
                 subtitle = "Schnellere Ladezeiten",
                 checked = performanceModeEnabled,
-                onCheckedChange = setPerformanceModeEnabled
+                onCheckedChange = viewModel::setPerformanceModeEnabled
             )
 
             SettingsSwitchItem(
@@ -162,203 +124,22 @@ fun SettingsScreen(
                 title = "Spiele teilen",
                 subtitle = "Spiele mit Freunden teilen",
                 checked = shareGamesEnabled,
-                onCheckedChange = setShareGamesEnabled
+                onCheckedChange = viewModel::setShareGamesEnabled
             )
         }
 
-        // Über die App
         SettingsSection(title = "Über die App") {
             SettingsButtonItem(
                 icon = Icons.Default.Info,
                 title = "Über GameFinder",
                 subtitle = "Version 1.0.0",
-                onClick = aboutApp
+                onClick = { /* Implement the aboutApp action */ }
             )
             SettingsButtonItem(
                 icon = Icons.Default.PrivacyTip,
                 title = "Datenschutz",
                 subtitle = "Datenschutzerklärung lesen",
-                onClick = privacyPolicy
-            )
-        }
-    }
-
-    if (showAboutDialog) {
-        AboutAppDialog(onDismiss = { settingsViewModel.dismissAboutDialog() })
-    }
-    if (showPrivacyDialog) {
-        PrivacyPolicyDialog(onDismiss = { settingsViewModel.dismissPrivacyDialog() })
-    }
-}
-
-@Composable
-private fun SettingsHeader() {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = Icons.Default.Settings,
-            contentDescription = null,
-            modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Einstellungen",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "Passe deine App an",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-private fun SettingsSection(
-    title: String,
-    content: @Composable () -> Unit,
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 4.dp)
-        )
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            elevation = CardDefaults.cardElevation(2.dp)
-        ) {
-            Column {
-                content()
-            }
-        }
-    }
-}
-
-@Composable
-private fun SettingsSwitchItem(
-    icon: ImageVector,
-    title: String,
-    subtitle: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-        )
-    }
-}
-
-@Composable
-private fun SettingsDropdownItem(
-    icon: ImageVector,
-    title: String,
-    subtitle: String,
-    selectedValue: String,
-    onValueChange: (String) -> Unit,
-    options: List<String>,
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clickable { expanded = true },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Text(
-            text = selectedValue,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Icon(
-            imageVector = Icons.Default.ArrowDropDown,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-    ) {
-        options.forEach { option ->
-            DropdownMenuItem(
-                text = { Text(option) },
-                onClick = {
-                    onValueChange(option)
-                    expanded = false
-                },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { /* Implement the privacyPolicy action */ }
             )
         }
     }
@@ -421,30 +202,5 @@ enum class ImageQuality(val displayName: String) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SettingsScreenPreview() {
-    SettingsScreen(
-        isDarkTheme = true,
-        setDarkTheme = {},
-        cacheSize = 500,
-        isOffline = true,
-        maxCacheSize = 100000,
-        lastSyncTime = System.currentTimeMillis(),
-        notificationsEnabled = true,
-        setNotificationsEnabled = {},
-        autoRefreshEnabled = true,
-        setAutoRefreshEnabled = {},
-        imageQuality = ImageQuality.HIGH,
-        setImageQuality = {},
-        language = "Deutsch",
-        setLanguage = {},
-        clearCache = {},
-        aboutApp = {},
-        privacyPolicy = {},
-        gamingModeEnabled = false,
-        setGamingModeEnabled = {},
-        performanceModeEnabled = true,
-        setPerformanceModeEnabled = {},
-        shareGamesEnabled = true,
-        setShareGamesEnabled = {},
-        optimizeCache = {}
-    )
+    SettingsScreen()
 }

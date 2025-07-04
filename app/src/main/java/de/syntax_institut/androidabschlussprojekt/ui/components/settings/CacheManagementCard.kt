@@ -19,6 +19,8 @@ fun CacheManagementCard(
     onClearCache: () -> Unit,
     onOptimizeCache: () -> Unit = {},
 ) {
+    val safeMaxCacheSize = if (maxCacheSize == 0) 1 else maxCacheSize
+
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -83,7 +85,7 @@ fun CacheManagementCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${(cacheSize.toFloat() / maxCacheSize * 100).toInt()}%",
+                        text = "${(cacheSize.toFloat() / safeMaxCacheSize * 100).toInt()}%",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.primary
@@ -91,7 +93,7 @@ fun CacheManagementCard(
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 LinearProgressIndicator(
-                    progress = { cacheSize.toFloat() / maxCacheSize },
+                    progress = { cacheSize.toFloat() / safeMaxCacheSize },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(8.dp),

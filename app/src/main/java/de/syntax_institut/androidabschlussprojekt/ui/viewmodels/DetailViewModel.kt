@@ -73,17 +73,7 @@ class DetailViewModel(
                         )
                         loadDetail(id, forceReload = true)
                     } else {
-                        val warnMsg = when {
-                            game?.website.isNullOrBlank() == true && (game?.screenshots?.isNotEmpty() == true) -> "Website nicht verfügbar."
-                            (game?.website?.isNotBlank() == true) && (game.screenshots.isEmpty() == true) -> "Screenshots nicht verfügbar."
-                            else -> null
-                        }
-                        Log.d("DetailViewModel", "[DEBUG] warnMsg: $warnMsg")
-                        _uiState.value = if (warnMsg != null) {
-                            DetailUiState(game = game, error = warnMsg)
-                        } else {
-                            DetailUiState(game = game)
-                        }
+                        _uiState.value = DetailUiState(game = game)
                         _isFavorite.value = favoriteResult
                     }
                 }
@@ -114,13 +104,6 @@ class DetailViewModel(
                     else -> {}
                 }
             }
-        }
-    }
-
-    fun clearCache() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.clearCache()
-            Log.d("DetailViewModel", "Cache gelöscht")
         }
     }
 

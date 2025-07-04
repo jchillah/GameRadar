@@ -26,4 +26,5 @@ val repositoryModule = module {
         )
     }
     single { FavoritesRepository(get(), get()) }
+    single { de.syntax_institut.androidabschlussprojekt.data.repositories.SettingsRepository(get<Context>()) }
 }

@@ -21,9 +21,9 @@ import org.koin.androidx.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     viewModel: FavoritesViewModel = koinViewModel(),
-    modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -133,6 +133,10 @@ fun FavoritesScreen(
                             GameItem(
                                 game = game,
                                 onClick = {
+                                    android.util.Log.d(
+                                        "Navigation",
+                                        "Navigiere zu DetailScreen mit gameId=${game.id}"
+                                    )
                                     navController.navigate(Routes.detail(game.id))
                                 },
                                 onDelete = {

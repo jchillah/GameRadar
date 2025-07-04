@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,4 +26,10 @@ fun SearchAppBarRow(
         },
         modifier = modifier.fillMaxWidth()
     )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun SearchAppBarRowPreview() {
+    SearchAppBarRow(onFilterClick = {})
 }

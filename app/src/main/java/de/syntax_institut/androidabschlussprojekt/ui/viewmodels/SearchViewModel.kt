@@ -42,7 +42,6 @@ class SearchViewModel(
     
     // Cache-Informationen
     private val _cacheSize = MutableStateFlow(0)
-    val cacheSize: StateFlow<Int> = _cacheSize.asStateFlow()
 
     init {
         // Verzögerte Initialisierung um Binder-Transaktionsfehler zu vermeiden

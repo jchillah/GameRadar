@@ -2,10 +2,13 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import android.annotation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
@@ -18,9 +21,9 @@ import org.koin.androidx.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
+    modifier: Modifier = Modifier,
     navController: NavHostController,
     viewModel: SearchViewModel = koinViewModel(),
-    modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsState()
     val isOffline by viewModel.isOffline.collectAsState()
@@ -38,6 +41,23 @@ fun SearchScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                maxLines = 1,
+                text = "Spielsuche",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            IconButton(onClick = { showFilters = true }) {
+                Icon(Icons.Default.FilterList, contentDescription = "Filter anzeigen")
+            }
+        }
         TabRow(selectedTabIndex = selectedTab) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -51,7 +71,12 @@ fun SearchScreen(
                         }
                         viewModel.search(searchText.text.trim())
                     },
-                    text = { Text(title) }
+                    text = {
+                        Text(
+                            title,
+                            maxLines = 1
+                        )
+                    }
                 )
             }
         }
@@ -94,6 +119,10 @@ fun SearchScreen(
                 SearchResultContent(
                     pagingItems = pagingItems,
                     onGameClick = { game ->
+                        android.util.Log.d(
+                            "Navigation",
+                            "Navigiere zu DetailScreen mit gameId=${game.id}"
+                        )
                         navController.navigate(Routes.detail(game.id))
                     },
                     modifier = Modifier.fillMaxSize()

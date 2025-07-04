@@ -14,7 +14,8 @@ fun CacheBanner(
     cacheSize: Int,
     maxCacheSize: Int = 1000,
 ) {
-    val cachePercentage = (cacheSize.toFloat() / maxCacheSize) * 100f
+    val safeMaxCacheSize = if (maxCacheSize == 0) 1 else maxCacheSize
+    val cachePercentage = (cacheSize.toFloat() / safeMaxCacheSize) * 100f
     val isCacheFull = cachePercentage >= 90f
 
     Card(
