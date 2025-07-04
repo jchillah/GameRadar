@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.input.*
-import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
@@ -21,6 +20,7 @@ import org.koin.androidx.compose.*
 fun SearchScreen(
     navController: NavHostController,
     viewModel: SearchViewModel = koinViewModel(),
+    modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsState()
     val isOffline by viewModel.isOffline.collectAsState()
@@ -35,14 +35,9 @@ fun SearchScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
     ) {
-        SearchAppBarRow(
-            onFilterClick = { showFilters = true }
-        )
-        Spacer(modifier = Modifier.height(8.dp))
         TabRow(selectedTabIndex = selectedTab) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -60,7 +55,6 @@ fun SearchScreen(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
         SearchBarWithButton(
             searchText = searchText,
             onTextChange = {
@@ -89,7 +83,6 @@ fun SearchScreen(
             onRemoveOrdering = { viewModel.removeOrderingFilter() },
             onClearAll = { viewModel.clearAllFilters() }
         )
-        Spacer(modifier = Modifier.height(16.dp))
         Box(modifier = Modifier.weight(1f)) {
             if (!state.hasSearched) {
                 EmptyState(

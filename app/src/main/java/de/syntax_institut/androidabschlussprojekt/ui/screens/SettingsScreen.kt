@@ -42,157 +42,144 @@ fun SettingsScreen(
     shareGamesEnabled: Boolean = true,
     setShareGamesEnabled: (Boolean) -> Unit = {},
     optimizeCache: () -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
     val settingsViewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel()
     val showAboutDialog by settingsViewModel.showAboutDialog.collectAsState()
     val showPrivacyDialog by settingsViewModel.showPrivacyDialog.collectAsState()
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp + WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
-                    bottom = 16.dp
-                ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Header
-            SettingsHeader()
+        // Header
+        SettingsHeader()
 
-            // Cache-Status
-            CacheBanner(
-                modifier = Modifier.fillMaxWidth(),
-                cacheSize = cacheSize,
-                maxCacheSize = maxCacheSize,
+        // Cache-Status
+        CacheBanner(
+            modifier = Modifier.fillMaxWidth(),
+            cacheSize = cacheSize,
+            maxCacheSize = maxCacheSize,
+        )
+
+        IntelligentCacheIndicator(
+            modifier = Modifier.fillMaxWidth(),
+            isOffline = isOffline,
+            cacheSize = cacheSize,
+            lastSyncTime = lastSyncTime,
+        )
+
+        NetworkErrorHandler(
+            modifier = Modifier.fillMaxWidth(),
+            isOffline = isOffline,
+        )
+
+        // Erweiterte Cache-Verwaltung
+        CacheManagementCard(
+            modifier = Modifier.fillMaxWidth(),
+            cacheSize = cacheSize,
+            maxCacheSize = maxCacheSize,
+            lastSyncTime = lastSyncTime,
+            onClearCache = clearCache,
+            onOptimizeCache = optimizeCache
+        )
+
+        // Erscheinungsbild
+        SettingsSection(title = "Erscheinungsbild") {
+            SettingsSwitchItem(
+                icon = Icons.Default.DarkMode,
+                title = "Dark Mode",
+                subtitle = "Dunkles Design aktivieren",
+                checked = isDarkTheme,
+                onCheckedChange = setDarkTheme
+            )
+        }
+
+        // Benachrichtigungen
+        SettingsSection(title = "Benachrichtigungen") {
+            SettingsSwitchItem(
+                icon = Icons.Default.Notifications,
+                title = "Push-Benachrichtigungen",
+                subtitle = "Neue Spiele und Updates erhalten",
+                checked = notificationsEnabled,
+                onCheckedChange = setNotificationsEnabled
+            )
+        }
+
+        // Daten & Synchronisation
+        SettingsSection(title = "Daten & Synchronisation") {
+            SettingsSwitchItem(
+                icon = Icons.Default.Sync,
+                title = "Auto-Refresh",
+                subtitle = "Automatisch nach neuen Spielen suchen",
+                checked = autoRefreshEnabled,
+                onCheckedChange = setAutoRefreshEnabled
             )
 
-            IntelligentCacheIndicator(
-                modifier = Modifier.fillMaxWidth(),
-                isOffline = isOffline,
-                cacheSize = cacheSize,
-                lastSyncTime = lastSyncTime,
+            SettingsDropdownItem(
+                icon = Icons.Default.HighQuality,
+                title = "Bildqualität",
+                subtitle = "Qualität der Spielbilder",
+                selectedValue = imageQuality.displayName,
+                onValueChange = { setImageQuality(ImageQuality.fromDisplayName(it)) },
+                options = ImageQuality.entries.map { it.displayName }
+            )
+        }
+
+        // Sprache
+        SettingsSection(title = "Sprache") {
+            SettingsDropdownItem(
+                icon = Icons.Default.Language,
+                title = "App-Sprache",
+                subtitle = "Sprache der Benutzeroberfläche",
+                selectedValue = language,
+                onValueChange = setLanguage,
+                options = listOf("Deutsch", "English", "Français", "Español")
+            )
+        }
+
+        // Gaming-Features
+        SettingsSection(title = "Gaming-Features") {
+            SettingsSwitchItem(
+                icon = Icons.Default.Games,
+                title = "Gaming-Modus",
+                subtitle = "Optimierte Darstellung für Gaming",
+                checked = gamingModeEnabled,
+                onCheckedChange = setGamingModeEnabled
             )
 
-            NetworkErrorHandler(
-                modifier = Modifier.fillMaxWidth(),
-                isOffline = isOffline,
+            SettingsSwitchItem(
+                icon = Icons.Default.Speed,
+                title = "Performance-Modus",
+                subtitle = "Schnellere Ladezeiten",
+                checked = performanceModeEnabled,
+                onCheckedChange = setPerformanceModeEnabled
             )
 
-            // Erweiterte Cache-Verwaltung
-            CacheManagementCard(
-                modifier = Modifier.fillMaxWidth(),
-                cacheSize = cacheSize,
-                maxCacheSize = maxCacheSize,
-                lastSyncTime = lastSyncTime,
-                onClearCache = clearCache,
-                onOptimizeCache = optimizeCache
+            SettingsSwitchItem(
+                icon = Icons.Default.Share,
+                title = "Spiele teilen",
+                subtitle = "Spiele mit Freunden teilen",
+                checked = shareGamesEnabled,
+                onCheckedChange = setShareGamesEnabled
             )
+        }
 
-            // Erscheinungsbild
-            SettingsSection(title = "Erscheinungsbild") {
-                SettingsSwitchItem(
-                    icon = Icons.Default.DarkMode,
-                    title = "Dark Mode",
-                    subtitle = "Dunkles Design aktivieren",
-                    checked = isDarkTheme,
-                    onCheckedChange = setDarkTheme
-                )
-            }
-
-            // Benachrichtigungen
-            SettingsSection(title = "Benachrichtigungen") {
-                SettingsSwitchItem(
-                    icon = Icons.Default.Notifications,
-                    title = "Push-Benachrichtigungen",
-                    subtitle = "Neue Spiele und Updates erhalten",
-                    checked = notificationsEnabled,
-                    onCheckedChange = setNotificationsEnabled
-                )
-            }
-
-            // Daten & Synchronisation
-            SettingsSection(title = "Daten & Synchronisation") {
-                SettingsSwitchItem(
-                    icon = Icons.Default.Sync,
-                    title = "Auto-Refresh",
-                    subtitle = "Automatisch nach neuen Spielen suchen",
-                    checked = autoRefreshEnabled,
-                    onCheckedChange = setAutoRefreshEnabled
-                )
-
-                SettingsDropdownItem(
-                    icon = Icons.Default.HighQuality,
-                    title = "Bildqualität",
-                    subtitle = "Qualität der Spielbilder",
-                    selectedValue = imageQuality.displayName,
-                    onValueChange = { setImageQuality(ImageQuality.fromDisplayName(it)) },
-                    options = ImageQuality.entries.map { it.displayName }
-                )
-            }
-
-            // Sprache
-            SettingsSection(title = "Sprache") {
-                SettingsDropdownItem(
-                    icon = Icons.Default.Language,
-                    title = "App-Sprache",
-                    subtitle = "Sprache der Benutzeroberfläche",
-                    selectedValue = language,
-                    onValueChange = setLanguage,
-                    options = listOf("Deutsch", "English", "Français", "Español")
-                )
-            }
-
-            // Gaming-Features
-            SettingsSection(title = "Gaming-Features") {
-                SettingsSwitchItem(
-                    icon = Icons.Default.Games,
-                    title = "Gaming-Modus",
-                    subtitle = "Optimierte Darstellung für Gaming",
-                    checked = gamingModeEnabled,
-                    onCheckedChange = setGamingModeEnabled
-                )
-
-                SettingsSwitchItem(
-                    icon = Icons.Default.Speed,
-                    title = "Performance-Modus",
-                    subtitle = "Schnellere Ladezeiten",
-                    checked = performanceModeEnabled,
-                    onCheckedChange = setPerformanceModeEnabled
-                )
-
-                SettingsSwitchItem(
-                    icon = Icons.Default.Share,
-                    title = "Spiele teilen",
-                    subtitle = "Spiele mit Freunden teilen",
-                    checked = shareGamesEnabled,
-                    onCheckedChange = setShareGamesEnabled
-                )
-            }
-
-            // Über die App
-            SettingsSection(title = "Über die App") {
-                SettingsButtonItem(
-                    icon = Icons.Default.Info,
-                    title = "Über GameFinder",
-                    subtitle = "Version 1.0.0",
-                    onClick = aboutApp
-                )
-                SettingsButtonItem(
-                    icon = Icons.Default.PrivacyTip,
-                    title = "Datenschutz",
-                    subtitle = "Datenschutzerklärung lesen",
-                    onClick = privacyPolicy
-                )
-            }
-
-            // Zusätzlicher Spacer am Ende, um sicherzustellen, dass der Inhalt bis ganz unten scrollt
-            Spacer(modifier = Modifier.height(80.dp))
+        // Über die App
+        SettingsSection(title = "Über die App") {
+            SettingsButtonItem(
+                icon = Icons.Default.Info,
+                title = "Über GameFinder",
+                subtitle = "Version 1.0.0",
+                onClick = aboutApp
+            )
+            SettingsButtonItem(
+                icon = Icons.Default.PrivacyTip,
+                title = "Datenschutz",
+                subtitle = "Datenschutzerklärung lesen",
+                onClick = privacyPolicy
+            )
         }
     }
 

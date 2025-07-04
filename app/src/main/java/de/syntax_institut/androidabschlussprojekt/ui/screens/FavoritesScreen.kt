@@ -23,6 +23,7 @@ import org.koin.androidx.compose.*
 fun FavoritesScreen(
     navController: NavHostController,
     viewModel: FavoritesViewModel = koinViewModel(),
+    modifier: Modifier = Modifier,
 ) {
     val state by viewModel.uiState.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
@@ -32,9 +33,8 @@ fun FavoritesScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
     ) {
         Row(
             modifier = Modifier
@@ -71,8 +71,6 @@ fun FavoritesScreen(
             }
         }
         HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.surfaceVariant)
-        Spacer(modifier = Modifier.height(8.dp))
-
         Box(modifier = Modifier.weight(1f)) {
             when {
                 state.isLoading -> {
