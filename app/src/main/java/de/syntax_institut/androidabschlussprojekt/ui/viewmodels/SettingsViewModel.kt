@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
 import android.content.*
+import androidx.core.content.*
 import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.ui.screens.*
@@ -174,15 +175,17 @@ class SettingsViewModel : ViewModel(), KoinComponent {
     private fun saveSettings() {
         viewModelScope.launch {
             try {
-                sharedPreferences.edit().apply {
-                    putBoolean("notifications_enabled", _notificationsEnabled.value)
-                    putBoolean("auto_refresh_enabled", _autoRefreshEnabled.value)
-                    putString("image_quality", _imageQuality.value.name)
-                    putString("language", _language.value)
-                    putBoolean("gaming_mode_enabled", _gamingModeEnabled.value)
-                    putBoolean("performance_mode_enabled", _performanceModeEnabled.value)
-                    putBoolean("share_games_enabled", _shareGamesEnabled.value)
-                }.apply()
+                sharedPreferences.edit() {
+                    apply {
+                        putBoolean("notifications_enabled", _notificationsEnabled.value)
+                        putBoolean("auto_refresh_enabled", _autoRefreshEnabled.value)
+                        putString("image_quality", _imageQuality.value.name)
+                        putString("language", _language.value)
+                        putBoolean("gaming_mode_enabled", _gamingModeEnabled.value)
+                        putBoolean("performance_mode_enabled", _performanceModeEnabled.value)
+                        putBoolean("share_games_enabled", _shareGamesEnabled.value)
+                    }
+                }
             } catch (e: Exception) {
                 Analytics.trackError("settings_save_failed", "SettingsViewModel")
             }
