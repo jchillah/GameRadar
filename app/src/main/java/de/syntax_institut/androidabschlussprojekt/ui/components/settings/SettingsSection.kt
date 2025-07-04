@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.font.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -34,5 +35,13 @@ internal fun SettingsSection(
                 content()
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsSectionPreview() {
+    SettingsSection(title = "Allgemein") {
+        Text("Beispiel-Inhalt für eine SettingsSection.")
     }
 }

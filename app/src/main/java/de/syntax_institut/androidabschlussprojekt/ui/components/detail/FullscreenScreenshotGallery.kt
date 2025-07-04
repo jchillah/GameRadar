@@ -20,6 +20,7 @@ import androidx.compose.ui.window.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import kotlin.math.*
 
 @Composable
@@ -27,6 +28,7 @@ fun FullscreenScreenshotGallery(
     screenshots: List<String>,
     initialIndex: Int,
     onDismiss: () -> Unit,
+    imageQuality: ImageQuality = ImageQuality.HIGH,
 ) {
     var currentIndex by remember { mutableIntStateOf(initialIndex) }
     var scale by remember { mutableFloatStateOf(1f) }
@@ -80,10 +82,15 @@ fun FullscreenScreenshotGallery(
                         )
                     }
             ) {
+                val size = when (imageQuality) {
+                    ImageQuality.LOW -> Size(400, 240)
+                    ImageQuality.MEDIUM -> Size(800, 480)
+                    ImageQuality.HIGH -> Size.ORIGINAL
+                }
                 SubcomposeAsyncImage(
                     model = ImageRequest.Builder(context)
                         .data(screenshots[currentIndex])
-                        .size(Size.ORIGINAL)
+                        .size(size)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Screenshot ${currentIndex + 1}",

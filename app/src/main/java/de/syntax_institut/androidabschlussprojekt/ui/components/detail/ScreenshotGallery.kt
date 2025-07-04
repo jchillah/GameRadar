@@ -17,10 +17,11 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.*
 import coil3.compose.*
 import coil3.request.*
-import coil3.size.*
+import coil3.size.Size
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
 @Composable
-fun ScreenshotGallery(screenshots: List<String>) {
+fun ScreenshotGallery(screenshots: List<String>, imageQuality: ImageQuality) {
     LaunchedEffect(screenshots) {
         Log.d("ScreenshotGallery", "Screenshots erhalten: ${screenshots.size}")
         screenshots.forEachIndexed { index, url ->
@@ -72,7 +73,8 @@ fun ScreenshotGallery(screenshots: List<String>) {
                                 selectedImageIndex = index
                                 showFullscreenGallery = true
                             },
-                            index = index
+                            index = index,
+                            imageQuality = imageQuality
                         )
                     }
                 }
@@ -94,7 +96,8 @@ fun ScreenshotGallery(screenshots: List<String>) {
             FullscreenScreenshotGallery(
                 screenshots = screenshots,
                 initialIndex = selectedImageIndex,
-                onDismiss = { showFullscreenGallery = false }
+                onDismiss = { showFullscreenGallery = false },
+                imageQuality = imageQuality
             )
         }
     } else {
@@ -139,6 +142,7 @@ private fun OptimizedScreenshotItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     index: Int = 0,
+    imageQuality: ImageQuality,
 ) {
     val context = LocalContext.current
     var isPressed by remember { mutableStateOf(false) }
@@ -162,10 +166,15 @@ private fun OptimizedScreenshotItem(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
+            val size = when (imageQuality) {
+                ImageQuality.LOW -> Size(200, 120)
+                ImageQuality.MEDIUM -> Size(400, 240)
+                ImageQuality.HIGH -> Size.ORIGINAL
+            }
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(imageUrl)
-                    .size(Size(400, 240)) // Optimierte Größe für Thumbnails
+                    .size(size)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Screenshot ${index + 1}",

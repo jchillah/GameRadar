@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import org.koin.compose.*
 
@@ -17,13 +18,11 @@ import org.koin.compose.*
 fun AppStart(modifier: Modifier) {
     val settingsRepository: SettingsRepository = koinInject()
     val darkModeEnabled by settingsRepository.darkModeEnabled.collectAsState()
-    var isLoaded by remember { mutableStateOf(true) } // Data wird jetzt direkt aus StateFlow gelesen
+    var isLoaded by remember { mutableStateOf(true) }
 
     if (!isLoaded) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            Loading()
         }
     } else {
         MyAppTheme(darkTheme = darkModeEnabled) {

@@ -15,12 +15,14 @@ import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun GameItem(
     game: Game,
     onClick: () -> Unit,
-    onDelete: (() -> Unit)? = null
+    onDelete: (() -> Unit)? = null,
+    imageQuality: ImageQuality = ImageQuality.HIGH,
 ) {
     val context = LocalContext.current
 
@@ -34,10 +36,15 @@ fun GameItem(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val size = when (imageQuality) {
+                ImageQuality.LOW -> Size(80, 80)
+                ImageQuality.MEDIUM -> Size(160, 160)
+                ImageQuality.HIGH -> Size.ORIGINAL
+            }
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(game.imageUrl)
-                    .size(Size(160, 160))
+                    .size(size)
                     .crossfade(true)
                     .build(),
                 contentDescription = game.title,
@@ -51,10 +58,7 @@ fun GameItem(
                             .size(80.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp
-                        )
+                        Loading(modifier = Modifier.size(24.dp))
                     }
                 },
                 error = {

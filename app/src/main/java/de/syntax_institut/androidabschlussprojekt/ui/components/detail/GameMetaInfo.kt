@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.*
 
 /**
  * Zeigt die wichtigsten Metadaten eines Spiels (Titel, Release, Rating).
@@ -20,4 +21,10 @@ fun GameMetaInfo(
         Text(releaseDate, style = MaterialTheme.typography.bodyMedium)
         Text("Rating: $rating", style = MaterialTheme.typography.bodySmall)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameMetaInfoPreview() {
+    GameMetaInfo(title = "Beispielspiel", releaseDate = "2023-01-01", rating = 4.7)
 } 

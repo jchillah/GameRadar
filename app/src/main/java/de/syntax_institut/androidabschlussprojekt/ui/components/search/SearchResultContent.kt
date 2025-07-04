@@ -19,6 +19,7 @@ fun SearchResultContent(
     pagingItems: LazyPagingItems<Game>,
     onGameClick: (Game) -> Unit,
     modifier: Modifier = Modifier,
+    imageQuality: ImageQuality = ImageQuality.HIGH,
 ) {
     when (pagingItems.loadState.refresh) {
         is LoadState.Loading -> {
@@ -60,7 +61,11 @@ fun SearchResultContent(
                 ) {
                     items(pagingItems.itemCount) { idx ->
                         pagingItems[idx]?.let { game ->
-                            GameItem(game = game, onClick = { onGameClick(game) })
+                            GameItem(
+                                game = game,
+                                onClick = { onGameClick(game) },
+                                imageQuality = imageQuality
+                            )
                         }
                     }
                     if (pagingItems.loadState.append is LoadState.Loading) {
@@ -71,7 +76,7 @@ fun SearchResultContent(
                                     .padding(vertical = 16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator()
+                                Loading(modifier = Modifier.size(32.dp))
                             }
                         }
                     }

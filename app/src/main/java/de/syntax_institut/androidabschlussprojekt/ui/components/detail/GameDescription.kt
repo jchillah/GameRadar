@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 /**
@@ -17,4 +18,10 @@ fun GameDescription(description: String?, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.bodyLarge,
         modifier = modifier
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameDescriptionPreview() {
+    GameDescription(description = "Dies ist eine Beispielbeschreibung für ein Spiel.")
 } 

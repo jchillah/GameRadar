@@ -40,6 +40,8 @@ fun DetailScreen(
     val context = LocalContext.current
     val emptyString = ""
     val scrollState = rememberScrollState()
+    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val imageQuality by settingsViewModel.imageQuality.collectAsState()
 
     LaunchedEffect(gameId) {
         Analytics.trackScreenView("DetailScreen")
@@ -93,20 +95,15 @@ fun DetailScreen(
 
                 state.error != null -> {
                     ErrorCard(
+                        modifier = Modifier.fillMaxSize(),
                         error = state.error ?: "Unbekannter Fehler",
-                        onRetry = {
-                            vm.loadDetail(gameId)
-                            Analytics.trackUserAction("retry_loading", gameId)
-                        },
-                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
                 game == null -> {
                     ErrorCard(
+                        modifier = Modifier.fillMaxSize(),
                         error = "Spiel konnte nicht geladen werden.",
-                        onRetry = { vm.loadDetail(gameId) },
-                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
@@ -121,7 +118,15 @@ fun DetailScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    GameHeaderImage(imageUrl = game.imageUrl.toString())
+
+                    // wenn die Daten nicht Null sind
+                    if (true) {
+                        GameHeaderImage(
+                            imageUrl = game.imageUrl ?: "",
+                            imageQuality = imageQuality
+                        )
+                    }
+
                     GameMetaInfo(
                         title = game.title,
                         releaseDate = game.releaseDate ?: emptyString,
@@ -163,17 +168,14 @@ fun DetailScreen(
                             if (!NetworkUtils.isNetworkAvailable(context)) {
                                 ErrorCard(
                                     error = "Keine Screenshots verfügbar. Prüfe deine Internetverbindung und versuche es erneut.",
-                                    onRetry = { vm.loadDetail(gameId, forceReload = true) }
                                 )
                             } else {
                                 ErrorCard(
                                     error = "Für dieses Spiel wurden keine Screenshots gefunden.",
-                                    onRetry = {},
-                                    onDismiss = {}
                                 )
                             }
                         } else {
-                            ScreenshotGallery(game.screenshots)
+                            ScreenshotGallery(game.screenshots, imageQuality = imageQuality)
                             Analytics.trackEvent(
                                 "screenshots_viewed", mapOf(
                                     "game_id" to gameId,
@@ -186,8 +188,6 @@ fun DetailScreen(
                         SectionCard("Website") {
                             ErrorCard(
                                 error = "Keine Website verfügbar.",
-                                onRetry = {},
-                                onDismiss = {}
                             )
                         }
                     } else {
@@ -222,4 +222,5 @@ fun DetailScreenPreview() {
         navController = rememberNavController()
     )
 }
+
 

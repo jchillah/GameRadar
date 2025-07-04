@@ -2,27 +2,21 @@
 
 **Entdecke deine nächste Gaming-Leidenschaft – modern, schnell, fehlerrobust.**
 
-GameRadar ist die moderne Android-App, um neue Spiele zu entdecken, zu filtern, zu bewerten und
-Favoriten zu speichern. Entwickelt mit Jetpack Compose, MVVM, Room und der RAWG-API – für ein
-konsistentes, performantes und fehlerfreies Nutzererlebnis.
+GameRadar ist eine moderne Android-App, um neue Spiele zu entdecken, zu filtern, zu bewerten und Favoriten zu speichern. Entwickelt mit **Jetpack Compose**, **MVVM**, **Room** und der **RAWG-API** – für ein konsistentes, performantes und fehlerfreies Nutzererlebnis.
 
 ---
 
 ## Highlights
 
-- **Edge-to-Edge-Design:** Inhalte beginnen direkt unter der Statusleiste, keine doppelten AppBars,
-  keine verschachtelten Scaffold-Strukturen.
-- **Konsistente UI:** Einheitliche Titelzeile mit Actions (Teilen, Favorit, Refresh) auf allen
-  Hauptscreens.
-- **Fehlerbehandlung pro Feld:** Fehler wie „Keine Website verfügbar“ oder „Keine Screenshots
-  verfügbar“ werden gezielt im jeweiligen Bereich angezeigt, nicht mehr als globale ErrorCard.
-- **Null-Safety & Logging:** Alle Datenzugriffe sind null-sicher, Navigation und Datenübergaben
-  werden geloggt.
-- **Navigation nur mit primitiven Typen:** Es werden ausschließlich IDs oder Strings übergeben,
-  keine komplexen Objekte.
+- **Edge-to-Edge-Design:** Inhalte beginnen direkt unter der Statusleiste, keine doppelten AppBars, keine verschachtelten Scaffold-Strukturen.
+- **Konsistente UI:** Einheitliche Titelzeile mit Actions (Teilen, Favorit, Refresh) auf allen Hauptscreens.
+- **Dark-/Light-Mode-Umschaltung:** Nutzer können das Design jederzeit in den Einstellungen wechseln.
+- **Settings-Screen:** Alle App-Einstellungen (Design, Sprache, Bildqualität, Benachrichtigungen, etc.) zentral und MVVM-konform.
+- **Fehlerbehandlung pro Feld:** Fehler wie „Keine Website verfügbar“ oder „Keine Screenshots verfügbar“ werden gezielt im jeweiligen Bereich angezeigt.
+- **Null-Safety & Logging:** Alle Datenzugriffe sind null-sicher, Navigation und Datenübergaben werden geloggt.
+- **Navigation nur mit primitiven Typen:** Es werden ausschließlich IDs oder Strings übergeben, keine komplexen Objekte.
 - **Offline-First:** Favoriten und Detaildaten werden lokal mit Room gecacht.
-- **Moderne Compose-Architektur:** Klare Trennung von UI, State und Logik, State-Hoisting, keine
-  UI-Logik im ViewModel.
+- **Moderne Compose-Architektur:** Klare Trennung von UI, State und Logik, State-Hoisting, keine UI-Logik im ViewModel.
 
 ---
 
@@ -31,8 +25,11 @@ konsistentes, performantes und fehlerfreies Nutzererlebnis.
 <p>
   <img src="./img/screen1.png" width="300" alt="Suchbildschirm LightMode">
   <img src="./img/screen2.png" width="300" alt="Suchbildschirm DarkMode">
+  <img src="./img/screen3.png" width="300" alt="Detailansicht">
   <img src="./img/screen4.png" width="300" alt="Detailansicht mit Screenshots">
-  <img src="./img/screen3.png" width="300" alt="Favoriten-Liste">
+  <img src="./img/screen5.png" width="300" alt="Favoriten-Liste">
+  <img src="./img/screen6.png" width="300" alt="Settings-Screen">
+  <img src="./img/screen7.png" width="300" alt="Settings-Screen über App">
 </p>
 
 ---
@@ -48,9 +45,11 @@ konsistentes, performantes und fehlerfreies Nutzererlebnis.
 - ⚡ **Offline-Cache** für schnelle Anzeige & Fehlervermeidung
 - 🎨 **Jetpack Compose UI** – modern, performant, flexibel
 - 🏗️ **MVVM-Architektur** mit sauberem Repository-Pattern
-- ⏳ **Ladeindikator & Error-UI** mit Retry-Funktion
+- ⏳ **Ladeindikator & Error-UI** mit Retry-Funktion (zentralisierte Loading-Komponente)
 - 🛡️ **Fehlerhinweise direkt im Feld** (z. B. „Keine Screenshots verfügbar“)
 - 📝 **Logging** für Navigation und Datenübergabe
+- 🌓 **Dark-/Light-Mode** per Schalter im SettingsScreen
+- ⚙️ **SettingsScreen**: Sprache, Bildqualität, Benachrichtigungen, Design, u.v.m.
 
 ---
 
@@ -59,19 +58,22 @@ konsistentes, performantes und fehlerfreies Nutzererlebnis.
 ### Projektstruktur (MVVM + Compose)
 
 ```bash
-de.syntax-institut.androidabschlussprojekt
-├── data/local         # Room: Entities, DAOs, DB
-├── data/remote        # Retrofit DTOs + API-Service
-├── data/repositories  # Kommunikation zwischen Datenquellen
-├── di                 # Dependency Injection (Koin)
-├── navigation         # Jetpack Navigation Komponenten
+de.syntax_institut.androidabschlussprojekt
+├── data
+│   ├── local         # Room: Entities, DAOs, DB, Models
+│   ├── remote        # Retrofit DTOs + API-Service
+│   └── repositories  # Kommunikation zwischen Datenquellen & Settings
+├── domain           # Geschäftslogik, Domain-Modelle (z. B. Genre, Platform)
+├── di               # Dependency Injection (Koin)
+├── navigation       # Jetpack Navigation Komponenten
 ├── ui
-│   ├── components     # Wiederverwendbare Composables
-│   ├── screens        # Hauptscreens (Search, Detail, Favorites, Settings)
-│   ├── theme          # Farben, Typographie, Shapes
-│   └── viewmodels     # ViewModel-Logik & UI-State
-├── utils              # Hilfsklassen (z. B. Resource.kt)
-└── services           # z. B. Background-Tasks
+│   ├── components   # Wiederverwendbare Composables (common, detail, search, settings)
+│   ├── screens      # Hauptscreens (Search, Detail, Favorites, Settings)
+│   ├── states       # UI-State-Modelle
+│   ├── theme        # Farben, Typographie, Shapes
+│   └── viewmodels   # ViewModel-Logik & UI-State
+├── utils            # Hilfsklassen (z. B. Resource.kt, NetworkUtils)
+└── services         # z. B. Background-Tasks
 ```
 
 ### Datenhaltung & API
@@ -97,15 +99,10 @@ de.syntax-institut.androidabschlussprojekt
 
 ## Fehlerbehandlung & UX
 
-- **Fehler pro Feld:**
-  - Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich
-  - Echte API-/Netzwerkfehler? → Globale ErrorCard mit Retry
-- **Null-Safety:**
-  - Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
-- **Logging:**
-  - Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
-- **Keine komplexen Objekte in Navigation:**
-  - Es werden nur primitive Typen (Int, String) übergeben
+- **Fehler pro Feld:**  Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich  Echte API-/Netzwerkfehler? → Globale ErrorCard mit Retry
+- **Null-Safety:**  Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
+- **Logging:**  Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
+- **Keine komplexen Objekte in Navigation:**  Es werden nur primitive Typen (Int, String) übergeben
 
 ---
 
@@ -120,11 +117,12 @@ de.syntax-institut.androidabschlussprojekt
 ## Ausblick
 
 - [ ] Push-Notifikationen zu neuen Top-Spielen
-- [x] Dark Mode
+- [x] Dark Mode (umschaltbar)
 - [x] Vollbild-Screenshot-Galerie in Detailseite
 - [x] Fehlerbehandlung pro Feld (statt global)
 - [x] Logging für Navigation und Fehler
 - [x] Erweiterte Paging-Unterstützung
+- [x] SettingsScreen mit allen wichtigen App-Optionen
 - [ ] Firebase-Integration für Sync & Analytics
 
 ---
@@ -132,4 +130,9 @@ de.syntax-institut.androidabschlussprojekt
 ## Lizenz
 
 MIT License – siehe [LICENSE](LICENSE)
+
+---
+
+**Tipp:**  
+Das Projekt ist ein modernes Compose-Vorzeigeprojekt – ideal als Lern- und Referenzbasis für saubere Android-Architektur!
 

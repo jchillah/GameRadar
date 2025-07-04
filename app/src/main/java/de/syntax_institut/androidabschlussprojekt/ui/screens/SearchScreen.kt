@@ -32,6 +32,8 @@ fun SearchScreen(
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
     val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
     var selectedTab by remember { mutableIntStateOf(0) }
+    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val imageQuality by settingsViewModel.imageQuality.collectAsState()
     LaunchedEffect(Unit) {
         if (state.platforms.isEmpty()) viewModel.loadPlatforms()
         if (state.genres.isEmpty()) viewModel.loadGenres()
@@ -109,7 +111,12 @@ fun SearchScreen(
             onClearAll = { viewModel.clearAllFilters() }
         )
         Box(modifier = Modifier.weight(1f)) {
-            if (!state.hasSearched) {
+            if (state.error != null) {
+                ErrorCard(
+                    modifier = Modifier.fillMaxSize(),
+                    error = state.error ?: "Unbekannter Fehler",
+                )
+            } else if (!state.hasSearched) {
                 EmptyState(
                     title = "Suche nach Spielen",
                     message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
@@ -125,7 +132,8 @@ fun SearchScreen(
                         )
                         navController.navigate(Routes.detail(game.id))
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    imageQuality = imageQuality
                 )
             }
         }
@@ -151,6 +159,9 @@ fun SearchScreen(
                 },
                 onFilterChange = { newPlatforms, newGenres, newRating ->
                     viewModel.updateFilters(newPlatforms, newGenres, newRating)
+                    if (searchText.text.isNotBlank()) {
+                        viewModel.search(searchText.text.trim())
+                    }
                     showFilters = false
                 },
                 onRetryPlatforms = { viewModel.loadPlatforms() },
