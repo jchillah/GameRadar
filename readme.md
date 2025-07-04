@@ -25,8 +25,11 @@ GameRadar ist eine moderne Android-App, um neue Spiele zu entdecken, zu filtern,
 <p>
   <img src="./img/screen1.png" width="300" alt="Suchbildschirm LightMode">
   <img src="./img/screen2.png" width="300" alt="Suchbildschirm DarkMode">
+  <img src="./img/screen3.png" width="300" alt="Detailansicht">
   <img src="./img/screen4.png" width="300" alt="Detailansicht mit Screenshots">
-  <img src="./img/screen3.png" width="300" alt="Favoriten-Liste">
+  <img src="./img/screen5.png" width="300" alt="Favoriten-Liste">
+  <img src="./img/screen6.png" width="300" alt="Settings-Screen">
+  <img src="./img/screen7.png" width="300" alt="Settings-Screen über App">
 </p>
 
 ---
