@@ -2,12 +2,12 @@ package de.syntax_institut.androidabschlussprojekt.ui.components.common
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.ui.components.search.ShimmerPlaceholder
+import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 
 @Composable
 fun PerformanceOptimizedLazyColumn(
@@ -95,7 +95,6 @@ fun PerformanceOptimizedLazyColumnWithErrorPreview() {
     PerformanceOptimizedLazyColumnWithError(
         modifier = Modifier.fillMaxSize(),
         error = "Ein Fehler ist aufgetreten",
-        onRetry = {}
     ) {
         items(10) { index ->
             Text(
@@ -115,7 +114,6 @@ fun PerformanceOptimizedLazyColumnWithError(
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     isLoading: Boolean = false,
     error: String? = null,
-    onRetry: (() -> Unit)? = null,
     content: LazyListScope.() -> Unit,
 ) {
     LazyColumn(
@@ -135,7 +133,6 @@ fun PerformanceOptimizedLazyColumnWithError(
             item {
                 ErrorCard(
                     error = error,
-                    onRetry = onRetry ?: {},
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)

@@ -111,7 +111,12 @@ fun SearchScreen(
             onClearAll = { viewModel.clearAllFilters() }
         )
         Box(modifier = Modifier.weight(1f)) {
-            if (!state.hasSearched) {
+            if (state.error != null) {
+                ErrorCard(
+                    modifier = Modifier.fillMaxSize(),
+                    error = state.error ?: "Unbekannter Fehler",
+                )
+            } else if (!state.hasSearched) {
                 EmptyState(
                     title = "Suche nach Spielen",
                     message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
@@ -154,6 +159,9 @@ fun SearchScreen(
                 },
                 onFilterChange = { newPlatforms, newGenres, newRating ->
                     viewModel.updateFilters(newPlatforms, newGenres, newRating)
+                    if (searchText.text.isNotBlank()) {
+                        viewModel.search(searchText.text.trim())
+                    }
                     showFilters = false
                 },
                 onRetryPlatforms = { viewModel.loadPlatforms() },
