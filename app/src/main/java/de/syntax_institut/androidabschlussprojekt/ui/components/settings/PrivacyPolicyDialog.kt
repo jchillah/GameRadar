@@ -31,7 +31,9 @@ fun PrivacyPolicyDialog(
                 Text(
                     text = "Datenschutzerklärung",
                     style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         },

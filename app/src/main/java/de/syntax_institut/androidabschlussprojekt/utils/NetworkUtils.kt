@@ -22,7 +22,7 @@ object NetworkUtils {
 
             activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
                     activeNetwork.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Fallback auf false bei Fehlern
             false
         }
@@ -34,7 +34,7 @@ object NetworkUtils {
     fun observeNetworkStatus(context: Context): Flow<Boolean> = callbackFlow {
         val connectivityManager = try {
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Fallback auf false bei Fehlern
             trySend(false)
             close()
@@ -45,7 +45,7 @@ object NetworkUtils {
             override fun onAvailable(network: Network) {
                 try {
                     trySend(true)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // Ignoriere Fehler beim Senden
                 }
             }
@@ -53,7 +53,7 @@ object NetworkUtils {
             override fun onLost(network: Network) {
                 try {
                     trySend(false)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // Ignoriere Fehler beim Senden
                 }
             }
@@ -67,7 +67,7 @@ object NetworkUtils {
                         networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
                                 networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
                     trySend(isConnected)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     // Ignoriere Fehler beim Senden
                 }
             }
@@ -82,7 +82,7 @@ object NetworkUtils {
 
             // Initialer Status
             trySend(isNetworkAvailable(context))
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Fallback auf false bei Registrierungsfehlern
             trySend(false)
         }
@@ -90,7 +90,7 @@ object NetworkUtils {
         awaitClose {
             try {
                 connectivityManager.unregisterNetworkCallback(networkCallback)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Ignoriere Fehler beim Aufheben der Registrierung
             }
         }

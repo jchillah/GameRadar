@@ -4,13 +4,11 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.vector.*
-import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 
@@ -26,6 +24,9 @@ fun SettingsScreen(
     val gamingModeEnabled by viewModel.gamingModeEnabled.collectAsState()
     val performanceModeEnabled by viewModel.performanceModeEnabled.collectAsState()
     val shareGamesEnabled by viewModel.shareGamesEnabled.collectAsState()
+    val darkModeEnabled by viewModel.darkModeEnabled.collectAsState()
+    var showAboutDialog by remember { mutableStateOf(false) }
+    var showPrivacyDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -128,73 +129,35 @@ fun SettingsScreen(
             )
         }
 
+        SettingsSection(title = "Design") {
+            SettingsSwitchItem(
+                icon = Icons.Default.DarkMode,
+                title = "Dunkles Design",
+                subtitle = "Aktiviere den Dark Mode",
+                checked = darkModeEnabled,
+                onCheckedChange = viewModel::setDarkModeEnabled
+            )
+        }
+
         SettingsSection(title = "Über die App") {
             SettingsButtonItem(
                 icon = Icons.Default.Info,
                 title = "Über GameFinder",
                 subtitle = "Version 1.0.0",
-                onClick = { /* Implement the aboutApp action */ }
+                onClick = { showAboutDialog = true }
             )
             SettingsButtonItem(
                 icon = Icons.Default.PrivacyTip,
                 title = "Datenschutz",
                 subtitle = "Datenschutzerklärung lesen",
-                onClick = { /* Implement the privacyPolicy action */ }
+                onClick = { showPrivacyDialog = true }
             )
         }
-    }
-}
-
-@Composable
-private fun SettingsButtonItem(
-    icon: ImageVector,
-    title: String,
-    subtitle: String,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        if (showAboutDialog) {
+            AboutAppDialog(onDismiss = { showAboutDialog = false })
         }
-        Icon(
-            imageVector = Icons.Default.ChevronRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-enum class ImageQuality(val displayName: String) {
-    LOW("Niedrig"),
-    MEDIUM("Mittel"),
-    HIGH("Hoch");
-
-    companion object {
-        fun fromDisplayName(displayName: String): ImageQuality {
-            return entries.find { it.displayName == displayName } ?: HIGH
+        if (showPrivacyDialog) {
+            PrivacyPolicyDialog(onDismiss = { showPrivacyDialog = false })
         }
     }
 }

@@ -4,14 +4,10 @@ import android.content.*
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.*
-import androidx.compose.material.icons.automirrored.filled.*
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
-import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.core.net.*
@@ -62,52 +58,31 @@ fun DetailScreen(
 
     val game = state.game
     Box(modifier = Modifier.fillMaxSize()) {
+        Column {
+            DetailTopRow(
+                game = game,
+                isFavorite = isFavorite,
+                navController = navController,
+                onRefresh = {
+                    vm.loadDetail(
+                        gameId,
+                        forceReload = true
+                    ); Analytics.trackUserAction("cache_cleared", gameId)
+                },
+                onToggleFavorite = {
+                    vm.toggleFavorite(); Analytics.trackUserAction(
+                    "toggle_favorite",
+                    gameId
+                )
+                }
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 64.dp)
                 .verticalScroll(scrollState)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Zurück"
-                    )
-                }
-                Text(
-                    text = game?.title ?: "Spieldetails",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.weight(1f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                if (game != null) {
-                    IconButton(onClick = {
-                        vm.loadDetail(gameId, forceReload = true)
-                        Analytics.trackUserAction("cache_cleared", gameId)
-                    }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Neu laden")
-                    }
-                    ShareButton(
-                        gameTitle = game.title,
-                        gameUrl = game.website
-                    )
-                    FavoriteButton(
-                        isFavorite = isFavorite,
-                        onFavoriteChanged = { _ ->
-                            vm.toggleFavorite()
-                            Analytics.trackUserAction("toggle_favorite", gameId)
-                        }
-                    )
-                }
-            }
             when {
                 state.isLoading -> {
                     LoadingState(
@@ -247,3 +222,4 @@ fun DetailScreenPreview() {
         navController = rememberNavController()
     )
 }
+

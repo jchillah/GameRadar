@@ -1,7 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import android.content.*
-import de.syntax_institut.androidabschlussprojekt.ui.screens.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import kotlinx.coroutines.flow.*
 
 class SettingsRepository(context: Context) {
@@ -28,6 +28,9 @@ class SettingsRepository(context: Context) {
 
     private val _shareGamesEnabled = MutableStateFlow(true)
     val shareGamesEnabled: StateFlow<Boolean> = _shareGamesEnabled.asStateFlow()
+
+    private val _darkModeEnabled = MutableStateFlow(false)
+    val darkModeEnabled: StateFlow<Boolean> = _darkModeEnabled.asStateFlow()
 
     init {
         loadSettings()
@@ -68,6 +71,11 @@ class SettingsRepository(context: Context) {
         saveSettings()
     }
 
+    fun setDarkModeEnabled(enabled: Boolean) {
+        _darkModeEnabled.value = enabled
+        saveSettings()
+    }
+
     private fun saveSettings() {
         sharedPreferences.edit().apply {
             putBoolean("notifications_enabled", _notificationsEnabled.value)
@@ -77,6 +85,7 @@ class SettingsRepository(context: Context) {
             putBoolean("gaming_mode_enabled", _gamingModeEnabled.value)
             putBoolean("performance_mode_enabled", _performanceModeEnabled.value)
             putBoolean("share_games_enabled", _shareGamesEnabled.value)
+            putBoolean("dark_mode_enabled", _darkModeEnabled.value)
             apply()
         }
     }
@@ -93,7 +102,6 @@ class SettingsRepository(context: Context) {
         _performanceModeEnabled.value =
             sharedPreferences.getBoolean("performance_mode_enabled", true)
         _shareGamesEnabled.value = sharedPreferences.getBoolean("share_games_enabled", true)
+        _darkModeEnabled.value = sharedPreferences.getBoolean("dark_mode_enabled", false)
     }
-}
-
-// ImageQuality-Enum ggf. importieren oder hier definieren 
+} 

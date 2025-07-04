@@ -1,8 +1,8 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
 import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
-import de.syntax_institut.androidabschlussprojekt.ui.screens.*
 
 class SettingsViewModel(
     private val settingsRepository: SettingsRepository,
@@ -15,6 +15,7 @@ class SettingsViewModel(
     val gamingModeEnabled = settingsRepository.gamingModeEnabled
     val performanceModeEnabled = settingsRepository.performanceModeEnabled
     val shareGamesEnabled = settingsRepository.shareGamesEnabled
+    val darkModeEnabled = settingsRepository.darkModeEnabled
 
     fun setNotificationsEnabled(enabled: Boolean) =
         settingsRepository.setNotificationsEnabled(enabled)
@@ -27,6 +28,7 @@ class SettingsViewModel(
         settingsRepository.setPerformanceModeEnabled(enabled)
 
     fun setShareGamesEnabled(enabled: Boolean) = settingsRepository.setShareGamesEnabled(enabled)
+    fun setDarkModeEnabled(enabled: Boolean) = settingsRepository.setDarkModeEnabled(enabled)
 
     // Dialog-States und Cache-Logik ggf. separat behandeln
     // ... bestehender Code ...
