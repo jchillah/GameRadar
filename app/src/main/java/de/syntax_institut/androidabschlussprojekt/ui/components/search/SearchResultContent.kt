@@ -71,7 +71,7 @@ fun SearchResultContent(
                                     .padding(vertical = 16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                CircularProgressIndicator()
+                                Loading(modifier = Modifier.size(32.dp))
                             }
                         }
                     }

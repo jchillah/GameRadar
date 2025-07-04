@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import kotlin.math.*
 
@@ -48,10 +49,7 @@ fun FilterBottomSheet(
         Text("Plattformen", style = MaterialTheme.typography.titleMedium)
         
         if (isLoadingPlatforms) {
-            CircularProgressIndicator(
-                modifier = Modifier.padding(16.dp),
-                strokeWidth = 2.dp
-            )
+            Loading(modifier = Modifier.padding(16.dp))
         } else if (platformsError != null) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -128,10 +126,7 @@ fun FilterBottomSheet(
         Text("Genres", style = MaterialTheme.typography.titleMedium)
         
         if (isLoadingGenres) {
-            CircularProgressIndicator(
-                modifier = Modifier.padding(16.dp),
-                strokeWidth = 2.dp
-            )
+            Loading(modifier = Modifier.padding(16.dp))
         } else if (genresError != null) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
