@@ -18,8 +18,6 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 fun ErrorCard(
     modifier: Modifier = Modifier,
     error: String,
-    onRetry: () -> Unit = {},
-    onDismiss: () -> Unit = {},
 ) {
     Card(
         modifier = modifier
@@ -30,10 +28,11 @@ fun ErrorCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
                     imageVector = Icons.Default.Error,
@@ -56,35 +55,6 @@ fun ErrorCard(
                 color = MaterialTheme.colorScheme.onErrorContainer,
                 textAlign = TextAlign.Start
             )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                if (onDismiss != {}) {
-                    TextButton(onClick = onDismiss) {
-                        Text("Schließen")
-                    }
-                }
-                if (onRetry != {}) {
-                    Button(
-                        onClick = onRetry,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Erneut versuchen")
-                    }
-                }
-            }
         }
     }
 
@@ -96,5 +66,7 @@ fun ErrorCard(
 @Preview(showBackground = true)
 @Composable
 fun ErrorCardPreview() {
-    ErrorCard(error = "Beispiel-Fehler", onRetry = {})
+    ErrorCard(
+        error = "Beispiel-Fehler"
+    )
 } 

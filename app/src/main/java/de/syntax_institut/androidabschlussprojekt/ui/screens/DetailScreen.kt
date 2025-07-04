@@ -95,20 +95,15 @@ fun DetailScreen(
 
                 state.error != null -> {
                     ErrorCard(
+                        modifier = Modifier.fillMaxSize(),
                         error = state.error ?: "Unbekannter Fehler",
-                        onRetry = {
-                            vm.loadDetail(gameId)
-                            Analytics.trackUserAction("retry_loading", gameId)
-                        },
-                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
                 game == null -> {
                     ErrorCard(
+                        modifier = Modifier.fillMaxSize(),
                         error = "Spiel konnte nicht geladen werden.",
-                        onRetry = { vm.loadDetail(gameId) },
-                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
@@ -173,13 +168,10 @@ fun DetailScreen(
                             if (!NetworkUtils.isNetworkAvailable(context)) {
                                 ErrorCard(
                                     error = "Keine Screenshots verfügbar. Prüfe deine Internetverbindung und versuche es erneut.",
-                                    onRetry = { vm.loadDetail(gameId, forceReload = true) }
                                 )
                             } else {
                                 ErrorCard(
                                     error = "Für dieses Spiel wurden keine Screenshots gefunden.",
-                                    onRetry = {},
-                                    onDismiss = {}
                                 )
                             }
                         } else {
@@ -196,8 +188,6 @@ fun DetailScreen(
                         SectionCard("Website") {
                             ErrorCard(
                                 error = "Keine Website verfügbar.",
-                                onRetry = {},
-                                onDismiss = {}
                             )
                         }
                     } else {
