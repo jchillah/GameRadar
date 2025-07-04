@@ -1,15 +1,19 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.common
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.vector.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
 fun StatItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     label: String,
     value: String,
     color: Color,
@@ -35,4 +39,14 @@ fun StatItem(
             color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun StatItemPreview() {
+    StatItem(
+        label = "Bewertung", value = "4.5",
+        icon = Icons.Filled.Star,
+        color = Color(0xFFFFA500)
+    )
 }

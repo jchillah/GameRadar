@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*

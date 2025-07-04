@@ -5,15 +5,38 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- Backup-Regeln für GameFinder App -->
+        <include
+            domain="database"
+            path="game_database" />
+        <include
+            domain="sharedpref"
+            path="settings" />
+        <include
+            domain="file"
+            path="cache" />
+        <exclude
+            domain="file"
+            path="temp" />
+        <exclude
+            domain="file"
+            path="logs" />
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <include
+            domain="database"
+            path="game_database" />
+        <include
+            domain="sharedpref"
+            path="settings" />
+        <include
+            domain="file"
+            path="cache" />
+        <exclude
+            domain="file"
+            path="temp" />
+        <exclude
+            domain="file"
+            path="logs" />
     </device-transfer>
-    -->
 </data-extraction-rules>

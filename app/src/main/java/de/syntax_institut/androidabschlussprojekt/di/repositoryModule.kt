@@ -1,12 +1,10 @@
 package de.syntax_institut.androidabschlussprojekt.di
 
-import org.koin.dsl.module
-import de.syntax_institut.androidabschlussprojekt.data.repositories.GameRepository
-import de.syntax_institut.androidabschlussprojekt.data.repositories.FavoritesRepository
-import de.syntax_institut.androidabschlussprojekt.data.local.GameDatabase
-import de.syntax_institut.androidabschlussprojekt.data.local.dao.FavoriteGameDao
-import de.syntax_institut.androidabschlussprojekt.data.local.dao.GameCacheDao
-import android.content.Context
+import android.content.*
+import de.syntax_institut.androidabschlussprojekt.data.local.*
+import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import org.koin.dsl.*
 
 /**
  * Modul für Repositories und Datenbank.
@@ -27,5 +25,6 @@ val repositoryModule = module {
             context = get()
         )
     }
-    single { FavoritesRepository(get()) }
+    single { FavoritesRepository(get(), get()) }
+    single { de.syntax_institut.androidabschlussprojekt.data.repositories.SettingsRepository(get<Context>()) }
 }

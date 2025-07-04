@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -55,4 +56,10 @@ fun EmptyState(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EmptyStatePreview() {
+    EmptyState(title = "Keine Daten", message = "Hier ist gerade nichts zu sehen.")
 }

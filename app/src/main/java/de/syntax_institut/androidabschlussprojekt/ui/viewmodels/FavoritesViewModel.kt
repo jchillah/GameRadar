@@ -23,7 +23,6 @@ class FavoritesViewModel(
     init {
         loadFavorites()
         syncFavorites()
-        // Periodische Synchronisierung alle 12h
         viewModelScope.launch {
             while (true) {
                 delay(12 * 60 * 60 * 1000L)

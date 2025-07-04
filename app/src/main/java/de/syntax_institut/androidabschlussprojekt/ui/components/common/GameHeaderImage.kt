@@ -1,13 +1,13 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.common
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import coil3.compose.rememberAsyncImagePainter
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.unit.*
+import coil3.compose.*
 
 @Composable
 fun GameHeaderImage(imageUrl: String) {
@@ -24,5 +24,7 @@ fun GameHeaderImage(imageUrl: String) {
 @Preview(showBackground = true)
 @Composable
 fun GameHeaderImagePreview() {
-    GameHeaderImage(imageUrl = "https://example.com/game_image.jpg")
+    GameHeaderImage(
+        imageUrl = "https://media.rawg.io/media/games/4fb/4fb548e4816c84d1d70f1a228fb167cc.jpg"
+    )
 }
