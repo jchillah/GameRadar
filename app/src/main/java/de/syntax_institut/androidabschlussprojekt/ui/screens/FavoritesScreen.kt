@@ -27,6 +27,8 @@ fun FavoritesScreen(
     viewModel: FavoritesViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
+    val settingsViewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel()
+    val imageQuality by settingsViewModel.imageQuality.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -137,7 +139,8 @@ fun FavoritesScreen(
                                 },
                                 onDelete = {
                                     viewModel.removeFavorite(game.id)
-                                }
+                                },
+                                imageQuality = imageQuality
                             )
                         }
                     }

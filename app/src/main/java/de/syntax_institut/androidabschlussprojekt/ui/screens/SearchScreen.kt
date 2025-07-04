@@ -32,6 +32,8 @@ fun SearchScreen(
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
     val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
     var selectedTab by remember { mutableIntStateOf(0) }
+    val settingsViewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel()
+    val imageQuality by settingsViewModel.imageQuality.collectAsState()
     LaunchedEffect(Unit) {
         if (state.platforms.isEmpty()) viewModel.loadPlatforms()
         if (state.genres.isEmpty()) viewModel.loadGenres()
@@ -125,7 +127,8 @@ fun SearchScreen(
                         )
                         navController.navigate(Routes.detail(game.id))
                     },
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    imageQuality = imageQuality
                 )
             }
         }
