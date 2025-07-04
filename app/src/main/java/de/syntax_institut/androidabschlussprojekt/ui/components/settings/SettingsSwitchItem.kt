@@ -1,11 +1,14 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.settings
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.vector.*
 import androidx.compose.ui.text.font.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -53,4 +56,16 @@ internal fun SettingsSwitchItem(
             )
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsSwitchItemPreview() {
+    SettingsSwitchItem(
+        icon = Icons.Filled.Notifications,
+        title = "Benachrichtigungen",
+        subtitle = "Push-Benachrichtigungen aktivieren",
+        checked = true,
+        onCheckedChange = {}
+    )
 }

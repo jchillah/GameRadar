@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.font.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -34,4 +35,10 @@ internal fun SettingsHeader() {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsHeaderPreview() {
+    SettingsHeader()
 }

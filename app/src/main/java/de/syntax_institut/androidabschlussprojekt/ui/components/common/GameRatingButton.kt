@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 
 @Composable
@@ -37,4 +38,10 @@ fun GameRatingButton(
             onDismiss = { showRatingDialog = false }
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameRatingButtonPreview() {
+    GameRatingButton(rating = 3.5f)
 }

@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -91,4 +92,14 @@ fun formatSyncTime(timestamp: Long): String {
         diff < 86400000 -> "${diff / 3600000} Stunden"
         else -> "${diff / 86400000} Tage"
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun IntelligentCacheIndicatorPreview() {
+    IntelligentCacheIndicator(
+        isOffline = false,
+        cacheSize = 120,
+        lastSyncTime = System.currentTimeMillis()
+    )
 } 

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import com.google.accompanist.flowlayout.*
 
@@ -33,4 +34,10 @@ fun ChipFlowRow(
             modifier = Modifier.padding(vertical = 4.dp)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ChipFlowRowPreview() {
+    ChipFlowRow(items = listOf("Action", "Adventure", "RPG"))
 } 

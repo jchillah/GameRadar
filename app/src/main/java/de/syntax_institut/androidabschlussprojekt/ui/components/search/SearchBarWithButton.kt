@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
@@ -49,4 +50,16 @@ fun SearchBarWithButton(
             Text("Suchen")
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchBarWithButtonPreview() {
+    SearchBarWithButton(
+        searchText = TextFieldValue("Zelda"),
+        onTextChange = {},
+        onSearchClick = {},
+        isLoading = false,
+        onClear = {}
+    )
 }
