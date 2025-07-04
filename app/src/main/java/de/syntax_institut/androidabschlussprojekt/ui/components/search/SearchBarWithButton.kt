@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun SearchBarWithButton(
@@ -30,10 +31,7 @@ fun SearchBarWithButton(
             trailingIcon = {
                 Row {
                     if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp),
-                            strokeWidth = 2.dp
-                        )
+                        Loading(modifier = Modifier.size(20.dp))
                     }
                     if (searchText.text.isNotBlank() && onClear != null) {
                         IconButton(onClick = { onClear() }) {

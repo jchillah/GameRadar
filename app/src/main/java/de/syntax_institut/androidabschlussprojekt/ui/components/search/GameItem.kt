@@ -15,6 +15,7 @@ import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun GameItem(
@@ -51,10 +52,7 @@ fun GameItem(
                             .size(80.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp
-                        )
+                        Loading(modifier = Modifier.size(24.dp))
                     }
                 },
                 error = {
