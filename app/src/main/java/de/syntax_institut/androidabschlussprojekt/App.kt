@@ -17,7 +17,7 @@ import org.koin.compose.*
 fun AppStart(modifier: Modifier) {
     val settingsRepository: SettingsRepository = koinInject()
     val darkModeEnabled by settingsRepository.darkModeEnabled.collectAsState()
-    var isLoaded by remember { mutableStateOf(true) } // Data wird jetzt direkt aus StateFlow gelesen
+    var isLoaded by remember { mutableStateOf(true) }
 
     if (!isLoaded) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
