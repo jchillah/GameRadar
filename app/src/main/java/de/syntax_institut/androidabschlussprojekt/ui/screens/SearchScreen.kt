@@ -2,8 +2,6 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import android.annotation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.*
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -36,17 +34,13 @@ fun SearchScreen(
         if (state.genres.isEmpty()) viewModel.loadGenres()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(
-            title = { Text("Spielsuche") },
-            actions = {
-                IconButton(onClick = { showFilters = true }) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filter anzeigen"
-                    )
-                }
-            }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+    ) {
+        SearchAppBarRow(
+            onFilterClick = { showFilters = true }
         )
         Spacer(modifier = Modifier.height(8.dp))
         TabRow(selectedTabIndex = selectedTab) {

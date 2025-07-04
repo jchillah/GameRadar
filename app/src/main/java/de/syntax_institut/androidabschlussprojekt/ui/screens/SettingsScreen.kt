@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 
 @Composable
 fun SettingsScreen(
@@ -42,6 +43,9 @@ fun SettingsScreen(
     setShareGamesEnabled: (Boolean) -> Unit = {},
     optimizeCache: () -> Unit = {},
 ) {
+    val settingsViewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel()
+    val showAboutDialog by settingsViewModel.showAboutDialog.collectAsState()
+    val showPrivacyDialog by settingsViewModel.showPrivacyDialog.collectAsState()
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -179,7 +183,6 @@ fun SettingsScreen(
                     subtitle = "Version 1.0.0",
                     onClick = aboutApp
                 )
-
                 SettingsButtonItem(
                     icon = Icons.Default.PrivacyTip,
                     title = "Datenschutz",
@@ -193,8 +196,12 @@ fun SettingsScreen(
         }
     }
 
-    // Dialoge werden über Callbacks gesteuert, nicht über ViewModel
-    // Die Dialoge werden in den entsprechenden onClick-Handlern aufgerufen
+    if (showAboutDialog) {
+        AboutAppDialog(onDismiss = { settingsViewModel.dismissAboutDialog() })
+    }
+    if (showPrivacyDialog) {
+        PrivacyPolicyDialog(onDismiss = { settingsViewModel.dismissPrivacyDialog() })
+    }
 }
 
 @Composable
