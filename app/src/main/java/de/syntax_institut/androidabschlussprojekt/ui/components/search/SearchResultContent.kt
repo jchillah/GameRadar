@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.search
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -16,17 +17,18 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 @Composable
 fun SearchResultContent(
     pagingItems: LazyPagingItems<Game>,
-    onGameClick: (Game) -> Unit
+    onGameClick: (Game) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     when (pagingItems.loadState.refresh) {
         is LoadState.Loading -> {
-            ShimmerPlaceholder()
+            ShimmerPlaceholder(modifier = modifier)
         }
 
         is LoadState.Error -> {
             val error = (pagingItems.loadState.refresh as LoadState.Error).error
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -47,12 +49,14 @@ fun SearchResultContent(
                 EmptyState(
                     title = "Keine Ergebnisse",
                     message = "Für deine Suche konnten keine Spiele gefunden werden.",
-                    icon = Icons.Default.SearchOff
+                    icon = Icons.Default.SearchOff,
+                    modifier = modifier
                 )
             } else {
-                PerformanceOptimizedLazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp)
+                LazyColumn(
+                    modifier = modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(pagingItems.itemCount) { idx ->
                         pagingItems[idx]?.let { game ->
@@ -70,6 +74,9 @@ fun SearchResultContent(
                                 CircularProgressIndicator()
                             }
                         }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }

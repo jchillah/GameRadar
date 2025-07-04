@@ -9,8 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
+import androidx.navigation.compose.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
@@ -19,7 +21,6 @@ import org.koin.androidx.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    modifier: Modifier,
     navController: NavHostController,
     viewModel: FavoritesViewModel = koinViewModel(),
 ) {
@@ -31,9 +32,13 @@ fun FavoritesScreen(
     }
 
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -188,4 +193,12 @@ fun FavoritesScreen(
             }
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FavoritesScreenPreview() {
+    FavoritesScreen(
+        navController = rememberNavController()
+    )
 }

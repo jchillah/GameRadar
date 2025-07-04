@@ -45,32 +45,72 @@ class SearchViewModel(
     val cacheSize: StateFlow<Int> = _cacheSize.asStateFlow()
 
     init {
-        initializeNetworkMonitoring()
-        initializeCacheMonitoring()
+        // Verzögerte Initialisierung um Binder-Transaktionsfehler zu vermeiden
+        viewModelScope.launch {
+            delay(100) // Kurze Verzögerung für stabilen App-Start
+            initializeNetworkMonitoring()
+            initializeCacheMonitoring()
+        }
     }
 
     private fun initializeNetworkMonitoring() {
         viewModelScope.launch {
-            contextRef.get()?.let { context ->
-                NetworkUtils.observeNetworkStatus(context).collect { isOnline ->
-                    _isOffline.value = !isOnline
-                    Log.d("SearchViewModel", "Netzwerkstatus geändert: ${if (isOnline) "Online" else "Offline"}")
+            try {
+                delay(200) // Kurze Verzögerung für stabilen Start
+                contextRef.get()?.let { context ->
+                    NetworkUtils.observeNetworkStatus(context).collect { isOnline ->
+                        try {
+                            _isOffline.value = !isOnline
+                            Log.d(
+                                "SearchViewModel",
+                                "Netzwerkstatus geändert: ${if (isOnline) "Online" else "Offline"}"
+                            )
+                        } catch (e: Exception) {
+                            Log.e(
+                                "SearchViewModel",
+                                "Fehler beim Aktualisieren des Netzwerkstatus",
+                                e
+                            )
+                        }
+                    }
+                } ?: run {
+                    Log.w(
+                        "SearchViewModel",
+                        "Context ist null, Network-Monitoring wird nicht gestartet"
+                    )
+                    // Fallback auf Offline-Status
+                    _isOffline.value = true
                 }
+            } catch (e: Exception) {
+                Log.e("SearchViewModel", "Kritischer Fehler im Network-Monitoring", e)
+                // Fallback auf Offline-Status bei Fehlern
+                _isOffline.value = true
             }
         }
     }
 
     private fun initializeCacheMonitoring() {
         viewModelScope.launch {
-            while (true) {
-                try {
-                    _cacheSize.value = repo.getCacheSize()
-                    // Aktualisiere lastSyncTime basierend auf dem aktuellen Zeitstempel
-                    _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
-                } catch (e: Exception) {
-                    Log.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
+            try {
+                // Initiale Cache-Größe abrufen mit Verzögerung
+                delay(500) // Längere Verzögerung für stabilen Start
+                _cacheSize.value = repo.getCacheSize()
+                _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
+
+                // Nur alle 60 Sekunden aktualisieren, nicht in einer unendlichen Schleife
+                while (true) {
+                    delay(60000) // 60 Sekunden warten (weniger aggressiv)
+                    try {
+                        _cacheSize.value = repo.getCacheSize()
+                        _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
+                    } catch (e: Exception) {
+                        Log.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
+                        // Bei Fehlern nicht abbrechen, sondern weiter versuchen
+                    }
                 }
-                delay(30000) // Alle 30 Sekunden aktualisieren
+            } catch (e: Exception) {
+                Log.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring", e)
+                // Bei kritischen Fehlern das Monitoring stoppen
             }
         }
     }

@@ -7,12 +7,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.res.*
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.paging.compose.*
-import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -30,35 +28,18 @@ fun SearchScreen(
     val isOffline by viewModel.isOffline.collectAsState()
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
-    var showCacheInfo by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
-
-    // Tabs für die Suche
     val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
-    var selectedTab by remember { mutableStateOf(0) }
-
-    // Lade Plattformen und Genres beim ersten Start
+    var selectedTab by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
-        if (state.platforms.isEmpty()) {
-            viewModel.loadPlatforms()
-        }
-        if (state.genres.isEmpty()) {
-            viewModel.loadGenres()
-        }
+        if (state.platforms.isEmpty()) viewModel.loadPlatforms()
+        if (state.genres.isEmpty()) viewModel.loadGenres()
     }
 
-    Scaffold(topBar = {
+    Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text("Spielsuche") },
             actions = {
-                // Cache-Info Button
-                IconButton(onClick = { showCacheInfo = !showCacheInfo }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_filter),
-                        contentDescription = "Cache-Info"
-                    )
-                }
-                // Filter Button
                 IconButton(onClick = { showFilters = true }) {
                     Icon(
                         imageVector = Icons.Default.FilterList,
@@ -67,87 +48,72 @@ fun SearchScreen(
                 }
             }
         )
-    }) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                TabRow(selectedTabIndex = selectedTab) {
-                    tabTitles.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTab == index,
-                            onClick = {
-                                selectedTab = index
-                                when (index) {
-                                    0 -> viewModel.updateOrdering("")
-                                    1 -> viewModel.updateOrdering("-released")
-                                    2 -> viewModel.updateOrdering("-rating")
-                                }
-                                viewModel.search(searchText.text.trim())
-                            },
-                            text = { Text(title) }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                SearchBarWithButton(
-                    searchText = searchText,
-                    onTextChange = {
-                        searchText = it
-                        if (it.text.isBlank()) {
-                            viewModel.resetSearch()
+        Spacer(modifier = Modifier.height(8.dp))
+        TabRow(selectedTabIndex = selectedTab) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTab == index,
+                    onClick = {
+                        selectedTab = index
+                        when (index) {
+                            0 -> viewModel.updateOrdering("")
+                            1 -> viewModel.updateOrdering("-released")
+                            2 -> viewModel.updateOrdering("-rating")
                         }
+                        viewModel.search(searchText.text.trim())
                     },
-                    onSearchClick = {
-                        if (searchText.text.isNotBlank()) {
-                            viewModel.search(searchText.text.trim())
-                        }
+                    text = { Text(title) }
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        SearchBarWithButton(
+            searchText = searchText,
+            onTextChange = {
+                searchText = it
+                if (it.text.isBlank()) viewModel.resetSearch()
+            },
+            onSearchClick = {
+                if (searchText.text.isNotBlank()) viewModel.search(searchText.text.trim())
+            },
+            isLoading = state.isLoading,
+            onClear = {
+                searchText = TextFieldValue("")
+                viewModel.resetSearch()
+            }
+        )
+        ActiveFiltersRow(
+            selectedPlatformIds = state.selectedPlatforms,
+            selectedGenreIds = state.selectedGenres,
+            allPlatforms = state.platforms,
+            allGenres = state.genres,
+            rating = state.rating,
+            ordering = state.ordering,
+            onRemovePlatform = { id -> viewModel.removePlatformFilter(id) },
+            onRemoveGenre = { id -> viewModel.removeGenreFilter(id) },
+            onRemoveRating = { viewModel.removeRatingFilter() },
+            onRemoveOrdering = { viewModel.removeOrderingFilter() },
+            onClearAll = { viewModel.clearAllFilters() }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(modifier = Modifier.weight(1f)) {
+            if (!state.hasSearched) {
+                EmptyState(
+                    title = "Suche nach Spielen",
+                    message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                SearchResultContent(
+                    pagingItems = pagingItems,
+                    onGameClick = { game ->
+                        navController.navigate(Routes.detail(game.id))
                     },
-                    isLoading = state.isLoading,
-                    onClear = {
-                        searchText = TextFieldValue("")
-                        viewModel.resetSearch()
-                    }
+                    modifier = Modifier.fillMaxSize()
                 )
-
-                ActiveFiltersRow(
-                    selectedPlatformIds = state.selectedPlatforms,
-                    selectedGenreIds = state.selectedGenres,
-                    allPlatforms = state.platforms,
-                    allGenres = state.genres,
-                    rating = state.rating,
-                    ordering = state.ordering,
-                    onRemovePlatform = { id -> viewModel.removePlatformFilter(id) },
-                    onRemoveGenre = { id -> viewModel.removeGenreFilter(id) },
-                    onRemoveRating = { viewModel.removeRatingFilter() },
-                    onRemoveOrdering = { viewModel.removeOrderingFilter() },
-                    onClearAll = { viewModel.clearAllFilters() }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (!state.hasSearched) {
-                    EmptyState(
-                        title = "Suche nach Spielen",
-                        message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
-                        modifier = Modifier.weight(1f)
-                    )
-                } else {
-                    SearchResultContent(
-                        pagingItems = pagingItems,
-                        onGameClick = { game ->
-                            navController.navigate(Routes.detail(game.id))
-                        }
-                    )
-                }
             }
         }
     }
-
     if (showFilters) {
         ModalBottomSheet(
             onDismissRequest = { showFilters = false }

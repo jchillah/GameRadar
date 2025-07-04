@@ -341,4 +341,49 @@ class GameRepository @Inject constructor(
         val entity = gameCacheDao.getGameById(id)
         return entity?.toGame()
     }
+    
+    /**
+     * Cache optimieren - entferne alte Einträge
+     */
+    suspend fun optimizeCache() {
+        try {
+            val currentSize = gameCacheDao.getCacheSize()
+            val oldestCacheTime = gameCacheDao.getOldestCacheTime()
+            
+            if (oldestCacheTime != null) {
+                // Entferne Einträge die älter als 7 Tage sind
+                val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
+                gameCacheDao.deleteExpiredGames(sevenDaysAgo)
+                
+                val newSize = gameCacheDao.getCacheSize()
+                Log.d("GameRepository", "Cache optimiert: $currentSize -> $newSize Einträge")
+            }
+        } catch (e: Exception) {
+            Log.e("GameRepository", "Fehler bei Cache-Optimierung", e)
+        }
+    }
+    
+    /**
+     * Cache-Statistiken abrufen
+     */
+    suspend fun getCacheStats(): CacheStats {
+        val totalSize = gameCacheDao.getCacheSize()
+        val oldestTime = gameCacheDao.getOldestCacheTime()
+        val isExpired = oldestTime?.let { !NetworkUtils.isCacheValid(it) } ?: true
+        
+        return CacheStats(
+            totalEntries = totalSize,
+            oldestEntryTime = oldestTime,
+            isExpired = isExpired
+        )
+    }
 }
+
+/**
+ * Cache-Statistiken
+ */
+data class CacheStats(
+    val totalEntries: Int,
+    val oldestEntryTime: Long?,
+    val isExpired: Boolean
+)

@@ -154,6 +154,8 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.core)
     testImplementation(libs.retrofit)
+    testImplementation("io.insert-koin:koin-test:3.5.3")
+    testImplementation("io.insert-koin:koin-test-junit4:3.5.3")
     
     // Android Testing
     androidTestImplementation(libs.androidx.junit)
@@ -162,6 +164,8 @@ dependencies {
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
+    androidTestImplementation("io.insert-koin:koin-test:3.5.3")
+    androidTestImplementation("io.insert-koin:koin-test-junit4:3.5.3")
     
     // Compose Testing
     debugImplementation(libs.ui.tooling)

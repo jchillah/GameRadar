@@ -3,12 +3,11 @@ package de.syntax_institut.androidabschlussprojekt.ui.components.search
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import kotlin.math.roundToInt
-import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.OfflineBanner
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.domain.models.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
+import kotlin.math.*
 
 @Composable
 fun FilterBottomSheet(

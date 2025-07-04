@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt
 
 import android.content.*
+import android.util.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -22,47 +23,37 @@ private val DARK_MODE_KEY = booleanPreferencesKey("dark_mode")
  * Hauptcontainer für die gesamte App mit Navigation und Theme.
  */
 @Composable
-fun App(modifier: Modifier) {
+fun AppStart(modifier: Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var isDarkTheme by rememberSaveable { mutableStateOf(false) }
     var isLoaded by remember { mutableStateOf(false) }
 
-    // SearchViewModel für automatische Synchronisation
-    val searchViewModel: de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel =
-        org.koin.androidx.compose.koinViewModel()
-    val isOffline by searchViewModel.isOffline.collectAsState()
-    var didSync by remember { mutableStateOf(false) }
-    var showSyncSnackbar by remember { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
-
     LaunchedEffect(Unit) {
-        val prefs = context.dataStore.data.first()
-        isDarkTheme = prefs[DARK_MODE_KEY] == true
-        isLoaded = true
-    }
-
-    // Automatische Synchronisation beim App-Start, nur wenn online und noch nicht synchronisiert
-    LaunchedEffect(isOffline, didSync) {
-        if (!isOffline && !didSync) {
-            searchViewModel.clearCache()
-            didSync = true
-            showSyncSnackbar = true
-        }
-    }
-
-    // Snackbar anzeigen, wenn showSyncSnackbar true ist
-    LaunchedEffect(showSyncSnackbar) {
-        if (showSyncSnackbar) {
-            snackbarHostState.showSnackbar("Cache wurde aktualisiert")
-            showSyncSnackbar = false
+        try {
+            // Verzögerung für stabilen App-Start
+            delay(50)
+            val prefs = context.dataStore.data.first()
+            isDarkTheme = prefs[DARK_MODE_KEY] == true
+        } catch (e: Exception) {
+            // Fallback auf Light Theme bei Fehlern
+            Log.w("AppStart", "Fehler beim Laden der Theme-Einstellungen", e)
+            isDarkTheme = false
+        } finally {
+            isLoaded = true
         }
     }
 
     fun saveDarkMode(enabled: Boolean) {
         scope.launch {
-            context.dataStore.edit { prefs ->
-                prefs[DARK_MODE_KEY] = enabled
+            try {
+                delay(10) // Kurze Verzögerung für stabile Operationen
+                context.dataStore.edit { prefs ->
+                    prefs[DARK_MODE_KEY] = enabled
+                }
+            } catch (e: Exception) {
+                // Ignoriere Fehler beim Speichern
+                Log.w("AppStart", "Fehler beim Speichern der Theme-Einstellungen", e)
             }
         }
     }
@@ -79,20 +70,14 @@ fun App(modifier: Modifier) {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    MainNavigation(
-                        modifier = modifier,
-                        isDarkTheme = isDarkTheme,
-                        setDarkTheme = {
-                            isDarkTheme = it
-                            saveDarkMode(it)
-                        }
-                    )
-                    SnackbarHost(
-                        hostState = snackbarHostState,
-                        modifier = Modifier.align(Alignment.BottomCenter)
-                    )
-                }
+                MainNavigation(
+                    modifier = modifier,
+                    isDarkTheme = isDarkTheme,
+                    setDarkTheme = {
+                        isDarkTheme = it
+                        saveDarkMode(it)
+                    }
+                )
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 
 @Composable
 fun GameRatingButton(

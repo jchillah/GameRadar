@@ -24,9 +24,6 @@ interface RawgApi {
     ): Response<GameDto>
 
     @GET("games/{id}/screenshots")
-    suspend fun getGameScreenshots(@Path("id") gameId: Int): Response<ScreenshotResponse>
-
-    @GET("games/{id}/screenshots")
     suspend fun getGameScreenshots(
         @Path("id") gameId: Int,
         @Query("key") apiKey: String = BuildConfig.API_KEY,
