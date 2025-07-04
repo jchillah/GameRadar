@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -14,11 +14,13 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
+import kotlin.math.*
 
 @Composable
 fun FullscreenScreenshotGallery(
@@ -148,7 +150,7 @@ fun FullscreenScreenshotGallery(
                                 val y = dragAmount.y
 
                                 // Horizontale Swipe für Navigation
-                                if (kotlin.math.abs(x) > kotlin.math.abs(y) && kotlin.math.abs(x) > 100f) {
+                                if (abs(x) > abs(y) && abs(x) > 100f) {
                                     if (x > 0 && currentIndex > 0) {
                                         // Swipe nach rechts -> vorheriges Bild
                                         currentIndex--
@@ -263,4 +265,18 @@ fun FullscreenScreenshotGallery(
             }
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun FullscreenScreenshotGalleryPreview() {
+    FullscreenScreenshotGallery(
+        screenshots = listOf(
+            "https://example.com/screenshot1.jpg",
+            "https://example.com/screenshot2.jpg",
+            "https://example.com/screenshot3.jpg"
+        ),
+        initialIndex = 0,
+        onDismiss = {}
+    )
 }

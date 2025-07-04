@@ -1,20 +1,17 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
-import androidx.paging.PagingSource
-import androidx.paging.testing.asPagingSourceFactory
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.remote.RawgApi
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GameDto
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GamesResponse
+import androidx.paging.testing.*
+import androidx.test.core.app.*
+import androidx.test.ext.junit.runners.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
 import io.mockk.*
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import junit.framework.TestCase.*
+import kotlinx.coroutines.test.*
+import org.junit.*
+import org.junit.runner.*
+
 
 @RunWith(AndroidJUnit4::class)
 class GamePagingSourceTest {
@@ -52,7 +49,11 @@ class GamePagingSourceTest {
     @Before
     fun setup() {
         mockApi = mockk(relaxed = true)
-        repository = GameRepository(mockApi)
+        repository = GameRepository(
+            mockApi,
+            gameCacheDao = mockk(relaxed = true),
+            context = ApplicationProvider.getApplicationContext()
+        )
     }
 
     @Test

@@ -13,7 +13,8 @@ import javax.inject.*
  * Repository für Favoriten-Operationen.
  */
 class FavoritesRepository @Inject constructor(
-    private val favoriteGameDao: FavoriteGameDao
+    private val favoriteGameDao: FavoriteGameDao,
+    private val repo: GameRepository,
 ) {
     
     /**
@@ -44,10 +45,18 @@ class FavoritesRepository @Inject constructor(
      */
     suspend fun addFavorite(game: Game): Resource<Unit> {
         return try {
-            favoriteGameDao.insertFavorite(game.toFavoriteEntity())
+            val fullGame = if (game.screenshots.isEmpty() || game.website.isNullOrBlank()) {
+                // Hole vollständige Details nach
+                val detailResult = repo.getGameDetail(game.id)
+                when (detailResult) {
+                    is Resource.Success -> detailResult.data ?: game
+                    else -> game
+                }
+            } else game
+            favoriteGameDao.insertFavorite(fullGame.toFavoriteEntity())
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error("Fehler beim Hinzufügen des Favoriten: ${e.localizedMessage}")
+            Resource.Error("Fehler beim Hinzufügen des Favoriten: " + e.localizedMessage)
         }
     }
     
@@ -71,13 +80,20 @@ class FavoritesRepository @Inject constructor(
             val isCurrentlyFavorite = favoriteGameDao.isFavorite(game.id)
             if (isCurrentlyFavorite) {
                 favoriteGameDao.removeFavorite(game.id)
-                Resource.Success(false) // Nicht mehr favorisiert
+                Resource.Success(false)
             } else {
-                favoriteGameDao.insertFavorite(game.toFavoriteEntity())
-                Resource.Success(true) // Jetzt favorisiert
+                val fullGame = if (game.screenshots.isEmpty() || game.website.isNullOrBlank()) {
+                    val detailResult = repo.getGameDetail(game.id)
+                    when (detailResult) {
+                        is Resource.Success -> detailResult.data ?: game
+                        else -> game
+                    }
+                } else game
+                favoriteGameDao.insertFavorite(fullGame.toFavoriteEntity())
+                Resource.Success(true)
             }
         } catch (e: Exception) {
-            Resource.Error("Fehler beim Umschalten des Favoriten: ${e.localizedMessage}")
+            Resource.Error("Fehler beim Umschalten des Favoriten: " + e.localizedMessage)
         }
     }
     

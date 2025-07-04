@@ -14,11 +14,11 @@ import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge(statusBarStyle = SystemBarStyle.light(2, 1))
+        enableEdgeToEdge()
         setContent {
             MyAppTheme {
-                App(
-                    modifier = Modifier.fillMaxWidth()
+                AppStart(
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }

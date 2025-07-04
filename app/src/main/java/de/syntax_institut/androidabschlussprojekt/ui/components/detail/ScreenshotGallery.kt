@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun ScreenshotGallery(screenshots: List<String>) {

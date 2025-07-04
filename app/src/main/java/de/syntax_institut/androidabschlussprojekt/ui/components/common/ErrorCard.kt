@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 
@@ -90,4 +91,10 @@ fun ErrorCard(
     if (error.isNotBlank()) {
         Analytics.trackError(error, "ErrorCard")
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorCardPreview() {
+    ErrorCard(error = "Beispiel-Fehler", onRetry = {})
 } 

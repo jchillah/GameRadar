@@ -27,8 +27,7 @@ interface RawgApi {
     suspend fun getGameScreenshots(
         @Path("id") gameId: Int,
         @Query("key") apiKey: String = BuildConfig.API_KEY,
-        @Query("page_size") pageSize: Int = 20,
-    ): Response<List<ScreenshotDto>>
+    ): Response<ScreenshotResponse>
 
     @GET("platforms")
     suspend fun getPlatforms(

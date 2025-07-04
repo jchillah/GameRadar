@@ -13,18 +13,9 @@ import androidx.navigation.compose.*
 @Composable
 fun MainNavigation(
     modifier: Modifier,
-    isDarkTheme: Boolean = false,
-    setDarkTheme: (Boolean) -> Unit = {},
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-
-    val searchViewModel: de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel =
-        org.koin.androidx.compose.koinViewModel()
-    val cacheSize by searchViewModel.cacheSize.collectAsState()
-    val isOffline by searchViewModel.isOffline.collectAsState()
-    val searchState by searchViewModel.uiState.collectAsState()
-    val lastSyncTime = searchState.lastSyncTime
 
     Scaffold(
         modifier = modifier,
@@ -33,14 +24,11 @@ fun MainNavigation(
             BottomNavBar(currentRoute, navController)
         }
     ) { innerPadding ->
+        // NavGraph ohne modifier, damit die Screens den gesamten Platz ausfüllen
+        // Das Padding wird von den einzelnen Screens selbst gehandhabt
         NavGraph(
-            navController = navController,
-            isDarkTheme = isDarkTheme,
-            setDarkTheme = setDarkTheme,
-            cacheSize = cacheSize,
-            isOffline = isOffline,
-            lastSyncTime = lastSyncTime,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            navController = navController
         )
     }
 }

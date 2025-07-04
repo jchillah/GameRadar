@@ -1,19 +1,18 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import de.syntax_institut.androidabschlussprojekt.data.local.GameDatabase
-import de.syntax_institut.androidabschlussprojekt.data.local.dao.FavoriteGameDao
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
-import org.junit.After
+import androidx.room.*
+import androidx.test.core.app.*
+import androidx.test.ext.junit.runners.*
+import de.syntax_institut.androidabschlussprojekt.data.local.*
+import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.test.*
+import org.junit.*
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.runner.*
+import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
 class FavoritesRepositoryTest {
@@ -29,7 +28,14 @@ class FavoritesRepositoryTest {
             GameDatabase::class.java
         ).allowMainThreadQueries().build()
         dao = database.favoriteGameDao()
-        repository = FavoritesRepository(dao)
+        repository = FavoritesRepository(
+            favoriteGameDao = dao,
+            repo = GameRepository(
+                api = mock(),
+                gameCacheDao = mock(),
+                context = ApplicationProvider.getApplicationContext()
+            )
+        )
     }
 
     @After

@@ -1,5 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.navigation
 
+import android.util.*
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
@@ -10,32 +11,33 @@ import de.syntax_institut.androidabschlussprojekt.ui.screens.*
 
 @Composable
 fun NavGraph(
-    navController: NavHostController,
-    isDarkTheme: Boolean,
-    setDarkTheme: (Boolean) -> Unit,
-    cacheSize: Int,
-    isOffline: Boolean,
-    lastSyncTime: Long?,
     modifier: Modifier = Modifier,
+    navController: NavHostController,
 ) {
     NavHost(
         navController = navController,
         startDestination = Routes.SEARCH,
         modifier = modifier
     ) {
-        composable(Routes.SEARCH) {
-            SearchScreen(navController)
+        composable(
+            route = Routes.SEARCH
+        ) {
+            SearchScreen(navController = navController)
         }
 
-        composable(Routes.FAVORITES) {
-            FavoritesScreen(modifier, navController)
+        composable(
+            route = Routes.FAVORITES
+        ) {
+            FavoritesScreen(navController = navController)
         }
 
         composable(
             route = Routes.DETAIL,
             arguments = listOf(navArgument("gameId") { type = NavType.IntType })
         ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getInt("gameId") ?: return@composable
+            val id = backStackEntry.arguments?.getInt("gameId")
+            Log.d("NavGraph", "DetailScreen aufgerufen mit gameId=$id")
+            if (id == null) return@composable
             DetailScreen(id, navController)
         }
 
@@ -66,13 +68,7 @@ fun NavGraph(
                 )
             }
         ) {
-            SettingsScreen(
-                isDarkTheme = isDarkTheme,
-                setDarkTheme = setDarkTheme,
-                cacheSize = cacheSize,
-                isOffline = isOffline,
-                lastSyncTime = lastSyncTime
-            )
+            SettingsScreen()
         }
     }
 }

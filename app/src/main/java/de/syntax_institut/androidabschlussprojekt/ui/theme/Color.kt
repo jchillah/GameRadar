@@ -1,6 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.theme
 
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 
 // Light Mode - Gold Theme
 val primaryLight = Color(0xFFD4AF37) // Gold
@@ -36,7 +36,6 @@ val surfaceBrightLight = Color(0xFFFFFBFE) // Fast wei��
 val surfaceContainerLowestLight = Color(0xFFFFFFFF) // Wei��
 val surfaceContainerLowLight = Color(0xFFF7F2FA) // Sehr helles Grau
 val surfaceContainerLight = Color(0xFFF1ECF5) // Helles Grau
-val surfaceContainerHighLight = Color(0xFFEBE6EF) // Helles Grau
 val surfaceContainerHighestLight = Color(0xFFE6E0E9) // Helles Grau
 
 // Dark Mode - Schwarz mit grell gr��nen Highlights
@@ -73,135 +72,4 @@ val surfaceBrightDark = Color(0xFF3B383E) // Mittleres Grau
 val surfaceContainerLowestDark = Color(0xFF0F0D13) // Sehr dunkles Grau
 val surfaceContainerLowDark = Color(0xFF1D1B20) // Dunkles Grau
 val surfaceContainerDark = Color(0xFF211F26) // Dunkles Grau
-val surfaceContainerHighDark = Color(0xFF2B2930) // Mittleres Grau
 val surfaceContainerHighestDark = Color(0xFF36343B) // Helles Grau
-
-// Fehlende Color-Definitionen für ExtendedColorScheme
-val customColor1Light = Color(0xFFD4AF37)
-val onCustomColor1Light = Color(0xFF000000)
-val customColor1ContainerLight = Color(0xFFFFE5A3)
-val onCustomColor1ContainerLight = Color(0xFF2D1F00)
-val customColor2Light = Color(0xFFB8860B)
-val onCustomColor2Light = Color(0xFFFFFFFF)
-val customColor2ContainerLight = Color(0xFFFFD54F)
-val onCustomColor2ContainerLight = Color(0xFF2D1F00)
-
-val customColor1Dark = Color(0xFF00FF41)
-val onCustomColor1Dark = Color(0xFF000000)
-val customColor1ContainerDark = Color(0xFF003300)
-val onCustomColor1ContainerDark = Color(0xFF00FF41)
-val customColor2Dark = Color(0xFF00E676)
-val onCustomColor2Dark = Color(0xFF000000)
-val customColor2ContainerDark = Color(0xFF004D1A)
-val onCustomColor2ContainerDark = Color(0xFF00E676)
-
-// Medium Contrast Varianten
-val customColor1LightMediumContrast = Color(0xFFB8860B)
-val onCustomColor1LightMediumContrast = Color(0xFFFFFFFF)
-val customColor1ContainerLightMediumContrast = Color(0xFFD4AF37)
-val onCustomColor1ContainerLightMediumContrast = Color(0xFF000000)
-val customColor2LightMediumContrast = Color(0xFF8B6914)
-val onCustomColor2LightMediumContrast = Color(0xFFFFFFFF)
-val customColor2ContainerLightMediumContrast = Color(0xFFB8860B)
-val onCustomColor2ContainerLightMediumContrast = Color(0xFFFFFFFF)
-
-val customColor1DarkMediumContrast = Color(0xFF00FF41)
-val onCustomColor1DarkMediumContrast = Color(0xFF000000)
-val customColor1ContainerDarkMediumContrast = Color(0xFF00CC33)
-val onCustomColor1ContainerDarkMediumContrast = Color(0xFF000000)
-val customColor2DarkMediumContrast = Color(0xFF00E676)
-val onCustomColor2DarkMediumContrast = Color(0xFF000000)
-val customColor2ContainerDarkMediumContrast = Color(0xFF00B33A)
-val onCustomColor2ContainerDarkMediumContrast = Color(0xFF000000)
-
-// High Contrast Varianten
-val customColor1LightHighContrast = Color(0xFF8B6914)
-val onCustomColor1LightHighContrast = Color(0xFFFFFFFF)
-val customColor1ContainerLightHighContrast = Color(0xFFB8860B)
-val onCustomColor1ContainerLightHighContrast = Color(0xFFFFFFFF)
-val customColor2LightHighContrast = Color(0xFF6B4F00)
-val onCustomColor2LightHighContrast = Color(0xFFFFFFFF)
-val customColor2ContainerLightHighContrast = Color(0xFF8B6914)
-val onCustomColor2ContainerLightHighContrast = Color(0xFFFFFFFF)
-
-val customColor1DarkHighContrast = Color(0xFF00FF41)
-val onCustomColor1DarkHighContrast = Color(0xFF000000)
-val customColor1ContainerDarkHighContrast = Color(0xFF00E676)
-val onCustomColor1ContainerDarkHighContrast = Color(0xFF000000)
-val customColor2DarkHighContrast = Color(0xFF00E676)
-val onCustomColor2DarkHighContrast = Color(0xFF000000)
-val customColor2ContainerDarkHighContrast = Color(0xFF00C853)
-val onCustomColor2ContainerDarkHighContrast = Color(0xFF000000)
-
-
-val primaryDarkMediumContrast = Color(0xFFFFD0DC)
-val onPrimaryDarkMediumContrast = Color(0xFF471227)
-val primaryContainerDarkMediumContrast = Color(0xFFC67B92)
-val onPrimaryContainerDarkMediumContrast = Color(0xFF000000)
-val secondaryDarkMediumContrast = Color(0xFFFFD0DC)
-val onSecondaryDarkMediumContrast = Color(0xFF471227)
-val secondaryContainerDarkMediumContrast = Color(0xFFC67B92)
-val onSecondaryContainerDarkMediumContrast = Color(0xFF000000)
-val tertiaryDarkMediumContrast = Color(0xFFBFE8A5)
-val onTertiaryDarkMediumContrast = Color(0xFF0D2C00)
-val tertiaryContainerDarkMediumContrast = Color(0xFF769B5F)
-val onTertiaryContainerDarkMediumContrast = Color(0xFF000000)
-val errorDarkMediumContrast = Color(0xFFFFD2CC)
-val onErrorDarkMediumContrast = Color(0xFF540003)
-val errorContainerDarkMediumContrast = Color(0xFFFF5449)
-val onErrorContainerDarkMediumContrast = Color(0xFF000000)
-val backgroundDarkMediumContrast = Color(0xFF191113)
-val onBackgroundDarkMediumContrast = Color(0xFFEFDFE1)
-val surfaceDarkMediumContrast = Color(0xFF101510)
-val onSurfaceDarkMediumContrast = Color(0xFFFFFFFF)
-val surfaceVariantDarkMediumContrast = Color(0xFF414942)
-val onSurfaceVariantDarkMediumContrast = Color(0xFFD6DFD5)
-val outlineDarkMediumContrast = Color(0xFFACB4AB)
-val outlineVariantDarkMediumContrast = Color(0xFF8A928A)
-val scrimDarkMediumContrast = Color(0xFF000000)
-val inverseSurfaceDarkMediumContrast = Color(0xFFDFE4DC)
-val inverseOnSurfaceDarkMediumContrast = Color(0xFF262B26)
-val inversePrimaryDarkMediumContrast = Color(0xFF71344A)
-val surfaceDimDarkMediumContrast = Color(0xFF101510)
-val surfaceBrightDarkMediumContrast = Color(0xFF414640)
-val surfaceContainerLowestDarkMediumContrast = Color(0xFF050805)
-val surfaceContainerLowDarkMediumContrast = Color(0xFF1A1F1A)
-val surfaceContainerDarkMediumContrast = Color(0xFF242924)
-val surfaceContainerHighDarkMediumContrast = Color(0xFF2F342F)
-val surfaceContainerHighestDarkMediumContrast = Color(0xFF3A3F39)
-
-val primaryDarkHighContrast = Color(0xFFFFEBEF)
-val onPrimaryDarkHighContrast = Color(0xFF000000)
-val primaryContainerDarkHighContrast = Color(0xFFFEABC4)
-val onPrimaryContainerDarkHighContrast = Color(0xFF20000C)
-val secondaryDarkHighContrast = Color(0xFFFFEBEF)
-val onSecondaryDarkHighContrast = Color(0xFF000000)
-val secondaryContainerDarkHighContrast = Color(0xFFFEABC4)
-val onSecondaryContainerDarkHighContrast = Color(0xFF20000C)
-val tertiaryDarkHighContrast = Color(0xFFD3FCB7)
-val onTertiaryDarkHighContrast = Color(0xFF000000)
-val tertiaryContainerDarkHighContrast = Color(0xFFA6CE8D)
-val onTertiaryContainerDarkHighContrast = Color(0xFF020E00)
-val errorDarkHighContrast = Color(0xFFFFECE9)
-val onErrorDarkHighContrast = Color(0xFF000000)
-val errorContainerDarkHighContrast = Color(0xFFFFAEA4)
-val onErrorContainerDarkHighContrast = Color(0xFF220001)
-val backgroundDarkHighContrast = Color(0xFF191113)
-val onBackgroundDarkHighContrast = Color(0xFFEFDFE1)
-val surfaceDarkHighContrast = Color(0xFF101510)
-val onSurfaceDarkHighContrast = Color(0xFFFFFFFF)
-val surfaceVariantDarkHighContrast = Color(0xFF414942)
-val onSurfaceVariantDarkHighContrast = Color(0xFFFFFFFF)
-val outlineDarkHighContrast = Color(0xFFEAF2E8)
-val outlineVariantDarkHighContrast = Color(0xFFBDC5BB)
-val scrimDarkHighContrast = Color(0xFF000000)
-val inverseSurfaceDarkHighContrast = Color(0xFFDFE4DC)
-val inverseOnSurfaceDarkHighContrast = Color(0xFF000000)
-val inversePrimaryDarkHighContrast = Color(0xFF71344A)
-val surfaceDimDarkHighContrast = Color(0xFF101510)
-val surfaceBrightDarkHighContrast = Color(0xFF4C514C)
-val surfaceContainerLowestDarkHighContrast = Color(0xFF000000)
-val surfaceContainerLowDarkHighContrast = Color(0xFF1C211C)
-val surfaceContainerDarkHighContrast = Color(0xFF2D322C)
-val surfaceContainerHighDarkHighContrast = Color(0xFF383D37)
-val surfaceContainerHighestDarkHighContrast = Color(0xFF434842)

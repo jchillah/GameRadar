@@ -1,39 +1,25 @@
 package de.syntax_institut.androidabschlussprojekt.ui.integration
 
+import android.R
 import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
-import de.syntax_institut.androidabschlussprojekt.MainActivity
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.remote.RawgApi
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GameDto
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GamesResponse
-import de.syntax_institut.androidabschlussprojekt.data.repositories.GameRepository
-import de.syntax_institut.androidabschlussprojekt.ui.screens.SearchScreen
-import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel
+import androidx.compose.ui.test.junit4.*
+import androidx.paging.*
+import androidx.test.ext.junit.runners.*
+import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import io.mockk.*
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.koin.androidx.compose.koinViewModel
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
-import org.koin.test.KoinTest
-import org.koin.test.inject
-import androidx.paging.PagingData
-import androidx.paging.testing.asSnapshot
-import androidx.paging.testing.cachedIn
-import androidx.paging.testing.collectPagingData
-import androidx.paging.testing.scrollTo
-import androidx.paging.testing.appendScrollWhile
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.test.*
+import org.junit.*
+import org.junit.runner.*
+import org.koin.core.context.*
+import org.koin.core.qualifier.*
+import org.koin.dsl.*
+import org.koin.java.KoinJavaComponent.inject
 
 @RunWith(AndroidJUnit4::class)
 class SearchPagingIntegrationTest : KoinTest {
@@ -114,12 +100,21 @@ class SearchPagingIntegrationTest : KoinTest {
                 module {
                     single { mockApi }
                     single { mockRepository }
-                    single { SearchViewModel(get()) }
+                    single {
+                        SearchViewModel(
+                            get(),
+                            context = composeTestRule.activity.applicationContext
+                        )
+                    }
                 }
             )
         }
-        
-        viewModel = inject<SearchViewModel>().value
+
+        viewModel = inject<SearchViewModel>(
+            clazz = SearchViewModel::class.java,
+            qualifier = qualifier<R.string>(),
+            parameters = null
+        ).value
     }
 
     @Test
