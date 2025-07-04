@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.tooling.preview.*
 
 @Composable
 fun ShareButton(
@@ -40,4 +41,10 @@ fun ShareButton(
             tint = MaterialTheme.colorScheme.onSurface
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ShareButtonPreview() {
+    ShareButton(gameTitle = "Beispielspiel", gameUrl = "https://example.com")
 }

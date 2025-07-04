@@ -131,7 +131,7 @@ fun DetailScreen(
                             imageQuality = imageQuality
                         )
                     }
-                    
+
                     GameMetaInfo(
                         title = game.title,
                         releaseDate = game.releaseDate ?: emptyString,
@@ -232,4 +232,5 @@ fun DetailScreenPreview() {
         navController = rememberNavController()
     )
 }
+
 

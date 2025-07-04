@@ -27,7 +27,7 @@ fun FavoritesScreen(
     viewModel: FavoritesViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
-    val settingsViewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel()
+    val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 

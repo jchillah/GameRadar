@@ -29,7 +29,4 @@ class SettingsViewModel(
 
     fun setShareGamesEnabled(enabled: Boolean) = settingsRepository.setShareGamesEnabled(enabled)
     fun setDarkModeEnabled(enabled: Boolean) = settingsRepository.setDarkModeEnabled(enabled)
-
-    // Dialog-States und Cache-Logik ggf. separat behandeln
-    // ... bestehender Code ...
-} 
+}

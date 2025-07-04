@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
@@ -72,4 +73,10 @@ fun GameStatsCard(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameStatsCardPreview() {
+    GameStatsCard(playtime = 12, metacritic = 85, userRating = 4.5f)
 } 

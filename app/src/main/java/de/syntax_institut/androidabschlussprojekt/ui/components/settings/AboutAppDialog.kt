@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -98,4 +99,10 @@ private fun FeatureItem(text: String) {
             style = MaterialTheme.typography.bodyMedium
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AboutAppDialogPreview() {
+    AboutAppDialog(onDismiss = {})
 } 

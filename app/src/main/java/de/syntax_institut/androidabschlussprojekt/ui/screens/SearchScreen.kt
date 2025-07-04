@@ -32,7 +32,7 @@ fun SearchScreen(
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
     val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
     var selectedTab by remember { mutableIntStateOf(0) }
-    val settingsViewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel()
+    val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     LaunchedEffect(Unit) {
         if (state.platforms.isEmpty()) viewModel.loadPlatforms()

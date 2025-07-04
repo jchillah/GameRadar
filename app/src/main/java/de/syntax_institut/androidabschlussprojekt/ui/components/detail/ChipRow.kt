@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 
 @Composable
@@ -42,4 +43,10 @@ fun ChipRow(
             modifier = Modifier.padding(vertical = 4.dp)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ChipRowPreview() {
+    ChipRow(items = listOf("Indie", "Multiplayer", "Open World"))
 } 
