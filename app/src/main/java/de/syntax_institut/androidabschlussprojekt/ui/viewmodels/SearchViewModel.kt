@@ -1,6 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.content.*
 import android.util.*
 import androidx.lifecycle.*
 import androidx.paging.*
@@ -10,7 +9,6 @@ import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import java.lang.ref.*
 
 /**
  * ViewModel für die Suche mit Offline-Support.
@@ -18,11 +16,7 @@ import java.lang.ref.*
  */
 class SearchViewModel(
     private val repo: GameRepository,
-    context: Context
 ) : ViewModel() {
-
-    // WeakReference um Context-Leak zu vermeiden
-    private val contextRef = WeakReference(context)
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState
@@ -36,10 +30,6 @@ class SearchViewModel(
     // Aktueller Suchtext für automatische Neuausführung
     private var currentSearchQuery: String = ""
     
-    // Netzwerkstatus
-    private val _isOffline = MutableStateFlow(false)
-    val isOffline: StateFlow<Boolean> = _isOffline.asStateFlow()
-    
     // Cache-Informationen
     private val _cacheSize = MutableStateFlow(0)
 
@@ -47,44 +37,7 @@ class SearchViewModel(
         // Verzögerte Initialisierung um Binder-Transaktionsfehler zu vermeiden
         viewModelScope.launch {
             delay(100) // Kurze Verzögerung für stabilen App-Start
-            initializeNetworkMonitoring()
             initializeCacheMonitoring()
-        }
-    }
-
-    private fun initializeNetworkMonitoring() {
-        viewModelScope.launch {
-            try {
-                delay(200) // Kurze Verzögerung für stabilen Start
-                contextRef.get()?.let { context ->
-                    NetworkUtils.observeNetworkStatus(context).collect { isOnline ->
-                        try {
-                            _isOffline.value = !isOnline
-                            Log.d(
-                                "SearchViewModel",
-                                "Netzwerkstatus geändert: ${if (isOnline) "Online" else "Offline"}"
-                            )
-                        } catch (e: Exception) {
-                            Log.e(
-                                "SearchViewModel",
-                                "Fehler beim Aktualisieren des Netzwerkstatus",
-                                e
-                            )
-                        }
-                    }
-                } ?: run {
-                    Log.w(
-                        "SearchViewModel",
-                        "Context ist null, Network-Monitoring wird nicht gestartet"
-                    )
-                    // Fallback auf Offline-Status
-                    _isOffline.value = true
-                }
-            } catch (e: Exception) {
-                Log.e("SearchViewModel", "Kritischer Fehler im Network-Monitoring", e)
-                // Fallback auf Offline-Status bei Fehlern
-                _isOffline.value = true
-            }
         }
     }
 
