@@ -1,8 +1,8 @@
-# GameFinder 🎮
+# GameRadar 🎮
 
 **Entdecke deine nächste Gaming-Leidenschaft – modern, schnell, fehlerrobust.**
 
-GameFinder ist eine moderne Android-App, um neue Spiele zu entdecken, zu filtern, zu bewerten und
+GameRadar ist eine moderne Android-App, um neue Spiele zu entdecken, zu filtern, zu bewerten und
 Favoriten zu speichern. Entwickelt mit **Jetpack Compose**, **MVVM**, **Room** und der **RAWG-API
 ** – für ein konsistentes, performantes und fehlerfreies Nutzererlebnis.
 

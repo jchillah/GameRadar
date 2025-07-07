@@ -7,8 +7,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.semantics.*
-import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
@@ -17,6 +17,7 @@ import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,6 +31,9 @@ fun FavoritesScreen(
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val isOnline by NetworkUtils.observeNetworkStatus(context)
+        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
 
     LaunchedEffect(Unit) {
         viewModel.loadFavorites()
@@ -77,48 +81,23 @@ fun FavoritesScreen(
         Box(modifier = Modifier.weight(1f)) {
             when {
                 state.isLoading -> {
-                    Loading()
+                    Loading(modifier = Modifier.fillMaxSize())
                 }
 
                 state.error != null -> {
-                    Box(
+                    ErrorCard(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "Fehler: ${state.error}",
-                                color = MaterialTheme.colorScheme.error,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Button(onClick = { viewModel.loadFavorites() }) {
-                                Text("Erneut versuchen")
-                            }
-                        }
-                    }
+                        error = state.error ?: "Unbekannter Fehler",
+                    )
                 }
 
                 state.favorites.isEmpty() -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "Keine Favoriten vorhanden",
-                                style = MaterialTheme.typography.headlineSmall,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Füge Spiele zu deinen Favoriten hinzu, um sie hier zu sehen.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+                    EmptyState(
+                        title = "Keine Favoriten",
+                        message = if (!isOnline) "Du bist offline. Deine Favoriten werden angezeigt, sobald du wieder online bist." else "Du hast noch keine Favoriten gespeichert.",
+                        icon = Icons.Default.FavoriteBorder,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
 
                 else -> {

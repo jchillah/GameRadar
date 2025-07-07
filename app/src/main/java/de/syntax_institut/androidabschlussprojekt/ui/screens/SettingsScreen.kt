@@ -12,9 +12,11 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.core.net.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.*
 
 @Composable
 fun SettingsScreen(
@@ -32,7 +34,21 @@ fun SettingsScreen(
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val isOffline by NetworkUtils.observeNetworkStatus(context).collectAsState(initial = false)
+    val isOnline by NetworkUtils.observeNetworkStatus(context)
+        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
+    val gameRepository: GameRepository = org.koin.compose.koinInject()
+    var cacheStats by remember {
+        mutableStateOf<de.syntax_institut.androidabschlussprojekt.data.repositories.CacheStats?>(
+            null
+        )
+    }
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            cacheStats = gameRepository.getCacheStats()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -44,29 +60,39 @@ fun SettingsScreen(
 
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
-            cacheSize = 0,
-            maxCacheSize = 1,
+            cacheSize = cacheStats?.totalEntries ?: 0,
+            maxCacheSize = 1000,
         )
 
         IntelligentCacheIndicator(
             modifier = Modifier.fillMaxWidth(),
-            isOffline = isOffline,
-            cacheSize = 0,
-            lastSyncTime = 0,
+            isOffline = !isOnline,
+            cacheSize = cacheStats?.totalEntries ?: 0,
+            lastSyncTime = cacheStats?.oldestEntryTime ?: 0,
         )
 
         NetworkErrorHandler(
             modifier = Modifier.fillMaxWidth(),
-            isOffline = isOffline,
+            isOffline = !isOnline,
         )
 
         CacheManagementCard(
             modifier = Modifier.fillMaxWidth(),
-            cacheSize = 0,
-            maxCacheSize = 1,
-            lastSyncTime = 0,
-            onClearCache = {},
-            onOptimizeCache = {}
+            cacheSize = cacheStats?.totalEntries ?: 0,
+            maxCacheSize = 1000,
+            lastSyncTime = cacheStats?.oldestEntryTime ?: 0,
+            onClearCache = {
+                coroutineScope.launch {
+                    gameRepository.clearCache()
+                    cacheStats = gameRepository.getCacheStats()
+                }
+            },
+            onOptimizeCache = {
+                coroutineScope.launch {
+                    gameRepository.optimizeCache()
+                    cacheStats = gameRepository.getCacheStats()
+                }
+            }
         )
 
         SettingsSection(title = "Benachrichtigungen") {
@@ -165,7 +191,7 @@ fun SettingsScreen(
         SettingsSection(title = "Über die App") {
             SettingsButtonItem(
                 icon = Icons.Default.Info,
-                title = "Über GameFinder",
+                title = "Über GameRadar",
                 subtitle = "Version 1.0.0",
                 onClick = { showAboutDialog = true }
             )
@@ -179,12 +205,12 @@ fun SettingsScreen(
             SettingsButtonItem(
                 icon = Icons.Default.Email,
                 title = "Support kontaktieren",
-                subtitle = "support@gamefinder.de",
+                subtitle = "michael.winkler.developer@gmail.com",
                 onClick = {
                     val intent =
                         android.content.Intent(android.content.Intent.ACTION_SENDTO).apply {
-                            data = "mailto:support@gamefinder.de".toUri()
-                            putExtra(android.content.Intent.EXTRA_SUBJECT, "Support GameFinder")
+                            data = "mailto:michael.winkler.developer@gmail.com".toUri()
+                            putExtra(android.content.Intent.EXTRA_SUBJECT, "Support GameRadar")
                         }
                     context.startActivity(intent)
                 }

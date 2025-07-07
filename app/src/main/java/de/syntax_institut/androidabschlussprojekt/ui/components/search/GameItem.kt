@@ -38,8 +38,8 @@ fun GameItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val size = when (imageQuality) {
-                ImageQuality.LOW -> Size(80, 80)
-                ImageQuality.MEDIUM -> Size(160, 160)
+                ImageQuality.LOW -> Size(160, 90)
+                ImageQuality.MEDIUM -> Size(320, 180)
                 ImageQuality.HIGH -> Size.ORIGINAL
             }
             SubcomposeAsyncImage(
@@ -51,12 +51,14 @@ fun GameItem(
                 contentDescription = game.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(80.dp)
+                    .width(160.dp)
+                    .aspectRatio(16f / 9f)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 loading = {
                     Box(
                         modifier = Modifier
-                            .size(80.dp),
+                            .width(160.dp)
+                            .aspectRatio(16f / 9f),
                         contentAlignment = Alignment.Center
                     ) {
                         Loading(modifier = Modifier.size(24.dp))
@@ -65,7 +67,8 @@ fun GameItem(
                 error = {
                     Box(
                         modifier = Modifier
-                            .size(80.dp)
+                            .width(160.dp)
+                            .aspectRatio(16f / 9f)
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {

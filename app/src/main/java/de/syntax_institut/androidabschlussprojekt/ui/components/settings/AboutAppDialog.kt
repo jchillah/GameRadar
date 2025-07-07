@@ -28,7 +28,7 @@ fun AboutAppDialog(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Über GameFinder",
+                    text = "Über GameRadar",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -39,7 +39,7 @@ fun AboutAppDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "GameFinder v1.0.0",
+                    text = "GameRadar v1.0.0",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )

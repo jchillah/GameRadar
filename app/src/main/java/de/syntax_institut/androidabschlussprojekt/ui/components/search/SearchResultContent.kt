@@ -78,7 +78,7 @@ fun SearchResultContent(
                                     .padding(vertical = 16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Loading(modifier = Modifier.size(32.dp))
+                                LoadingState(modifier = Modifier.size(32.dp))
                             }
                         }
                     }

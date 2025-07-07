@@ -15,6 +15,8 @@ object GameCacheMapper {
         .build()
     
     private val listAdapter = moshi.adapter<List<String>>(List::class.java)
+    private val movieListAdapter =
+        moshi.adapter<List<Movie>>(Types.newParameterizedType(List::class.java, Movie::class.java))
     
     /**
      * Game zu GameCacheEntity konvertieren.
@@ -97,7 +99,8 @@ object GameCacheMapper {
             } catch (_: Exception) {
                 emptyList()
             },
-            playtime = playtime
+            playtime = playtime,
+            movies = emptyList()
         )
     }
 } 

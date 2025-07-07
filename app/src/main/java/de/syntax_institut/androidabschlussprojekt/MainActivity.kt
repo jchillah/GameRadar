@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.unit.*
 import androidx.core.app.*
 import androidx.core.net.*
 import androidx.navigation.compose.*
@@ -49,25 +48,9 @@ class MainActivity : ComponentActivity() {
             val snackbarHostState = remember { SnackbarHostState() }
             MyAppTheme {
                 Box(Modifier.fillMaxSize()) {
-                    AppStart(
+                    App(
                     )
                     SnackbarHost(hostState = snackbarHostState)
-                    // Test-Button (nur sichtbar im Debug, kann später entfernt werden)
-                    Button(
-                        onClick = {
-                            sendNewGameNotification(
-                                context = this@MainActivity,
-                                gameTitle = "The Witcher 4",
-                                gameSlug = "the-witcher-4",
-                                gameId = 99999
-                            )
-                        },
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(24.dp)
-                    ) {
-                        Text("Test: Neue Spiel-Benachrichtigung")
-                    }
                 }
             }
             // Deep Link Intent beim Start prüfen

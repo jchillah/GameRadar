@@ -23,3 +23,11 @@ fun GameDto.toDomain(): Game = Game(
     stores = stores?.map { it.store.name } ?: emptyList(),
     playtime = playtime
 )
+
+fun MovieDto.toDomain(): Movie = Movie(
+    id = id,
+    name = name,
+    preview = preview,
+    url480 = data.low,
+    urlMax = data.max
+)

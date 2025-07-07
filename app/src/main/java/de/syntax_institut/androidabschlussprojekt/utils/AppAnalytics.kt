@@ -5,7 +5,7 @@ import android.util.*
 object Analytics {
     fun trackEvent(eventName: String, parameters: Map<String, Any> = emptyMap()) {
         Log.d("Analytics", "Event: $eventName, Parameters: $parameters")
-        // Hier würde die echte Analytics-Implementation stehen
+        // TODO: Implement analytics tracking
     }
 
     fun trackScreenView(screenName: String) {

@@ -32,7 +32,7 @@ fun SearchBarWithButton(
             trailingIcon = {
                 Row {
                     if (isLoading) {
-                        Loading(modifier = Modifier.size(20.dp))
+                        LoadingState(modifier = Modifier.size(20.dp))
                     }
                     if (searchText.text.isNotBlank() && onClear != null) {
                         IconButton(onClick = { onClear() }) {

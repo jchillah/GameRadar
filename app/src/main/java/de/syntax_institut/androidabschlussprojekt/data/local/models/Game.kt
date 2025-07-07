@@ -22,4 +22,13 @@ data class Game(
     val screenshots: List<String> = emptyList(),
     val stores: List<String> = emptyList(),
     val playtime: Int? = null,
+    val movies: List<Movie> = emptyList(),
+)
+
+data class Movie(
+    val id: Int,
+    val name: String,
+    val preview: String?,
+    val url480: String?,
+    val urlMax: String?,
 )

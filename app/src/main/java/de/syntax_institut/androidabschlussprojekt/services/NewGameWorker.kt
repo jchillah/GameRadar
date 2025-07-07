@@ -16,7 +16,7 @@ class NewGameWorker(
     override suspend fun doWork(): Result {
         // Echte Logik: Suche nach neuen Spielen (nach ID und Slug)
         val prefs =
-            applicationContext.getSharedPreferences("gamefinder_settings", Context.MODE_PRIVATE)
+            applicationContext.getSharedPreferences("gameradar_settings", Context.MODE_PRIVATE)
         val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
         newGames.forEach { game ->
             MainActivity().sendNewGameNotification(

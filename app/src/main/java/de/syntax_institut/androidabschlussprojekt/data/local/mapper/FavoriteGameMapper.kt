@@ -92,7 +92,8 @@ object FavoriteGameMapper {
             } catch (e: Exception) {
                 emptyList()
             },
-            playtime = playtime
+            playtime = playtime,
+            movies = emptyList()
         )
     }
 } 

@@ -10,7 +10,9 @@ import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.services.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.compose.*
 import java.util.concurrent.*
 
@@ -19,11 +21,13 @@ import java.util.concurrent.*
  * Hauptcontainer für die gesamte App mit Navigation und Theme.
  */
 @Composable
-fun AppStart() {
+fun App() {
     val settingsRepository: SettingsRepository = koinInject()
     val darkModeEnabled by settingsRepository.darkModeEnabled.collectAsState()
     var isLoaded by remember { mutableStateOf(true) }
     val context = LocalContext.current
+    val isOnline by NetworkUtils.observeNetworkStatus(context)
+        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
 
     LaunchedEffect(Unit) {
         val workManager = WorkManager.getInstance(context)
@@ -47,7 +51,18 @@ fun AppStart() {
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background
             ) {
-                MainNavigation()
+                Column(
+                    modifier = Modifier
+                        .padding(WindowInsets.statusBars.asPaddingValues())
+                ) {
+                    if (!isOnline) {
+                        OfflineBanner(
+                            isOffline = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    MainNavigation()
+                }
             }
         }
     }

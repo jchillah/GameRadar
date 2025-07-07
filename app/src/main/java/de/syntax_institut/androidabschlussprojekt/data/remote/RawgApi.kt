@@ -38,4 +38,10 @@ interface RawgApi {
     suspend fun getGenres(
         @Query("key") apiKey: String = BuildConfig.API_KEY
     ): Response<GenreResponse>
+
+    @GET("games/{id}/movies")
+    suspend fun getGameMovies(
+        @Path("id") gameId: Int,
+        @Query("key") apiKey: String = BuildConfig.API_KEY,
+    ): Response<MovieResponse>
 }

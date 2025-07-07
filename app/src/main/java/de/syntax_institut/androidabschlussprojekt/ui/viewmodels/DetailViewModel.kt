@@ -28,7 +28,7 @@ class DetailViewModel(
             "[DEBUG] loadDetail() aufgerufen für ID: $id, forceReload=$forceReload"
         )
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = DetailUiState(isLoading = true)
+            _uiState.value = DetailUiState(resource = Resource.Loading())
 
             if (forceReload) {
                 repo.clearCache()
@@ -72,18 +72,29 @@ class DetailViewModel(
                             "[DEBUG] Website und Screenshots leer, versuche forceReload für $id"
                         )
                         loadDetail(id, forceReload = true)
-                    } else {
-                        _uiState.value = DetailUiState(game = game)
+                    } else if (game != null) {
+                        _uiState.value =
+                            DetailUiState(resource = Resource.Success(game), game = game)
                         _isFavorite.value = favoriteResult
+                    } else {
+                        _uiState.value = DetailUiState(
+                            resource = Resource.Error("Spiel konnte nicht geladen werden."),
+                            error = "Spiel konnte nicht geladen werden."
+                        )
                     }
                 }
 
                 is Resource.Error -> {
                     Log.e("DetailViewModel", "[ERROR] Fehler beim Laden: ${gameResult.message}")
-                    _uiState.value = DetailUiState(error = gameResult.message)
+                    _uiState.value = DetailUiState(
+                        resource = Resource.Error(gameResult.message ?: "Fehler"),
+                        error = gameResult.message
+                    )
                 }
 
-                else -> {}
+                is Resource.Loading -> {
+                    _uiState.value = DetailUiState(resource = Resource.Loading())
+                }
             }
         }
     }

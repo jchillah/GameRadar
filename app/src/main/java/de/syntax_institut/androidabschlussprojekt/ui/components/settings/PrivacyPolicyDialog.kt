@@ -44,7 +44,7 @@ fun PrivacyPolicyDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "GameFinder Datenschutzerklärung",
+                    text = "GameRadar Datenschutzerklärung",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -57,7 +57,7 @@ fun PrivacyPolicyDialog(
 
                 PrivacySection(
                     title = "1. Datenerhebung",
-                    content = "GameFinder sammelt nur die Daten, die für die Funktionalität der App notwendig sind. " +
+                    content = "GameRadar sammelt nur die Daten, die für die Funktionalität der App notwendig sind. " +
                             "Dazu gehören deine Suchanfragen, Favoriten und App-Einstellungen, die lokal auf deinem Gerät gespeichert werden."
                 )
 
@@ -81,7 +81,7 @@ fun PrivacyPolicyDialog(
 
                 PrivacySection(
                     title = "5. Analytics",
-                    content = "GameFinder sammelt anonyme Nutzungsdaten zur Verbesserung der App. " +
+                    content = "GameRadar sammelt anonyme Nutzungsdaten zur Verbesserung der App. " +
                             "Diese Daten enthalten keine persönlichen Informationen und werden nur für interne Zwecke verwendet."
                 )
 

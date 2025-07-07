@@ -20,8 +20,8 @@ import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 fun GameHeaderImage(imageUrl: String?, imageQuality: ImageQuality) {
     val context = LocalContext.current
     val size = when (imageQuality) {
-        ImageQuality.LOW -> Size(400, 200)
-        ImageQuality.MEDIUM -> Size(800, 400)
+        ImageQuality.LOW -> Size(400, 225)
+        ImageQuality.MEDIUM -> Size(800, 450)
         ImageQuality.HIGH -> Size.ORIGINAL
     }
     if (imageUrl.isNullOrBlank()) {
@@ -29,7 +29,7 @@ fun GameHeaderImage(imageUrl: String?, imageQuality: ImageQuality) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
+                .aspectRatio(16f / 9f)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
@@ -52,7 +52,7 @@ fun GameHeaderImage(imageUrl: String?, imageQuality: ImageQuality) {
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp),
+                .aspectRatio(16f / 9f),
             contentScale = ContentScale.Crop,
         )
     }

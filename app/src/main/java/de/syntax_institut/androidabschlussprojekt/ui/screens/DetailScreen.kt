@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.*
 import androidx.core.net.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
@@ -43,6 +44,8 @@ fun DetailScreen(
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
+    val isOnline by NetworkUtils.observeNetworkStatus(context)
+        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
 
     LaunchedEffect(gameId) {
         Analytics.trackScreenView("DetailScreen")
@@ -59,11 +62,10 @@ fun DetailScreen(
         }
     }
 
-    val game = state.game
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
             DetailTopRow(
-                game = game,
+                game = state.game,
                 isFavorite = isFavorite,
                 navController = navController,
                 onRefresh = {
@@ -87,130 +89,146 @@ fun DetailScreen(
                 .padding(top = 64.dp)
                 .verticalScroll(scrollState)
         ) {
-            when {
-                state.isLoading -> {
+            when (val res = state.resource) {
+                is Resource.Loading<Game> -> {
                     LoadingState(
                         modifier = Modifier.fillMaxSize(),
                         message = "Lade Spieldetails..."
                     )
                 }
 
-                state.error != null -> {
+                is Resource.Error<Game> -> {
                     ErrorCard(
                         modifier = Modifier.fillMaxSize(),
-                        error = state.error ?: "Unbekannter Fehler",
+                        error = res.message ?: "Unbekannter Fehler",
                     )
                 }
 
-                game == null -> {
-                    ErrorCard(
-                        modifier = Modifier.fillMaxSize(),
-                        error = "Spiel konnte nicht geladen werden.",
-                    )
-                }
-
-                else -> {
-                    LaunchedEffect(game.website) {
-                        Log.d("DetailScreen", "Website URL: '${game.website}'")
-                        Log.d("DetailScreen", "Website is null: ${game.website == null}")
-                        Log.d("DetailScreen", "Website is blank: ${game.website?.isBlank()}")
-                        Log.d(
-                            "DetailScreen",
-                            "Website is not blank: ${game.website?.isNotBlank()}"
+                is Resource.Success<Game> -> {
+                    val game = res.data
+                    if (game == null) {
+                        ErrorCard(
+                            modifier = Modifier.fillMaxSize(),
+                            error = "Spiel konnte nicht geladen werden.",
                         )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // wenn die Daten nicht Null sind
-                    if (true) {
+                    } else {
+                        LaunchedEffect(game.website) {
+                            Log.d("DetailScreen", "Website URL: '${game.website}'")
+                            Log.d("DetailScreen", "Website is null: ${game.website == null}")
+                            Log.d("DetailScreen", "Website is blank: ${game.website?.isBlank()}")
+                            Log.d(
+                                "DetailScreen",
+                                "Website is not blank: ${game.website?.isNotBlank()}"
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                         GameHeaderImage(
                             imageUrl = game.imageUrl ?: "",
                             imageQuality = imageQuality
                         )
-                    }
-
-                    GameMetaInfo(
-                        title = game.title,
-                        releaseDate = game.releaseDate ?: emptyString,
-                        rating = game.rating.toDouble()
-                    )
-                    GameDescription(description = game.description)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    GameStatsCard(
-                        playtime = game.playtime,
-                        metacritic = game.metacritic,
-                        userRating = state.userRating,
-                        onRatingChanged = { newRating ->
-                            vm.updateUserRating(newRating)
-                        }
-                    )
-                    SectionCard("Plattformen") { ChipRow(game.platforms) }
-                    SectionCard("Genres") { ChipRow(game.genres) }
-                    SectionCard("Entwickler") { ChipFlowRow(game.developers) }
-                    SectionCard("Publisher") { ChipFlowRow(game.publishers) }
-                    SectionCard("USK/ESRB") { game.esrbRating?.let { ChipFlowRow(listOf(it)) } }
-                    SectionCard("Tags") { ChipFlowRow(game.tags) }
-                    SectionCard("Stores") { ChipRow(game.stores) }
-                    SectionCard("Metacritic & Spielzeit") {
-                        game.metacritic?.let {
-                            Text(
-                                "Metacritic: $it",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                        game.playtime?.let {
-                            Text(
-                                "Durchschnittliche Spielzeit: $it Std.",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-                    SectionCard("Screenshots") {
-                        if (game.screenshots.isEmpty()) {
-                            if (!NetworkUtils.isNetworkAvailable(context)) {
-                                ErrorCard(
-                                    error = "Keine Screenshots verfügbar. Prüfe deine Internetverbindung und versuche es erneut.",
+                        GameMetaInfo(
+                            title = game.title,
+                            releaseDate = game.releaseDate ?: emptyString,
+                            rating = game.rating.toDouble()
+                        )
+                        GameDescription(description = game.description)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        GameStatsCard(
+                            playtime = game.playtime,
+                            metacritic = game.metacritic,
+                            userRating = state.userRating,
+                            onRatingChanged = { newRating ->
+                                vm.updateUserRating(newRating)
+                            }
+                        )
+                        SectionCard("Plattformen") { ChipRow(game.platforms) }
+                        SectionCard("Genres") { ChipRow(game.genres) }
+                        SectionCard("Entwickler") { ChipFlowRow(game.developers) }
+                        SectionCard("Publisher") { ChipFlowRow(game.publishers) }
+                        SectionCard("USK/ESRB") { game.esrbRating?.let { ChipFlowRow(listOf(it)) } }
+                        SectionCard("Tags") { ChipFlowRow(game.tags) }
+                        SectionCard("Stores") { ChipRow(game.stores) }
+                        SectionCard("Metacritic & Spielzeit") {
+                            game.metacritic?.let {
+                                Text(
+                                    "Metacritic: $it",
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
+                            }
+                            game.playtime?.let {
+                                Text(
+                                    "Durchschnittliche Spielzeit: $it Std.",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                        SectionCard("Screenshots") {
+                            if (game.screenshots.isEmpty()) {
+                                if (!isOnline) {
+                                    ErrorCard(
+                                        error = "Keine Screenshots verfügbar. Prüfe deine Internetverbindung und versuche es erneut.",
+                                    )
+                                } else {
+                                    ErrorCard(
+                                        error = "Für dieses Spiel wurden keine Screenshots gefunden.",
+                                    )
+                                }
                             } else {
+                                ScreenshotGallery(game.screenshots, imageQuality = imageQuality)
+                                Analytics.trackEvent(
+                                    "screenshots_viewed", mapOf(
+                                        "game_id" to gameId,
+                                        "screenshot_count" to game.screenshots.size
+                                    )
+                                )
+                            }
+                        }
+                        var selectedTrailer by remember { mutableStateOf<Movie?>(null) }
+                        if (game.movies.isNotEmpty()) {
+                            TrailerGallery(
+                                movies = game.movies,
+                                onTrailerClick = { selectedTrailer = it },
+                                modifier = Modifier.padding(vertical = 8.dp)
+                            )
+                        }
+                        if (selectedTrailer != null) {
+                            TrailerPlayerDialog(
+                                movie = selectedTrailer!!,
+                                onDismiss = { selectedTrailer = null }
+                            )
+                        }
+                        if (game.website.isNullOrBlank() || !(game.website.startsWith("http://") || game.website.startsWith(
+                                "https://"
+                            ))
+                        ) {
+                            SectionCard("Website") {
                                 ErrorCard(
-                                    error = "Für dieses Spiel wurden keine Screenshots gefunden.",
+                                    error = "Keine Website verfügbar.",
                                 )
                             }
                         } else {
-                            ScreenshotGallery(game.screenshots, imageQuality = imageQuality)
-                            Analytics.trackEvent(
-                                "screenshots_viewed", mapOf(
-                                    "game_id" to gameId,
-                                    "screenshot_count" to game.screenshots.size
-                                )
-                            )
-                        }
-                    }
-                    if (game.website.isNullOrBlank()) {
-                        SectionCard("Website") {
-                            ErrorCard(
-                                error = "Keine Website verfügbar.",
-                            )
-                        }
-                    } else {
-                        SectionCard("Website") {
-                            TextButton(
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, game.website.toUri())
-                                    context.startActivity(intent)
-                                    Analytics.trackUserAction("website_opened", gameId)
+                            SectionCard("Website") {
+                                TextButton(
+                                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                                    onClick = {
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, game.website.toUri())
+                                        context.startActivity(intent)
+                                        Analytics.trackUserAction("website_opened", gameId)
+                                    }
+                                ) {
+                                    Text(
+                                        "Website besuchen",
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
                                 }
-                            ) {
-                                Text(
-                                    "Website besuchen",
-                                    color = MaterialTheme.colorScheme.primary
-                                )
                             }
                         }
+                        Spacer(modifier = Modifier.height(80.dp))
                     }
-                    Spacer(modifier = Modifier.height(80.dp))
                 }
+
+                else -> {}
             }
         }
     }

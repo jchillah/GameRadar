@@ -5,7 +5,7 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- Backup-Regeln für GameFinder App -->
+        <!-- Backup-Regeln für GameRadar App -->
         <include
             domain="database"
             path="game_database" />

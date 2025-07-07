@@ -115,6 +115,7 @@ dependencies {
     // Room Database
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.navigation.testing.android)
     ksp(libs.androidx.room.compiler)
     
     // Paging
@@ -175,4 +176,6 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.media3:media3-exoplayer:1.3.1")
+    implementation("androidx.media3:media3-ui:1.3.1")
 }

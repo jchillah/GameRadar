@@ -29,7 +29,8 @@ fun SearchScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val isOffline by NetworkUtils.observeNetworkStatus(context).collectAsState(initial = false)
+    val isOnline by NetworkUtils.observeNetworkStatus(context)
+        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
@@ -126,7 +127,7 @@ fun SearchScreen(
             } else if (!state.hasSearched) {
                 EmptyState(
                     title = "Suche nach Spielen",
-                    message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
+                    message = if (!isOnline) "Du bist offline. Die Suche ist nur online möglich." else "Gib einen Suchbegriff ein, um Spiele zu finden.",
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
@@ -161,7 +162,7 @@ fun SearchScreen(
                 isLoadingGenres = state.isLoadingGenres,
                 platformsError = state.platformsError,
                 genresError = state.genresError,
-                isOffline = isOffline,
+                isOffline = !isOnline,
                 onOrderingChange = { newOrdering ->
                     viewModel.updateOrdering(newOrdering)
                 },
