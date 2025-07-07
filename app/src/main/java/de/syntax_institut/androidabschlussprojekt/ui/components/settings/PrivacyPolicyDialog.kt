@@ -92,7 +92,7 @@ fun PrivacyPolicyDialog(
                 )
 
                 Text(
-                    text = "Bei Fragen zum Datenschutz kontaktiere uns unter: privacy@gamefinder.app",
+                    text = "Bei Fragen zum Datenschutz kontaktiere uns unter: michael.winkler.developer@gmail.com",
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

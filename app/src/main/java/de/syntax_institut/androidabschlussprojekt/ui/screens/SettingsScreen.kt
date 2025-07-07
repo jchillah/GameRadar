@@ -4,10 +4,13 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import androidx.core.net.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
@@ -71,6 +74,23 @@ fun SettingsScreen(
                 checked = notificationsEnabled,
                 onCheckedChange = viewModel::setNotificationsEnabled
             )
+            val context = LocalContext.current
+            Button(
+                onClick = {
+                    de.syntax_institut.androidabschlussprojekt.MainActivity()
+                        .sendNewGameNotification(
+                            context,
+                            "Testspiel: Notification",
+                            "testspiel-notification",
+                            999999
+                        )
+                },
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Icon(Icons.Default.NotificationsActive, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Test: Neue Spiel-Benachrichtigung")
+            }
         }
 
         SettingsSection(title = "Daten & Synchronisation") {
@@ -151,6 +171,20 @@ fun SettingsScreen(
                 title = "Datenschutz",
                 subtitle = "Datenschutzerklärung lesen",
                 onClick = { showPrivacyDialog = true }
+            )
+            val context = LocalContext.current
+            SettingsButtonItem(
+                icon = Icons.Default.Email,
+                title = "Support kontaktieren",
+                subtitle = "support@gamefinder.de",
+                onClick = {
+                    val intent =
+                        android.content.Intent(android.content.Intent.ACTION_SENDTO).apply {
+                            data = "mailto:support@gamefinder.de".toUri()
+                            putExtra(android.content.Intent.EXTRA_SUBJECT, "Support GameFinder")
+                        }
+                    context.startActivity(intent)
+                }
             )
         }
         if (showAboutDialog) {

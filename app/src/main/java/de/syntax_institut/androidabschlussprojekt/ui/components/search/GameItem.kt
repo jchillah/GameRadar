@@ -23,6 +23,7 @@ fun GameItem(
     onClick: () -> Unit,
     onDelete: (() -> Unit)? = null,
     imageQuality: ImageQuality = ImageQuality.HIGH,
+    isFavorite: Boolean = false,
 ) {
     val context = LocalContext.current
 
@@ -85,7 +86,14 @@ fun GameItem(
                 }
                 Text(text = "Rating: ${game.rating}", fontSize = 12.sp)
             }
-            
+
+            // Herz-Icon für Favoritenstatus
+            Icon(
+                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                contentDescription = if (isFavorite) "Als Favorit markiert" else "Nicht als Favorit",
+                tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(28.dp)
+            )
             // Löschen-Button nur anzeigen, wenn onDelete nicht null ist
             onDelete?.let { deleteFunction ->
                 IconButton(
@@ -111,7 +119,19 @@ fun GameItemPreview() {
         releaseDate = "2021-01-01",
         rating = 4.5F,
         imageUrl = "https://example.com/game_image.jpg",
-        description = "This is a sample game description."
+        description = "This is a sample game description.",
+        slug = "sample-game",
+        metacritic = 80,
+        website = "https://example.com",
+        esrbRating = "E",
+        genres = listOf("Action", "Adventure"),
+        platforms = listOf("PC", "PS5"),
+        developers = listOf("Sample Dev"),
+        publishers = listOf("Sample Pub"),
+        tags = listOf("Indie", "Open World"),
+        screenshots = listOf("https://example.com/screenshot1.jpg"),
+        stores = listOf("Steam"),
+        playtime = 15
     )
     GameItem(game = game, onClick = {})
 }
@@ -125,7 +145,19 @@ fun GameItemWithDeletePreview() {
         releaseDate = "2021-01-01",
         rating = 4.5F,
         imageUrl = "https://example.com/game_image.jpg",
-        description = "This is a sample game description."
+        description = "This is a sample game description.",
+        slug = "sample-game",
+        metacritic = 80,
+        website = "https://example.com",
+        esrbRating = "E",
+        genres = listOf("Action", "Adventure"),
+        platforms = listOf("PC", "PS5"),
+        developers = listOf("Sample Dev"),
+        publishers = listOf("Sample Pub"),
+        tags = listOf("Indie", "Open World"),
+        screenshots = listOf("https://example.com/screenshot1.jpg"),
+        stores = listOf("Steam"),
+        playtime = 15
     )
     GameItem(
         game = game, 

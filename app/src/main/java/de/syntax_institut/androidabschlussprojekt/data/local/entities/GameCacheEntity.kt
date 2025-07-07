@@ -1,7 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 /**
  * Room Entity für gecachte Spiele.
@@ -11,6 +10,7 @@ import androidx.room.PrimaryKey
 data class GameCacheEntity(
     @PrimaryKey
     val id: Int,
+    val slug: String = "",
     val title: String,
     val releaseDate: String?,
     val imageUrl: String?,
@@ -29,5 +29,5 @@ data class GameCacheEntity(
     val playtime: Int?,
     val cachedAt: Long = System.currentTimeMillis(),
     val searchQuery: String? = null,
-    val filterHash: String? = null
+    val filterHash: String? = null,
 ) 

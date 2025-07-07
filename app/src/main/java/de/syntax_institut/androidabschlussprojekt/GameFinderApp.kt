@@ -9,11 +9,11 @@ import org.koin.core.context.*
  * MyApplication
  * Initialisiert Koin für Dependency Injection.
  */
-class MyApplication : Application() {
+class GameRadarApp : Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            androidContext(this@MyApplication)
+            androidContext(this@GameRadarApp)
             modules(networkModule)
             modules(repositoryModule)
             modules(viewModelModule)

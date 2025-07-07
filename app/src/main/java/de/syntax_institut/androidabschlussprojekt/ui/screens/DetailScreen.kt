@@ -42,6 +42,7 @@ fun DetailScreen(
     val scrollState = rememberScrollState()
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
+    val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
 
     LaunchedEffect(gameId) {
         Analytics.trackScreenView("DetailScreen")
@@ -76,7 +77,8 @@ fun DetailScreen(
                     "toggle_favorite",
                     gameId
                 )
-                }
+                },
+                shareGamesEnabled = shareGamesEnabled
             )
         }
         Column(

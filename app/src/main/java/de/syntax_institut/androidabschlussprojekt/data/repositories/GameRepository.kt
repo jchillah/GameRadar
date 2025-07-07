@@ -18,7 +18,8 @@ import javax.inject.*
 class GameRepository @Inject constructor(
     private val api: RawgApi,
     private val gameCacheDao: GameCacheDao,
-    private val context: Context
+    private val favoriteGameDao: FavoriteGameDao,
+    private val context: Context,
 ) {
 
     suspend fun getGameDetail(gameId: Int): Resource<Game> {
@@ -376,6 +377,61 @@ class GameRepository @Inject constructor(
             oldestEntryTime = oldestTime,
             isExpired = isExpired
         )
+    }
+
+    /**
+     * Sucht die GameId anhand eines Slugs. Erst im Cache, dann in Favoriten, dann per API.
+     */
+    suspend fun getGameIdBySlug(slug: String): Int? {
+        // 1. Suche im Cache
+        val cachedGames = gameCacheDao.getAllCachedGames().firstOrNull() ?: emptyList()
+        cachedGames.forEach { entity ->
+            if (entity.slug == slug) return entity.id
+        }
+        // 2. Suche in Favoriten
+        val favoriteGames = favoriteGameDao.getAllFavorites().firstOrNull() ?: emptyList()
+        favoriteGames.forEach { entity ->
+            if (entity.slug == slug) return entity.id
+        }
+        // 3. Suche per API (RAWG unterstützt Suche nach Slug nicht direkt, aber als Fallback kann man die Such-API nutzen)
+        return try {
+            val response = api.searchGames(query = slug)
+            if (response.isSuccessful) {
+                val game = response.body()?.results?.find { it.slug == slug }
+                game?.id
+            } else null
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
+     * Vergleicht die neuesten Spiele (nach ID und Slug) mit den lokal gespeicherten Werten.
+     * Gibt alle neuen Spiele zurück und aktualisiert die gespeicherten Werte.
+     */
+    suspend fun checkForNewGamesAndUpdatePrefs(
+        prefs: SharedPreferences,
+        count: Int = 10,
+    ): List<Game> {
+        // 1. Hole die letzten Spiele von der API
+        val response = api.searchGames(page = 1, pageSize = count, query = "")
+        if (!response.isSuccessful) return emptyList()
+        val games = response.body()?.results?.map { it.toDomain() } ?: return emptyList()
+
+        // 2. Lade die letzten bekannten IDs/Slugs aus den SharedPreferences
+        val lastIds = prefs.getStringSet("last_known_game_ids", emptySet()) ?: emptySet()
+        val lastSlugs = prefs.getStringSet("last_known_game_slugs", emptySet()) ?: emptySet()
+
+        // 3. Finde neue Spiele (ID oder Slug noch nicht bekannt)
+        val newGames = games.filter { it.id.toString() !in lastIds || it.slug !in lastSlugs }
+
+        // 4. Aktualisiere die gespeicherten IDs/Slugs (nur die neuesten)
+        prefs.edit()
+            .putStringSet("last_known_game_ids", games.map { it.id.toString() }.toSet())
+            .putStringSet("last_known_game_slugs", games.map { it.slug }.toSet())
+            .apply()
+
+        return newGames
     }
 }
 

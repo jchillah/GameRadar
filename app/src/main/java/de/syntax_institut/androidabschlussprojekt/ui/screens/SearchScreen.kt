@@ -34,6 +34,10 @@ fun SearchScreen(
     var selectedTab by remember { mutableIntStateOf(0) }
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
+    val favoritesViewModel: FavoritesViewModel = koinViewModel()
+    val favoritesState by favoritesViewModel.uiState.collectAsState()
+    val favoriteIds =
+        remember(favoritesState.favorites) { favoritesState.favorites.map { it.id }.toSet() }
     LaunchedEffect(Unit) {
         if (state.platforms.isEmpty()) viewModel.loadPlatforms()
         if (state.genres.isEmpty()) viewModel.loadGenres()
@@ -133,7 +137,8 @@ fun SearchScreen(
                         navController.navigate(Routes.detail(game.id))
                     },
                     modifier = Modifier.fillMaxSize(),
-                    imageQuality = imageQuality
+                    imageQuality = imageQuality,
+                    favoriteIds = favoriteIds
                 )
             }
         }

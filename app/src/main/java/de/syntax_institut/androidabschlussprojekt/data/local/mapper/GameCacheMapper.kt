@@ -1,9 +1,9 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.mapper
 
-import com.squareup.moshi.Moshi
+import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.GameCacheEntity
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
+import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
 /**
  * Mapper für die Konvertierung zwischen Game und GameCacheEntity.
@@ -25,6 +25,7 @@ object GameCacheMapper {
     ): GameCacheEntity {
         return GameCacheEntity(
             id = id,
+            slug = slug,
             title = title,
             releaseDate = releaseDate,
             imageUrl = imageUrl,
@@ -52,6 +53,7 @@ object GameCacheMapper {
     fun GameCacheEntity.toGame(): Game {
         return Game(
             id = id,
+            slug = slug,
             title = title,
             releaseDate = releaseDate,
             imageUrl = imageUrl,

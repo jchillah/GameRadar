@@ -1,9 +1,9 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.mapper
 
-import com.squareup.moshi.Moshi
+import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.FavoriteGameEntity
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
+import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
 /**
  * Mapper für die Konvertierung zwischen Game und FavoriteGameEntity.
@@ -22,6 +22,7 @@ object FavoriteGameMapper {
     fun Game.toFavoriteEntity(): FavoriteGameEntity {
         return FavoriteGameEntity(
             id = id,
+            slug = slug,
             title = title,
             releaseDate = releaseDate,
             imageUrl = imageUrl,
@@ -47,6 +48,7 @@ object FavoriteGameMapper {
     fun FavoriteGameEntity.toGame(): Game {
         return Game(
             id = id,
+            slug = slug,
             title = title,
             releaseDate = releaseDate,
             imageUrl = imageUrl,
