@@ -20,6 +20,7 @@ internal fun DetailTopRow(
     navController: NavHostController,
     onRefresh: () -> Unit,
     onToggleFavorite: () -> Unit,
+    shareGamesEnabled: Boolean,
 ) {
     Row(
         modifier = Modifier
@@ -46,10 +47,12 @@ internal fun DetailTopRow(
             IconButton(onClick = onRefresh) {
                 Icon(Icons.Default.Refresh, contentDescription = "Neu laden")
             }
-            ShareButton(
-                gameTitle = game.title,
-                gameUrl = game.website
-            )
+            if (shareGamesEnabled) {
+                ShareButton(
+                    gameTitle = game.title,
+                    gameUrl = "https://www.dein-domain.de/game/${game.id}"
+                )
+            }
             FavoriteButton(
                 isFavorite = isFavorite,
                 onFavoriteChanged = { _ -> onToggleFavorite() }
