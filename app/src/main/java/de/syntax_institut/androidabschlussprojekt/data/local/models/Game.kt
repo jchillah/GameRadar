@@ -5,6 +5,7 @@ package de.syntax_institut.androidabschlussprojekt.data.local.models
  */
 data class Game(
     val id: Int,
+    val slug: String,
     val title: String,
     val releaseDate: String?,
     val imageUrl: String?,
@@ -20,5 +21,5 @@ data class Game(
     val tags: List<String> = emptyList(),
     val screenshots: List<String> = emptyList(),
     val stores: List<String> = emptyList(),
-    val playtime: Int? = null
+    val playtime: Int? = null,
 )

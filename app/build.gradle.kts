@@ -36,6 +36,7 @@ android {
     defaultConfig {
         applicationId = "de.syntax_institut.androidabschlussprojekt"
         minSdk = 26
+        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -67,6 +68,7 @@ android {
         buildConfig = true
         compose = true
     }
+    @Suppress("UnstableApiUsage")
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.15"
     }
@@ -100,7 +102,8 @@ dependencies {
     // Material3 Adaptive
     implementation(libs.material)
     implementation(libs.androidx.material3.window.size)
-    
+    implementation(libs.androidx.material3.v120)
+
     // UI Components
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.compose.shimmer)
@@ -154,8 +157,8 @@ dependencies {
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.core)
     testImplementation(libs.retrofit)
-    testImplementation("io.insert-koin:koin-test:3.5.3")
-    testImplementation("io.insert-koin:koin-test-junit4:3.5.3")
+    testImplementation(libs.insert.koin.koin.test)
+    testImplementation(libs.insert.koin.koin.test.junit4)
     
     // Android Testing
     androidTestImplementation(libs.androidx.junit)
@@ -164,10 +167,12 @@ dependencies {
     androidTestImplementation(libs.mockk.android)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
-    androidTestImplementation("io.insert-koin:koin-test:3.5.3")
-    androidTestImplementation("io.insert-koin:koin-test-junit4:3.5.3")
+    androidTestImplementation(libs.insert.koin.koin.test)
+    androidTestImplementation(libs.insert.koin.koin.test.junit4)
     
     // Compose Testing
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }

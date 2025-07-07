@@ -1,13 +1,9 @@
 package de.syntax_institut.androidabschlussprojekt.data.local
 
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import android.content.Context
-import de.syntax_institut.androidabschlussprojekt.data.local.dao.FavoriteGameDao
-import de.syntax_institut.androidabschlussprojekt.data.local.dao.GameCacheDao
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.FavoriteGameEntity
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.GameCacheEntity
+import android.content.*
+import androidx.room.*
+import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
+import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 
 /**
  * Room Database für die App.
@@ -15,7 +11,7 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.GameCacheE
  */
 @Database(
     entities = [FavoriteGameEntity::class, GameCacheEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class GameDatabase : RoomDatabase() {

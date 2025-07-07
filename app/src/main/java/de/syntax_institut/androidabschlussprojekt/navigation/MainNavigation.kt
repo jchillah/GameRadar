@@ -12,13 +12,12 @@ import androidx.navigation.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavigation(
-    modifier: Modifier,
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Scaffold(
-        modifier = modifier,
+        modifier = Modifier.padding(),
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             BottomNavBar(currentRoute, navController)

@@ -22,6 +22,7 @@ val repositoryModule = module {
         GameRepository(
             api = get(),
             gameCacheDao = get(),
+            favoriteGameDao = get(),
             context = get()
         )
     }

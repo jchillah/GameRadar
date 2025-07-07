@@ -1,13 +1,12 @@
 package de.syntax_institut.androidabschlussprojekt.data.remote.dto
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-import de.syntax_institut.androidabschlussprojekt.data.remote.wrappers.PlatformWrapperDto
-import de.syntax_institut.androidabschlussprojekt.data.remote.wrappers.StoreWrapperDto
+import com.squareup.moshi.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.wrappers.*
 
 @JsonClass(generateAdapter = true)
 data class GameDto(
     val id: Int,
+    val slug: String,
     val name: String,
     @Json(name = "released") val released: String?,
     @Json(name = "background_image") val backgroundImage: String?,
@@ -23,5 +22,5 @@ data class GameDto(
     val tags: List<TagDto>? = null,
     @Json(name = "short_screenshots") val shortScreenshots: List<ScreenshotDto>? = null,
     val stores: List<StoreWrapperDto>? = null,
-    val playtime: Int? = null
+    val playtime: Int? = null,
 )

@@ -49,8 +49,8 @@ internal fun DetailTopRow(
             }
             if (shareGamesEnabled) {
                 ShareButton(
-                    gameTitle = game.title,
-                    gameUrl = "https://www.dein-domain.de/game/${game.id}"
+                    game = game,
+                    modifier = Modifier
                 )
             }
             FavoriteButton(

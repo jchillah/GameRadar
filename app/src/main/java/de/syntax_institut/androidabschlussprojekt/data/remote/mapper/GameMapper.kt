@@ -1,10 +1,11 @@
 package de.syntax_institut.androidabschlussprojekt.data.remote.mapper
 
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.remote.dto.GameDto
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
 
 fun GameDto.toDomain(): Game = Game(
     id = id,
+    slug = slug,
     title = name,
     releaseDate = released,
     imageUrl = backgroundImage,

@@ -1,7 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.entities
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
 /**
  * Room Entity für Favoriten-Spiele.
@@ -11,6 +10,7 @@ import androidx.room.PrimaryKey
 data class FavoriteGameEntity(
     @PrimaryKey
     val id: Int,
+    val slug: String = "",
     val title: String,
     val releaseDate: String?,
     val imageUrl: String?,
@@ -27,5 +27,5 @@ data class FavoriteGameEntity(
     val screenshots: String,
     val stores: String,
     val playtime: Int?,
-    val addedAt: Long = System.currentTimeMillis()
+    val addedAt: Long = System.currentTimeMillis(),
 ) 

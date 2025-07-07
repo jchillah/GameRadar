@@ -20,6 +20,7 @@ fun SearchResultContent(
     onGameClick: (Game) -> Unit,
     modifier: Modifier = Modifier,
     imageQuality: ImageQuality = ImageQuality.HIGH,
+    favoriteIds: Set<Int> = emptySet(),
 ) {
     when (pagingItems.loadState.refresh) {
         is LoadState.Loading -> {
@@ -64,7 +65,8 @@ fun SearchResultContent(
                             GameItem(
                                 game = game,
                                 onClick = { onGameClick(game) },
-                                imageQuality = imageQuality
+                                imageQuality = imageQuality,
+                                isFavorite = favoriteIds.contains(game.id)
                             )
                         }
                     }
