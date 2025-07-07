@@ -14,6 +14,7 @@ import androidx.core.net.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 
 @Composable
 fun SettingsScreen(
@@ -30,6 +31,8 @@ fun SettingsScreen(
     val darkModeEnabled by viewModel.darkModeEnabled.collectAsState()
     var showAboutDialog by remember { mutableStateOf(false) }
     var showPrivacyDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val isOffline by NetworkUtils.observeNetworkStatus(context).collectAsState(initial = false)
 
     Column(
         modifier = modifier
@@ -47,14 +50,14 @@ fun SettingsScreen(
 
         IntelligentCacheIndicator(
             modifier = Modifier.fillMaxWidth(),
-            isOffline = false,
+            isOffline = isOffline,
             cacheSize = 0,
             lastSyncTime = 0,
         )
 
         NetworkErrorHandler(
             modifier = Modifier.fillMaxWidth(),
-            isOffline = false,
+            isOffline = isOffline,
         )
 
         CacheManagementCard(
