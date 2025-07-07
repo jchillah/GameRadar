@@ -27,5 +27,6 @@ data class FavoriteGameEntity(
     val screenshots: String,
     val stores: String,
     val playtime: Int?,
+    val movies: String,
     val addedAt: Long = System.currentTimeMillis(),
 ) 

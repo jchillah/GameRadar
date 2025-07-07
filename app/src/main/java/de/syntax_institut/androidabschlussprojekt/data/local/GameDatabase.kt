@@ -11,7 +11,7 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
  */
 @Database(
     entities = [FavoriteGameEntity::class, GameCacheEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class GameDatabase : RoomDatabase() {

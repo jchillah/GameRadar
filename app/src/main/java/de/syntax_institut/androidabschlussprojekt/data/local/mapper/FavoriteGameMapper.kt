@@ -15,6 +15,8 @@ object FavoriteGameMapper {
         .build()
     
     private val listAdapter = moshi.adapter<List<String>>(List::class.java)
+    private val movieListAdapter =
+        moshi.adapter<List<Movie>>(Types.newParameterizedType(List::class.java, Movie::class.java))
     
     /**
      * Game zu FavoriteGameEntity konvertieren.
@@ -38,7 +40,8 @@ object FavoriteGameMapper {
             tags = listAdapter.toJson(tags),
             screenshots = listAdapter.toJson(screenshots),
             stores = listAdapter.toJson(stores),
-            playtime = playtime
+            playtime = playtime,
+            movies = movieListAdapter.toJson(movies)
         )
     }
     
@@ -93,7 +96,11 @@ object FavoriteGameMapper {
                 emptyList()
             },
             playtime = playtime,
-            movies = emptyList()
+            movies = try {
+                movieListAdapter.fromJson(movies) ?: emptyList()
+            } catch (e: Exception) {
+                emptyList()
+            }
         )
     }
 } 

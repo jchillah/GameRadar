@@ -12,5 +12,6 @@ val viewModelModule = module {
     viewModel { DetailViewModel(get(), get()) }
     viewModel { FavoritesViewModel(get(), get()) }
     viewModel { de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SettingsViewModel(get()) }
+    viewModel { TrailerPlayerViewModel() }
 }
 

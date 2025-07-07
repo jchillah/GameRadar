@@ -1,13 +1,13 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.search
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.paging.*
 import androidx.paging.compose.*
@@ -55,7 +55,7 @@ fun SearchResultContent(
                     modifier = modifier
                 )
             } else {
-                LazyColumn(
+                PerformanceOptimizedLazyColumn(
                     modifier = modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -89,4 +89,16 @@ fun SearchResultContent(
             }
         }
     }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun SearchResultContentPreview() {
+    SearchResultContent(
+        pagingItems = TODO(),
+        onGameClick = TODO(),
+        modifier = TODO(),
+        imageQuality = TODO(),
+        favoriteIds = TODO()
+    )
 }

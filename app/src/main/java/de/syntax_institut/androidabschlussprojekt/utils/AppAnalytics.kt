@@ -5,7 +5,7 @@ import android.util.*
 object Analytics {
     fun trackEvent(eventName: String, parameters: Map<String, Any> = emptyMap()) {
         Log.d("Analytics", "Event: $eventName, Parameters: $parameters")
-        // TODO: Implement analytics tracking
+        // TODO: Implement analytics tracking mit Firebase Analytics
     }
 
     fun trackScreenView(screenName: String) {

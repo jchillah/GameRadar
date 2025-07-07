@@ -1,5 +1,6 @@
 [versions]
 accompanistNavigationAnimation = "0.34.0"
+accompanistSystemuicontroller = "0.34.0"
 agp = "8.9.3"
 koinTestVersion = "3.5.3"
 koinTestJunit4Version = "3.5.3"
@@ -12,6 +13,8 @@ material = "1.12.0"
 material3 = "1.3.2"
 material3Version = "1.3.2"
 materialVersion = "1.8.3"
+media3Exoplayer = "1.7.1"
+media3Ui = "1.7.1"
 navigationCompose = "2.9.1"
 lifecycleViewmodelCompose = "2.9.1"
 datastorePreferences = "1.1.7"
@@ -48,6 +51,7 @@ uiTestJunit4 = "1.8.3"
 uiTestManifest = "1.8.3"
 uiTooling = "1.8.3"
 navigationTestingAndroid = "2.9.1"
+workRuntimeKtx = "2.9.0"
 
 [libraries]
 # Core Android
@@ -60,6 +64,7 @@ androidx-activity-compose = { group = "androidx.activity", name = "activity-comp
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-material = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-material3-v120 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
+androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
@@ -87,10 +92,13 @@ androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", 
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "pagingRuntime" }
 
 # Networking
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+google-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 insert-koin-koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinTestJunit4Version" }
 insert-koin-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinTestVersion" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Ui" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }

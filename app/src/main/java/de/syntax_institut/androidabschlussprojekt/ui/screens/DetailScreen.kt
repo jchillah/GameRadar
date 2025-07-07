@@ -46,6 +46,7 @@ fun DetailScreen(
     val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
     val isOnline by NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
+    val trailerPlayerViewModel: TrailerPlayerViewModel = koinViewModel()
 
     LaunchedEffect(gameId) {
         Analytics.trackScreenView("DetailScreen")
@@ -183,20 +184,13 @@ fun DetailScreen(
                                 )
                             }
                         }
-                        var selectedTrailer by remember { mutableStateOf<Movie?>(null) }
-                        if (game.movies.isNotEmpty()) {
-                            TrailerGallery(
-                                movies = game.movies,
-                                onTrailerClick = { selectedTrailer = it },
-                                modifier = Modifier.padding(vertical = 8.dp)
-                            )
-                        }
-                        if (selectedTrailer != null) {
-                            TrailerPlayerDialog(
-                                movie = selectedTrailer!!,
-                                onDismiss = { selectedTrailer = null }
-                            )
-                        }
+                        TrailerGallery(
+                            movies = game.movies,
+                            onTrailerClick = { trailerPlayerViewModel.openTrailer(it) },
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            showEmptyState = true
+                        )
+                        TrailerPlayerDialog(viewModel = trailerPlayerViewModel)
                         if (game.website.isNullOrBlank() || !(game.website.startsWith("http://") || game.website.startsWith(
                                 "https://"
                             ))

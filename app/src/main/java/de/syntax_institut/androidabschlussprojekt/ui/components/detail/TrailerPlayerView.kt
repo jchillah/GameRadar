@@ -1,34 +1,49 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
-import android.net.Uri
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
-import androidx.compose.ui.viewinterop.AndroidView
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Movie
+import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.viewinterop.*
+import androidx.core.net.*
+import androidx.media3.common.*
+import androidx.media3.exoplayer.*
+import androidx.media3.ui.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import org.koin.androidx.compose.*
+
+/**
+ * Zeigt einen Video-Player für einen Trailer (Movie) an.
+ * Nutzt ExoPlayer (Media3). Für Fullscreen geeignet, Systemleisten-Steuerung erfolgt im Dialog.
+ * @param movie Der abzuspielende Trailer
+ * @param modifier Modifier für Größe/Platzierung
+ */
 
 @Composable
 fun TrailerPlayerView(
     movie: Movie,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: TrailerPlayerViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val exoPlayer = remember {
-        ExoPlayer.Builder(context).build().apply {
-            val url = movie.urlMax ?: movie.url480 ?: movie.preview
-            setMediaItem(MediaItem.fromUri(Uri.parse(url)))
-            prepare()
-            playWhenReady = true
+    val playWhenReady by viewModel.playWhenReady.collectAsState()
+    val playbackPosition by viewModel.playbackPosition.collectAsState()
+    val url = movie.urlMax ?: movie.url480 ?: movie.preview
+    val exoPlayer = remember { ExoPlayer.Builder(context).build() }
+    DisposableEffect(movie) {
+        val mediaItem = url?.takeIf { it.isNotBlank() }?.let { MediaItem.fromUri(it.toUri()) }
+        if (mediaItem != null) {
+            exoPlayer.setMediaItem(mediaItem)
         }
-    }
-    DisposableEffect(Unit) {
+        exoPlayer.playWhenReady = playWhenReady
+        exoPlayer.seekTo(playbackPosition)
+        exoPlayer.prepare()
         onDispose {
+            viewModel.savePlayerState(
+                position = exoPlayer.currentPosition,
+                playWhenReady = exoPlayer.playWhenReady
+            )
             exoPlayer.release()
         }
     }
@@ -37,9 +52,12 @@ fun TrailerPlayerView(
             PlayerView(it).apply {
                 player = exoPlayer
                 useController = true
-                setShowBuffering(PlayerView.SHOW_BUFFERING_WHEN_PLAYING)
+                layoutParams = android.view.ViewGroup.LayoutParams(
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                    android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                )
             }
         },
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     )
 } 

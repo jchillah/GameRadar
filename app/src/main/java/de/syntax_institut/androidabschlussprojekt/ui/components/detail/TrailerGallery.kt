@@ -22,8 +22,8 @@ fun TrailerGallery(
     movies: List<Movie>,
     modifier: Modifier = Modifier,
     onTrailerClick: (Movie) -> Unit,
+    showEmptyState: Boolean = false,
 ) {
-    if (movies.isEmpty()) return
     Column(modifier = modifier) {
         Text(
             text = "Trailer",
@@ -31,12 +31,35 @@ fun TrailerGallery(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
         )
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(movies) { movie ->
-                TrailerCard(movie = movie, onClick = { onTrailerClick(movie) })
+        if (movies.isEmpty() && showEmptyState) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        imageVector = Icons.Default.VideocamOff,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Text(
+                        text = "Keine Trailer verfügbar",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        } else if (movies.isNotEmpty()) {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(movies) { movie ->
+                    TrailerCard(movie = movie, onClick = { onTrailerClick(movie) })
+                }
             }
         }
     }

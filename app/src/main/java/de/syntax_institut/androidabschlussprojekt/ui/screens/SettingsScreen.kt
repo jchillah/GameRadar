@@ -38,7 +38,7 @@ fun SettingsScreen(
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
     val gameRepository: GameRepository = org.koin.compose.koinInject()
     var cacheStats by remember {
-        mutableStateOf<de.syntax_institut.androidabschlussprojekt.data.repositories.CacheStats?>(
+        mutableStateOf<CacheStats?>(
             null
         )
     }
