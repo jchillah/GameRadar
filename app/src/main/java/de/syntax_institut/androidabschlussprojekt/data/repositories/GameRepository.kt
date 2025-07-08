@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import android.content.*
+import androidx.core.content.*
 import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.*
@@ -26,8 +27,8 @@ class GameRepository @Inject constructor(
 
     private val prefs: SharedPreferences =
         context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
-    private val LAST_SYNC_KEY = "last_sync_time"
 
+    private val lastSyncTime = Constants.LAST_SYNC_TIME
     suspend fun getGameDetail(gameId: Int): Resource<Game> {
         AppLogger.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
         AppLogger.i("GameRepository", "getGameDetail() aufgerufen für ID: $gameId")
@@ -373,12 +374,12 @@ class GameRepository @Inject constructor(
     }
 
     fun getLastSyncTime(): Long? {
-        val value = prefs.getLong(LAST_SYNC_KEY, -1L)
+        val value = prefs.getLong(lastSyncTime, -1L)
         return if (value > 0) value else null
     }
 
     private fun setLastSyncTime(timestamp: Long) {
-        prefs.edit().putLong(LAST_SYNC_KEY, timestamp).apply()
+        prefs.edit { putLong(lastSyncTime, timestamp) }
     }
 
     /**

@@ -134,4 +134,6 @@ object Constants {
 
     // Email
     const val EMAIL = "michael.winkler.developer@gmail.com"
+
+    const val LAST_SYNC_TIME = "last_sync_time"
 }
