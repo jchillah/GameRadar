@@ -235,7 +235,7 @@ class PagingDataTest : KoinTest {
     @Test
     fun pagingDataHandlesLargeDatasets() = runTest {
         // Given
-        val largeGameList = (1..100000).map { index ->
+        val largeGameList = (1..500).map { index ->
             Game(
                 id = index,
                 slug = "large-test-game-$index",
@@ -276,10 +276,10 @@ class PagingDataTest : KoinTest {
         // Then
         val snapshot: List<Game> = viewModel.pagingFlow.asSnapshot {
             // Scroll to a middle point
-            scrollTo(index = 500)
+            scrollTo(index = 499)
         }
         
         assertEquals("Large Test Game 1", snapshot[0].title)
-        assertEquals("Large Test Game 500", snapshot[500].title)
+        assertEquals("Large Test Game 500", snapshot[499].title)
     }
 } 

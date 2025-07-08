@@ -1,10 +1,9 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.content.Context
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
-import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
-import de.syntax_institut.androidabschlussprojekt.domain.models.Genre
-import de.syntax_institut.androidabschlussprojekt.utils.Resource
+import de.syntax_institut.androidabschlussprojekt.domain.models.*
+import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import io.mockk.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
@@ -15,15 +14,18 @@ class SearchViewModelPagingTest {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var mockRepository: GameRepository
-    private lateinit var mockContext: Context
+    private lateinit var mockLoadGamesUseCase: LoadGamesUseCase
     private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         mockRepository = mockk(relaxed = true)
-        mockContext = mockk(relaxed = true)
-        viewModel = SearchViewModel(mockRepository, mockContext)
+        mockLoadGamesUseCase = mockk(relaxed = true)
+        viewModel = SearchViewModel(
+            loadGamesUseCase = mockLoadGamesUseCase,
+            repo = mockRepository
+        )
     }
 
     @After
