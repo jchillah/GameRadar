@@ -4,6 +4,9 @@ import android.content.*
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.automirrored.filled.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -47,6 +50,7 @@ fun DetailScreen(
     val isOnline by NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
     val trailerPlayerViewModel: TrailerPlayerViewModel = koinViewModel()
+    val screenshotGalleryViewModel: ScreenshotGalleryViewModel = koinViewModel()
 
     LaunchedEffect(gameId) {
         Analytics.trackScreenView("DetailScreen")
@@ -99,19 +103,63 @@ fun DetailScreen(
                 }
 
                 is Resource.Error<Game> -> {
-                    ErrorCard(
+                    Column(
                         modifier = Modifier.fillMaxSize(),
-                        error = res.message ?: "Unbekannter Fehler",
-                    )
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        ErrorCard(
+                            modifier = Modifier.padding(16.dp),
+                            error = res.message ?: "Unbekannter Fehler",
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                vm.loadDetail(gameId, forceReload = true)
+                                Analytics.trackUserAction("retry_detail_load", gameId)
+                            },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Erneut versuchen")
+                        }
+                    }
                 }
 
                 is Resource.Success<Game> -> {
                     val game = res.data
                     if (game == null) {
-                        ErrorCard(
+                        Column(
                             modifier = Modifier.fillMaxSize(),
-                            error = "Spiel konnte nicht geladen werden.",
-                        )
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            ErrorCard(
+                                modifier = Modifier.padding(16.dp),
+                                error = "Spiel konnte nicht geladen werden.",
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = {
+                                    vm.loadDetail(gameId, forceReload = true)
+                                    Analytics.trackUserAction("retry_detail_load", gameId)
+                                },
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Erneut versuchen")
+                            }
+                        }
                     } else {
                         LaunchedEffect(game.website) {
                             Log.d("DetailScreen", "Website URL: '${game.website}'")
@@ -146,36 +194,86 @@ fun DetailScreen(
                         SectionCard("Genres") { ChipRow(game.genres) }
                         SectionCard("Entwickler") { ChipFlowRow(game.developers) }
                         SectionCard("Publisher") { ChipFlowRow(game.publishers) }
-                        SectionCard("USK/ESRB") { game.esrbRating?.let { ChipFlowRow(listOf(it)) } }
+                        SectionCard("USK/ESRB") { 
+                            if (game.esrbRating.isNullOrBlank()) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(80.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(32.dp),
+                                            imageVector = Icons.AutoMirrored.Filled.Help,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Text(
+                                            text = "Keine Altersfreigabe verfügbar",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            } else {
+                                ChipFlowRow(listOf(game.esrbRating))
+                            }
+                        }
                         SectionCard("Tags") { ChipFlowRow(game.tags) }
                         SectionCard("Stores") { ChipRow(game.stores) }
                         SectionCard("Metacritic & Spielzeit") {
-                            game.metacritic?.let {
-                                Text(
-                                    "Metacritic: $it",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                            game.playtime?.let {
-                                Text(
-                                    "Durchschnittliche Spielzeit: $it Std.",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                            if (game.metacritic == null && game.playtime == null) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(80.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(32.dp),
+                                            imageVector = Icons.AutoMirrored.Filled.Help,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Text(
+                                            text = "Keine Bewertungen verfügbar",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            } else {
+                                Column {
+                                    game.metacritic?.let {
+                                        Text(
+                                            "Metacritic: $it",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                    game.playtime?.let {
+                                        Text(
+                                            "Durchschnittliche Spielzeit: $it Std.",
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                }
                             }
                         }
                         SectionCard("Screenshots") {
-                            if (game.screenshots.isEmpty()) {
-                                if (!isOnline) {
-                                    ErrorCard(
-                                        error = "Keine Screenshots verfügbar. Prüfe deine Internetverbindung und versuche es erneut.",
-                                    )
-                                } else {
-                                    ErrorCard(
-                                        error = "Für dieses Spiel wurden keine Screenshots gefunden.",
-                                    )
-                                }
-                            } else {
-                                ScreenshotGallery(game.screenshots, imageQuality = imageQuality)
+                            ScreenshotGallery(
+                                screenshots = game.screenshots, 
+                                imageQuality = imageQuality,
+                                viewModel = screenshotGalleryViewModel
+                            )
+                            if (game.screenshots.isNotEmpty()) {
                                 Analytics.trackEvent(
                                     "screenshots_viewed", mapOf(
                                         "game_id" to gameId,
@@ -184,29 +282,44 @@ fun DetailScreen(
                                 )
                             }
                         }
-                        TrailerGallery(
-                            movies = game.movies,
-                            onTrailerClick = { trailerPlayerViewModel.openTrailer(it) },
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            showEmptyState = true
-                        )
-                        TrailerPlayerDialog(viewModel = trailerPlayerViewModel)
-                        if (game.website.isNullOrBlank() || !(game.website.startsWith("http://") || game.website.startsWith(
-                                "https://"
-                            ))
-                        ) {
-                            SectionCard("Website") {
-                                ErrorCard(
-                                    error = "Keine Website verfügbar.",
-                                )
-                            }
-                        } else {
-                            SectionCard("Website") {
+                        SectionCard("Trailer") {
+                            TrailerGallery(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                movies = game.movies,
+                                onTrailerClick = { trailerPlayerViewModel.openTrailer(it, context) },
+                                showEmptyState = true
+                            )
+                        }
+                        SectionCard("Website") {
+                            if (game.website.isNullOrBlank() || !(game.website.startsWith("http://") || game.website.startsWith("https://"))) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(80.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Icon(
+                                            modifier = Modifier.size(32.dp),
+                                            imageVector = Icons.Default.Language,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Text(
+                                            text = "Keine Website verfügbar",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            } else {
                                 TextButton(
                                     modifier = Modifier.align(Alignment.CenterHorizontally),
                                     onClick = {
-                                        val intent =
-                                            Intent(Intent.ACTION_VIEW, game.website.toUri())
+                                        val intent = Intent(Intent.ACTION_VIEW, game.website.toUri())
                                         context.startActivity(intent)
                                         Analytics.trackUserAction("website_opened", gameId)
                                     }

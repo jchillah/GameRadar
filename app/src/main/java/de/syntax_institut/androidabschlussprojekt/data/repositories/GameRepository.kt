@@ -143,7 +143,23 @@ class GameRepository @Inject constructor(
                         val moviesResp = api.getGameMovies(gameId, BuildConfig.API_KEY)
                         if (moviesResp.isSuccessful) {
                             val movieResponse = moviesResp.body()
-                            movieResponse?.results?.map { it.toDomain() } ?: emptyList()
+                            val movieList =
+                                movieResponse?.results?.map { it.toDomain() } ?: emptyList()
+                            AppLogger.debug(
+                                "GameRepository",
+                                "[DEBUG] Movies API Response: ${movieResponse?.count ?: 0} Movies gefunden"
+                            )
+                            AppLogger.debug(
+                                "GameRepository",
+                                "[DEBUG] Movies konvertiert: ${movieList.size} Movies"
+                            )
+                            movieList.forEachIndexed { index, movie ->
+                                AppLogger.debug(
+                                    "GameRepository",
+                                    "[DEBUG] Movie $index: ${movie.name} (ID: ${movie.id})"
+                                )
+                            }
+                            movieList
                         } else {
                             AppLogger.warn(
                                 "GameRepository",
@@ -165,9 +181,13 @@ class GameRepository @Inject constructor(
                         "[DEBUG] Separate Movies geladen: ${movies.size}"
                     )
 
+                    // Prüfe, ob bereits Screenshots und Movies im Cache vorhanden sind
+                    val existingScreenshots = cachedGame?.toGame()?.screenshots ?: emptyList()
+                    val existingMovies = cachedGame?.toGame()?.movies ?: emptyList()
+                    
                     val game = gameDto.toDomain().copy(
-                        screenshots = screenshots,
-                        movies = movies
+                        screenshots = if (screenshots.isNotEmpty()) screenshots else existingScreenshots,
+                        movies = if (movies.isNotEmpty()) movies else existingMovies
                     )
                     AppLogger.debug(
                         "GameRepository",
@@ -196,9 +216,11 @@ class GameRepository @Inject constructor(
                             developers = if (game.developers.isNotEmpty()) game.developers else cachedGame.developers,
                             publishers = if (game.publishers.isNotEmpty()) game.publishers else cachedGame.publishers,
                             tags = if (game.tags.isNotEmpty()) game.tags else cachedGame.tags,
+                            // WICHTIG: Behalte vorhandene Screenshots/Movies, wenn neue leer sind
                             screenshots = if (game.screenshots.isNotEmpty()) game.screenshots else cachedGame.screenshots,
                             stores = if (game.stores.isNotEmpty()) game.stores else cachedGame.stores,
                             playtime = game.playtime ?: cachedGame.playtime,
+                            // WICHTIG: Behalte vorhandene Movies, wenn neue leer sind
                             movies = if (game.movies.isNotEmpty()) game.movies else cachedGame.movies
                         )
                     } else game

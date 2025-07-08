@@ -178,5 +178,5 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.media3.ui)
-    implementation(libs.google.accompanist.systemuicontroller)
+
 }

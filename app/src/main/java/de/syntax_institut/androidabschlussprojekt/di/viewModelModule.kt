@@ -11,7 +11,8 @@ val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
     viewModel { DetailViewModel(get(), get()) }
     viewModel { FavoritesViewModel(get(), get()) }
-    viewModel { de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SettingsViewModel(get()) }
+    viewModel { SettingsViewModel(get()) }
     viewModel { TrailerPlayerViewModel() }
+    viewModel { ScreenshotGalleryViewModel() }
 }
 

@@ -2,6 +2,8 @@ package de.syntax_institut.androidabschlussprojekt.data.local
 
 import android.content.*
 import androidx.room.*
+import androidx.room.migration.*
+import androidx.sqlite.db.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 
@@ -11,7 +13,7 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
  */
 @Database(
     entities = [FavoriteGameEntity::class, GameCacheEntity::class],
-    version = 4,
+    version = 2,
     exportSchema = false
 )
 abstract class GameDatabase : RoomDatabase() {
@@ -30,10 +32,32 @@ abstract class GameDatabase : RoomDatabase() {
                     GameDatabase::class.java,
                     "game_database"
                 )
-                .fallbackToDestructiveMigration(true)
+                    .addMigrations(MIGRATION_1_2)
                 .build()
                 INSTANCE = instance
                 instance
+            }
+        }
+
+        /**
+         * Migration von Version 1 zu Version 2:
+         * Fügt das movies Feld zur game_cache Tabelle hinzu
+         */
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE game_cache ADD COLUMN movies TEXT DEFAULT '[]'")
+            }
+        }
+
+        /**
+         * Löscht die Datenbank und erstellt sie neu.
+         * Nützlich bei Migrationsproblemen.
+         */
+        fun clearDatabase(context: Context) {
+            synchronized(this) {
+                INSTANCE?.close()
+                INSTANCE = null
+                context.applicationContext.deleteDatabase("game_database")
             }
         }
     }

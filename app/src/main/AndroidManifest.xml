@@ -39,6 +39,20 @@
             </intent-filter>
         </activity>
 
+        <!-- Fullscreen Trailer Player Activity -->
+        <activity
+            android:name=".ui.components.detail.TrailerPlayerActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidAbschlussprojekt" />
+
+        <!-- Fullscreen Screenshot Gallery Activity -->
+        <activity
+            android:name=".ui.components.detail.ScreenshotGalleryActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidAbschlussprojekt" />
+
     </application>
 
 </manifest>

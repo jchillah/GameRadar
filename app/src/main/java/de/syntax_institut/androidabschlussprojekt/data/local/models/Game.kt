@@ -1,5 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.models
 
+import com.squareup.moshi.*
+
 /**
  * Domain Model für ein Spiel.
  */
@@ -25,6 +27,7 @@ data class Game(
     val movies: List<Movie> = emptyList(),
 )
 
+@JsonClass(generateAdapter = true)
 data class Movie(
     val id: Int,
     val name: String,

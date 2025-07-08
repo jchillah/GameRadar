@@ -1,6 +1,6 @@
 [versions]
 accompanistNavigationAnimation = "0.34.0"
-accompanistSystemuicontroller = "0.34.0"
+
 agp = "8.9.3"
 koinTestVersion = "3.5.3"
 koinTestJunit4Version = "3.5.3"
@@ -93,7 +93,7 @@ androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", 
 
 # Networking
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
-google-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
+
 insert-koin-koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinTestJunit4Version" }
 insert-koin-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinTestVersion" }
 material = { module = "com.google.android.material:material", version.ref = "material" }

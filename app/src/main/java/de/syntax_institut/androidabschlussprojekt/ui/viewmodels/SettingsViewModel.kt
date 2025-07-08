@@ -1,6 +1,8 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import android.content.*
 import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.data.local.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 
@@ -29,4 +31,12 @@ class SettingsViewModel(
 
     fun setShareGamesEnabled(enabled: Boolean) = settingsRepository.setShareGamesEnabled(enabled)
     fun setDarkModeEnabled(enabled: Boolean) = settingsRepository.setDarkModeEnabled(enabled)
+
+    /**
+     * Löscht die Datenbank und erstellt sie neu.
+     * Nützlich bei Migrationsproblemen mit Favoriten.
+     */
+    fun clearDatabase(context: Context) {
+        GameDatabase.clearDatabase(context)
+    }
 }

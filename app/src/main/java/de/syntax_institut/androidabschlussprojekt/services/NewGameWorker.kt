@@ -1,9 +1,15 @@
 package de.syntax_institut.androidabschlussprojekt.services
 
+import android.app.*
 import android.content.*
+import android.content.pm.*
+import android.os.*
+import androidx.core.app.*
+import androidx.core.net.*
 import androidx.work.*
 import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.core.component.*
 
 class NewGameWorker(
@@ -14,18 +20,94 @@ class NewGameWorker(
     private val gameRepository: GameRepository by inject()
 
     override suspend fun doWork(): Result {
-        // Echte Logik: Suche nach neuen Spielen (nach ID und Slug)
-        val prefs =
-            applicationContext.getSharedPreferences("gameradar_settings", Context.MODE_PRIVATE)
-        val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
-        newGames.forEach { game ->
-            MainActivity().sendNewGameNotification(
-                applicationContext,
-                game.title,
-                game.slug,
-                game.id
-            )
+        try {
+            AppLogger.debug("NewGameWorker", "[DEBUG] NewGameWorker gestartet")
+
+            // Echte Logik: Suche nach neuen Spielen (nach ID und Slug)
+            val prefs =
+                applicationContext.getSharedPreferences("gameradar_settings", Context.MODE_PRIVATE)
+            val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
+
+            AppLogger.debug("NewGameWorker", "[DEBUG] ${newGames.size} neue Spiele gefunden")
+
+            newGames.forEach { game ->
+                sendNewGameNotification(
+                    applicationContext,
+                    game.title,
+                    game.slug,
+                    game.id
+                )
+            }
+
+            AppLogger.info("NewGameWorker", "NewGameWorker erfolgreich abgeschlossen")
+            return Result.success()
+        } catch (e: Exception) {
+            AppLogger.error("NewGameWorker", "Fehler im NewGameWorker", e)
+            return Result.failure()
         }
-        return Result.success()
+    }
+
+    private fun sendNewGameNotification(
+        context: Context,
+        gameTitle: String,
+        gameSlug: String,
+        gameId: Int,
+    ) {
+        try {
+            // Überprüfe Notification-Berechtigung für Android 13+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    AppLogger.debug(
+                        "NewGameWorker",
+                        "[DEBUG] Keine Notification-Berechtigung für: $gameTitle"
+                    )
+                    return
+                }
+            }
+
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+            // Erstelle Notification Channel für Android 8.0+
+            val channel = NotificationChannel(
+                "new_games",
+                "Neue Spiele",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Benachrichtigungen über neue Spiele"
+            }
+            notificationManager.createNotificationChannel(channel)
+
+            // Erstelle Intent für die DetailScreen
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                data = "myapp://game/$gameSlug".toUri()
+            }
+
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                gameId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            // Erstelle Notification
+            val notification = NotificationCompat.Builder(context, "new_games")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Neues Spiel verfügbar!")
+                .setContentText(gameTitle)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build()
+
+            // Sende Notification
+            notificationManager.notify(gameId, notification)
+
+            AppLogger.debug("NewGameWorker", "[DEBUG] Notification gesendet für: $gameTitle")
+
+        } catch (e: Exception) {
+            AppLogger.error("NewGameWorker", "Fehler beim Senden der Notification", e)
+        }
     }
 } 

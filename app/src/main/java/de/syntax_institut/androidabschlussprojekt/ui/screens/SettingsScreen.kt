@@ -10,6 +10,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import androidx.core.app.*
 import androidx.core.net.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
@@ -106,13 +107,28 @@ fun SettingsScreen(
             val context = LocalContext.current
             Button(
                 onClick = {
-                    de.syntax_institut.androidabschlussprojekt.MainActivity()
-                        .sendNewGameNotification(
-                            context,
-                            "Testspiel: Notification",
-                            "testspiel-notification",
-                            999999
-                        )
+                    // Test-Benachrichtigung direkt erstellen
+                    val notificationManager =
+                        context.getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+                    val channelId = "new_games"
+
+                    // Channel erstellen falls nicht vorhanden
+                    val channel = android.app.NotificationChannel(
+                        channelId,
+                        "Neue Spiele",
+                        android.app.NotificationManager.IMPORTANCE_DEFAULT
+                    )
+                    notificationManager.createNotificationChannel(channel)
+
+                    val notification = NotificationCompat.Builder(context, channelId)
+                        .setSmallIcon(android.R.drawable.ic_dialog_info)
+                        .setContentTitle("Testspiel: Notification")
+                        .setContentText("Dies ist eine Test-Benachrichtigung")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true)
+                        .build()
+
+                    notificationManager.notify(999999, notification)
                 },
                 modifier = Modifier.padding(top = 8.dp)
             ) {
@@ -215,6 +231,42 @@ fun SettingsScreen(
                     context.startActivity(intent)
                 }
             )
+        }
+
+        SettingsSection(title = "Datenbank-Management") {
+            var showClearDatabaseDialog by remember { mutableStateOf(false) }
+
+            SettingsButtonItem(
+                icon = Icons.Default.DeleteForever,
+                title = "Datenbank zurücksetzen",
+                subtitle = "Löscht alle Favoriten und Cache-Daten",
+                onClick = { showClearDatabaseDialog = true }
+            )
+
+            if (showClearDatabaseDialog) {
+                AlertDialog(
+                    onDismissRequest = { showClearDatabaseDialog = false },
+                    title = { Text("Datenbank zurücksetzen") },
+                    text = {
+                        Text("Möchten Sie wirklich alle Favoriten und Cache-Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.")
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                viewModel.clearDatabase(context)
+                                showClearDatabaseDialog = false
+                            }
+                        ) {
+                            Text("Löschen")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showClearDatabaseDialog = false }) {
+                            Text("Abbrechen")
+                        }
+                    }
+                )
+            }
         }
         if (showAboutDialog) {
             AboutAppDialog(onDismiss = { showAboutDialog = false })

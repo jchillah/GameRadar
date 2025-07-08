@@ -15,8 +15,12 @@ object GameCacheMapper {
         .build()
     
     private val listAdapter = moshi.adapter<List<String>>(List::class.java)
-    private val movieListAdapter =
-        moshi.adapter<List<Movie>>(Types.newParameterizedType(List::class.java, Movie::class.java))
+    private val movieListAdapter = moshi.adapter<List<Movie>>(
+        Types.newParameterizedType(
+            List::class.java,
+            Movie::class.java
+        )
+    )
     
     /**
      * Game zu GameCacheEntity konvertieren.
@@ -44,6 +48,7 @@ object GameCacheMapper {
             screenshots = listAdapter.toJson(screenshots),
             stores = listAdapter.toJson(stores),
             playtime = playtime,
+            movies = movieListAdapter.toJson(movies),
             searchQuery = searchQuery,
             filterHash = filterHash
         )
@@ -100,7 +105,11 @@ object GameCacheMapper {
                 emptyList()
             },
             playtime = playtime,
-            movies = emptyList()
+            movies = try {
+                movieListAdapter.fromJson(movies) ?: emptyList()
+            } catch (_: Exception) {
+                emptyList()
+            }
         )
     }
 } 

@@ -27,6 +27,7 @@ data class GameCacheEntity(
     val screenshots: String,
     val stores: String,
     val playtime: Int?,
+    val movies: String,
     val cachedAt: Long = System.currentTimeMillis(),
     val searchQuery: String? = null,
     val filterHash: String? = null,
