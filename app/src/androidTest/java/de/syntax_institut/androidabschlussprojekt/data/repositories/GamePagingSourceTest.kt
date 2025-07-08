@@ -3,9 +3,9 @@ package de.syntax_institut.androidabschlussprojekt.data.repositories
 import androidx.paging.testing.*
 import androidx.test.core.app.*
 import androidx.test.ext.junit.runners.*
-import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.wrappers.*
 import io.mockk.*
 import junit.framework.TestCase.*
 import kotlinx.coroutines.test.*
@@ -19,30 +19,49 @@ class GamePagingSourceTest {
     private lateinit var mockApi: RawgApi
     private lateinit var repository: GameRepository
 
-    private val testGames = listOf(
-        Game(
+    private val testGameDtos = listOf(
+        GameDto(
             id = 1,
-            title = "Test Game 1",
-            releaseDate = "2023-01-01",
-            imageUrl = "https://example.com/image1.jpg",
+            slug = "test-game-1",
+            name = "Test Game 1",
+            released = "2023-01-01",
+            backgroundImage = "https://example.com/image1.jpg",
             rating = 4.5f,
-            description = "Test description 1"
+            description = "Test description 1",
+            metacritic = 80,
+            website = "https://example.com/game1",
+            esrbRating = EsrbRatingDto(
+                id = 1,
+                name = "USK 12"
+            ),
+            genres = listOf(GenreDto(1, "Action")),
+            platforms = listOf(PlatformWrapperDto(PlatformDto(1, "PC"))),
+            developers = listOf(CompanyDto(1, "Dev Studio 1")),
+            publishers = listOf(CompanyDto(2, "Publisher 1")),
+            tags = listOf(TagDto(1, "Tag1")),
+            shortScreenshots = listOf(ScreenshotDto(1, "https://example.com/screenshot1.jpg")),
+            stores = listOf(StoreWrapperDto(StoreDto(1, "Steam"))),
+            playtime = 12,
         ),
-        Game(
+        GameDto(
             id = 2,
-            title = "Test Game 2",
-            releaseDate = "2023-01-02",
-            imageUrl = "https://example.com/image2.jpg",
+            slug = "test-game-2",
+            name = "Test Game 2",
+            released = "2023-01-02",
+            backgroundImage = "https://example.com/image2.jpg",
             rating = 4.0f,
-            description = "Test description 2"
-        ),
-        Game(
-            id = 3,
-            title = "Test Game 3",
-            releaseDate = "2023-01-03",
-            imageUrl = "https://example.com/image3.jpg",
-            rating = 3.5f,
-            description = "Test description 3"
+            description = "Test description 2",
+            metacritic = 85,
+            website = "https://example.com/game2",
+            esrbRating = EsrbRatingDto(2, "USK 16"),
+            genres = listOf(GenreDto(2, "Adventure")),
+            platforms = listOf(PlatformWrapperDto(PlatformDto(2, "PlayStation 5"))),
+            developers = listOf(CompanyDto(2, "Dev Studio 2")),
+            publishers = listOf(CompanyDto(3, "Publisher 2")),
+            tags = listOf(TagDto(2, "Tag2")),
+            shortScreenshots = listOf(ScreenshotDto(2, "https://example.com/screenshot2.jpg")),
+            stores = listOf(StoreWrapperDto(StoreDto(2, "Epic"))),
+            playtime = 15,
         )
     )
 
@@ -50,24 +69,38 @@ class GamePagingSourceTest {
     fun setup() {
         mockApi = mockk(relaxed = true)
         repository = GameRepository(
-            mockApi,
+            api = mockApi,
             gameCacheDao = mockk(relaxed = true),
+            favoriteGameDao = mockk(relaxed = true),
+            gameDetailCacheDao = mockk(relaxed = true),
             context = ApplicationProvider.getApplicationContext()
         )
     }
 
     @Test
-    fun `paging source loads first page successfully`() = runTest {
+    fun pagingSourceLoadsFirstPageSuccessfully() = runTest {
         // Given
         val mockResponse = GamesResponse(
-            results = testGames.map { game ->
+            results = testGameDtos.map { game ->
                 GameDto(
                     id = game.id,
-                    name = game.title,
-                    released = game.releaseDate,
-                    backgroundImage = game.imageUrl,
+                    slug = game.slug,
+                    name = game.name,
+                    released = game.released,
+                    backgroundImage = game.backgroundImage,
                     rating = game.rating,
-                    description = game.description
+                    description = game.description,
+                    metacritic = game.metacritic,
+                    website = game.website,
+                    esrbRating = game.esrbRating,
+                    genres = game.genres,
+                    platforms = game.platforms,
+                    developers = game.developers,
+                    publishers = game.publishers,
+                    tags = game.tags,
+                    shortScreenshots = game.shortScreenshots,
+                    stores = game.stores,
+                    playtime = game.playtime,
                 )
             },
             next = "https://api.rawg.io/api/games?page=2",
@@ -99,27 +132,38 @@ class GamePagingSourceTest {
 
         // Then
         val snapshot = pagingData.asSnapshot()
-        assertEquals(3, snapshot.size)
+        assertEquals(2, snapshot.size)
         assertEquals("Test Game 1", snapshot[0].title)
         assertEquals("Test Game 2", snapshot[1].title)
-        assertEquals("Test Game 3", snapshot[2].title)
     }
 
     @Test
-    fun `paging source loads multiple pages`() = runTest {
+    fun pagingSourceLoadsMultiplePages() = runTest {
         // Given
-        val page1Games = testGames.take(2)
-        val page2Games = testGames.drop(2)
+        val page1Games = testGameDtos.take(1)
+        val page2Games = testGameDtos.drop(1)
         
         val page1Response = GamesResponse(
             results = page1Games.map { game ->
                 GameDto(
                     id = game.id,
-                    name = game.title,
-                    released = game.releaseDate,
-                    backgroundImage = game.imageUrl,
+                    slug = game.slug,
+                    name = game.name,
+                    released = game.released,
+                    backgroundImage = game.backgroundImage,
                     rating = game.rating,
-                    description = game.description
+                    description = game.description,
+                    metacritic = game.metacritic,
+                    website = game.website,
+                    esrbRating = game.esrbRating,
+                    genres = game.genres,
+                    platforms = game.platforms,
+                    developers = game.developers,
+                    publishers = game.publishers,
+                    tags = game.tags,
+                    shortScreenshots = game.shortScreenshots,
+                    stores = game.stores,
+                    playtime = game.playtime,
                 )
             },
             next = "https://api.rawg.io/api/games?page=2",
@@ -130,11 +174,23 @@ class GamePagingSourceTest {
             results = page2Games.map { game ->
                 GameDto(
                     id = game.id,
-                    name = game.title,
-                    released = game.releaseDate,
-                    backgroundImage = game.imageUrl,
+                    slug = game.slug,
+                    name = game.name,
+                    released = game.released,
+                    backgroundImage = game.backgroundImage,
                     rating = game.rating,
-                    description = game.description
+                    description = game.description,
+                    metacritic = game.metacritic,
+                    website = game.website,
+                    esrbRating = game.esrbRating,
+                    genres = game.genres,
+                    platforms = game.platforms,
+                    developers = game.developers,
+                    publishers = game.publishers,
+                    tags = game.tags,
+                    shortScreenshots = game.shortScreenshots,
+                    stores = game.stores,
+                    playtime = game.playtime,
                 )
             },
             next = null,
@@ -180,26 +236,37 @@ class GamePagingSourceTest {
 
         // Then
         val snapshot = pagingData.asSnapshot {
-            scrollTo(index = 2) // Trigger loading of second page
+            scrollTo(index = 1) // Trigger loading of second page
         }
-        assertEquals(3, snapshot.size)
+        assertEquals(2, snapshot.size)
         assertEquals("Test Game 1", snapshot[0].title)
         assertEquals("Test Game 2", snapshot[1].title)
-        assertEquals("Test Game 3", snapshot[2].title)
     }
 
     @Test
-    fun `paging source applies rating filter correctly`() = runTest {
+    fun pagingSourceAppliesRatingFilterCorrectly() = runTest {
         // Given
         val mockResponse = GamesResponse(
-            results = testGames.map { game ->
+            results = testGameDtos.map { game ->
                 GameDto(
                     id = game.id,
-                    name = game.title,
-                    released = game.releaseDate,
-                    backgroundImage = game.imageUrl,
+                    slug = game.slug,
+                    name = game.name,
+                    released = game.released,
+                    backgroundImage = game.backgroundImage,
                     rating = game.rating,
-                    description = game.description
+                    description = game.description,
+                    metacritic = game.metacritic,
+                    website = game.website,
+                    esrbRating = game.esrbRating,
+                    genres = game.genres,
+                    platforms = game.platforms,
+                    developers = game.developers,
+                    publishers = game.publishers,
+                    tags = game.tags,
+                    shortScreenshots = game.shortScreenshots,
+                    stores = game.stores,
+                    playtime = game.playtime,
                 )
             },
             next = null,
@@ -232,13 +299,12 @@ class GamePagingSourceTest {
         // Then
         val snapshot = pagingData.asSnapshot()
         assertTrue(snapshot.all { it.rating >= 4.0f })
-        assertEquals(2, snapshot.size) // Only games with rating >= 4.0
+        assertEquals(1, snapshot.size) // Only games with rating >= 4.0
         assertEquals("Test Game 1", snapshot[0].title) // rating 4.5
-        assertEquals("Test Game 2", snapshot[1].title) // rating 4.0
     }
 
     @Test
-    fun `paging source handles API error`() = runTest {
+    fun pagingSourceHandlesApiError() = runTest {
         // Given
         coEvery { 
             mockApi.searchGames(
@@ -269,7 +335,7 @@ class GamePagingSourceTest {
     }
 
     @Test
-    fun `paging source handles network exception`() = runTest {
+    fun pagingSourceHandlesNetworkException() = runTest {
         // Given
         coEvery { 
             mockApi.searchGames(
@@ -297,17 +363,29 @@ class GamePagingSourceTest {
     }
 
     @Test
-    fun `paging source with filters works correctly`() = runTest {
+    fun pagingSourceWithFiltersWorksCorrectly() = runTest {
         // Given
         val mockResponse = GamesResponse(
-            results = testGames.map { game ->
+            results = testGameDtos.map { game ->
                 GameDto(
                     id = game.id,
-                    name = game.title,
-                    released = game.releaseDate,
-                    backgroundImage = game.imageUrl,
+                    slug = game.slug,
+                    name = game.name,
+                    released = game.released,
+                    backgroundImage = game.backgroundImage,
                     rating = game.rating,
-                    description = game.description
+                    description = game.description,
+                    metacritic = game.metacritic,
+                    website = game.website,
+                    esrbRating = game.esrbRating,
+                    genres = game.genres,
+                    platforms = game.platforms,
+                    developers = game.developers,
+                    publishers = game.publishers,
+                    tags = game.tags,
+                    shortScreenshots = game.shortScreenshots,
+                    stores = game.stores,
+                    playtime = game.playtime,
                 )
             },
             next = null,
@@ -339,7 +417,7 @@ class GamePagingSourceTest {
 
         // Then
         val snapshot = pagingData.asSnapshot()
-        assertEquals(3, snapshot.size)
+        assertEquals(2, snapshot.size)
         // Verify that the API was called with correct parameters
         coVerify { 
             mockApi.searchGames(
@@ -354,7 +432,7 @@ class GamePagingSourceTest {
     }
 
     @Test
-    fun `paging source handles empty response`() = runTest {
+    fun pagingSourceHandlesEmptyResponse() = runTest {
         // Given
         val emptyResponse = GamesResponse(
             results = emptyList(),

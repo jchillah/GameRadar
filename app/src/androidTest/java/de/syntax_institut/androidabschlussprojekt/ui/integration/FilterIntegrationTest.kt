@@ -3,7 +3,6 @@ package de.syntax_institut.androidabschlussprojekt.ui.integration
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.*
 import androidx.paging.*
-import androidx.test.core.app.*
 import androidx.test.ext.junit.runners.*
 import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
@@ -17,6 +16,7 @@ import org.junit.runner.*
 import org.koin.core.context.*
 import org.koin.dsl.*
 import org.koin.java.KoinJavaComponent.inject
+import org.koin.test.*
 
 @RunWith(AndroidJUnit4::class)
 class FilterIntegrationTest : KoinTest {
@@ -30,6 +30,7 @@ class FilterIntegrationTest : KoinTest {
     private val testGames = listOf(
         Game(
             id = 1,
+            slug = "action-game",
             title = "Action Game",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/action.jpg",
@@ -40,6 +41,7 @@ class FilterIntegrationTest : KoinTest {
         ),
         Game(
             id = 2,
+            slug = "rpg-game",
             title = "RPG Game",
             releaseDate = "2023-01-02",
             imageUrl = "https://example.com/rpg.jpg",
@@ -50,6 +52,7 @@ class FilterIntegrationTest : KoinTest {
         ),
         Game(
             id = 3,
+            slug = "strategy-game",
             title = "Strategy Game",
             releaseDate = "2023-01-03",
             imageUrl = "https://example.com/strategy.jpg",
@@ -72,7 +75,7 @@ class FilterIntegrationTest : KoinTest {
                     single {
                         SearchViewModel(
                             get(),
-                            context = ApplicationProvider.getApplicationContext()
+                            get()
                         )
                     }
                 }
@@ -80,7 +83,7 @@ class FilterIntegrationTest : KoinTest {
         }
 
         viewModel = inject<SearchViewModel>(
-            clazz = SearchViewModel::class,
+            clazz = SearchViewModel::class.java,
             qualifier = null,
             parameters = null
         ).value

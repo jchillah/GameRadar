@@ -9,6 +9,7 @@ import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
+import de.syntax_institut.androidabschlussprojekt.data.remote.wrappers.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import io.mockk.*
@@ -20,6 +21,7 @@ import org.koin.core.context.*
 import org.koin.core.qualifier.*
 import org.koin.dsl.*
 import org.koin.java.KoinJavaComponent.inject
+import org.koin.test.*
 
 @RunWith(AndroidJUnit4::class)
 class SearchPagingIntegrationTest : KoinTest {
@@ -34,6 +36,7 @@ class SearchPagingIntegrationTest : KoinTest {
     private val testGames = listOf(
         Game(
             id = 1,
+            slug = "test-game-1",
             title = "Test Game 1",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image1.jpg",
@@ -42,6 +45,7 @@ class SearchPagingIntegrationTest : KoinTest {
         ),
         Game(
             id = 2,
+            slug = "test-game-2",
             title = "Test Game 2",
             releaseDate = "2023-01-02",
             imageUrl = "https://example.com/image2.jpg",
@@ -50,6 +54,7 @@ class SearchPagingIntegrationTest : KoinTest {
         ),
         Game(
             id = 3,
+            slug = "test-game-3",
             title = "Test Game 3",
             releaseDate = "2023-01-03",
             imageUrl = "https://example.com/image3.jpg",
@@ -72,7 +77,31 @@ class SearchPagingIntegrationTest : KoinTest {
                     released = game.releaseDate,
                     backgroundImage = game.imageUrl,
                     rating = game.rating,
-                    description = game.description
+                    description = game.description,
+                    slug = game.slug,
+                    metacritic = 85,
+                    website = "https://example.com/game${game.id}",
+                    esrbRating = EsrbRatingDto(id = 1, name = "Everyone"),
+                    genres = listOf(GenreDto(id = 1, name = "Action")),
+                    platforms = listOf(
+                        PlatformWrapperDto(
+                            platform = PlatformDto(
+                                id = 1,
+                                name = "PC"
+                            )
+                        )
+                    ),
+                    developers = listOf(CompanyDto(id = 1, name = "Dev Studio")),
+                    publishers = listOf(CompanyDto(id = 2, name = "Publisher Inc")),
+                    tags = listOf(TagDto(id = 1, name = "Indie")),
+                    shortScreenshots = listOf(
+                        ScreenshotDto(
+                            id = 1,
+                            image = "https://example.com/screenshot1.jpg"
+                        )
+                    ),
+                    stores = listOf(StoreWrapperDto(store = StoreDto(id = 1, name = "Steam"))),
+                    playtime = 10
                 )
             },
             next = null,
@@ -103,7 +132,7 @@ class SearchPagingIntegrationTest : KoinTest {
                     single {
                         SearchViewModel(
                             get(),
-                            context = composeTestRule.activity.applicationContext
+                            get()
                         )
                     }
                 }
@@ -242,7 +271,7 @@ class SearchPagingIntegrationTest : KoinTest {
         // Then
         // Should navigate to detail screen
         composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithText("Test Game 1").fetchSemanticsNodes().size >= 1
+            composeTestRule.onAllNodesWithText("Test Game 1").fetchSemanticsNodes().isNotEmpty()
         }
     }
 

@@ -1,17 +1,15 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.dao
 
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import de.syntax_institut.androidabschlussprojekt.data.local.GameDatabase
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.FavoriteGameEntity
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
-import org.junit.After
+import androidx.room.*
+import androidx.test.core.app.*
+import androidx.test.ext.junit.runners.*
+import de.syntax_institut.androidabschlussprojekt.data.local.*
+import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.test.*
+import org.junit.*
 import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.runner.*
 
 @RunWith(AndroidJUnit4::class)
 class FavoriteGameDaoTest {
@@ -53,7 +51,10 @@ class FavoriteGameDaoTest {
             tags = "[\"Action\", \"RPG\"]",
             screenshots = "[\"https://example.com/screenshot1.jpg\"]",
             stores = "[\"Steam\", \"PlayStation Store\"]",
-            playtime = 20
+            playtime = 20,
+            slug = "test-game-1",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         // When
@@ -86,7 +87,10 @@ class FavoriteGameDaoTest {
             tags = "[\"Action\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "game-1",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         val favorite2 = FavoriteGameEntity(
@@ -106,7 +110,10 @@ class FavoriteGameDaoTest {
             tags = "[\"RPG\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "game-2",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         // When
@@ -140,7 +147,10 @@ class FavoriteGameDaoTest {
             tags = "[\"Action\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "test-game-1",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         // When
@@ -173,7 +183,10 @@ class FavoriteGameDaoTest {
             tags = "[\"Action\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "test-game-1",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         // When
@@ -207,7 +220,10 @@ class FavoriteGameDaoTest {
             tags = "[\"Action\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "game-1",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         val favorite2 = FavoriteGameEntity(
@@ -227,7 +243,10 @@ class FavoriteGameDaoTest {
             tags = "[\"RPG\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "game-2",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         // When
@@ -262,7 +281,10 @@ class FavoriteGameDaoTest {
             tags = "[\"Action\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "game-1",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         val favorite2 = FavoriteGameEntity(
@@ -282,7 +304,10 @@ class FavoriteGameDaoTest {
             tags = "[\"RPG\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "game-2",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         // When
@@ -318,7 +343,10 @@ class FavoriteGameDaoTest {
             tags = "[\"Action\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "action-game",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         val favorite2 = FavoriteGameEntity(
@@ -338,7 +366,10 @@ class FavoriteGameDaoTest {
             tags = "[\"RPG\"]",
             screenshots = "[]",
             stores = "[\"Steam\"]",
-            playtime = null
+            playtime = null,
+            slug = "rpg-game",
+            movies = "[]",
+            addedAt = System.currentTimeMillis()
         )
 
         // When
