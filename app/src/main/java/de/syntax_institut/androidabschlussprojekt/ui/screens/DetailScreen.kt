@@ -47,8 +47,7 @@ fun DetailScreen(
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
-    val isOnline by NetworkUtils.observeNetworkStatus(context)
-        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
+
     val trailerPlayerViewModel: TrailerPlayerViewModel = koinViewModel()
     val screenshotGalleryViewModel: ScreenshotGalleryViewModel = koinViewModel()
 

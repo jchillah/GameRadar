@@ -81,14 +81,14 @@ class FavoritesRepository @Inject constructor(
                             val result =
                                 stringListAdapter.fromJson(entity.screenshots) ?: emptyList()
                             if (result.isNotEmpty()) result else fallbackGame.screenshots
-                        } catch (e: Exception) {
+                        } catch (_: Exception) {
                             fallbackGame.screenshots
                         }
 
                         val originalMovies = try {
                             val result = movieListAdapter.fromJson(entity.movies) ?: emptyList()
                             if (result.isNotEmpty()) result else fallbackGame.movies
-                        } catch (e: Exception) {
+                        } catch (_: Exception) {
                             fallbackGame.movies
                         }
 
@@ -276,33 +276,7 @@ class FavoritesRepository @Inject constructor(
         }
     }
 
-    /**
-     * Debug-Funktion: Rohe Datenbank-Daten für ein Spiel abrufen.
-     */
-    suspend fun getRawFavoriteData(gameId: Int): String {
-        return try {
-            val entity = favoriteGameDao.getFavoriteById(gameId)
-            if (entity != null) {
-                buildString {
-                    appendLine("=== ROHDATEN FÜR SPIEL $gameId ===")
-                    appendLine("Titel: ${entity.title}")
-                    appendLine("Screenshots JSON Länge: ${entity.screenshots.length}")
-                    appendLine("Movies JSON Länge: ${entity.movies.length}")
-                    appendLine()
-                    appendLine("=== SCREENSHOTS JSON ===")
-                    appendLine(entity.screenshots)
-                    appendLine()
-                    appendLine("=== MOVIES JSON ===")
-                    appendLine(entity.movies)
-                }
-            } else {
-                "Spiel $gameId ist nicht in den Favoriten gespeichert."
-            }
-        } catch (e: Exception) {
-            "Fehler beim Abrufen der Rohdaten: ${e.message}"
-        }
-    }
-    
+
     /**
      * Anzahl der Favoriten.
      */

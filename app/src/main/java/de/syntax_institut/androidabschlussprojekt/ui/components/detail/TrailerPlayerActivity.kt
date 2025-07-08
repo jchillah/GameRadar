@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.viewinterop.*
 import androidx.core.view.*
@@ -104,7 +103,7 @@ class TrailerPlayerActivity : ComponentActivity() {
                 exoPlayer.stop()
                 exoPlayer.clearMediaItems()
                 exoPlayer.release()
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 // Ignoriere Fehler beim Release
             }
         }
@@ -117,7 +116,6 @@ class TrailerPlayerActivity : ComponentActivity() {
         videoTitle: String,
         onClose: () -> Unit,
     ) {
-        val context = LocalContext.current
 
         Box(
             modifier = Modifier
