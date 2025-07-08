@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.core.app.*
+import androidx.core.app.NotificationCompat
 import androidx.core.net.*
 import de.syntax_institut.androidabschlussprojekt.data.local.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*

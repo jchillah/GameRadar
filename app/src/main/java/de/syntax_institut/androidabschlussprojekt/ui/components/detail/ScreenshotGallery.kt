@@ -13,15 +13,12 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.unit.*
 import coil3.compose.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
-import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
-import org.koin.androidx.compose.*
 
 @Composable
 fun ScreenshotGallery(
     modifier: Modifier = Modifier,
     screenshots: List<String>,
     imageQuality: ImageQuality,
-    viewModel: ScreenshotGalleryViewModel = koinViewModel(),
     showEmptyState: Boolean = true,
 ) {
     val context = LocalContext.current

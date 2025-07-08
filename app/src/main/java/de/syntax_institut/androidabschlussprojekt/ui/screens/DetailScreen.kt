@@ -48,9 +48,6 @@ fun DetailScreen(
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
 
-    val trailerPlayerViewModel: TrailerPlayerViewModel = koinViewModel()
-    val screenshotGalleryViewModel: ScreenshotGalleryViewModel = koinViewModel()
-
     LaunchedEffect(gameId) {
         Analytics.trackScreenView("DetailScreen")
         Analytics.trackEvent("game_viewed", mapOf("game_id" to gameId))
@@ -268,9 +265,8 @@ fun DetailScreen(
                         }
                         SectionCard("Screenshots") {
                             ScreenshotGallery(
-                                screenshots = game.screenshots, 
-                                imageQuality = imageQuality,
-                                viewModel = screenshotGalleryViewModel
+                                screenshots = game.screenshots,
+                                imageQuality = imageQuality
                             )
                             if (game.screenshots.isNotEmpty()) {
                                 Analytics.trackEvent(
