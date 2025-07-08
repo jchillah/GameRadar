@@ -8,11 +8,34 @@ import org.koin.dsl.*
  * Modul für ViewModels.
  */
 val viewModelModule = module {
-    viewModel { SearchViewModel(get(), get()) }
-    viewModel { DetailViewModel(get(), get()) }
-    viewModel { FavoritesViewModel(get(), get()) }
+    viewModel {
+        SearchViewModel(
+            get(), // LoadGamesUseCase
+            get(), // GetPlatformsUseCase
+            get(), // GetGenresUseCase
+            get(), // ClearCacheUseCase
+            get()  // GetCacheSizeUseCase
+        )
+    }
+    viewModel {
+        DetailViewModel(
+            get(), // GetGameDetailUseCase
+            get(), // ToggleFavoriteUseCase
+            get(), // IsFavoriteUseCase
+            get()  // GetFavoriteByIdUseCase
+        )
+    }
+    viewModel {
+        FavoritesViewModel(
+            get(), // GetAllFavoritesUseCase
+            get(), // ClearAllFavoritesUseCase
+            get(), // RemoveFavoriteUseCase
+            get(), // SyncFavoritesWithApiUseCase
+            get()  // RawgApi
+        )
+    }
     viewModel { SettingsViewModel(get()) }
-    viewModel { TrailerPlayerViewModel() }
     viewModel { ScreenshotGalleryViewModel() }
+    viewModel { TrailerPlayerViewModel() }
 }
 

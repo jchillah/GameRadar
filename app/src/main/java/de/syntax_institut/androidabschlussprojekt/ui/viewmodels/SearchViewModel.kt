@@ -3,7 +3,6 @@ package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 import androidx.lifecycle.*
 import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
-import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
@@ -16,7 +15,10 @@ import kotlinx.coroutines.flow.*
  */
 class SearchViewModel(
     private val loadGamesUseCase: LoadGamesUseCase,
-    private val repo: GameRepository, // TODO: Nach und nach durch UseCases ersetzen
+    private val getPlatformsUseCase: GetPlatformsUseCase,
+    private val getGenresUseCase: GetGenresUseCase,
+    private val clearCacheUseCase: ClearCacheUseCase,
+    private val getCacheSizeUseCase: GetCacheSizeUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -47,14 +49,14 @@ class SearchViewModel(
             try {
                 // Initiale Cache-Größe abrufen mit Verzögerung
                 delay(500) // Längere Verzögerung für stabilen Start
-                _cacheSize.value = repo.getCacheSize()
+                _cacheSize.value = getCacheSizeUseCase()
                 _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
 
                 // Nur alle 60 Sekunden aktualisieren, nicht in einer unendlichen Schleife
                 while (true) {
                     delay(60000) // 60 Sekunden warten (weniger aggressiv)
                     try {
-                        _cacheSize.value = repo.getCacheSize()
+                        _cacheSize.value = getCacheSizeUseCase()
                         _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
                     } catch (e: Exception) {
                         AppLogger.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
@@ -72,7 +74,7 @@ class SearchViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingPlatforms = true, platformsError = null) }
             try {
-                val platformResponse = repo.getPlatforms()
+                val platformResponse = getPlatformsUseCase()
                 if (platformResponse is Resource.Success) {
                     _uiState.update { it.copy(platforms = platformResponse.data ?: emptyList(), isLoadingPlatforms = false) }
                 } else {
@@ -98,7 +100,7 @@ class SearchViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingGenres = true, genresError = null) }
             try {
-                val genreResponse = repo.getGenres()
+                val genreResponse = getGenresUseCase()
                 if (genreResponse is Resource.Success) {
                     _uiState.update { it.copy(genres = genreResponse.data ?: emptyList(), isLoadingGenres = false) }
                 } else {
@@ -175,7 +177,7 @@ class SearchViewModel(
     fun clearCache() {
         viewModelScope.launch {
             try {
-                repo.clearCache()
+                clearCacheUseCase()
                 _cacheSize.value = 0
                 AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
             } catch (e: Exception) {

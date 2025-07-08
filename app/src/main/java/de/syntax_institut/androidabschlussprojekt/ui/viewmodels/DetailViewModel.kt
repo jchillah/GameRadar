@@ -1,7 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
 import androidx.lifecycle.*
-import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
@@ -11,8 +11,10 @@ import kotlinx.coroutines.flow.*
  * ViewModel für Spieldetails.
  */
 class DetailViewModel(
-    private val repo: GameRepository,
-    private val favoritesRepo: FavoritesRepository
+    private val getGameDetailUseCase: GetGameDetailUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val isFavoriteUseCase: IsFavoriteUseCase,
+    private val getFavoriteByIdUseCase: GetFavoriteByIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState())
@@ -29,14 +31,9 @@ class DetailViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = DetailUiState(resource = Resource.Loading())
 
-            if (forceReload) {
-                repo.clearCache()
-                AppLogger.d("DetailViewModel", "Cache für Detailansicht gelöscht")
-            }
-
-            val cachedGame = repo.getGameFromCache(id)
-            val gameResult = repo.getGameDetail(id)
-            val favoriteResult = favoritesRepo.isFavorite(id)
+            // forceReload-Logik für Cache ggf. in UseCase auslagern, hier nur noch UseCase-Aufrufe
+            val gameResult = getGameDetailUseCase(id)
+            val favoriteResult = isFavoriteUseCase(id)
 
             when (gameResult) {
                 is Resource.Success -> {
@@ -44,17 +41,10 @@ class DetailViewModel(
 
                     // Wenn es ein Favorit ist und forceReload aktiviert ist, hole die vollständigen Daten aus dem Favoriten
                     if (forceReload && favoriteResult) {
-                        val favoriteGame = favoritesRepo.getFavoriteById(id)
+                        val favoriteGame = getFavoriteByIdUseCase(id)
                         if (favoriteGame != null) {
                             game = favoriteGame
                         }
-                    }
-
-                    // Fallback: Verwende gecachte Screenshots wenn verfügbar
-                    if (forceReload && cachedGame != null && cachedGame.screenshots.isNotEmpty() &&
-                        (game?.screenshots.isNullOrEmpty() == true)
-                    ) {
-                        game = game?.copy(screenshots = cachedGame.screenshots)
                     }
 
                     if ((game?.website.isNullOrBlank() == true && game?.screenshots.isNullOrEmpty() == true) && !forceReload) {
@@ -94,12 +84,12 @@ class DetailViewModel(
                 "toggleFavorite() aufgerufen für Spiel: ${currentGame.title}"
             )
             viewModelScope.launch(Dispatchers.IO) {
-                when (val result = favoritesRepo.toggleFavorite(currentGame)) {
+                when (val result = toggleFavoriteUseCase(currentGame)) {
                     is Resource.Success -> {
                         _isFavorite.value = result.data == true
                         if (result.data == true) {
                             // Hole die vollständigen Daten aus dem Favoriten
-                            val favoriteGame = favoritesRepo.getFavoriteById(currentGame.id)
+                            val favoriteGame = getFavoriteByIdUseCase(currentGame.id)
                             if (favoriteGame != null) {
                                 _uiState.value = _uiState.value.copy(
                                     resource = Resource.Success(favoriteGame),
