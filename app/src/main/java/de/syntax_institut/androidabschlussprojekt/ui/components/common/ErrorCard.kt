@@ -9,6 +9,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 
 /**
@@ -28,7 +29,7 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 fun ErrorCard(
     modifier: Modifier = Modifier,
     error: String,
-    title: String = "Fehler aufgetreten",
+    title: String = Constants.ERROR_CARD_DEFAULT_TITLE,
     showRetryButton: Boolean = false,
     onRetry: (() -> Unit)? = null,
 ) {

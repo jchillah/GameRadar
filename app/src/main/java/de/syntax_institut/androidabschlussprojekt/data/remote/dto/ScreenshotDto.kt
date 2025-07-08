@@ -7,7 +7,3 @@ data class ScreenshotDto(
     val id: Int,
     val image: String,
 )
-
-data class ScreenshotResponse(
-    val results: List<ScreenshotDto>,
-)

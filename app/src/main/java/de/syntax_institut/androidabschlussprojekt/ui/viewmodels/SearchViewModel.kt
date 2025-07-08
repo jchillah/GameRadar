@@ -2,6 +2,7 @@ package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
 import androidx.lifecycle.*
 import androidx.paging.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
@@ -48,13 +49,13 @@ class SearchViewModel(
         viewModelScope.launch {
             try {
                 // Initiale Cache-Größe abrufen mit Verzögerung
-                delay(500) // Längere Verzögerung für stabilen Start
+                delay(Constants.CACHE_MONITORING_DELAY) // Längere Verzögerung für stabilen Start
                 _cacheSize.value = getCacheSizeUseCase()
                 _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
 
                 // Nur alle 60 Sekunden aktualisieren, nicht in einer unendlichen Schleife
                 while (true) {
-                    delay(60000) // 60 Sekunden warten (weniger aggressiv)
+                    delay(Constants.CACHE_MONITORING_INTERVAL) // 60 Sekunden warten (weniger aggressiv)
                     try {
                         _cacheSize.value = getCacheSizeUseCase()
                         _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
@@ -133,9 +134,9 @@ class SearchViewModel(
         _uiState.update { it.copy(hasSearched = true) }
         _searchParams.value = SearchParams(
             query = query,
-            platforms = if (platformIds.isNotBlank()) platformIds else null,
-            genres = if (genreIds.isNotBlank()) genreIds else null,
-            ordering = if (ordering.isNotBlank()) ordering else null
+            platforms = platformIds.ifBlank { null },
+            genres = genreIds.ifBlank { null },
+            ordering = ordering.ifBlank { null }
         )
         viewModelScope.launch {
             loadGamesUseCase(

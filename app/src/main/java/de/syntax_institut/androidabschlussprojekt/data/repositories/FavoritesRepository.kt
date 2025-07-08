@@ -2,6 +2,7 @@ package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toFavoriteEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toGame
@@ -79,14 +80,14 @@ class FavoritesRepository @Inject constructor(
                         val originalScreenshots = try {
                             val result =
                                 stringListAdapter.fromJson(entity.screenshots) ?: emptyList()
-                            if (result.isNotEmpty()) result else fallbackGame.screenshots
+                            result.ifEmpty { fallbackGame.screenshots }
                         } catch (_: Exception) {
                             fallbackGame.screenshots
                         }
 
                         val originalMovies = try {
                             val result = movieListAdapter.fromJson(entity.movies) ?: emptyList()
-                            if (result.isNotEmpty()) result else fallbackGame.movies
+                            result.ifEmpty { fallbackGame.movies }
                         } catch (_: Exception) {
                             fallbackGame.movies
                         }
@@ -212,7 +213,7 @@ class FavoritesRepository @Inject constructor(
             Resource.Success(Unit)
         } catch (e: Exception) {
             AppLogger.e("FavoritesRepository", "Fehler beim Hinzufügen des Favoriten: ${e.message}")
-            Resource.Error("Fehler beim Hinzufügen des Favoriten: " + e.localizedMessage)
+            Resource.Error(Constants.ERROR_ADD_FAVORITE + e.localizedMessage)
         }
     }
     
@@ -224,7 +225,7 @@ class FavoritesRepository @Inject constructor(
             favoriteGameDao.removeFavorite(gameId)
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error("Fehler beim Entfernen des Favoriten: ${e.localizedMessage}")
+            Resource.Error(Constants.ERROR_REMOVE_FAVORITE + e.localizedMessage)
         }
     }
     
@@ -311,7 +312,7 @@ class FavoritesRepository @Inject constructor(
             }
         } catch (e: Exception) {
             AppLogger.e("FavoritesRepository", "Fehler beim Umschalten des Favoriten: ${e.message}")
-            Resource.Error("Fehler beim Umschalten des Favoriten: " + e.localizedMessage)
+            Resource.Error(Constants.ERROR_TOGGLE_FAVORITE + e.localizedMessage)
         }
     }
     
@@ -323,7 +324,7 @@ class FavoritesRepository @Inject constructor(
             favoriteGameDao.clearAllFavorites()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error("Fehler beim Löschen der Favoriten: ${e.localizedMessage}")
+            Resource.Error(Constants.ERROR_CLEAR_FAVORITES + e.localizedMessage)
         }
     }
 
@@ -382,8 +383,8 @@ class FavoritesRepository @Inject constructor(
                         if (apiGame != fav) {
                             // Merge-Logik: Behalte alte Medien, wenn neue leer sind
                             val mergedGame = apiGame.copy(
-                                screenshots = if (apiGame.screenshots.isNotEmpty()) apiGame.screenshots else fav.screenshots,
-                                movies = if (apiGame.movies.isNotEmpty()) apiGame.movies else fav.movies
+                                screenshots = apiGame.screenshots.ifEmpty { fav.screenshots },
+                                movies = apiGame.movies.ifEmpty { fav.movies }
                             )
                             favoriteGameDao.insertFavorite(mergedGame.toFavoriteEntity())
                         }

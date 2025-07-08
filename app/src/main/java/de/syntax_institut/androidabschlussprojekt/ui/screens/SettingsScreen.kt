@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.core.app.*
 import androidx.core.net.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
@@ -62,15 +63,15 @@ fun SettingsScreen(
 
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
-            cacheSize = cacheStats?.totalEntries ?: 0,
+            cacheSize = cacheStats?.count ?: 0,
             maxCacheSize = 100000,
         )
 
         IntelligentCacheIndicator(
             modifier = Modifier.fillMaxWidth(),
             isOffline = !isOnline,
-            cacheSize = cacheStats?.totalEntries ?: 0,
-            lastSyncTime = cacheStats?.oldestEntryTime ?: 0,
+            cacheSize = cacheStats?.count ?: 0,
+            lastSyncTime = null,
         )
 
         NetworkErrorHandler(
@@ -80,9 +81,9 @@ fun SettingsScreen(
 
         CacheManagementCard(
             modifier = Modifier.fillMaxWidth(),
-            cacheSize = cacheStats?.totalEntries ?: 0,
+            cacheSize = cacheStats?.count ?: 0,
             maxCacheSize = 100000,
-            lastSyncTime = cacheStats?.oldestEntryTime ?: 0,
+            lastSyncTime = null,
             onClearCache = {
                 coroutineScope.launch {
                     gameRepository.clearCache()
@@ -97,11 +98,11 @@ fun SettingsScreen(
             }
         )
 
-        SettingsSection(title = "Benachrichtigungen") {
+        SettingsSection(title = Constants.UI_PUSH_NOTIFICATIONS) {
             SettingsSwitchItem(
                 icon = Icons.Default.Notifications,
-                title = "Push-Benachrichtigungen",
-                subtitle = "Neue Spiele und Updates erhalten",
+                title = Constants.UI_PUSH_NOTIFICATIONS,
+                subtitle = Constants.UI_NEW_GAMES_AND_UPDATES,
                 checked = notificationsEnabled,
                 onCheckedChange = viewModel::setNotificationsEnabled
             )
@@ -111,20 +112,20 @@ fun SettingsScreen(
                     // Test-Benachrichtigung direkt erstellen
                     val notificationManager =
                         context.getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-                    val channelId = "new_games"
+                    val channelId = Constants.NOTIFICATION_CHANNEL_ID
 
                     // Channel erstellen falls nicht vorhanden
                     val channel = android.app.NotificationChannel(
                         channelId,
-                        "Neue Spiele",
+                        Constants.NOTIFICATION_CHANNEL_NAME,
                         android.app.NotificationManager.IMPORTANCE_DEFAULT
                     )
                     notificationManager.createNotificationChannel(channel)
 
                     val notification = NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(android.R.drawable.ic_dialog_info)
-                        .setContentTitle("Testspiel: Notification")
-                        .setContentText("Dies ist eine Test-Benachrichtigung")
+                        .setContentTitle(Constants.NOTIFICATION_TITLE_TEST)
+                        .setContentText(Constants.NOTIFICATION_TEXT_TEST)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true)
                         .build()
@@ -239,17 +240,17 @@ fun SettingsScreen(
 
             SettingsButtonItem(
                 icon = Icons.Default.DeleteForever,
-                title = "Datenbank zurücksetzen",
-                subtitle = "Löscht alle Favoriten und Cache-Daten",
+                title = Constants.DIALOG_RESET_DATABASE_TITLE,
+                subtitle = Constants.DIALOG_RESET_DATABASE_SUBTITLE,
                 onClick = { showClearDatabaseDialog = true }
             )
 
             if (showClearDatabaseDialog) {
                 AlertDialog(
                     onDismissRequest = { showClearDatabaseDialog = false },
-                    title = { Text("Datenbank zurücksetzen") },
+                    title = { Text(Constants.DIALOG_RESET_DATABASE_TITLE) },
                     text = {
-                        Text("Möchten Sie wirklich alle Favoriten und Cache-Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.")
+                        Text(Constants.DIALOG_RESET_DATABASE_TEXT)
                     },
                     confirmButton = {
                         TextButton(
@@ -258,12 +259,12 @@ fun SettingsScreen(
                                 showClearDatabaseDialog = false
                             }
                         ) {
-                            Text("Löschen")
+                            Text(Constants.DIALOG_DELETE_ALL_CONFIRM)
                         }
                     },
                     dismissButton = {
                         TextButton(onClick = { showClearDatabaseDialog = false }) {
-                            Text("Abbrechen")
+                            Text(Constants.DIALOG_DELETE_ALL_CANCEL)
                         }
                     }
                 )

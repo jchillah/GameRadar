@@ -8,6 +8,7 @@ import androidx.core.app.*
 import androidx.core.net.*
 import androidx.work.*
 import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.core.component.*
@@ -25,7 +26,7 @@ class NewGameWorker(
 
             // Echte Logik: Suche nach neuen Spielen (nach ID und Slug)
             val prefs =
-                applicationContext.getSharedPreferences("gameradar_settings", Context.MODE_PRIVATE)
+                applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
             val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
 
             AppLogger.d("NewGameWorker", "[DEBUG] ${newGames.size} neue Spiele gefunden")
@@ -70,11 +71,11 @@ class NewGameWorker(
 
             // Erstelle Notification Channel für Android 8.0+
             val channel = NotificationChannel(
-                "new_games",
-                "Neue Spiele",
+                Constants.NOTIFICATION_CHANNEL_ID,
+                Constants.NOTIFICATION_CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Benachrichtigungen über neue Spiele"
+                description = Constants.NOTIFICATION_CHANNEL_DESC
             }
             notificationManager.createNotificationChannel(channel)
 
@@ -92,9 +93,10 @@ class NewGameWorker(
             )
 
             // Erstelle Notification
-            val notification = NotificationCompat.Builder(context, "new_games")
+            val notification =
+                NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle("Neues Spiel verfügbar!")
+                    .setContentTitle(Constants.NOTIFICATION_TITLE_NEW_GAME)
                 .setContentText(gameTitle)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)

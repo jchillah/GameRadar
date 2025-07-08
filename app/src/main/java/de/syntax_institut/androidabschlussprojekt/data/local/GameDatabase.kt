@@ -4,6 +4,7 @@ import android.content.*
 import androidx.room.*
 import androidx.room.migration.*
 import androidx.sqlite.db.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 
@@ -31,7 +32,7 @@ abstract class GameDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     GameDatabase::class.java,
-                    "game_database"
+                    Constants.DATABASE_NAME
                 )
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build()
@@ -45,8 +46,8 @@ abstract class GameDatabase : RoomDatabase() {
          * Fügt das movies Feld zur game_cache Tabelle hinzu
          */
         private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE game_cache ADD COLUMN movies TEXT DEFAULT '[]'")
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE " + Constants.GAME_CACHE_TABLE + " ADD COLUMN movies TEXT DEFAULT '[]'")
             }
         }
 
@@ -55,10 +56,10 @@ abstract class GameDatabase : RoomDatabase() {
          * Fügt die game_detail_cache Tabelle hinzu
          */
         private val MIGRATION_2_3 = object : Migration(2, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
                     """
-                    CREATE TABLE IF NOT EXISTS game_detail_cache (
+                    CREATE TABLE IF NOT EXISTS " + Constants.GAME_DETAIL_CACHE_TABLE + " (
                         id INTEGER PRIMARY KEY NOT NULL,
                         slug TEXT NOT NULL,
                         title TEXT NOT NULL,
@@ -93,7 +94,7 @@ abstract class GameDatabase : RoomDatabase() {
             synchronized(this) {
                 INSTANCE?.close()
                 INSTANCE = null
-                context.applicationContext.deleteDatabase("game_database")
+                context.applicationContext.deleteDatabase(Constants.DATABASE_NAME)
             }
         }
     }

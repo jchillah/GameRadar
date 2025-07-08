@@ -2,6 +2,7 @@ package de.syntax_institut.androidabschlussprojekt.data.local.mapper
 
 import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
@@ -55,7 +56,7 @@ object FavoriteGameMapper {
                 "Fehler beim Serialisieren der String-Liste: ${e.localizedMessage}",
                 e
             )
-            "[]"
+            Constants.EMPTY_JSON_ARRAY
         }
 
     private fun toJsonMovieList(list: List<Movie>): String =
@@ -67,7 +68,7 @@ object FavoriteGameMapper {
                 "Fehler beim Serialisieren der Movie-Liste: ${e.localizedMessage}",
                 e
             )
-            "[]"
+            Constants.EMPTY_JSON_ARRAY
         }
 
     /**

@@ -1,13 +1,11 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import android.content.*
-import androidx.core.content.*
 import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toGame
-import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
-import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toGame
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toDetailCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toGame
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
@@ -75,7 +73,7 @@ class GameRepository @Inject constructor(
                 )
                 Resource.Success(game)
             } else {
-                Resource.Error("Keine Internetverbindung und keine gecachten Detaildaten verfügbar")
+                Resource.Error(Constants.ERROR_NO_CONNECTION_AND_NO_CACHE)
             }
         }
 
@@ -189,15 +187,15 @@ class GameRepository @Inject constructor(
                     val existingMovies = cachedDetail?.toGame()?.movies ?: emptyList()
                     
                     val game = gameDto.toDomain().copy(
-                        screenshots = if (screenshots.isNotEmpty()) screenshots else existingScreenshots,
-                        movies = if (movies.isNotEmpty()) movies else existingMovies
+                        screenshots = screenshots.ifEmpty { existingScreenshots },
+                        movies = movies.ifEmpty { existingMovies }
                     )
                     // Cache das Spiel im Detail-Cache
                     val cachedGame = cachedDetail?.toGame()
                     val mergedGame = if (cachedGame != null) {
                         game.copy(
-                            screenshots = if (game.screenshots.isNotEmpty()) game.screenshots else cachedGame.screenshots,
-                            movies = if (game.movies.isNotEmpty()) game.movies else cachedGame.movies
+                            screenshots = game.screenshots.ifEmpty { cachedGame.screenshots },
+                            movies = game.movies.ifEmpty { cachedGame.movies }
                         )
                     } else {
                         game
@@ -241,7 +239,7 @@ class GameRepository @Inject constructor(
                     )
                     Resource.Success(game)
                 } else {
-                    Resource.Error("Server Error ${resp.code()}")
+                    Resource.Error(Constants.ERROR_SERVER + resp.code())
                 }
             }
         } catch (e: Exception) {
@@ -259,12 +257,11 @@ class GameRepository @Inject constructor(
                 Resource.Error(
                     ErrorHandler.handleException(
                         e,
-                        "Netzwerkfehler: ${e.localizedMessage}"
+                        Constants.ERROR_NETWORK + e.localizedMessage
                     )
                 )
             }
         }
-        AppLogger.d("GameRepository", "[DEBUG] getGameDetail() fertig für $gameId")
     }
 
     suspend fun getPlatforms(): Resource<List<Platform>> {
@@ -279,12 +276,17 @@ class GameRepository @Inject constructor(
                         )
                     }
                     Resource.Success(platforms)
-                } ?: Resource.Error("Keine Plattform-Daten erhalten")
+                } ?: Resource.Error(Constants.ERROR_NO_PLATFORM_DATA)
             } else {
-                Resource.Error("API-Fehler: ${response.code()}")
+                Resource.Error(Constants.ERROR_API + response.code())
             }
         } catch (e: Exception) {
-            Resource.Error(ErrorHandler.handleException(e, "Netzwerkfehler: ${e.localizedMessage}"))
+            Resource.Error(
+                ErrorHandler.handleException(
+                    e,
+                    Constants.ERROR_NETWORK + e.localizedMessage
+                )
+            )
         }
     }
 
@@ -300,158 +302,18 @@ class GameRepository @Inject constructor(
                         )
                     }
                     Resource.Success(genres)
-                } ?: Resource.Error("Keine Genre-Daten erhalten")
+                } ?: Resource.Error(Constants.ERROR_NO_GENRE_DATA)
             } else {
-                Resource.Error("API-Fehler: ${response.code()}")
+                Resource.Error(Constants.ERROR_API + response.code())
             }
         } catch (e: Exception) {
-            Resource.Error(ErrorHandler.handleException(e, "Netzwerkfehler: ${e.localizedMessage}"))
-        }
-    }
-
-    // PagingSource für die Suche mit Offline-Support
-    private inner class GamePagingSource(
-        private val query: String,
-        private val platforms: String?,
-        private val genres: String?,
-        private val ordering: String?,
-        private val rating: Float?,
-    ) : PagingSource<Int, Game>() {
-
-        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Game> {
-            val page = params.key ?: 1
-            val filterHash = NetworkUtils.createFilterHash(platforms, genres, ordering, rating)
-            
-            // Prüfe Cache für erste Seite
-            if (page == 1) {
-                val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                if (cachedGames.isNotEmpty() && NetworkUtils.isCacheValid(cachedGames.first().cachedAt)) {
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                    } else {
-                        cachedGames.map { it.toGame() }
-                    }
-                    return LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = null,
-                        nextKey = if (filteredGames.size >= params.loadSize) 2 else null
-                    )
-                }
-            }
-            
-            // Wenn kein Netzwerk verfügbar, verwende Cache auch wenn abgelaufen
-            if (!NetworkUtils.isNetworkAvailable(context)) {
-                val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                if (cachedGames.isNotEmpty()) {
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                    } else {
-                        cachedGames.map { it.toGame() }
-                    }
-                    return LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = null,
-                        nextKey = null
-                    )
-                } else {
-                    return LoadResult.Error(Exception("Keine Internetverbindung und keine gecachten Daten verfügbar"))
-                }
-            }
-            
-            // API-Call
-            return try {
-                val resp = api.searchGames(
-                    query = query,
-                    platforms = platforms,
-                    genres = genres,
-                    ordering = ordering,
-                    page = page,
-                    pageSize = params.loadSize
+            Resource.Error(
+                ErrorHandler.handleException(
+                    e,
+                    Constants.ERROR_NETWORK + e.localizedMessage
                 )
-                if (resp.isSuccessful) {
-                    val body = resp.body()
-                    val allGames = body?.results?.map { it.toDomain() } ?: emptyList()
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        allGames.filter { it.rating >= rating }
-                    } else {
-                        allGames
-                    }
-
-                    // Speichere ALLE geladenen Spiele in den Cache (nicht nur Seite 1)
-                    val cacheEntities = allGames.map { game ->
-                        game.toCacheEntity(query, filterHash)
-                    }
-                    AppLogger.d(
-                        "dgc",
-                        "[PAGE $page] Versuche ${cacheEntities.size} Spiele in den Cache zu schreiben. Query='$query', FilterHash='$filterHash'"
-                    )
-                    try {
-                        gameCacheDao.insertGames(cacheEntities)
-                        AppLogger.d(
-                            "dgc",
-                            "[PAGE $page] Insert erfolgreich für ${cacheEntities.size} Spiele. Query='$query', FilterHash='$filterHash'"
-                        )
-                    } catch (e: Exception) {
-                        AppLogger.e(
-                            "dgc",
-                            "[PAGE $page] Fehler beim Insert in den Cache: ${e.localizedMessage}",
-                            e
-                        )
-                    }
-                    
-                    val nextPage = if (body?.next != null) page + 1 else null
-                    LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = if (page == 1) null else page - 1,
-                        nextKey = nextPage
-                    )
-                } else {
-                    // Fallback auf Cache
-                    val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                    if (cachedGames.isNotEmpty()) {
-                        val filteredGames = if (rating != null && rating > 0f) {
-                            cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                        } else {
-                            cachedGames.map { it.toGame() }
-                        }
-                        LoadResult.Page(
-                            data = filteredGames,
-                            prevKey = null,
-                            nextKey = null
-                        )
-                    } else {
-                        LoadResult.Error(Exception("Server Error"))
-                    }
-                }
-            } catch (e: Exception) {
-                AppLogger.e("GameRepository", "Fehler beim API-Call in PagingSource", e)
-                // Fallback auf Cache bei Netzwerkfehler
-                val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                if (cachedGames.isNotEmpty()) {
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                    } else {
-                        cachedGames.map { it.toGame() }
-                    }
-                    LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = null,
-                        nextKey = null
-                    )
-                } else {
-                    LoadResult.Error(
-                        Exception(
-                            ErrorHandler.handleException(
-                                e,
-                                "Server Error: " + e.localizedMessage
-                            )
-                        )
-                    )
-                }
-            }
+            )
         }
-        
-        override fun getRefreshKey(state: PagingState<Int, Game>): Int? = 1
     }
 
     fun getPagedGames(
@@ -463,7 +325,18 @@ class GameRepository @Inject constructor(
     ): Flow<PagingData<Game>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { GamePagingSource(query, platforms, genres, ordering, rating) }
+            pagingSourceFactory = {
+                GamePagingSource(
+                    api,
+                    gameCacheDao,
+                    context,
+                    query,
+                    platforms,
+                    genres,
+                    ordering,
+                    rating
+                )
+            }
         ).flow
     }
     
@@ -479,11 +352,6 @@ class GameRepository @Inject constructor(
         return gameCacheDao.getCacheSize()
     }
 
-    suspend fun getGameFromCache(id: Int): Game? {
-        val entity = gameCacheDao.getGameById(id)
-        return entity?.toGame()
-    }
-    
     /**
      * Cache optimieren - entferne alte Einträge
      */
@@ -533,33 +401,6 @@ class GameRepository @Inject constructor(
         prefs: SharedPreferences,
         count: Int = 10,
     ): List<Game> {
-        // 1. Hole die letzten Spiele von der API
-        val response = api.searchGames(page = 1, pageSize = count, query = "")
-        if (!response.isSuccessful) return emptyList()
-        val games = response.body()?.results?.map { it.toDomain() } ?: return emptyList()
-
-        // 2. Lade die letzten bekannten IDs/Slugs aus den SharedPreferences
-        val lastIds = prefs.getStringSet("last_known_game_ids", emptySet()) ?: emptySet()
-        val lastSlugs = prefs.getStringSet("last_known_game_slugs", emptySet()) ?: emptySet()
-
-        // 3. Finde neue Spiele (ID oder Slug noch nicht bekannt)
-        val newGames = games.filter { it.id.toString() !in lastIds || it.slug !in lastSlugs }
-
-        // 4. Aktualisiere die gespeicherten IDs/Slugs (nur die neuesten)
-        prefs.edit {
-            putStringSet("last_known_game_ids", games.map { it.id.toString() }.toSet())
-                .putStringSet("last_known_game_slugs", games.map { it.slug }.toSet())
-        }
-
-        return newGames
+        return checkForNewGamesAndUpdatePrefs(api, prefs, count)
     }
 }
-
-/**
- * Cache-Statistiken
- */
-data class CacheStats(
-    val totalEntries: Int,
-    val oldestEntryTime: Long?,
-    val isExpired: Boolean,
-)

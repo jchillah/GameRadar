@@ -48,7 +48,7 @@ class ScreenshotGalleryActivity : ComponentActivity() {
             val intent = Intent(context, ScreenshotGalleryActivity::class.java).apply {
                 putStringArrayListExtra(EXTRA_SCREENSHOTS, ArrayList(screenshots))
                 putExtra(EXTRA_START_INDEX, startIndex)
-                putExtra(EXTRA_IMAGE_QUALITY, imageQuality.name)
+                putExtra(EXTRA_IMAGE_QUALITY, imageQuality.title)
             }
             context.startActivity(intent)
         }
@@ -68,7 +68,7 @@ class ScreenshotGalleryActivity : ComponentActivity() {
 
         val screenshots = intent.getStringArrayListExtra(EXTRA_SCREENSHOTS) ?: arrayListOf()
         val startIndex = intent.getIntExtra(EXTRA_START_INDEX, 0)
-        val imageQualityName = intent.getStringExtra(EXTRA_IMAGE_QUALITY) ?: ImageQuality.HIGH.name
+        val imageQualityName = intent.getStringExtra(EXTRA_IMAGE_QUALITY) ?: ImageQuality.HIGH.title
         val imageQuality = ImageQuality.valueOf(imageQualityName)
 
         setContent {

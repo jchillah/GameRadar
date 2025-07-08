@@ -1,12 +1,13 @@
 package de.syntax_institut.androidabschlussprojekt.data.local.entities
 
 import androidx.room.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 
 /**
  * Room Entity für Favoriten-Spiele.
  * Speichert alle wichtigen Spieldaten lokal für Offline-Zugriff.
  */
-@Entity(tableName = "favorite_games")
+@Entity(tableName = Constants.FAVORITE_GAME_TABLE)
 data class FavoriteGameEntity(
     @PrimaryKey
     val id: Int,

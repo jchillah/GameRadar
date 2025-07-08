@@ -1,5 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.utils
 
+import de.syntax_institut.androidabschlussprojekt.data.*
+
 /**
  * Utility-Klasse für häufig verwendete Funktionen.
  * Reduziert Code-Duplikation und verbessert Wartbarkeit.
@@ -18,10 +20,10 @@ object CommonUtils {
     ): String {
         return when {
             items.isNullOrEmpty() && isOffline ->
-                "Keine $itemName verfügbar. Prüfe deine Internetverbindung und versuche es erneut."
+                Constants.EMPTY_STATE_OFFLINE_PREFIX + itemName + Constants.EMPTY_STATE_OFFLINE_SUFFIX
 
             items.isNullOrEmpty() ->
-                "Für dieses Spiel wurden keine $itemName gefunden."
+                Constants.EMPTY_STATE_PREFIX + itemName + Constants.EMPTY_STATE_SUFFIX
 
             else -> ""
         }
@@ -34,7 +36,7 @@ object CommonUtils {
         return if (rating > 0f) {
             String.format(java.util.Locale.getDefault(), "%.1f", rating)
         } else {
-            "Keine Bewertung"
+            Constants.NO_RATING
         }
     }
 

@@ -6,7 +6,7 @@ import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
 fun GameDto.toDomain(): Game = Game(
     id = id,
     slug = slug,
-    title = name,
+    title = name, // <- name bleibt hier, da RAWG-API das Feld so liefert
     releaseDate = released,
     imageUrl = backgroundImage,
     rating = rating,

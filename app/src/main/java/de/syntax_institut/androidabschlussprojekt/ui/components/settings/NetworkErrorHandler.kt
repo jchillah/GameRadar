@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 
 @Composable
 fun NetworkErrorHandler(
@@ -36,12 +37,12 @@ fun NetworkErrorHandler(
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Keine Internetverbindung",
+                        text = Constants.ERROR_NO_CONNECTION,
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                     Text(
-                        text = "Überprüfe deine Verbindung und versuche es erneut",
+                        text = Constants.ERROR_CHECK_CONNECTION,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f)
                     )

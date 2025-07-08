@@ -1,7 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.utils
 
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
-import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
 /**
  * Utility für Cache-Statistiken und Optimierung.
@@ -31,12 +31,11 @@ object CacheUtils {
      */
     suspend fun getCacheStats(gameCacheDao: GameCacheDao): CacheStats {
         val totalSize = gameCacheDao.getCacheSize()
-        val oldestTime = gameCacheDao.getOldestCacheTime()
-        val isExpired = oldestTime?.let { !NetworkUtils.isCacheValid(it) } != false
+        // val oldestTime = gameCacheDao.getOldestCacheTime() // entfällt
+        // val isExpired = oldestTime?.let { !NetworkUtils.isCacheValid(it) } != false // entfällt
         return CacheStats(
-            totalEntries = totalSize,
-            oldestEntryTime = oldestTime,
-            isExpired = isExpired
+            count = totalSize,
+            size = 0L // Platzhalter: Hier könnte die tatsächliche Cache-Größe in Bytes stehen, falls verfügbar
         )
     }
 } 
