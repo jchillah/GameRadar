@@ -5,7 +5,7 @@ object ErrorHandler {
         e: Exception,
         fallbackMessage: String = "Ein unbekannter Fehler ist aufgetreten",
     ): String {
-        AppLogger.error("ErrorHandler", fallbackMessage, e)
+        AppLogger.e("ErrorHandler", fallbackMessage, e)
         return e.localizedMessage ?: fallbackMessage
     }
 } 

@@ -19,10 +19,10 @@ object CacheUtils {
                 val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
                 gameCacheDao.deleteExpiredGames(sevenDaysAgo)
                 val newSize = gameCacheDao.getCacheSize()
-                AppLogger.debug("CacheUtils", "Cache optimiert: $currentSize -> $newSize Einträge")
+                AppLogger.d("CacheUtils", "Cache optimiert: $currentSize -> $newSize Einträge")
             }
         } catch (e: Exception) {
-            AppLogger.error("CacheUtils", "Fehler bei Cache-Optimierung", e)
+            AppLogger.e("CacheUtils", "Fehler bei Cache-Optimierung", e)
         }
     }
 

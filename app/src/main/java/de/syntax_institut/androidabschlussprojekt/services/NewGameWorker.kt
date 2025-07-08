@@ -21,14 +21,14 @@ class NewGameWorker(
 
     override suspend fun doWork(): Result {
         try {
-            AppLogger.debug("NewGameWorker", "[DEBUG] NewGameWorker gestartet")
+            AppLogger.d("NewGameWorker", "[DEBUG] NewGameWorker gestartet")
 
             // Echte Logik: Suche nach neuen Spielen (nach ID und Slug)
             val prefs =
                 applicationContext.getSharedPreferences("gameradar_settings", Context.MODE_PRIVATE)
             val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
 
-            AppLogger.debug("NewGameWorker", "[DEBUG] ${newGames.size} neue Spiele gefunden")
+            AppLogger.d("NewGameWorker", "[DEBUG] ${newGames.size} neue Spiele gefunden")
 
             newGames.forEach { game ->
                 sendNewGameNotification(
@@ -39,10 +39,10 @@ class NewGameWorker(
                 )
             }
 
-            AppLogger.info("NewGameWorker", "NewGameWorker erfolgreich abgeschlossen")
+            AppLogger.i("NewGameWorker", "NewGameWorker erfolgreich abgeschlossen")
             return Result.success()
         } catch (e: Exception) {
-            AppLogger.error("NewGameWorker", "Fehler im NewGameWorker", e)
+            AppLogger.e("NewGameWorker", "Fehler im NewGameWorker", e)
             return Result.failure()
         }
     }
@@ -57,7 +57,7 @@ class NewGameWorker(
             // Überprüfe Notification-Berechtigung für Android 13+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    AppLogger.debug(
+                    AppLogger.d(
                         "NewGameWorker",
                         "[DEBUG] Keine Notification-Berechtigung für: $gameTitle"
                     )
@@ -104,10 +104,10 @@ class NewGameWorker(
             // Sende Notification
             notificationManager.notify(gameId, notification)
 
-            AppLogger.debug("NewGameWorker", "[DEBUG] Notification gesendet für: $gameTitle")
+            AppLogger.d("NewGameWorker", "[DEBUG] Notification gesendet für: $gameTitle")
 
         } catch (e: Exception) {
-            AppLogger.error("NewGameWorker", "Fehler beim Senden der Notification", e)
+            AppLogger.e("NewGameWorker", "Fehler beim Senden der Notification", e)
         }
     }
 } 

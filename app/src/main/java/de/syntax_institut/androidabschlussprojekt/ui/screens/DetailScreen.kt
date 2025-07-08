@@ -1,7 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import android.content.*
-import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -157,15 +156,13 @@ fun DetailScreen(
                             }
                         }
                     } else {
-                        LaunchedEffect(game.website) {
-                            Log.d("DetailScreen", "Website URL: '${game.website}'")
-                            Log.d("DetailScreen", "Website is null: ${game.website == null}")
-                            Log.d("DetailScreen", "Website is blank: ${game.website?.isBlank()}")
-                            Log.d(
-                                "DetailScreen",
-                                "Website is not blank: ${game.website?.isNotBlank()}"
-                            )
-                        }
+                        // Entferne überflüssige Website-Logs
+                        // LaunchedEffect(game.website) {
+                        //     Log.d("DetailScreen", "Website URL: '${game.website}'")
+                        //     Log.d("DetailScreen", "Website is null: "+(game.website == null))
+                        //     Log.d("DetailScreen", "Website is blank: "+(game.website?.isBlank()))
+                        //     Log.d("DetailScreen", "Website is not blank: "+(game.website?.isNotBlank()))
+                        // }
                         Spacer(modifier = Modifier.height(16.dp))
                         GameHeaderImage(
                             imageUrl = game.imageUrl ?: "",

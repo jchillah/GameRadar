@@ -1,6 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
-import android.util.*
 import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
@@ -44,27 +43,27 @@ class FavoritesRepository @Inject constructor(
         return favoriteGameDao.getAllFavorites().map { entities ->
             entities.map { entity ->
                 try {
-                    Log.d("FavoritesRepository", "[DEBUG] Konvertiere Entity: ${entity.title}")
-                    Log.d(
+                    AppLogger.d("FavoritesRepository", "Konvertiere Entity: ${entity.title}")
+                    AppLogger.d(
                         "FavoritesRepository",
-                        "[DEBUG] Entity Screenshots JSON: ${entity.screenshots}"
+                        "Entity Screenshots JSON: ${entity.screenshots}"
                     )
-                    Log.d("FavoritesRepository", "[DEBUG] Entity Movies JSON: ${entity.movies}")
+                    AppLogger.d("FavoritesRepository", "Entity Movies JSON: ${entity.movies}")
 
                     val game = entity.toGame()
-                    Log.d("FavoritesRepository", "[DEBUG] Konvertiert zu Game: ${game.title}")
-                    Log.d(
+                    AppLogger.d("FavoritesRepository", "Konvertiert zu Game: ${game.title}")
+                    AppLogger.d(
                         "FavoritesRepository",
-                        "[DEBUG] Game Screenshots: ${game.screenshots.size}"
+                        "Game Screenshots: ${game.screenshots.size}"
                     )
-                    Log.d("FavoritesRepository", "[DEBUG] Game Movies: ${game.movies.size}")
+                    AppLogger.d("FavoritesRepository", "Game Movies: ${game.movies.size}")
                     game
                 } catch (e: Exception) {
-                    Log.e(
+                    AppLogger.e(
                         "FavoritesRepository",
                         "Fehler beim Konvertieren von Entity: ${e.message}"
                     )
-                    Log.e(
+                    AppLogger.e(
                         "FavoritesRepository",
                         "Verwende Fallback für Entity: ${entity.title}"
                     )
@@ -72,9 +71,9 @@ class FavoritesRepository @Inject constructor(
                     // WICHTIG: Verwende die gespeicherten Screenshots und Movies, wenn sie vorhanden sind
                     val fallbackGame = repo.getGameDetail(entity.id).data
                     if (fallbackGame != null) {
-                        Log.d(
+                        AppLogger.d(
                             "FavoritesRepository",
-                            "[DEBUG] Fallback erfolgreich für: ${entity.title}"
+                            "Fallback erfolgreich für: ${entity.title}"
                         )
                         // Behalte die ursprünglichen Screenshots und Movies, wenn sie vorhanden sind
                         val originalScreenshots = try {
@@ -97,9 +96,9 @@ class FavoritesRepository @Inject constructor(
                             movies = originalMovies
                         )
                     } else {
-                        Log.w(
+                        AppLogger.w(
                             "FavoritesRepository",
-                            "[WARN] Fallback fehlgeschlagen für: ${entity.title}"
+                            "Fallback fehlgeschlagen für: ${entity.title}"
                         )
                         // Erstelle ein minimales Game-Objekt als letzter Fallback
                         Game(
@@ -134,7 +133,7 @@ class FavoritesRepository @Inject constructor(
         return try {
             favoriteGameDao.getFavoriteById(gameId)?.toGame()
         } catch (e: Exception) {
-            Log.e("FavoritesRepository", "Fehler beim Laden des Favoriten: ${e.message}")
+            AppLogger.e("FavoritesRepository", "Fehler beim Laden des Favoriten: ${e.message}")
             null
         }
     }
@@ -144,49 +143,75 @@ class FavoritesRepository @Inject constructor(
      */
     suspend fun addFavorite(game: Game): Resource<Unit> {
         return try {
-            Log.d("FavoritesRepository", "[DEBUG] Füge Favorit hinzu: ${game.title}")
-            Log.d(
+            AppLogger.d("FavoritesRepository", "Füge Favorit hinzu: ${game.title}")
+            AppLogger.d(
                 "FavoritesRepository",
-                "[DEBUG] Ursprüngliche Screenshots: ${game.screenshots.size}, Movies: ${game.movies.size}"
+                "Ursprüngliche Screenshots: ${game.screenshots.size}, Movies: ${game.movies.size}"
             )
 
             // IMMER vollständige Details laden, um sicherzustellen, dass wir die besten verfügbaren Daten haben
-            Log.d("FavoritesRepository", "[DEBUG] Lade vollständige Details für: ${game.title}")
-                val detailResult = repo.getGameDetail(game.id)
+            AppLogger.d("FavoritesRepository", "Lade vollständige Details für: ${game.title}")
+            val detailResult = repo.getGameDetail(game.id)
             val fullGame = when (detailResult) {
                 is Resource.Success -> {
                     val detailedGame = detailResult.data ?: game
-                    Log.d(
+                    AppLogger.d(
                         "FavoritesRepository",
-                        "[DEBUG] Details geladen - Screenshots: ${detailedGame.screenshots.size}, Movies: ${detailedGame.movies.size}"
+                        "Details geladen - Screenshots: ${detailedGame.screenshots.size}, Movies: ${detailedGame.movies.size}"
                     )
-                    // WICHTIG: Behalte ursprüngliche Screenshots und Movies, wenn sie vorhanden sind
-                    val mergedGame = detailedGame.copy(
-                        screenshots = if (detailedGame.screenshots.isNotEmpty()) detailedGame.screenshots else game.screenshots,
-                        movies = if (detailedGame.movies.isNotEmpty()) detailedGame.movies else game.movies
-                    )
-                    Log.d(
-                        "FavoritesRepository",
-                        "[DEBUG] Nach Merge - Screenshots: ${mergedGame.screenshots.size}, Movies: ${mergedGame.movies.size}"
-                    )
-                    mergedGame
+                    detailedGame
                 }
-
                 else -> {
-                    Log.w(
+                    AppLogger.w(
                         "FavoritesRepository",
-                        "[WARN] Konnte Details nicht laden, verwende ursprüngliches Spiel"
+                        "Konnte Details nicht laden, verwende ursprüngliches Spiel"
                     )
                     game
                 }
             }
 
-            val entity = fullGame.toFavoriteEntity()
+            // Merge-Logik: Vorhandene Favoriten berücksichtigen
+            val existingEntity = favoriteGameDao.getFavoriteById(game.id)
+            val existingGame = existingEntity?.toGame()
+            val mergedGame = fullGame.copy(
+                screenshots = when {
+                    fullGame.screenshots.isNotEmpty() -> fullGame.screenshots
+                    game.screenshots.isNotEmpty() -> game.screenshots
+                    existingGame?.screenshots?.isNotEmpty() == true -> {
+                        AppLogger.d(
+                            "FavoritesRepository",
+                            "Übernehme alte Screenshots aus DB (${existingGame.screenshots.size}) für ${game.title}"
+                        )
+                        existingGame.screenshots
+                    }
+
+                    else -> emptyList()
+                },
+                movies = when {
+                    fullGame.movies.isNotEmpty() -> fullGame.movies
+                    game.movies.isNotEmpty() -> game.movies
+                    existingGame?.movies?.isNotEmpty() == true -> {
+                        AppLogger.d(
+                            "FavoritesRepository",
+                            "Übernehme alte Movies aus DB (${existingGame.movies.size}) für ${game.title}"
+                        )
+                        existingGame.movies
+                    }
+
+                    else -> emptyList()
+                }
+            )
+            AppLogger.d(
+                "FavoritesRepository",
+                "Nach Merge - Screenshots: ${mergedGame.screenshots.size}, Movies: ${mergedGame.movies.size}"
+            )
+
+            val entity = mergedGame.toFavoriteEntity()
             favoriteGameDao.insertFavorite(entity)
-            Log.d("FavoritesRepository", "[DEBUG] Favorit erfolgreich gespeichert")
+            AppLogger.d("FavoritesRepository", "Favorit erfolgreich gespeichert")
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Log.e("FavoritesRepository", "Fehler beim Hinzufügen des Favoriten: ${e.message}")
+            AppLogger.e("FavoritesRepository", "Fehler beim Hinzufügen des Favoriten: ${e.message}")
             Resource.Error("Fehler beim Hinzufügen des Favoriten: " + e.localizedMessage)
         }
     }
@@ -213,53 +238,79 @@ class FavoritesRepository @Inject constructor(
                 favoriteGameDao.removeFavorite(game.id)
                 Resource.Success(false)
             } else {
-                Log.d("FavoritesRepository", "[DEBUG] Umschalte Favorit: ${game.title}")
-                Log.d(
+                AppLogger.d("FavoritesRepository", "Umschalte Favorit: ${game.title}")
+                AppLogger.d(
                     "FavoritesRepository",
-                    "[DEBUG] Ursprüngliche Screenshots: ${game.screenshots.size}, Movies: ${game.movies.size}"
+                    "Ursprüngliche Screenshots: ${game.screenshots.size}, Movies: ${game.movies.size}"
                 )
 
                 // IMMER vollständige Details laden, um sicherzustellen, dass wir die besten verfügbaren Daten haben
-                Log.d(
+                AppLogger.d(
                     "FavoritesRepository",
-                    "[DEBUG] Lade vollständige Details für Toggle: ${game.title}"
+                    "Lade vollständige Details für Toggle: ${game.title}"
                 )
                 val detailResult = repo.getGameDetail(game.id)
                 val fullGame = when (detailResult) {
                     is Resource.Success -> {
                         val detailedGame = detailResult.data ?: game
-                        Log.d(
+                        AppLogger.d(
                             "FavoritesRepository",
-                            "[DEBUG] Toggle Details geladen - Screenshots: ${detailedGame.screenshots.size}, Movies: ${detailedGame.movies.size}"
+                            "Toggle Details geladen - Screenshots: ${detailedGame.screenshots.size}, Movies: ${detailedGame.movies.size}"
                         )
-                        // WICHTIG: Behalte ursprüngliche Screenshots und Movies, wenn sie vorhanden sind
-                        val mergedGame = detailedGame.copy(
-                            screenshots = if (detailedGame.screenshots.isNotEmpty()) detailedGame.screenshots else game.screenshots,
-                            movies = if (detailedGame.movies.isNotEmpty()) detailedGame.movies else game.movies
-                        )
-                        Log.d(
-                            "FavoritesRepository",
-                            "[DEBUG] Toggle nach Merge - Screenshots: ${mergedGame.screenshots.size}, Movies: ${mergedGame.movies.size}"
-                        )
-                        mergedGame
+                        detailedGame
                     }
-
                     else -> {
-                        Log.w(
+                        AppLogger.w(
                             "FavoritesRepository",
-                            "[WARN] Konnte Toggle-Details nicht laden, verwende ursprüngliches Spiel"
+                            "Konnte Toggle-Details nicht laden, verwende ursprüngliches Spiel"
                         )
                         game
                     }
                 }
 
-                val entity = fullGame.toFavoriteEntity()
+                // Merge-Logik: Vorhandene Favoriten berücksichtigen
+                val existingEntity = favoriteGameDao.getFavoriteById(game.id)
+                val existingGame = existingEntity?.toGame()
+                val mergedGame = fullGame.copy(
+                    screenshots = when {
+                        fullGame.screenshots.isNotEmpty() -> fullGame.screenshots
+                        game.screenshots.isNotEmpty() -> game.screenshots
+                        existingGame?.screenshots?.isNotEmpty() == true -> {
+                            AppLogger.d(
+                                "FavoritesRepository",
+                                "Übernehme alte Screenshots aus DB (${existingGame.screenshots.size}) für ${game.title}"
+                            )
+                            existingGame.screenshots
+                        }
+
+                        else -> emptyList()
+                    },
+                    movies = when {
+                        fullGame.movies.isNotEmpty() -> fullGame.movies
+                        game.movies.isNotEmpty() -> game.movies
+                        existingGame?.movies?.isNotEmpty() == true -> {
+                            AppLogger.d(
+                                "FavoritesRepository",
+                                "Übernehme alte Movies aus DB (${existingGame.movies.size}) für ${game.title}"
+                            )
+                            existingGame.movies
+                        }
+
+                        else -> emptyList()
+                    }
+                )
+                AppLogger.d(
+                    "FavoritesRepository",
+                    "Toggle nach Merge - Screenshots: ${mergedGame.screenshots.size}, Movies: ${mergedGame.movies.size}"
+                )
+
+                val entity = mergedGame.toFavoriteEntity()
                 favoriteGameDao.insertFavorite(entity)
-                Log.d("FavoritesRepository", "[DEBUG] Toggle erfolgreich gespeichert")
+                AppLogger.d("FavoritesRepository", "Toggle erfolgreich gespeichert")
                 Resource.Success(true)
             }
         } catch (e: Exception) {
-            Log.e("FavoritesRepository", "Fehler beim Umschalten des Favoriten: ${e.message}")
+            AppLogger.e("FavoritesRepository", "Fehler beim Umschalten des Favoriten: ${e.message}")
             Resource.Error("Fehler beim Umschalten des Favoriten: " + e.localizedMessage)
         }
     }
@@ -293,7 +344,7 @@ class FavoritesRepository @Inject constructor(
                 try {
                     entity.toGame()
                 } catch (e: Exception) {
-                    Log.e(
+                    AppLogger.e(
                         "FavoritesRepository",
                         "Fehler beim Konvertieren von Entity in Suche: ${e.message}"
                     )
@@ -329,7 +380,12 @@ class FavoritesRepository @Inject constructor(
                     if (apiGameDto != null) {
                         val apiGame = apiGameDto.toDomain()
                         if (apiGame != fav) {
-                            favoriteGameDao.insertFavorite(apiGame.toFavoriteEntity())
+                            // Merge-Logik: Behalte alte Medien, wenn neue leer sind
+                            val mergedGame = apiGame.copy(
+                                screenshots = if (apiGame.screenshots.isNotEmpty()) apiGame.screenshots else fav.screenshots,
+                                movies = if (apiGame.movies.isNotEmpty()) apiGame.movies else fav.movies
+                            )
+                            favoriteGameDao.insertFavorite(mergedGame.toFavoriteEntity())
                         }
                     }
                 }
@@ -337,4 +393,4 @@ class FavoritesRepository @Inject constructor(
             }
         }
     }
-} 
+}

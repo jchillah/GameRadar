@@ -4,6 +4,7 @@ import com.squareup.moshi.*
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 
 /**
  * Mapper für die Konvertierung zwischen Game und FavoriteGameEntity.
@@ -25,6 +26,11 @@ object FavoriteGameMapper {
         try {
             stringListAdapter.fromJson(json) ?: emptyList()
         } catch (e: Exception) {
+            AppLogger.e(
+                "FavoriteGameMapper",
+                "Fehler beim Parsen der String-Liste: ${e.localizedMessage}",
+                e
+            )
             emptyList()
         }
 
@@ -32,6 +38,11 @@ object FavoriteGameMapper {
         try {
             movieListAdapter.fromJson(json) ?: emptyList()
         } catch (e: Exception) {
+            AppLogger.e(
+                "FavoriteGameMapper",
+                "Fehler beim Parsen der Movie-Liste: ${e.localizedMessage}",
+                e
+            )
             emptyList()
         }
 
@@ -39,6 +50,11 @@ object FavoriteGameMapper {
         try {
             stringListAdapter.toJson(list)
         } catch (e: Exception) {
+            AppLogger.e(
+                "FavoriteGameMapper",
+                "Fehler beim Serialisieren der String-Liste: ${e.localizedMessage}",
+                e
+            )
             "[]"
         }
 
@@ -46,6 +62,11 @@ object FavoriteGameMapper {
         try {
             movieListAdapter.toJson(list)
         } catch (e: Exception) {
+            AppLogger.e(
+                "FavoriteGameMapper",
+                "Fehler beim Serialisieren der Movie-Liste: ${e.localizedMessage}",
+                e
+            )
             "[]"
         }
 
@@ -98,4 +119,4 @@ object FavoriteGameMapper {
         playtime = playtime,
         movies = parseMovieList(movies)
     )
-} 
+}

@@ -1,6 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.util.*
 import androidx.lifecycle.*
 import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
@@ -58,12 +57,12 @@ class SearchViewModel(
                         _cacheSize.value = repo.getCacheSize()
                         _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
                     } catch (e: Exception) {
-                        Log.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
+                        AppLogger.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
                         // Bei Fehlern nicht abbrechen, sondern weiter versuchen
                     }
                 }
             } catch (e: Exception) {
-                Log.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring", e)
+                AppLogger.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring", e)
                 // Bei kritischen Fehlern das Monitoring stoppen
             }
         }
@@ -122,7 +121,7 @@ class SearchViewModel(
     }
 
     fun search(query: String) {
-        Log.d("SearchViewModel", "Paging-Search gestartet mit Query: $query")
+        AppLogger.d("SearchViewModel", "Paging-Search gestartet mit Query: $query")
         currentSearchQuery = query
         val state = _uiState.value
         val platformIds = state.selectedPlatforms.joinToString(",")
@@ -178,9 +177,9 @@ class SearchViewModel(
             try {
                 repo.clearCache()
                 _cacheSize.value = 0
-                Log.d("SearchViewModel", "Cache erfolgreich geleert")
+                AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
             } catch (e: Exception) {
-                Log.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
+                AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
             }
         }
     }

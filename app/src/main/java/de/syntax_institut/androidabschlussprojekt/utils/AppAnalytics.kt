@@ -1,19 +1,17 @@
 package de.syntax_institut.androidabschlussprojekt.utils
 
-import android.util.*
-
 object Analytics {
     fun trackEvent(eventName: String, parameters: Map<String, Any> = emptyMap()) {
-        Log.d("Analytics", "Event: $eventName, Parameters: $parameters")
+        AppLogger.d("Analytics", "Event: $eventName, Parameters: $parameters")
         // TODO: Implement analytics tracking mit Firebase Analytics
     }
 
     fun trackScreenView(screenName: String) {
-        Log.d("Analytics", "Screen View: $screenName")
+        AppLogger.d("Analytics", "Screen View: $screenName")
     }
 
     fun trackError(error: String, context: String) {
-        Log.e("Analytics", "Error in $context: $error")
+        AppLogger.e("Analytics", "Error in $context: $error")
     }
 
     fun trackUserAction(action: String, gameId: Int? = null) {

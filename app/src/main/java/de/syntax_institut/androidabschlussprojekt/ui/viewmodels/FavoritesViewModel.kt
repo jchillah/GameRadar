@@ -1,6 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.util.*
 import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
@@ -32,34 +31,33 @@ class FavoritesViewModel(
     }
 
     fun loadFavorites() {
-        Log.d("FavoritesViewModel", "Lade Favoriten")
+        AppLogger.d("FavoritesViewModel", "Lade Favoriten")
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = FavoritesUiState(isLoading = true)
             
             try {
                 favoritesRepo.getAllFavorites().collect { favorites ->
-                    Log.d("FavoritesViewModel", "Favoriten geladen: ${favorites.size}")
-                    // Favoriten alphabetisch sortieren
+                    AppLogger.d("FavoritesViewModel", "Favoriten geladen: ${favorites.size}")
                     val sortedFavorites = favorites.sortedBy { it.title.lowercase() }
                     _uiState.value = FavoritesUiState(favorites = sortedFavorites)
                 }
             } catch (e: Exception) {
-                Log.e("FavoritesViewModel", "Fehler beim Laden der Favoriten", e)
+                AppLogger.e("FavoritesViewModel", "Fehler beim Laden der Favoriten", e)
                 _uiState.value = FavoritesUiState(error = e.localizedMessage)
             }
         }
     }
 
     fun clearAllFavorites() {
-        Log.d("FavoritesViewModel", "Lösche alle Favoriten")
+        AppLogger.d("FavoritesViewModel", "Lösche alle Favoriten")
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = favoritesRepo.clearAllFavorites()) {
                 is Resource.Success -> {
-                    Log.d("FavoritesViewModel", "Alle Favoriten gelöscht")
-                    loadFavorites() // Reload to update UI
+                    AppLogger.d("FavoritesViewModel", "Alle Favoriten gelöscht")
+                    loadFavorites()
                 }
                 is Resource.Error -> {
-                    Log.e("FavoritesViewModel", "Fehler beim Löschen: ${result.message}")
+                    AppLogger.e("FavoritesViewModel", "Fehler beim Löschen: ${result.message}")
                     _uiState.value = _uiState.value.copy(error = result.message)
                 }
                 else -> {}
@@ -68,15 +66,15 @@ class FavoritesViewModel(
     }
 
     fun removeFavorite(gameId: Int) {
-        Log.d("FavoritesViewModel", "Entferne Favorit: $gameId")
+        AppLogger.d("FavoritesViewModel", "Entferne Favorit: $gameId")
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = favoritesRepo.removeFavorite(gameId)) {
                 is Resource.Success -> {
-                    Log.d("FavoritesViewModel", "Favorit entfernt: $gameId")
-                    loadFavorites() // Reload to update UI
+                    AppLogger.d("FavoritesViewModel", "Favorit entfernt: $gameId")
+                    loadFavorites()
                 }
                 is Resource.Error -> {
-                    Log.e("FavoritesViewModel", "Fehler beim Entfernen: ${result.message}")
+                    AppLogger.e("FavoritesViewModel", "Fehler beim Entfernen: ${result.message}")
                     _uiState.value = _uiState.value.copy(error = result.message)
                 }
                 else -> {}
@@ -90,7 +88,7 @@ class FavoritesViewModel(
                 favoritesRepo.syncFavoritesWithApi(rawgApi)
                 loadFavorites()
             } catch (e: Exception) {
-                Log.e("FavoritesViewModel", "Fehler bei Favoriten-Sync", e)
+                AppLogger.e("FavoritesViewModel", "Fehler bei Favoriten-Sync", e)
             }
         }
     }
