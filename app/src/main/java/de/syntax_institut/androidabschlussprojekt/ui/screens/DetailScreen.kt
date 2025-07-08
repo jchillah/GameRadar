@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.*
 import androidx.core.net.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
@@ -105,7 +106,7 @@ fun DetailScreen(
                     ) {
                         ErrorCard(
                             modifier = Modifier.padding(16.dp),
-                            error = res.message ?: "Unbekannter Fehler",
+                            error = res.message ?: Constants.ERROR_UNKNOWN,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(

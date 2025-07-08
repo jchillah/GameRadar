@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.work.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.services.*
@@ -34,10 +35,10 @@ fun App() {
         Analytics.trackEvent("app_started")
         val workManager = WorkManager.getInstance(context)
         val workRequest = PeriodicWorkRequestBuilder<NewGameWorker>(6, TimeUnit.HOURS)
-            .addTag("new_game_worker")
+            .addTag(Constants.NEW_GAME_WORKER_NAME)
             .build()
         workManager.enqueueUniquePeriodicWork(
-            "new_game_worker",
+            Constants.NEW_GAME_WORKER_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             workRequest
         )

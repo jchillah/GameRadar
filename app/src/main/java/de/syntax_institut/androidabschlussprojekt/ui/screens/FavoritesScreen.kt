@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -64,7 +65,7 @@ fun FavoritesScreen(
                     ),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     modifier = Modifier.semantics {
-                        contentDescription = "Alle Favoriten löschen"
+                        contentDescription = Constants.DIALOG_DELETE_ALL_FAVORITES_TITLE
                     }
                 ) {
                     Icon(
@@ -87,7 +88,7 @@ fun FavoritesScreen(
                 state.error != null -> {
                     ErrorCard(
                         modifier = Modifier.fillMaxSize(),
-                        error = state.error ?: "Unbekannter Fehler",
+                        error = state.error ?: Constants.ERROR_UNKNOWN,
                     )
                 }
 
@@ -133,7 +134,7 @@ fun FavoritesScreen(
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
             title = {
-                Text("Alle Favoriten löschen?")
+                Text(Constants.DIALOG_DELETE_ALL_FAVORITES_TITLE)
             },
             text = {
                 Text(

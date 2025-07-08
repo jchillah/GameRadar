@@ -123,7 +123,7 @@ class GamePagingSource(
                 }
             }
         } catch (e: Exception) {
-            AppLogger.e("GameRepository", "Fehler beim API-Call in PagingSource", e)
+            AppLogger.e("GameRepository", "${Constants.ERROR} beim API-Call in PagingSource", e)
             // Fallback auf Cache bei Netzwerkfehler
             val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
             if (cachedGames.isNotEmpty()) {

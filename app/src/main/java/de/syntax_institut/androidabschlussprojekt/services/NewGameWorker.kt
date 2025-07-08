@@ -22,14 +22,20 @@ class NewGameWorker(
 
     override suspend fun doWork(): Result {
         try {
-            AppLogger.d("NewGameWorker", "[DEBUG] NewGameWorker gestartet")
+            AppLogger.d(
+                Constants.NEW_GAME_WORKER_NAME,
+                "[DEBUG] ${Constants.NEW_GAME_WORKER_NAME} gestartet"
+            )
 
             // Echte Logik: Suche nach neuen Spielen (nach ID und Slug)
             val prefs =
                 applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
             val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
 
-            AppLogger.d("NewGameWorker", "[DEBUG] ${newGames.size} neue Spiele gefunden")
+            AppLogger.d(
+                Constants.NEW_GAME_WORKER_NAME,
+                "[DEBUG] ${newGames.size} neue Spiele gefunden"
+            )
 
             newGames.forEach { game ->
                 sendNewGameNotification(
@@ -40,10 +46,17 @@ class NewGameWorker(
                 )
             }
 
-            AppLogger.i("NewGameWorker", "NewGameWorker erfolgreich abgeschlossen")
+            AppLogger.i(
+                Constants.NEW_GAME_WORKER_NAME,
+                "${Constants.NEW_GAME_WORKER_NAME} erfolgreich abgeschlossen"
+            )
             return Result.success()
         } catch (e: Exception) {
-            AppLogger.e("NewGameWorker", "Fehler im NewGameWorker", e)
+            AppLogger.e(
+                Constants.NEW_GAME_WORKER_NAME,
+                "Fehler im ${Constants.NEW_GAME_WORKER_NAME}",
+                e
+            )
             return Result.failure()
         }
     }
@@ -59,7 +72,7 @@ class NewGameWorker(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                     AppLogger.d(
-                        "NewGameWorker",
+                        Constants.NEW_GAME_WORKER_NAME,
                         "[DEBUG] Keine Notification-Berechtigung für: $gameTitle"
                     )
                     return
@@ -106,10 +119,13 @@ class NewGameWorker(
             // Sende Notification
             notificationManager.notify(gameId, notification)
 
-            AppLogger.d("NewGameWorker", "[DEBUG] Notification gesendet für: $gameTitle")
+            AppLogger.d(
+                Constants.NEW_GAME_WORKER_NAME,
+                "[DEBUG] Notification gesendet für: $gameTitle"
+            )
 
         } catch (e: Exception) {
-            AppLogger.e("NewGameWorker", "Fehler beim Senden der Notification", e)
+            AppLogger.e(Constants.NEW_GAME_WORKER_NAME, "Fehler beim Senden der Notification", e)
         }
     }
 } 

@@ -117,7 +117,7 @@ class GameRepository @Inject constructor(
                         } else {
                             AppLogger.w(
                                 "GameRepository",
-                                "Fehler beim Laden der Screenshots: ${screenshotsResp.code()}"
+                                "${Constants.ERROR} beim Laden der Screenshots: ${screenshotsResp.code()}"
                             )
                             emptyList()
                         }
@@ -164,7 +164,7 @@ class GameRepository @Inject constructor(
                         } else {
                             AppLogger.w(
                                 "GameRepository",
-                                "Fehler beim Laden der Movies: ${moviesResp.code()}"
+                                "${Constants.ERROR} beim Laden der Movies: ${moviesResp.code()}"
                             )
                             emptyList()
                         }
@@ -215,7 +215,7 @@ class GameRepository @Inject constructor(
                         } catch (e: Exception) {
                             AppLogger.e(
                                 "GameRepository",
-                                "Fehler beim Cachen im Detail-Cache: ${e.localizedMessage}",
+                                "${Constants.ERROR} beim Cachen im Detail-Cache: ${e.localizedMessage}",
                                 e
                             )
                         }
@@ -388,7 +388,7 @@ class GameRepository @Inject constructor(
                 game?.id
             } else null
         } catch (e: Exception) {
-            AppLogger.e("GameRepository", "Fehler beim Suchen der GameId per API", e)
+            AppLogger.e("GameRepository", "${Constants.ERROR} beim Suchen der GameId per API", e)
             null
         }
     }

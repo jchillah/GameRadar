@@ -56,7 +56,8 @@ fun SettingsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
+            .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         SettingsHeader()
@@ -173,24 +174,24 @@ fun SettingsScreen(
         SettingsSection(title = "Gaming-Features") {
             SettingsSwitchItem(
                 icon = Icons.Default.Games,
-                title = "Gaming-Modus",
-                subtitle = "Optimierte Darstellung für Gaming",
+                title = Constants.UI_GAMING_MODE,
+                subtitle = Constants.UI_GAMING_MODE_DESC,
                 checked = gamingModeEnabled,
                 onCheckedChange = viewModel::setGamingModeEnabled
             )
 
             SettingsSwitchItem(
                 icon = Icons.Default.Speed,
-                title = "Performance-Modus",
-                subtitle = "Schnellere Ladezeiten",
+                title = Constants.UI_PERFORMANCE_MODE,
+                subtitle = Constants.UI_PERFORMANCE_MODE_DESC,
                 checked = performanceModeEnabled,
                 onCheckedChange = viewModel::setPerformanceModeEnabled
             )
 
             SettingsSwitchItem(
                 icon = Icons.Default.Share,
-                title = "Spiele teilen",
-                subtitle = "Spiele mit Freunden teilen",
+                title = Constants.UI_SHARE_GAMES,
+                subtitle = Constants.UI_SHARE_GAMES_DESC,
                 checked = shareGamesEnabled,
                 onCheckedChange = viewModel::setShareGamesEnabled
             )
@@ -199,8 +200,8 @@ fun SettingsScreen(
         SettingsSection(title = "Design") {
             SettingsSwitchItem(
                 icon = Icons.Default.DarkMode,
-                title = "Dunkles Design",
-                subtitle = "Aktiviere den Dark Mode",
+                title = Constants.UI_DARK_MODE,
+                subtitle = Constants.UI_DARK_MODE_DESC,
                 checked = darkModeEnabled,
                 onCheckedChange = viewModel::setDarkModeEnabled
             )

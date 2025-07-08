@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.*
 import androidx.navigation.testing.*
 import androidx.test.core.app.*
 import androidx.test.ext.junit.runners.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
@@ -88,7 +89,7 @@ class DetailScreenTest {
         }
 
         // Then
-        composeTestRule.onNodeWithText("Fehler: Network error").assertExists()
+        composeTestRule.onNodeWithText("${Constants.ERROR}: Network error").assertExists()
     }
 
     @Test

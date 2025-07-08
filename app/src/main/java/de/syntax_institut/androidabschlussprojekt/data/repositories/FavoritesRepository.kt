@@ -62,7 +62,7 @@ class FavoritesRepository @Inject constructor(
                 } catch (e: Exception) {
                     AppLogger.e(
                         "FavoritesRepository",
-                        "Fehler beim Konvertieren von Entity: ${e.message}"
+                        "${Constants.ERROR} beim Konvertieren von Entity: ${e.message}"
                     )
                     AppLogger.e(
                         "FavoritesRepository",
@@ -134,7 +134,10 @@ class FavoritesRepository @Inject constructor(
         return try {
             favoriteGameDao.getFavoriteById(gameId)?.toGame()
         } catch (e: Exception) {
-            AppLogger.e("FavoritesRepository", "Fehler beim Laden des Favoriten: ${e.message}")
+            AppLogger.e(
+                "FavoritesRepository",
+                "${Constants.ERROR} beim Laden des Favoriten: ${e.message}"
+            )
             null
         }
     }
@@ -212,7 +215,10 @@ class FavoritesRepository @Inject constructor(
             AppLogger.d("FavoritesRepository", "Favorit erfolgreich gespeichert")
             Resource.Success(Unit)
         } catch (e: Exception) {
-            AppLogger.e("FavoritesRepository", "Fehler beim Hinzufügen des Favoriten: ${e.message}")
+            AppLogger.e(
+                "FavoritesRepository",
+                "${Constants.ERROR} beim Hinzufügen des Favoriten: ${e.message}"
+            )
             Resource.Error(Constants.ERROR_ADD_FAVORITE + e.localizedMessage)
         }
     }
@@ -311,7 +317,10 @@ class FavoritesRepository @Inject constructor(
                 Resource.Success(true)
             }
         } catch (e: Exception) {
-            AppLogger.e("FavoritesRepository", "Fehler beim Umschalten des Favoriten: ${e.message}")
+            AppLogger.e(
+                "FavoritesRepository",
+                "${Constants.ERROR} beim Umschalten des Favoriten: ${e.message}"
+            )
             Resource.Error(Constants.ERROR_TOGGLE_FAVORITE + e.localizedMessage)
         }
     }
@@ -347,7 +356,7 @@ class FavoritesRepository @Inject constructor(
                 } catch (e: Exception) {
                     AppLogger.e(
                         "FavoritesRepository",
-                        "Fehler beim Konvertieren von Entity in Suche: ${e.message}"
+                        "${Constants.ERROR} beim Konvertieren von Entity in Suche: ${e.message}"
                     )
                     Game(
                         id = entity.id,

@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.*
 import androidx.paging.*
 import androidx.test.ext.junit.runners.*
 import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.dto.*
@@ -245,9 +246,10 @@ class SearchPagingIntegrationTest : KoinTest {
 
         // Then
         composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithText("Fehler:").fetchSemanticsNodes().size == 1
+            composeTestRule.onAllNodesWithText("${Constants.ERROR}:")
+                .fetchSemanticsNodes().size == 1
         }
-        composeTestRule.onNodeWithText("Fehler:").assertExists()
+        composeTestRule.onNodeWithText("${Constants.ERROR}:").assertExists()
     }
 
     @Test

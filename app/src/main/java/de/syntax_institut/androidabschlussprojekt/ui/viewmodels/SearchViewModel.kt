@@ -81,7 +81,7 @@ class SearchViewModel(
                 } else {
                     _uiState.update { 
                         it.copy(
-                            platformsError = platformResponse.message ?: "Unbekannter Fehler",
+                            platformsError = platformResponse.message ?: Constants.ERROR_UNKNOWN,
                             isLoadingPlatforms = false
                         ) 
                     }
@@ -89,7 +89,7 @@ class SearchViewModel(
             } catch (e: Exception) {
                 _uiState.update { 
                     it.copy(
-                        platformsError = "Fehler beim Laden der Plattformen: ${e.localizedMessage}",
+                        platformsError = "${Constants.ERROR_LOAD_PLATFORMS}: ${e.localizedMessage}",
                         isLoadingPlatforms = false
                     ) 
                 }
@@ -107,7 +107,7 @@ class SearchViewModel(
                 } else {
                     _uiState.update { 
                         it.copy(
-                            genresError = genreResponse.message ?: "Unbekannter Fehler",
+                            genresError = genreResponse.message ?: Constants.ERROR_UNKNOWN,
                             isLoadingGenres = false
                         ) 
                     }
@@ -115,7 +115,7 @@ class SearchViewModel(
             } catch (e: Exception) {
                 _uiState.update { 
                     it.copy(
-                        genresError = "Fehler beim Laden der Genres: ${e.localizedMessage}",
+                        genresError = "${Constants.ERROR_LOAD_GENRES}: ${e.localizedMessage}",
                         isLoadingGenres = false
                     ) 
                 }
@@ -182,7 +182,7 @@ class SearchViewModel(
                 _cacheSize.value = 0
                 AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
             } catch (e: Exception) {
-                AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
+                AppLogger.e("SearchViewModel", Constants.ERROR_CLEAR_CACHE, e)
             }
         }
     }

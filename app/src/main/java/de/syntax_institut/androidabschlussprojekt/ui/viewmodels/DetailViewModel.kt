@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
 import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
@@ -64,7 +65,7 @@ class DetailViewModel(
                 is Resource.Error -> {
                     AppLogger.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")
                     _uiState.value = DetailUiState(
-                        resource = Resource.Error(gameResult.message ?: "Fehler"),
+                        resource = Resource.Error(gameResult.message ?: Constants.ERROR),
                         error = gameResult.message
                     )
                 }

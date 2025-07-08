@@ -8,8 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.vector.*
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
@@ -24,16 +22,11 @@ internal fun SettingsDropdownItem(
     options: List<String>,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var iconOffsetX by remember { mutableFloatStateOf(0f) }
-    var iconWidth by remember { mutableIntStateOf(0) }
-    val density = LocalDensity.current
-
     Box(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
-                .clickable { expanded = true },
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -56,43 +49,38 @@ internal fun SettingsDropdownItem(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Text(
-                text = selectedValue,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Icon(
-                imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .onGloballyPositioned { coordinates ->
-                        iconOffsetX = coordinates.positionInParent().x
-                        iconWidth = coordinates.size.width
+            Box {
+                Row(
+                    modifier = Modifier
+                        .clickable { expanded = true },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = selectedValue,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option) },
+                            onClick = {
+                                onValueChange(option)
+                                expanded = false
+                            }
+                        )
                     }
-            )
-        }
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-            offset = with(density) {
-                DpOffset(
-                    x = (iconOffsetX + iconWidth).toDp() - 200.dp, // 200.dp = Menübreite, ggf. anpassen
-                    y = 0.dp
-                )
-            }
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option) },
-                    onClick = {
-                        onValueChange(option)
-                        expanded = false
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                }
             }
         }
     }

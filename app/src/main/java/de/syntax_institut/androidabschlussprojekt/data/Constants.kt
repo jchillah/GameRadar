@@ -5,6 +5,7 @@ package de.syntax_institut.androidabschlussprojekt.data
  * Alle Magic Strings werden hier ausgelagert und im Code referenziert.
  */
 object Constants {
+
     // Datenbanknamen
     const val DATABASE_NAME = "game_database"
     const val GAME_CACHE_TABLE = "game_cache"
@@ -21,25 +22,9 @@ object Constants {
     const val GENRES_PARAM = "genres"
     const val PLATFORMS_PARAM = "platforms"
     const val ORDERING_PARAM = "ordering"
-    const val DATES_PARAM = "dates"
-    const val TAGS_PARAM = "tags"
-    const val STORES_PARAM = "stores"
-    const val PARENT_PLATFORMS_PARAM = "parent_platforms"
-    const val EXCLUDE_COLLECTION_PARAM = "exclude_collection"
-
-    // Paging Keys
-    const val PAGING_KEY_NEXT = "next"
-    const val PAGING_KEY_PREVIOUS = "previous"
-    const val PAGING_KEY_RESULTS = "results"
 
     // Worker
     const val NEW_GAME_WORKER_NAME = "NewGameWorker"
-
-    // Sonstige
-    const val DEFAULT_PAGE_SIZE = 20
-    const val DEFAULT_START_PAGE = 1
-    const val CACHE_SIZE_LIMIT_MB = 100
-    const val CACHE_WARNING_THRESHOLD_MB = 80
 
     // Default-JSON-Array (z.B. für leere Listen in DAOs/Mappings)
     const val EMPTY_JSON_ARRAY = "[]"
@@ -90,6 +75,7 @@ object Constants {
 
     // API Endpunkte (nur als Referenz, falls benötigt)
     const val ENDPOINT_GAMES = "games"
+    const val ENDPOINT_ID = "id"
     const val ENDPOINT_GAME_DETAIL = "games/{id}"
     const val ENDPOINT_GAME_SCREENSHOTS = "games/{id}/screenshots"
     const val ENDPOINT_PLATFORMS = "platforms"
@@ -97,23 +83,21 @@ object Constants {
     const val ENDPOINT_GAME_MOVIES = "games/{id}/movies"
 
     // Fehlertexte & UI-Texte
+    const val ERROR = "Fehler"
     const val ERROR_UNKNOWN = "Unbekannter Fehler"
+    const val ERROR_LOAD = "Fehler beim Laden"
     const val ERROR_LOAD_PLATFORMS = "Fehler beim Laden der Plattformen: "
     const val ERROR_LOAD_GENRES = "Fehler beim Laden der Genres: "
     const val ERROR_CLEAR_CACHE = "Fehler beim Leeren des Caches"
     const val ERROR_NO_CONNECTION = "Keine Internetverbindung"
     const val ERROR_CHECK_CONNECTION = "Überprüfe deine Verbindung und versuche es erneut"
     const val DIALOG_DELETE_ALL_FAVORITES_TITLE = "Alle Favoriten löschen?"
-    const val DIALOG_DELETE_ALL_FAVORITES_TEXT =
-        "Möchten Sie wirklich alle Favoriten löschen? Diese Aktion kann nicht rückgängig gemacht werden."
     const val DIALOG_DELETE_ALL_CONFIRM = "Löschen"
     const val DIALOG_DELETE_ALL_CANCEL = "Abbrechen"
     const val DIALOG_RESET_DATABASE_TITLE = "Datenbank zurücksetzen"
     const val DIALOG_RESET_DATABASE_SUBTITLE = "Löscht alle Favoriten und Cache-Daten"
     const val DIALOG_RESET_DATABASE_TEXT =
         "Möchten Sie wirklich alle Favoriten und Cache-Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden."
-    const val UI_OFFLINE_AVAILABLE = "Offline verfügbar"
-    const val UI_CACHE_ALMOST_FULL = "Cache fast voll"
     const val UI_PUSH_NOTIFICATIONS = "Push-Benachrichtigungen"
     const val UI_NEW_GAMES_AND_UPDATES = "Neue Spiele und Updates erhalten"
     const val UI_GAMING_MODE = "Gaming-Modus"

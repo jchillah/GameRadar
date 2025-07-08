@@ -9,9 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
+import androidx.navigation.compose.*
 import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -50,6 +53,7 @@ fun SearchScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .padding(8.dp),
     ) {
         Row(
             modifier = Modifier
@@ -122,7 +126,7 @@ fun SearchScreen(
             if (state.error != null) {
                 ErrorCard(
                     modifier = Modifier.fillMaxSize(),
-                    error = state.error ?: "Unbekannter Fehler",
+                    error = state.error ?: Constants.ERROR_UNKNOWN,
                 )
             } else if (!state.hasSearched) {
                 EmptyState(
@@ -179,4 +183,12 @@ fun SearchScreen(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchScreenPreview() {
+    SearchScreen(
+        navController = rememberNavController()
+    )
 }

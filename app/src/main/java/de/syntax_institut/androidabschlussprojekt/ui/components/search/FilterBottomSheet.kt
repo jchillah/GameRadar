@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.data.Constants
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
@@ -59,7 +60,7 @@ fun FilterBottomSheet(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Fehler beim Laden der Plattformen:",
+                        text = Constants.ERROR_LOAD_PLATFORMS,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )

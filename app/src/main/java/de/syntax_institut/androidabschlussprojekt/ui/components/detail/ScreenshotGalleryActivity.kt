@@ -24,6 +24,7 @@ import androidx.core.view.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
+import de.syntax_institut.androidabschlussprojekt.data.Constants
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import kotlin.math.*
@@ -104,10 +105,10 @@ class ScreenshotGalleryActivity : ComponentActivity() {
         imageQuality: ImageQuality,
         onClose: () -> Unit,
     ) {
-        var currentIndex by remember { mutableStateOf(startIndex) }
-        var scale by remember { mutableStateOf(1f) }
-        var offsetX by remember { mutableStateOf(0f) }
-        var offsetY by remember { mutableStateOf(0f) }
+        var currentIndex by remember { mutableIntStateOf(startIndex) }
+        var scale by remember { mutableFloatStateOf(1f) }
+        var offsetX by remember { mutableFloatStateOf(0f) }
+        var offsetY by remember { mutableFloatStateOf(0f) }
         val context = LocalContext.current
 
         val animatedScale by animateFloatAsState(
@@ -205,7 +206,7 @@ class ScreenshotGalleryActivity : ComponentActivity() {
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = "Fehler beim Laden",
+                                        text = Constants.ERROR_LOAD,
                                         color = Color.White,
                                         style = MaterialTheme.typography.bodyMedium
                                     )
@@ -336,4 +337,4 @@ class ScreenshotGalleryActivity : ComponentActivity() {
             }
         }
     }
-} 
+}
