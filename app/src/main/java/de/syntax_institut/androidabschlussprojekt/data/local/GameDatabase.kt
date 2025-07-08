@@ -12,14 +12,15 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
  * Enthält Tabellen für Favoriten und Offline-Cache-Funktionalität.
  */
 @Database(
-    entities = [FavoriteGameEntity::class, GameCacheEntity::class],
-    version = 2,
+    entities = [FavoriteGameEntity::class, GameCacheEntity::class, GameDetailCacheEntity::class],
+    version = 1,
     exportSchema = false
 )
 abstract class GameDatabase : RoomDatabase() {
     
     abstract fun favoriteGameDao(): FavoriteGameDao
     abstract fun gameCacheDao(): GameCacheDao
+    abstract fun gameDetailCacheDao(): GameDetailCacheDao
     
     companion object {
         @Volatile
@@ -32,7 +33,7 @@ abstract class GameDatabase : RoomDatabase() {
                     GameDatabase::class.java,
                     "game_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                 .build()
                 INSTANCE = instance
                 instance
@@ -46,6 +47,41 @@ abstract class GameDatabase : RoomDatabase() {
         private val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE game_cache ADD COLUMN movies TEXT DEFAULT '[]'")
+            }
+        }
+
+        /**
+         * Migration von Version 2 zu Version 3:
+         * Fügt die game_detail_cache Tabelle hinzu
+         */
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS game_detail_cache (
+                        id INTEGER PRIMARY KEY NOT NULL,
+                        slug TEXT NOT NULL,
+                        title TEXT NOT NULL,
+                        releaseDate TEXT,
+                        imageUrl TEXT,
+                        rating REAL NOT NULL,
+                        description TEXT,
+                        metacritic INTEGER,
+                        website TEXT,
+                        esrbRating TEXT,
+                        genres TEXT NOT NULL,
+                        platforms TEXT NOT NULL,
+                        developers TEXT NOT NULL,
+                        publishers TEXT NOT NULL,
+                        tags TEXT NOT NULL,
+                        screenshots TEXT NOT NULL,
+                        stores TEXT NOT NULL,
+                        playtime INTEGER,
+                        movies TEXT NOT NULL,
+                        detailCachedAt INTEGER NOT NULL
+                    )
+                """.trimIndent()
+                )
             }
         }
 

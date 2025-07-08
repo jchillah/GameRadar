@@ -1,26 +1,21 @@
 package de.syntax_institut.androidabschlussprojekt.ui.integration
 
-import androidx.paging.PagingData
-import androidx.paging.testing.asSnapshot
-import androidx.paging.testing.scrollTo
-import androidx.paging.testing.appendScrollWhile
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.data.repositories.GameRepository
-import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SearchViewModel
+import androidx.paging.*
+import androidx.paging.testing.*
+import androidx.test.ext.junit.runners.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import io.mockk.*
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.runTest
-import org.junit.Before
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.test.*
+import org.junit.*
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
-import org.koin.test.KoinTest
-import org.koin.test.inject
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import org.junit.runner.*
+import org.koin.core.context.*
+import org.koin.dsl.*
+import org.koin.test.*
+import kotlin.test.*
 
 @RunWith(AndroidJUnit4::class)
 class PagingDataTest : KoinTest {
@@ -35,7 +30,20 @@ class PagingDataTest : KoinTest {
             releaseDate = "2023-01-${String.format("%02d", index)}",
             imageUrl = "https://example.com/image$index.jpg",
             rating = (3.0f + (index % 3) * 0.5f),
-            description = "Test description $index"
+            description = "Test description $index",
+            slug = TODO(),
+            metacritic = TODO(),
+            website = TODO(),
+            esrbRating = TODO(),
+            genres = TODO(),
+            platforms = TODO(),
+            developers = TODO(),
+            publishers = TODO(),
+            tags = TODO(),
+            screenshots = TODO(),
+            stores = TODO(),
+            playtime = TODO(),
+            movies = TODO()
         )
     }
 
@@ -48,7 +56,12 @@ class PagingDataTest : KoinTest {
             modules(
                 module {
                     single { mockRepository }
-                    single { SearchViewModel(get()) }
+                    single {
+                        SearchViewModel(
+                            get(),
+                            get()
+                        )
+                    }
                 }
             )
         }
@@ -225,7 +238,7 @@ class PagingDataTest : KoinTest {
     @Test
     fun `paging data handles large datasets`() = runTest {
         // Given
-        val largeGameList = (1..1000).map { index ->
+        val largeGameList = (1..100000).map { index ->
             Game(
                 id = index,
                 title = "Large Test Game $index",

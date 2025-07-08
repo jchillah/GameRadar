@@ -8,6 +8,8 @@ import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toGame
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toGame
+import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toDetailCacheEntity
+import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toGame
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
@@ -20,6 +22,7 @@ class GameRepository @Inject constructor(
     private val api: RawgApi,
     private val gameCacheDao: GameCacheDao,
     private val favoriteGameDao: FavoriteGameDao,
+    private val gameDetailCacheDao: GameDetailCacheDao,
     private val context: Context,
 ) {
 
@@ -42,37 +45,37 @@ class GameRepository @Inject constructor(
             return Resource.Success(favorite.toGame())
         }
 
-        // Prüfe zuerst den Cache
-        val cachedGame = gameCacheDao.getGameById(gameId)
+        // Prüfe zuerst den Detail-Cache
+        val cachedDetail = gameDetailCacheDao.getGameDetailById(gameId)
         AppLogger.d(
             "GameRepository",
-            "[DEBUG] cachedGame: ${cachedGame != null}, Screenshots: ${cachedGame?.toGame()?.screenshots?.size ?: 0}"
+            "[DEBUG] cachedDetail: ${cachedDetail != null}, Screenshots: ${cachedDetail?.toGame()?.screenshots?.size ?: 0}"
         )
-        if (cachedGame != null && NetworkUtils.isCacheValid(cachedGame.cachedAt)) {
-            AppLogger.d("GameRepository", "[DEBUG] Gültiger Cache gefunden für $gameId")
-            AppLogger.i("GameRepository", "Gültiger Cache gefunden für $gameId")
-            val game = cachedGame.toGame()
+        if (cachedDetail != null && NetworkUtils.isCacheValid(cachedDetail.detailCachedAt)) {
+            AppLogger.d("GameRepository", "[DEBUG] Gültiger Detail-Cache gefunden für $gameId")
+            AppLogger.i("GameRepository", "Gültiger Detail-Cache gefunden für $gameId")
+            val game = cachedDetail.toGame()
             AppLogger.d("GameRepository", "Gecachte Screenshots: ${game.screenshots.size}")
             AppLogger.d("GameRepository", "Gecachte Website: '${game.website}'")
             return Resource.Success(game)
         }
 
-        // Wenn kein Netzwerk verfügbar und Cache vorhanden, verwende Cache auch wenn abgelaufen
+        // Wenn kein Netzwerk verfügbar und Detail-Cache vorhanden, verwende Cache auch wenn abgelaufen
         if (!NetworkUtils.isNetworkAvailable(context)) {
             AppLogger.d(
                 "GameRepository",
-                "[DEBUG] Kein Netzwerk, prüfe Offline-Cache für $gameId"
+                "[DEBUG] Kein Netzwerk, prüfe Offline-Detail-Cache für $gameId"
             )
             AppLogger.i("GameRepository", "Kein Netzwerk verfügbar für $gameId")
-            return if (cachedGame != null) {
-                val game = cachedGame.toGame()
+            return if (cachedDetail != null) {
+                val game = cachedDetail.toGame()
                 AppLogger.d(
                     "GameRepository",
-                    "Offline-Cache Screenshots: ${game.screenshots.size}"
+                    "Offline-Detail-Cache Screenshots: ${game.screenshots.size}"
                 )
                 Resource.Success(game)
             } else {
-                Resource.Error("Keine Internetverbindung und keine gecachten Daten verfügbar")
+                Resource.Error("Keine Internetverbindung und keine gecachten Detaildaten verfügbar")
             }
         }
 
@@ -181,26 +184,16 @@ class GameRepository @Inject constructor(
                         "[DEBUG] Separate Movies geladen: ${movies.size}"
                     )
 
-                    // Prüfe, ob bereits Screenshots und Movies im Cache vorhanden sind
-                    val existingScreenshots = cachedGame?.toGame()?.screenshots ?: emptyList()
-                    val existingMovies = cachedGame?.toGame()?.movies ?: emptyList()
+                    // Prüfe, ob bereits Screenshots und Movies im Detail-Cache vorhanden sind
+                    val existingScreenshots = cachedDetail?.toGame()?.screenshots ?: emptyList()
+                    val existingMovies = cachedDetail?.toGame()?.movies ?: emptyList()
                     
                     val game = gameDto.toDomain().copy(
                         screenshots = if (screenshots.isNotEmpty()) screenshots else existingScreenshots,
                         movies = if (movies.isNotEmpty()) movies else existingMovies
                     )
-                    AppLogger.d(
-                        "GameRepository",
-                        "Konvertiert zu Domain: ${game.screenshots.size} Screenshots"
-                    )
-                    AppLogger.d(
-                        "GameRepository",
-                        "Domain Website: '${game.website}' (Typ: ${if (game.website == null) "null" else "'${game.website}'"})"
-                    )
-
-                    // Cache das Spiel
-                    val cachedEntity = gameCacheDao.getGameById(game.id)
-                    val cachedGame = cachedEntity?.toGame()
+                    // Cache das Spiel im Detail-Cache
+                    val cachedGame = cachedDetail?.toGame()
                     val mergedGame = if (cachedGame != null) {
                         game.copy(
                             screenshots = if (game.screenshots.isNotEmpty()) game.screenshots else cachedGame.screenshots,
@@ -214,25 +207,24 @@ class GameRepository @Inject constructor(
                         try {
                             AppLogger.d(
                                 "GameRepository",
-                                "Versuche Spiel zu cachen: ${mergedGame.title} (ID: ${mergedGame.id})"
+                                "Versuche Detail-Spiel zu cachen: ${mergedGame.title} (ID: ${mergedGame.id})"
                             )
-                            gameCacheDao.insertGame(mergedGame.toCacheEntity())
+                            gameDetailCacheDao.insertGameDetail(mergedGame.toDetailCacheEntity())
                             AppLogger.d(
                                 "GameRepository",
-                                "Spiel gecacht: ${mergedGame.title} (ID: ${mergedGame.id})"
+                                "Detail-Spiel gecacht: ${mergedGame.title} (ID: ${mergedGame.id})"
                             )
                         } catch (e: Exception) {
                             AppLogger.e(
                                 "GameRepository",
-                                "Fehler beim Cachen: ${e.localizedMessage}",
+                                "Fehler beim Cachen im Detail-Cache: ${e.localizedMessage}",
                                 e
                             )
                         }
                     }
-
                     AppLogger.i(
                         "GameRepository",
-                        "Spiel wird gecacht: ${mergedGame.screenshots.size} Screenshots für $gameId"
+                        "Detail-Spiel wird gecacht: ${mergedGame.screenshots.size} Screenshots für $gameId"
                     )
 
                     Resource.Success(mergedGame)
@@ -240,12 +232,12 @@ class GameRepository @Inject constructor(
             } else {
                 AppLogger.e("GameRepository", "[ERROR] API-Fehler: ${resp.code()} für $gameId")
                 AppLogger.i("GameRepository", "API-Fehler: ${resp.code()} für $gameId")
-                // Fallback auf Cache wenn API fehlschlägt
-                if (cachedGame != null) {
-                    val game = cachedGame.toGame()
+                // Fallback auf Detail-Cache wenn API fehlschlägt
+                if (cachedDetail != null) {
+                    val game = cachedDetail.toGame()
                     AppLogger.d(
                         "GameRepository",
-                        "Fallback-Cache Screenshots: ${game.screenshots.size}"
+                        "Fallback-Detail-Cache Screenshots: ${game.screenshots.size}"
                     )
                     Resource.Success(game)
                 } else {
@@ -255,12 +247,12 @@ class GameRepository @Inject constructor(
         } catch (e: Exception) {
             AppLogger.e("GameRepository", "Netzwerkfehler", e)
             AppLogger.i("GameRepository", "Netzwerkfehler für $gameId: ${e.localizedMessage}")
-            // Fallback auf Cache bei Netzwerkfehler
-            if (cachedGame != null) {
-                val game = cachedGame.toGame()
+            // Fallback auf Detail-Cache bei Netzwerkfehler
+            if (cachedDetail != null) {
+                val game = cachedDetail.toGame()
                 AppLogger.d(
                     "GameRepository",
-                    "Error-Cache Screenshots: ${game.screenshots.size}"
+                    "Error-Detail-Cache Screenshots: ${game.screenshots.size}"
                 )
                 Resource.Success(game)
             } else {
@@ -384,13 +376,27 @@ class GameRepository @Inject constructor(
                     } else {
                         allGames
                     }
-                    
-                    // Speichere in Cache (nur erste Seite)
-                    if (page == 1) {
-                        val cacheEntities = allGames.map { game ->
-                            game.toCacheEntity(query, filterHash)
-                        }
+
+                    // Speichere ALLE geladenen Spiele in den Cache (nicht nur Seite 1)
+                    val cacheEntities = allGames.map { game ->
+                        game.toCacheEntity(query, filterHash)
+                    }
+                    AppLogger.d(
+                        "dgc",
+                        "[PAGE $page] Versuche ${cacheEntities.size} Spiele in den Cache zu schreiben. Query='$query', FilterHash='$filterHash'"
+                    )
+                    try {
                         gameCacheDao.insertGames(cacheEntities)
+                        AppLogger.d(
+                            "dgc",
+                            "[PAGE $page] Insert erfolgreich für ${cacheEntities.size} Spiele. Query='$query', FilterHash='$filterHash'"
+                        )
+                    } catch (e: Exception) {
+                        AppLogger.e(
+                            "dgc",
+                            "[PAGE $page] Fehler beim Insert in den Cache: ${e.localizedMessage}",
+                            e
+                        )
                     }
                     
                     val nextPage = if (body?.next != null) page + 1 else null
@@ -437,7 +443,7 @@ class GameRepository @Inject constructor(
                         Exception(
                             ErrorHandler.handleException(
                                 e,
-                                "Server Error: ${e.localizedMessage}"
+                                "Server Error: " + e.localizedMessage
                             )
                         )
                     )

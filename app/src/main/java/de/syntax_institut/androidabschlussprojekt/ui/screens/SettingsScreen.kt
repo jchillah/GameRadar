@@ -63,7 +63,7 @@ fun SettingsScreen(
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.totalEntries ?: 0,
-            maxCacheSize = 1000,
+            maxCacheSize = 100000,
         )
 
         IntelligentCacheIndicator(
@@ -81,7 +81,7 @@ fun SettingsScreen(
         CacheManagementCard(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.totalEntries ?: 0,
-            maxCacheSize = 1000,
+            maxCacheSize = 100000,
             lastSyncTime = cacheStats?.oldestEntryTime ?: 0,
             onClearCache = {
                 coroutineScope.launch {

@@ -16,6 +16,7 @@ val repositoryModule = module {
     // DAOs
     single<FavoriteGameDao> { get<GameDatabase>().favoriteGameDao() }
     single<GameCacheDao> { get<GameDatabase>().gameCacheDao() }
+    single<GameDetailCacheDao> { get<GameDatabase>().gameDetailCacheDao() }
     
     // Repositories
     single {
@@ -23,9 +24,10 @@ val repositoryModule = module {
             api = get(),
             gameCacheDao = get(),
             favoriteGameDao = get(),
-            context = get()
+            context = get(),
+            gameDetailCacheDao = get()
         )
     }
     single { FavoritesRepository(get(), get()) }
-    single { de.syntax_institut.androidabschlussprojekt.data.repositories.SettingsRepository(get<Context>()) }
+    single { SettingsRepository(get<Context>()) }
 }

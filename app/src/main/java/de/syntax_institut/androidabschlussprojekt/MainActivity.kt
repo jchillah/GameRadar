@@ -26,6 +26,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // TEMPORÄR: Datenbank-Reset für Entwicklung/Migration
+        // ENTFERNE DIESEN AUFRUF NACH DEM ERSTEN ERFOLGREICHEN START!
+        // de.syntax_institut.androidabschlussprojekt.data.local.GameDatabase.clearDatabase(this)
         enableEdgeToEdge()
         createNotificationChannel(this)
         val requestPermissionLauncher = registerForActivityResult(
