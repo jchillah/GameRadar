@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.core.app.*
 import androidx.core.net.*
+import de.syntax_institut.androidabschlussprojekt.data.local.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
@@ -253,7 +254,7 @@ fun SettingsScreen(
                     confirmButton = {
                         TextButton(
                             onClick = {
-                                viewModel.clearDatabase(context)
+                                GameDatabase.clearDatabase(context)
                                 showClearDatabaseDialog = false
                             }
                         ) {

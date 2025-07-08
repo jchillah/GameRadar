@@ -6,7 +6,7 @@ import org.koin.android.ext.koin.*
 import org.koin.core.context.*
 
 /**
- * MyApplication
+ * GameRadarApp
  * Initialisiert Koin für Dependency Injection.
  */
 class GameRadarApp : Application() {
@@ -16,6 +16,7 @@ class GameRadarApp : Application() {
             androidContext(this@GameRadarApp)
             modules(networkModule)
             modules(repositoryModule)
+            modules(useCaseModule)
             modules(viewModelModule)
         }
     }

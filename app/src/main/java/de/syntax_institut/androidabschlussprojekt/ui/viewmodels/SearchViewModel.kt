@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
@@ -15,7 +16,8 @@ import kotlinx.coroutines.flow.*
  * Folgt MVVM-Pattern und Clean Code Prinzipien.
  */
 class SearchViewModel(
-    private val repo: GameRepository,
+    private val loadGamesUseCase: LoadGamesUseCase,
+    private val repo: GameRepository, // TODO: Nach und nach durch UseCases ersetzen
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -135,7 +137,7 @@ class SearchViewModel(
             ordering = if (ordering.isNotBlank()) ordering else null
         )
         viewModelScope.launch {
-            repo.getPagedGames(
+            loadGamesUseCase(
                 query = _searchParams.value.query,
                 platforms = _searchParams.value.platforms,
                 genres = _searchParams.value.genres,

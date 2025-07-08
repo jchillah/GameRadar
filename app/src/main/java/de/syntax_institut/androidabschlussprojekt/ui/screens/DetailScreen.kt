@@ -285,7 +285,15 @@ fun DetailScreen(
                             TrailerGallery(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 movies = game.movies,
-                                onTrailerClick = { trailerPlayerViewModel.openTrailer(it, context) },
+                                onTrailerClick = { movie ->
+                                    movie.urlMax?.let {
+                                        TrailerPlayerActivity.start(
+                                            context,
+                                            it,
+                                            movie.name
+                                        )
+                                    }
+                                },
                                 showEmptyState = true
                             )
                         }

@@ -46,10 +46,10 @@ fun ScreenshotGallery(
                         modifier = Modifier.size(width = 200.dp, height = 120.dp),
                         imageUrl = screenshotUrl,
                         onClick = {
-                            viewModel.openFullscreenGallery(
-                                index,
-                                screenshots,
+                            ScreenshotGalleryActivity.start(
                                 context,
+                                screenshots,
+                                index,
                                 imageQuality
                             )
                         },

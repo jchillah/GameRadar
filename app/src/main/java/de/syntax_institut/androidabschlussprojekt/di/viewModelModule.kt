@@ -8,7 +8,7 @@ import org.koin.dsl.*
  * Modul für ViewModels.
  */
 val viewModelModule = module {
-    viewModel { SearchViewModel(get()) }
+    viewModel { SearchViewModel(get(), get()) }
     viewModel { DetailViewModel(get(), get()) }
     viewModel { FavoritesViewModel(get(), get()) }
     viewModel { SettingsViewModel(get()) }

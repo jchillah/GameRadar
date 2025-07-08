@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.*
 
 class SettingsRepository(context: Context) {
     private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("gamefinder_settings", Context.MODE_PRIVATE)
+        context.getSharedPreferences("gameradar_settings", Context.MODE_PRIVATE)
 
     private val _notificationsEnabled = MutableStateFlow(true)
     val notificationsEnabled: StateFlow<Boolean> = _notificationsEnabled.asStateFlow()
