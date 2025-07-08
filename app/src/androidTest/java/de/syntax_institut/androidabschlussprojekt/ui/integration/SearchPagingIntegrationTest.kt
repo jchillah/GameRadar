@@ -68,7 +68,7 @@ class SearchPagingIntegrationTest : KoinTest {
     fun setup() {
         mockApi = mockk(relaxed = true)
         mockRepository = mockk(relaxed = true)
-        
+
         // Mock API responses
         val mockGamesResponse = GamesResponse(
             results = testGames.map { game ->
@@ -108,8 +108,8 @@ class SearchPagingIntegrationTest : KoinTest {
             next = null,
             previous = null
         )
-        
-        coEvery { 
+
+        coEvery {
             mockApi.searchGames(
                 query = any(),
                 platforms = any(),
@@ -117,7 +117,7 @@ class SearchPagingIntegrationTest : KoinTest {
                 ordering = any(),
                 page = any(),
                 pageSize = any()
-            ) 
+            )
         } returns mockk {
             every { isSuccessful } returns true
             every { body() } returns mockGamesResponse
@@ -132,6 +132,9 @@ class SearchPagingIntegrationTest : KoinTest {
                     single { mockRepository }
                     single {
                         SearchViewModel(
+                            get(),
+                            get(),
+                            get(),
                             get(),
                             get()
                         )
@@ -158,14 +161,14 @@ class SearchPagingIntegrationTest : KoinTest {
     fun searchScreen_performsSearchAndShowsResults() = runTest {
         // Given
         val mockPagingData = PagingData.from(testGames)
-        coEvery { 
+        coEvery {
             mockRepository.getPagedGames(
                 query = "test",
                 platforms = any(),
                 genres = any(),
                 ordering = any(),
                 rating = any()
-            ) 
+            )
         } returns flowOf(mockPagingData)
 
         // When
@@ -201,26 +204,26 @@ class SearchPagingIntegrationTest : KoinTest {
     fun searchScreen_appliesFilters() = runTest {
         // Given
         val mockPagingData = PagingData.from(testGames.filter { it.rating >= 4.0f })
-        coEvery { 
+        coEvery {
             mockRepository.getPagedGames(
                 query = "test",
                 platforms = any(),
                 genres = any(),
                 ordering = any(),
                 rating = 4.0f
-            ) 
+            )
         } returns flowOf(mockPagingData)
 
         // When
         composeTestRule.onNodeWithText("Suche nach Spielen").performTextInput("test")
         composeTestRule.onNodeWithText("Suchen").performClick()
-        
+
         composeTestRule.onNodeWithContentDescription("Filter anzeigen").performClick()
-        
+
         // Set rating filter
         composeTestRule.onNodeWithText("Mindestbewertung: 0").performClick()
         // Note: Slider interaction would need more complex setup
-        
+
         composeTestRule.onNodeWithText("Filter anwenden").performClick()
 
         // Then
@@ -236,8 +239,8 @@ class SearchPagingIntegrationTest : KoinTest {
     @Test
     fun searchScreen_showsErrorState() = runTest {
         // Given
-        coEvery { 
-            mockRepository.getPagedGames(any(), any(), any(), any(), any()) 
+        coEvery {
+            mockRepository.getPagedGames(any(), any(), any(), any(), any())
         } throws Exception("Network error")
 
         // When
@@ -256,18 +259,18 @@ class SearchPagingIntegrationTest : KoinTest {
     fun searchScreen_navigatesToDetailScreen() = runTest {
         // Given
         val mockPagingData = PagingData.from(testGames)
-        coEvery { 
-            mockRepository.getPagedGames(any(), any(), any(), any(), any()) 
+        coEvery {
+            mockRepository.getPagedGames(any(), any(), any(), any(), any())
         } returns flowOf(mockPagingData)
 
         // When
         composeTestRule.onNodeWithText("Suche nach Spielen").performTextInput("test")
         composeTestRule.onNodeWithText("Suchen").performClick()
-        
+
         composeTestRule.waitUntil(timeoutMillis = 5000) {
             composeTestRule.onAllNodesWithText("Test Game 1").fetchSemanticsNodes().size == 1
         }
-        
+
         composeTestRule.onNodeWithText("Test Game 1").performClick()
 
         // Then
@@ -290,22 +293,22 @@ class SearchPagingIntegrationTest : KoinTest {
     fun searchScreen_clearsSearchResults() = runTest {
         // Given
         val mockPagingData = PagingData.from(testGames)
-        coEvery { 
-            mockRepository.getPagedGames(any(), any(), any(), any(), any()) 
+        coEvery {
+            mockRepository.getPagedGames(any(), any(), any(), any(), any())
         } returns flowOf(mockPagingData)
 
         // When
         composeTestRule.onNodeWithText("Suche nach Spielen").performTextInput("test")
         composeTestRule.onNodeWithText("Suchen").performClick()
-        
+
         composeTestRule.waitUntil(timeoutMillis = 5000) {
             composeTestRule.onAllNodesWithText("Test Game 1").fetchSemanticsNodes().size == 1
         }
-        
+
         // Clear search
         composeTestRule.onNodeWithText("Suche nach Spielen").performTextReplacement("")
 
         // Then
         composeTestRule.onNodeWithText("Bitte gib einen Suchbegriff ein.").assertExists()
     }
-} 
+}
