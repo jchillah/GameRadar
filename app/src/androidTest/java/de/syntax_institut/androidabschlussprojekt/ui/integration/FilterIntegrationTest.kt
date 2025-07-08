@@ -73,10 +73,6 @@ class FilterIntegrationTest : KoinTest {
                 module {
                     single { mockRepository }
                     single {
-                        SearchViewModel(
-                            get(),
-                            get()
-                        )
                     }
                 }
             )

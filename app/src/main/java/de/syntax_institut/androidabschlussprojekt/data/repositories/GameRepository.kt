@@ -24,6 +24,10 @@ class GameRepository @Inject constructor(
     private val context: Context,
 ) {
 
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
+    private val LAST_SYNC_KEY = "last_sync_time"
+
     suspend fun getGameDetail(gameId: Int): Resource<Game> {
         AppLogger.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
         AppLogger.i("GameRepository", "getGameDetail() aufgerufen für ID: $gameId")
@@ -346,6 +350,7 @@ class GameRepository @Inject constructor(
     suspend fun clearCache() {
         AppLogger.d("GameRepository", "Lösche gesamten Cache")
         gameCacheDao.clearAllGames()
+        setLastSyncTime(System.currentTimeMillis())
     }
     
     suspend fun getCacheSize(): Int {
@@ -357,6 +362,7 @@ class GameRepository @Inject constructor(
      */
     suspend fun optimizeCache() {
         CacheUtils.optimizeCache(gameCacheDao)
+        setLastSyncTime(System.currentTimeMillis())
     }
     
     /**
@@ -364,6 +370,15 @@ class GameRepository @Inject constructor(
      */
     suspend fun getCacheStats(): CacheStats {
         return CacheUtils.getCacheStats(gameCacheDao)
+    }
+
+    fun getLastSyncTime(): Long? {
+        val value = prefs.getLong(LAST_SYNC_KEY, -1L)
+        return if (value > 0) value else null
+    }
+
+    private fun setLastSyncTime(timestamp: Long) {
+        prefs.edit().putLong(LAST_SYNC_KEY, timestamp).apply()
     }
 
     /**

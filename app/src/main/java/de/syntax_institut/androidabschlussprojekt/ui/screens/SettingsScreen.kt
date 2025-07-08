@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.core.app.*
 import androidx.core.net.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
@@ -45,11 +46,13 @@ fun SettingsScreen(
             null
         )
     }
+    var lastSyncTime by remember { mutableStateOf<Long?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             cacheStats = gameRepository.getCacheStats()
+            lastSyncTime = gameRepository.getLastSyncTime() // Annahme: Funktion existiert
         }
     }
 
@@ -72,7 +75,7 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxWidth(),
             isOffline = !isOnline,
             cacheSize = cacheStats?.count ?: 0,
-            lastSyncTime = null,
+            lastSyncTime = lastSyncTime,
         )
 
         NetworkErrorHandler(
@@ -84,17 +87,19 @@ fun SettingsScreen(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.count ?: 0,
             maxCacheSize = 100000,
-            lastSyncTime = null,
+            lastSyncTime = lastSyncTime,
             onClearCache = {
                 coroutineScope.launch {
                     gameRepository.clearCache()
                     cacheStats = gameRepository.getCacheStats()
+                    lastSyncTime = gameRepository.getLastSyncTime()
                 }
             },
             onOptimizeCache = {
                 coroutineScope.launch {
                     gameRepository.optimizeCache()
                     cacheStats = gameRepository.getCacheStats()
+                    lastSyncTime = gameRepository.getLastSyncTime()
                 }
             }
         )
@@ -108,36 +113,38 @@ fun SettingsScreen(
                 onCheckedChange = viewModel::setNotificationsEnabled
             )
             val context = LocalContext.current
-            Button(
-                onClick = {
-                    // Test-Benachrichtigung direkt erstellen
-                    val notificationManager =
-                        context.getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
-                    val channelId = Constants.NOTIFICATION_CHANNEL_ID
+            if (BuildConfig.DEBUG) {
+                Button(
+                    onClick = {
+                        // Test-Benachrichtigung direkt erstellen
+                        val notificationManager =
+                            context.getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+                        val channelId = Constants.NOTIFICATION_CHANNEL_ID
 
-                    // Channel erstellen falls nicht vorhanden
-                    val channel = android.app.NotificationChannel(
-                        channelId,
-                        Constants.NOTIFICATION_CHANNEL_NAME,
-                        android.app.NotificationManager.IMPORTANCE_DEFAULT
-                    )
-                    notificationManager.createNotificationChannel(channel)
+                        // Channel erstellen falls nicht vorhanden
+                        val channel = android.app.NotificationChannel(
+                            channelId,
+                            Constants.NOTIFICATION_CHANNEL_NAME,
+                            android.app.NotificationManager.IMPORTANCE_DEFAULT
+                        )
+                        notificationManager.createNotificationChannel(channel)
 
-                    val notification = NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(android.R.drawable.ic_dialog_info)
-                        .setContentTitle(Constants.NOTIFICATION_TITLE_TEST)
-                        .setContentText(Constants.NOTIFICATION_TEXT_TEST)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setAutoCancel(true)
-                        .build()
+                        val notification = NotificationCompat.Builder(context, channelId)
+                            .setSmallIcon(android.R.drawable.ic_dialog_info)
+                            .setContentTitle(Constants.NOTIFICATION_TITLE_TEST)
+                            .setContentText(Constants.NOTIFICATION_TEXT_TEST)
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            .setAutoCancel(true)
+                            .build()
 
-                    notificationManager.notify(999999, notification)
-                },
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                Icon(Icons.Default.NotificationsActive, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Test: Neue Spiel-Benachrichtigung")
+                        notificationManager.notify(999999, notification)
+                    },
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Icon(Icons.Default.NotificationsActive, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Test: Neue Spiel-Benachrichtigung")
+                }
             }
         }
 

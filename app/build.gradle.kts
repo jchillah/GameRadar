@@ -46,6 +46,16 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            // Für Debug/Entwicklung verwenden wir automatische Signierung
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
@@ -53,6 +63,7 @@ android {
         release {
             isMinifyEnabled = false
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

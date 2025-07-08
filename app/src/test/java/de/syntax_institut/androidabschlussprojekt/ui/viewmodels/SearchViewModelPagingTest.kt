@@ -22,10 +22,6 @@ class SearchViewModelPagingTest {
         Dispatchers.setMain(testDispatcher)
         mockRepository = mockk(relaxed = true)
         mockLoadGamesUseCase = mockk(relaxed = true)
-        viewModel = SearchViewModel(
-            loadGamesUseCase = mockLoadGamesUseCase,
-            repo = mockRepository
-        )
     }
 
     @After
