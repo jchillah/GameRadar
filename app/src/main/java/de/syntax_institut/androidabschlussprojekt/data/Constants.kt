@@ -109,6 +109,14 @@ object Constants {
     const val UI_DARK_MODE = "Dunkles Design"
     const val UI_DARK_MODE_DESC = "Aktiviere den Dark Mode"
 
+
+    const val UI_LANGUAGE_ENGLISH = "Englisch"
+    const val UI_LANGUAGE_GERMAN = "Deutsch"
+    const val UI_LANGUAGE_FRENCH = "Französisch"
+
+    const val UI_LANGUAGE_ESPANOL = "Español"
+
+
     // Empty State & Bewertung
     const val EMPTY_STATE_PREFIX = "Keine "
     const val EMPTY_STATE_SUFFIX = " gefunden."
@@ -123,4 +131,7 @@ object Constants {
         "Du hast noch keine Spiele zu deinen Favoriten hinzugefügt."
     const val EMPTY_STATE_DISCOVER_GAMES = "Spiele entdecken"
     const val ERROR_CARD_DEFAULT_TITLE = "Fehler aufgetreten"
+
+    // Email
+    const val EMAIL = "michael.winkler.developer@gmail.com"
 }

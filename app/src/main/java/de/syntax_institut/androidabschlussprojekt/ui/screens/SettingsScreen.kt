@@ -167,7 +167,12 @@ fun SettingsScreen(
                 subtitle = "Sprache der Benutzeroberfläche",
                 selectedValue = language,
                 onValueChange = viewModel::setLanguage,
-                options = listOf("Deutsch", "English", "Français", "Español")
+                options = listOf(
+                    Constants.UI_LANGUAGE_GERMAN,
+                    Constants.UI_LANGUAGE_ENGLISH,
+                    Constants.UI_LANGUAGE_FRENCH,
+                    Constants.UI_LANGUAGE_ESPANOL
+                )
             )
         }
 
@@ -224,11 +229,11 @@ fun SettingsScreen(
             SettingsButtonItem(
                 icon = Icons.Default.Email,
                 title = "Support kontaktieren",
-                subtitle = "michael.winkler.developer@gmail.com",
+                subtitle = Constants.EMAIL,
                 onClick = {
                     val intent =
                         android.content.Intent(android.content.Intent.ACTION_SENDTO).apply {
-                            data = "mailto:michael.winkler.developer@gmail.com".toUri()
+                            data = "mailto:${Constants.EMAIL}".toUri()
                             putExtra(android.content.Intent.EXTRA_SUBJECT, "Support GameRadar")
                         }
                     context.startActivity(intent)
