@@ -24,6 +24,7 @@ fun GameItem(
     onDelete: (() -> Unit)? = null,
     imageQuality: ImageQuality = ImageQuality.HIGH,
     isFavorite: Boolean = false,
+    showFavoriteIcon: Boolean = true,
 ) {
     val context = LocalContext.current
 
@@ -91,12 +92,14 @@ fun GameItem(
             }
 
             // Herz-Icon für Favoritenstatus
-            Icon(
-                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = if (isFavorite) "Als Favorit markiert" else "Nicht als Favorit",
-                tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(28.dp)
-            )
+            if (showFavoriteIcon) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = if (isFavorite) "Als Favorit markiert" else "Nicht als Favorit",
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
             // Löschen-Button nur anzeigen, wenn onDelete nicht null ist
             onDelete?.let { deleteFunction ->
                 IconButton(

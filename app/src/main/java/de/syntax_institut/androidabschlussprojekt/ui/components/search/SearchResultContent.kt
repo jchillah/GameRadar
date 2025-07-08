@@ -66,7 +66,8 @@ fun SearchResultContent(
                                 game = game,
                                 onClick = { onGameClick(game) },
                                 imageQuality = imageQuality,
-                                isFavorite = favoriteIds.contains(game.id)
+                                isFavorite = true,
+                                showFavoriteIcon = favoriteIds.contains(game.id)
                             )
                         }
                     }

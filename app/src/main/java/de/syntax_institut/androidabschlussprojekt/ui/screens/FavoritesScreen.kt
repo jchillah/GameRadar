@@ -119,7 +119,8 @@ fun FavoritesScreen(
                                 onDelete = {
                                     viewModel.removeFavorite(game.id)
                                 },
-                                imageQuality = imageQuality
+                                imageQuality = imageQuality,
+                                showFavoriteIcon = false
                             )
                         }
                     }
