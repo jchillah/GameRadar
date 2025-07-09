@@ -9,6 +9,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun CacheManagementCard(
@@ -48,6 +49,10 @@ fun CacheManagementCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Tooltip(
+                    text = "Verwalte den lokalen Cache für bessere Performance und Offline-Nutzung."
                 )
             }
 
@@ -115,8 +120,8 @@ fun CacheManagementCard(
                     )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Tune,
-                        contentDescription = null,
+                        imageVector = Icons.Default.Sync,
+                        contentDescription = "Synchronisieren",
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -133,7 +138,7 @@ fun CacheManagementCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.ClearAll,
-                        contentDescription = null,
+                        contentDescription = "Cache leeren",
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))

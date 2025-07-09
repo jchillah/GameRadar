@@ -1,9 +1,12 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.search
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.data.Constants
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
@@ -228,15 +231,35 @@ fun FilterBottomSheet(
                 enabled = !isOffline,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(orderings.find { it.first == orderingState }?.second ?: "Sortierung wählen")
+                Text(
+                    orderings.find { it.first == orderingState }?.second ?: "Sortierung wählen",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
             DropdownMenu(
-                expanded = orderingExpanded, 
-                onDismissRequest = { orderingExpanded = false }
+                expanded = orderingExpanded,
+                onDismissRequest = { orderingExpanded = false },
+                modifier = Modifier.width(300.dp)
             ) {
                 orderings.forEach { (value, label) ->
                     DropdownMenuItem(
-                        text = { Text(label) },
+                        text = {
+                            Text(
+                                text = label,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = if (value == orderingState) FontWeight.SemiBold else FontWeight.Normal
+                            )
+                        },
+                        leadingIcon = if (value == orderingState) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        } else null,
                         onClick = {
                             orderingState = value
                             onOrderingChange(value)

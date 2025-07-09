@@ -49,22 +49,24 @@ fun App() {
             Loading()
         }
     } else {
-        MyAppTheme(darkTheme = darkModeEnabled) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(WindowInsets.statusBars.asPaddingValues())
+        LocalizedApp {
+            MyAppTheme(darkTheme = darkModeEnabled) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    if (!isOnline) {
-                        OfflineBanner(
-                            isOffline = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    Column(
+                        modifier = Modifier
+                            .padding(WindowInsets.statusBars.asPaddingValues())
+                    ) {
+                        if (!isOnline) {
+                            OfflineBanner(
+                                isOffline = true,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                        MainNavigation()
                     }
-                    MainNavigation()
                 }
             }
         }

@@ -6,9 +6,11 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 internal fun SettingsHeader() {
@@ -24,13 +26,13 @@ internal fun SettingsHeader() {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Einstellungen",
+            text = stringResource(R.string.settings_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
         )
         Text(
-            text = "Passe deine App an",
+            text = stringResource(R.string.settings_subtitle),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

@@ -18,7 +18,7 @@ class SettingsRepository(context: Context) {
     private val _imageQuality = MutableStateFlow(ImageQuality.HIGH)
     val imageQuality: StateFlow<ImageQuality> = _imageQuality.asStateFlow()
 
-    private val _language = MutableStateFlow("Deutsch")
+    private val _language = MutableStateFlow("system")
     val language: StateFlow<String> = _language.asStateFlow()
 
     private val _gamingModeEnabled = MutableStateFlow(false)
@@ -101,7 +101,7 @@ class SettingsRepository(context: Context) {
                 ?: ImageQuality.HIGH.name
         )
         _language.value =
-            sharedPreferences.getString(Constants.PREF_LANGUAGE, "Deutsch") ?: "Deutsch"
+            sharedPreferences.getString(Constants.PREF_LANGUAGE, "system") ?: "system"
         _gamingModeEnabled.value =
             sharedPreferences.getBoolean(Constants.PREF_GAMING_MODE_ENABLED, false)
         _performanceModeEnabled.value =

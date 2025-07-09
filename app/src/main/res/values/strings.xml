@@ -1,3 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AndroidAbschlussprojekt</string>
+    <string name="app_name">GameRadar</string>
+
+    <!-- Navigation -->
+    <string name="nav_search">Suche</string>
+    <string name="nav_favorites">Favoriten</string>
+    <string name="nav_settings">Einstellungen</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">Suche nach Spielen</string>
+    <string name="search_button">Suchen</string>
+    <string name="filter_button">Filter</string>
+    <string name="no_results">Keine Ergebnisse</string>
+    <string name="no_results_message">Versuche andere Suchbegriffe oder Filter zu verwenden.</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Favoriten</string>
+    <string name="no_favorites">Keine Favoriten</string>
+    <string name="no_favorites_message">Du hast noch keine Spiele zu deinen Favoriten hinzugefügt.</string>
+    <string name="discover_games">Spiele entdecken</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_subtitle">Passe deine App an</string>
+
+    <!-- Language Section -->
+    <string name="language_section">Sprache</string>
+    <string name="app_language">App-Sprache</string>
+    <string name="app_language_description">Sprache der Benutzeroberfläche</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_english">English</string>
+    <string name="language_french">Français</string>
+    <string name="language_spanish">Español</string>
+    <string name="system_language">Systemsprache</string>
+
+    <!-- Notifications Section -->
+    <string name="notifications_section">Benachrichtigungen</string>
+    <string name="push_notifications">Push-Benachrichtigungen</string>
+    <string name="new_games_updates">Neue Spiele und Updates erhalten</string>
+
+    <!-- Performance Section -->
+    <string name="performance_section">Leistung</string>
+    <string name="gaming_mode">Gaming-Modus</string>
+    <string name="gaming_mode_description">Optimierte Darstellung für Gaming</string>
+    <string name="performance_mode">Performance-Modus</string>
+    <string name="performance_mode_description">Schnellere Ladezeiten</string>
+    <string name="auto_refresh">Auto-Refresh</string>
+    <string name="auto_refresh_description">Automatische Aktualisierung der Daten</string>
+
+    <!-- Display Section -->
+    <string name="display_section">Darstellung</string>
+    <string name="dark_mode">Dunkles Design</string>
+    <string name="dark_mode_description">Aktiviere den Dark Mode</string>
+    <string name="image_quality">Bildqualität</string>
+    <string name="image_quality_high">Hoch</string>
+    <string name="image_quality_medium">Mittel</string>
+    <string name="image_quality_low">Niedrig</string>
+    <string name="image_quality_description">Qualität der Spielbilder</string>
+
+    <!-- Social Section -->
+    <string name="social_section">Sozial</string>
+    <string name="share_games">Spiele teilen</string>
+    <string name="share_games_description">Spiele mit Freunden teilen</string>
+
+    <!-- Cache Management -->
+    <string name="cache_section">Cache-Management</string>
+    <string name="cache_size">Cache-Größe</string>
+    <string name="clear_cache">Cache leeren</string>
+    <string name="clear_cache_description">Löscht alle zwischengespeicherten Daten</string>
+    <string name="sync_favorites">Synchronisieren</string>
+    <string name="sync_favorites_description">Favoriten mit API synchronisieren</string>
+    <string name="last_sync">Letzte Synchronisation</string>
+
+    <!-- About Section -->
+    <string name="about_section">Über die App</string>
+    <string name="about_app">Über GameRadar</string>
+    <string name="app_version">Version 1.0.0</string>
+    <string name="privacy_policy">Datenschutz</string>
+    <string name="privacy_policy_description">Datenschutzerklärung lesen</string>
+    <string name="contact_support">Support kontaktieren</string>
+    <string name="contact_support_description">E-Mail an Support senden</string>
+
+    <!-- Database Management -->
+    <string name="database_section">Datenbank-Management</string>
+    <string name="reset_database">Datenbank zurücksetzen</string>
+    <string name="reset_database_description">Löscht alle Favoriten und Cache-Daten</string>
+    <string name="reset_database_dialog_title">Datenbank zurücksetzen</string>
+    <string name="reset_database_dialog_text">Möchten Sie wirklich alle Favoriten und Cache-Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+
+    <!-- Common Actions -->
+    <string name="action_delete">Löschen</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_confirm">Bestätigen</string>
+    <string name="action_ok">OK</string>
+    <string name="action_retry">Wiederholen</string>
+
+    <!-- Error Messages -->
+    <string name="error_unknown">Unbekannter Fehler</string>
+    <string name="error_network">Netzwerkfehler</string>
+    <string name="error_no_connection">Keine Internetverbindung</string>
+    <string name="error_check_connection">Überprüfe deine Verbindung und versuche es erneut</string>
+    <string name="error_load_data">Fehler beim Laden der Daten</string>
+    <string name="error_save_data">Fehler beim Speichern der Daten</string>
+
+    <!-- Game Details -->
+    <string name="game_rating">Bewertung</string>
+    <string name="game_release_date">Veröffentlichung</string>
+    <string name="game_platforms">Plattformen</string>
+    <string name="game_genres">Genres</string>
+    <string name="game_developers">Entwickler</string>
+    <string name="game_publishers">Publisher</string>
+    <string name="game_playtime">Spielzeit</string>
+    <string name="game_website">Website</string>
+    <string name="game_metacritic">Metacritic</string>
+    <string name="game_esrb_rating">ESRB Rating</string>
+    <string name="no_rating">Keine Bewertung</string>
+
+    <!-- Loading States -->
+    <string name="loading">Lädt…</string>
+    <string name="loading_games">Spiele werden geladen…</string>
+    <string name="loading_details">Details werden geladen…</string>
+
+    <!-- Offline States -->
+    <string name="offline_mode">Offline-Modus</string>
+    <string name="offline_no_data">Keine Daten verfügbar</string>
+    <string name="offline_no_favorites">Keine Favoriten verfügbar</string>
+
+    <!-- Time Formatting -->
+    <string name="time_just_now">Gerade eben</string>
+    <string name="time_minutes_ago">%d Minuten</string>
+    <string name="time_hours_ago">%d Stunden</string>
+    <string name="time_days_ago">%d Tage</string>
 </resources>

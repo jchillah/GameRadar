@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GameRadar</string>
+
+    <!-- Navigation -->
+    <string name="nav_search">Search</string>
+    <string name="nav_favorites">Favorites</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">Search for games</string>
+    <string name="search_button">Search</string>
+    <string name="filter_button">Filter</string>
+    <string name="no_results">No results</string>
+    <string name="no_results_message">Try different search terms or filters.</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Favorites</string>
+    <string name="no_favorites">No favorites</string>
+    <string name="no_favorites_message">You haven\'t added any games to your favorites yet.</string>
+    <string name="discover_games">Discover games</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Customize your app</string>
+
+    <!-- Language Section -->
+    <string name="language_section">Language</string>
+    <string name="app_language">App Language</string>
+    <string name="app_language_description">User interface language</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_english">English</string>
+    <string name="language_french">Français</string>
+    <string name="language_spanish">Español</string>
+    <string name="system_language">System Language</string>
+
+    <!-- Notifications Section -->
+    <string name="notifications_section">Notifications</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="new_games_updates">Receive new games and updates</string>
+
+    <!-- Performance Section -->
+    <string name="performance_section">Performance</string>
+    <string name="gaming_mode">Gaming Mode</string>
+    <string name="gaming_mode_description">Optimized display for gaming</string>
+    <string name="performance_mode">Performance Mode</string>
+    <string name="performance_mode_description">Faster loading times</string>
+    <string name="auto_refresh">Auto Refresh</string>
+    <string name="auto_refresh_description">Automatic data refresh</string>
+
+    <!-- Display Section -->
+    <string name="display_section">Display</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_description">Enable dark theme</string>
+    <string name="image_quality">Image Quality</string>
+    <string name="image_quality_high">High</string>
+    <string name="image_quality_medium">Medium</string>
+    <string name="image_quality_low">Low</string>
+    <string name="image_quality_description">Quality of game images</string>
+
+    <!-- Social Section -->
+    <string name="social_section">Social</string>
+    <string name="share_games">Share Games</string>
+    <string name="share_games_description">Share games with friends</string>
+
+    <!-- Cache Management -->
+    <string name="cache_section">Cache Management</string>
+    <string name="cache_size">Cache Size</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="clear_cache_description">Delete all cached data</string>
+    <string name="sync_favorites">Synchronize</string>
+    <string name="sync_favorites_description">Sync favorites with API</string>
+    <string name="last_sync">Last Sync</string>
+
+    <!-- About Section -->
+    <string name="about_section">About</string>
+    <string name="about_app">About GameRadar</string>
+    <string name="app_version">Version 1.0.0</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_description">Read privacy policy</string>
+    <string name="contact_support">Contact Support</string>
+    <string name="contact_support_description">Send email to support</string>
+
+    <!-- Database Management -->
+    <string name="database_section">Database Management</string>
+    <string name="reset_database">Reset Database</string>
+    <string name="reset_database_description">Delete all favorites and cache data</string>
+    <string name="reset_database_dialog_title">Reset Database</string>
+    <string name="reset_database_dialog_text">Do you really want to delete all favorites and cache data? This action cannot be undone.</string>
+
+    <!-- Common Actions -->
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_ok">OK</string>
+    <string name="action_retry">Retry</string>
+
+    <!-- Error Messages -->
+    <string name="error_unknown">Unknown error</string>
+    <string name="error_network">Network error</string>
+    <string name="error_no_connection">No internet connection</string>
+    <string name="error_check_connection">Check your connection and try again</string>
+    <string name="error_load_data">Error loading data</string>
+    <string name="error_save_data">Error saving data</string>
+
+    <!-- Game Details -->
+    <string name="game_rating">Rating</string>
+    <string name="game_release_date">Release Date</string>
+    <string name="game_platforms">Platforms</string>
+    <string name="game_genres">Genres</string>
+    <string name="game_developers">Developers</string>
+    <string name="game_publishers">Publishers</string>
+    <string name="game_playtime">Playtime</string>
+    <string name="game_website">Website</string>
+    <string name="game_metacritic">Metacritic</string>
+    <string name="game_esrb_rating">ESRB Rating</string>
+    <string name="no_rating">No rating</string>
+
+    <!-- Loading States -->
+    <string name="loading">Loading…</string>
+    <string name="loading_games">Loading games…</string>
+    <string name="loading_details">Loading details…</string>
+
+    <!-- Offline States -->
+    <string name="offline_mode">Offline Mode</string>
+    <string name="offline_no_data">No data available</string>
+    <string name="offline_no_favorites">No favorites available</string>
+
+    <!-- Time Formatting -->
+    <string name="time_just_now">Just now</string>
+    <string name="time_minutes_ago">%d minutes</string>
+    <string name="time_hours_ago">%d hours</string>
+    <string name="time_days_ago">%d days</string>
+</resources> 
