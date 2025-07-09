@@ -55,10 +55,7 @@ fun App() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(WindowInsets.statusBars.asPaddingValues())
-                    ) {
+                    Column {
                         if (!isOnline) {
                             OfflineBanner(
                                 isOffline = true,
