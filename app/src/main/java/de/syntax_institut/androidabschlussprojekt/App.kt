@@ -59,7 +59,9 @@ fun App() {
                         if (!isOnline) {
                             OfflineBanner(
                                 isOffline = true,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(WindowInsets.statusBars.asPaddingValues())
                             )
                         }
                         MainNavigation()

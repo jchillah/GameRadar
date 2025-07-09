@@ -347,7 +347,7 @@ fun DetailScreen(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DetailScreenPreview() {
     DetailScreen(

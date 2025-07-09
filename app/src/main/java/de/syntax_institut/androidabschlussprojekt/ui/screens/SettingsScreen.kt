@@ -2,6 +2,7 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
@@ -15,12 +16,15 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
+import org.koin.androidx.compose.*
+import org.koin.compose.*
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = org.koin.androidx.compose.koinViewModel(),
+    viewModel: SettingsViewModel = koinViewModel(),
 ) {
     val notificationsEnabled by viewModel.notificationsEnabled.collectAsState()
     val autoRefreshEnabled by viewModel.autoRefreshEnabled.collectAsState()
@@ -35,7 +39,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     val isOnline by NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
-    val gameRepository: GameRepository = org.koin.compose.koinInject()
+    val gameRepository: GameRepository = koinInject()
     var cacheStats by remember {
         mutableStateOf<CacheStats?>(
             null
@@ -47,7 +51,7 @@ fun SettingsScreen(
     LaunchedEffect(Unit) {
         coroutineScope.launch {
             cacheStats = gameRepository.getCacheStats()
-            lastSyncTime = gameRepository.getLastSyncTime() // Annahme: Funktion existiert
+            lastSyncTime = gameRepository.getLastSyncTime()
         }
     }
 
@@ -62,8 +66,14 @@ fun SettingsScreen(
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.count ?: 0,
-            maxCacheSize = 100000,
+            maxCacheSize = Int.MAX_VALUE,
         )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+        }
 
         IntelligentCacheIndicator(
             modifier = Modifier.fillMaxWidth(),
@@ -80,7 +90,7 @@ fun SettingsScreen(
         CacheManagementCard(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.count ?: 0,
-            maxCacheSize = 100000,
+            maxCacheSize = Int.MAX_VALUE,
             lastSyncTime = lastSyncTime,
             onClearCache = {
                 coroutineScope.launch {

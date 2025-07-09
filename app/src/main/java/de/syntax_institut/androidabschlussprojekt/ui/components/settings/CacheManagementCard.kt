@@ -184,7 +184,7 @@ private fun CacheStatItem(
 fun CacheManagementCardPreview() {
     CacheManagementCard(
         cacheSize = 150,
-        maxCacheSize = 1000,
+        maxCacheSize = 10000,
         lastSyncTime = System.currentTimeMillis(),
         onClearCache = {},
         onOptimizeCache = {}
