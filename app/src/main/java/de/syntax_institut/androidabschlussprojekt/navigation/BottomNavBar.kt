@@ -51,7 +51,7 @@ fun BottomNavBar(
             label = { Text(stringResource(R.string.nav_search)) },
             selected = currentRoute == Routes.SEARCH,
             onClick = {
-                navController.navigateSingleTopTo(Routes.SEARCH)
+                navController.navigateToTab(Routes.SEARCH)
             }
         )
 
@@ -72,7 +72,7 @@ fun BottomNavBar(
             label = { Text(stringResource(R.string.nav_favorites)) },
             selected = currentRoute == Routes.FAVORITES,
             onClick = {
-                navController.navigateSingleTopTo(Routes.FAVORITES)
+                navController.navigateToTab(Routes.FAVORITES)
             }
         )
 
@@ -86,7 +86,7 @@ fun BottomNavBar(
             label = { Text(stringResource(R.string.nav_settings)) },
             selected = currentRoute == Routes.SETTINGS,
             onClick = {
-                navController.navigateSingleTopTo(Routes.SETTINGS)
+                navController.navigateToTab(Routes.SETTINGS)
             }
         )
     }

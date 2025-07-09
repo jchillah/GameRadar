@@ -42,12 +42,7 @@ object LocaleManager {
      * Erhält die Systemsprache des Geräts.
      */
     private fun getSystemLocale(context: Context): Locale {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.resources.configuration.locales[0]
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.configuration.locale
-        }
+        return context.resources.configuration.locales[0]
     }
 
     /**
@@ -58,12 +53,7 @@ object LocaleManager {
 
         val configuration = Configuration(context.resources.configuration)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            configuration.setLocales(LocaleList(locale))
-        } else {
-            @Suppress("DEPRECATION")
-            configuration.locale = locale
-        }
+        configuration.setLocales(LocaleList(locale))
 
         return context.createConfigurationContext(configuration)
     }
@@ -86,12 +76,8 @@ object LocaleManager {
      * Erhält den aktuellen Sprachcode basierend auf der Locale.
      */
     fun getCurrentLanguageCode(context: Context): String {
-        val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        val currentLocale =
             context.resources.configuration.locales[0]
-        } else {
-            @Suppress("DEPRECATION")
-            context.resources.configuration.locale
-        }
 
         return when (currentLocale.language) {
             "de" -> LANGUAGE_GERMAN

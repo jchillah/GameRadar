@@ -142,7 +142,7 @@ fun SearchScreen(
                             "Navigation",
                             "Navigiere zu DetailScreen mit gameId=${game.id}"
                         )
-                        navController.navigate(Routes.detail(game.id))
+                        navController.navigateSingleTopTo(Routes.detail(game.id))
                     },
                     modifier = Modifier.fillMaxSize(),
                     imageQuality = imageQuality,
