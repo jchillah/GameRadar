@@ -42,7 +42,7 @@ fun FavoritesScreen(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier

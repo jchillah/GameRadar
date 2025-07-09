@@ -52,7 +52,7 @@ fun SearchScreen(
 
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier

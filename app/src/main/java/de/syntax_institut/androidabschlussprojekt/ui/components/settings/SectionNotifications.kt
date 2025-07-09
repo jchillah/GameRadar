@@ -29,7 +29,7 @@ fun SectionNotifications(
             checked = notificationsEnabled,
             onCheckedChange = onCheckedChange
         )
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             Button(
                 onClick = {
                     // Test-Benachrichtigung direkt erstellen

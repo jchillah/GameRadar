@@ -336,7 +336,12 @@ fun DetailScreen(
                     }
                 }
 
-                else -> {}
+                else -> {
+                    LoadingState(
+                        modifier = Modifier.fillMaxSize(),
+                        message = "Lade Spieldetails..."
+                    )
+                }
             }
         }
     }
