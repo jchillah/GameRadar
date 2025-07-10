@@ -63,10 +63,13 @@ fun SettingsScreen(
     ) {
         SettingsHeader()
 
+        val recommendedMaxCacheSize =
+            remember(context) { CacheUtils.calculateRecommendedMaxCacheSize(context) }
+
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.count ?: 0,
-            maxCacheSize = Int.MAX_VALUE,
+            maxCacheSize = recommendedMaxCacheSize,
         )
 
         Row(
@@ -90,7 +93,7 @@ fun SettingsScreen(
         CacheManagementCard(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.count ?: 0,
-            maxCacheSize = Int.MAX_VALUE,
+            maxCacheSize = recommendedMaxCacheSize,
             lastSyncTime = lastSyncTime,
             onClearCache = {
                 coroutineScope.launch {

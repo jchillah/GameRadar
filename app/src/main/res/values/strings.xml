@@ -131,4 +131,7 @@
     <string name="time_minutes_ago">%d Minuten</string>
     <string name="time_hours_ago">%d Stunden</string>
     <string name="time_days_ago">%d Tage</string>
+
+    <string name="notification_new_games_title">Neue Spiele verfügbar!</string>
+    <string name="notification_new_games_text">%1$d neue Spiele wurden gefunden.</string>
 </resources>

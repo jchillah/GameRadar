@@ -1,15 +1,30 @@
 # Android Abschlussprojekt - Game Radar
 
-Eine moderne Android-App zur Spiele-Suche und -Verwaltung mit Jetpack Compose.
+Eine moderne Android-App zur Spiele-Suche, Verwaltung und Entdeckung – entwickelt mit Jetpack
+Compose, MVVM und Clean Code Best Practices.
 
 ## Features
 
-- **Spiele-Suche**: Durchsuchen Sie eine umfangreiche Spiele-Datenbank
-- **Favoriten**: Speichern Sie Ihre Lieblingsspiele lokal
-- **Detailansicht**: Detaillierte Informationen zu jedem Spiel
-- **Screenshots & Trailer**: Bilder und Videos zu den Spielen
-- **Offline-Unterstützung**: Funktioniert auch ohne Internetverbindung
-- **Dark Mode**: Unterstützung für dunkles Design
+- **Spiele-Suche**: Durchsuche eine umfangreiche Spiele-Datenbank (RAWG API)
+- **Favoriten**: Favoriten: Speichere und verwalte deine Lieblingsspiele lokal
+- **Detailansicht**: Detaillierte Infos, Screenshots & Trailer zu jedem Spiel
+- **Screenshots & Trailer**: Mediengalerien direkt in der App(Bilder und Videos zu den Spielen).
+- **Dark Mode**: Modernes, dunkles Design
+- **Cache- und Datenbank-Management**: Funktioniert auch ohne Internetverbindung
+- **Benachrichtigungen**: Werde über neue Spiele informiert
+- **Mehrsprachigkeit**: Deutsch, Englisch
+
+## 🖼️ Screenshots
+
+Hier ein Überblick über die wichtigsten App-Bereiche:
+
+| Startscreen               | Suche                     | Detailansicht              |
+|---------------------------|---------------------------|----------------------------|
+| ![Start](img/screen1.png) | ![Suche](img/screen2.png) | ![Detail](img/screen3.png) |
+
+| Favoriten                     | Einstellungen                     | Dark Mode                     | Fehlerfall                 |
+|-------------------------------|-----------------------------------|-------------------------------|----------------------------|
+| ![Favoriten](img/screen4.png) | ![Einstellungen](img/screen5.png) | ![Dark Mode](img/screen6.png) | ![Fehler](img/screen7.png) |
 
 ## Debug-Anleitung: Fehlende Screenshots und Trailer
 

@@ -38,4 +38,22 @@ object CacheUtils {
             size = 0L // Platzhalter: Hier könnte die tatsächliche Cache-Größe in Bytes stehen, falls verfügbar
         )
     }
+
+    /**
+     * Berechnet eine empfohlene maximale Cachegröße (Anzahl Spiele) basierend auf dem freien Gerätespeicher.
+     * Es werden 10% des freien Speichers für den Cache reserviert, durchschnittlich 0,5 MB pro Spiel.
+     */
+    fun calculateRecommendedMaxCacheSize(context: android.content.Context): Int {
+        return try {
+            val stat = android.os.StatFs(android.os.Environment.getDataDirectory().path)
+            val bytesAvailable = stat.availableBytes
+            val mbAvailable = bytesAvailable / (1024 * 1024)
+            val cacheMb = (mbAvailable * 0.01).toInt() // 1% des freien Speichers
+            val avgGameSizeMb = 0.5 // Durchschnittliche Größe pro Spiel in MB
+            val maxGames = (cacheMb / avgGameSizeMb).toInt().coerceAtLeast(100000)
+            maxGames
+        } catch (e: Exception) {
+            Int.MAX_VALUE
+        }
+    }
 } 

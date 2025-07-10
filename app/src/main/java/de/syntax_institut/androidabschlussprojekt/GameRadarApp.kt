@@ -1,6 +1,8 @@
 package de.syntax_institut.androidabschlussprojekt
 
 import android.app.*
+import android.content.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.di.*
 import org.koin.android.ext.koin.*
 import org.koin.core.context.*
@@ -19,5 +21,19 @@ class GameRadarApp : Application() {
             modules(useCaseModule)
             modules(viewModelModule)
         }
+        createNewGamesNotificationChannel(this)
+    }
+
+    private fun createNewGamesNotificationChannel(context: Context) {
+        val channel = NotificationChannel(
+            Constants.NOTIFICATION_CHANNEL_ID,
+            Constants.NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = Constants.NOTIFICATION_CHANNEL_DESC
+        }
+        val notificationManager: NotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 }

@@ -136,4 +136,6 @@ object Constants {
     const val EMAIL = "michael.winkler.developer@gmail.com"
 
     const val LAST_SYNC_TIME = "last_sync_time"
+
+    const val NEW_GAME_NOTIFICATION_ID = 1001
 }

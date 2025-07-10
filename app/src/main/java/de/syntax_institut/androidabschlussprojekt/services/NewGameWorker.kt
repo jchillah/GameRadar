@@ -1,17 +1,20 @@
 package de.syntax_institut.androidabschlussprojekt.services
 
+import android.*
 import android.app.*
 import android.content.*
 import android.content.pm.*
 import android.os.*
 import androidx.core.app.*
-import androidx.core.net.*
 import androidx.work.*
 import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.core.component.*
+
 
 class NewGameWorker(
     appContext: Context,
@@ -27,7 +30,14 @@ class NewGameWorker(
                 "[DEBUG] ${Constants.NEW_GAME_WORKER_NAME} gestartet"
             )
 
-            // Echte Logik: Suche nach neuen Spielen (nach ID und Slug)
+            if (!isNotificationsEnabled(applicationContext)) {
+                AppLogger.d(
+                    Constants.NEW_GAME_WORKER_NAME,
+                    "[DEBUG] Notifications deaktiviert – Abbruch"
+                )
+                return Result.success()
+            }
+
             val prefs =
                 applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
             val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
@@ -37,13 +47,8 @@ class NewGameWorker(
                 "[DEBUG] ${newGames.size} neue Spiele gefunden"
             )
 
-            newGames.forEach { game ->
-                sendNewGameNotification(
-                    applicationContext,
-                    game.title,
-                    game.slug,
-                    game.id
-                )
+            if (newGames.isNotEmpty()) {
+                sendNewGamesNotification(applicationContext, newGames)
             }
 
             AppLogger.i(
@@ -61,69 +66,62 @@ class NewGameWorker(
         }
     }
 
-    private fun sendNewGameNotification(
-        context: Context,
-        gameTitle: String,
-        gameSlug: String,
-        gameId: Int,
-    ) {
+    private fun isNotificationsEnabled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, true)
+    }
+
+    private fun buildPendingIntent(context: Context): PendingIntent {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        return PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    private fun sendNewGamesNotification(context: Context, newGames: List<Game>) {
         try {
-            // Überprüfe Notification-Berechtigung für Android 13+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                     AppLogger.d(
                         Constants.NEW_GAME_WORKER_NAME,
-                        "[DEBUG] Keine Notification-Berechtigung für: $gameTitle"
+                        "[DEBUG] Keine Notification-Berechtigung für neue Spiele"
                     )
                     return
                 }
             }
-
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            // Erstelle Notification Channel für Android 8.0+
-            val channel = NotificationChannel(
-                Constants.NOTIFICATION_CHANNEL_ID,
-                Constants.NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = Constants.NOTIFICATION_CHANNEL_DESC
+            val pendingIntent = buildPendingIntent(context)
+            // Bündel-Notification für mehrere neue Spiele
+            val inboxStyle = NotificationCompat.InboxStyle()
+            for (game in newGames) {
+                inboxStyle.addLine(game.title)
             }
-            notificationManager.createNotificationChannel(channel)
-
-            // Erstelle Intent für die DetailScreen
-            val intent = Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                data = "myapp://game/$gameSlug".toUri()
-            }
-
-            val pendingIntent = PendingIntent.getActivity(
-                context,
-                gameId,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-
-            // Erstelle Notification
             val notification =
-                NotificationCompat.Builder(context, Constants.NOTIFICATION_CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                    .setContentTitle(Constants.NOTIFICATION_TITLE_NEW_GAME)
-                .setContentText(gameTitle)
+                NotificationCompat.Builder(applicationContext, Constants.NOTIFICATION_CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_dialog_info)
+                    .setContentTitle(context.getString(R.string.notification_new_games_title))
+                    .setContentText(
+                        context.getString(
+                            R.string.notification_new_games_text,
+                            newGames.size
+                        )
+                    )
+                    .setStyle(inboxStyle)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .build()
 
-            // Sende Notification
-            notificationManager.notify(gameId, notification)
-
+            notificationManager.notify(Constants.NEW_GAME_NOTIFICATION_ID, notification.build())
             AppLogger.d(
                 Constants.NEW_GAME_WORKER_NAME,
-                "[DEBUG] Notification gesendet für: $gameTitle"
+                "[DEBUG] Notification gesendet für ${newGames.size} neue Spiele"
             )
-
         } catch (e: Exception) {
             AppLogger.e(Constants.NEW_GAME_WORKER_NAME, "Fehler beim Senden der Notification", e)
         }
