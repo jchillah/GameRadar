@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -92,7 +93,7 @@ fun FavoritesScreen(
                 state.error != null -> {
                     ErrorCard(
                         modifier = Modifier.fillMaxSize(),
-                        error = state.error ?: stringResource(R.string.error_unknown_default),
+                        error = state.error ?: Constants.ERROR_UNKNOWN,
                     )
                 }
 

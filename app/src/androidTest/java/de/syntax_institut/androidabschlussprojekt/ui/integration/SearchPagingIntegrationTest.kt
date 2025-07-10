@@ -249,10 +249,10 @@ class SearchPagingIntegrationTest : KoinTest {
 
         // Then
         composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule.onAllNodesWithText("Fehler:")
+            composeTestRule.onAllNodesWithText("${Constants.ERROR}:")
                 .fetchSemanticsNodes().size == 1
         }
-        composeTestRule.onNodeWithText("Fehler:").assertExists()
+        composeTestRule.onNodeWithText("${Constants.ERROR}:").assertExists()
     }
 
     @Test

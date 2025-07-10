@@ -89,7 +89,7 @@ class DetailScreenTest {
         }
 
         // Then
-        composeTestRule.onNodeWithText("Fehler: Network error").assertExists()
+        composeTestRule.onNodeWithText("${Constants.ERROR}: Network error").assertExists()
     }
 
     @Test
