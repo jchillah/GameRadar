@@ -53,7 +53,7 @@ fun ErrorCard(
             ) {
                 Icon(
                     imageVector = Icons.Default.Error,
-                    contentDescription = "Fehler-Icon",
+                    contentDescription = stringResource(R.string.ui_error_icon_content_description),
                     tint = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.size(24.dp)
                 )
@@ -91,7 +91,7 @@ fun ErrorCard(
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Erneut versuchen")
+                    Text(stringResource(R.string.error_retry))
                 }
             }
         }

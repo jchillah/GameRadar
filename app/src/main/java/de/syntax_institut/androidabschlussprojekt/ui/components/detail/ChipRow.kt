@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun ChipRow(
@@ -37,7 +39,7 @@ fun ChipRow(
         }
     } else {
         Text(
-            "Keine Daten vorhanden",
+            stringResource(R.string.detail_no_data),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(vertical = 4.dp)
@@ -48,5 +50,11 @@ fun ChipRow(
 @Preview(showBackground = true)
 @Composable
 fun ChipRowPreview() {
-    ChipRow(items = listOf("Indie", "Multiplayer", "Open World"))
+    ChipRow(
+        items = listOf(
+            stringResource(R.string.preview_tag_indie),
+            stringResource(R.string.preview_tag_multiplayer),
+            stringResource(R.string.preview_tag_open_world)
+        )
+    )
 } 

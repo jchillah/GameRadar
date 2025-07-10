@@ -34,5 +34,9 @@ fun GameMetaInfo(
 @Preview(showBackground = true)
 @Composable
 fun GameMetaInfoPreview() {
-    GameMetaInfo(title = "Beispielspiel", releaseDate = "2023-01-01", rating = 4.7)
+    GameMetaInfo(
+        title = stringResource(R.string.preview_settings_button_title),
+        releaseDate = "2023-01-01",
+        rating = 4.7
+    )
 } 

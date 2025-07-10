@@ -123,7 +123,7 @@ fun DetailScreen(
                                 modifier = Modifier.size(18.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("Erneut versuchen")
+                            Text(stringResource(R.string.action_retry))
                         }
                     }
                 }
@@ -154,7 +154,7 @@ fun DetailScreen(
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Erneut versuchen")
+                                Text(stringResource(R.string.action_retry))
                             }
                         }
                     } else {
@@ -185,11 +185,11 @@ fun DetailScreen(
                                 vm.updateUserRating(newRating)
                             }
                         )
-                        SectionCard("Plattformen") { ChipRow(game.platforms) }
-                        SectionCard("Genres") { ChipRow(game.genres) }
-                        SectionCard("Entwickler") { ChipFlowRow(game.developers) }
-                        SectionCard("Publisher") { ChipFlowRow(game.publishers) }
-                        SectionCard("USK/ESRB") { 
+                        SectionCard(stringResource(R.string.game_platforms)) { ChipRow(game.platforms) }
+                        SectionCard(stringResource(R.string.game_genres)) { ChipRow(game.genres) }
+                        SectionCard(stringResource(R.string.game_developers)) { ChipFlowRow(game.developers) }
+                        SectionCard(stringResource(R.string.game_publishers)) { ChipFlowRow(game.publishers) }
+                        SectionCard(stringResource(R.string.game_esrb_rating)) { 
                             if (game.esrbRating.isNullOrBlank()) {
                                 Box(
                                     modifier = Modifier
@@ -208,7 +208,7 @@ fun DetailScreen(
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text(
-                                            text = "Keine Altersfreigabe verfügbar",
+                                            text = stringResource(R.string.no_rating),
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -218,9 +218,9 @@ fun DetailScreen(
                                 ChipFlowRow(listOf(game.esrbRating))
                             }
                         }
-                        SectionCard("Tags") { ChipFlowRow(game.tags) }
-                        SectionCard("Stores") { ChipRow(game.stores) }
-                        SectionCard("Metacritic & Spielzeit") {
+                        SectionCard(stringResource(R.string.game_tags)) { ChipFlowRow(game.tags) }
+                        SectionCard(stringResource(R.string.game_stores)) { ChipRow(game.stores) }
+                        SectionCard(stringResource(R.string.game_metacritic_playtime)) {
                             if (game.metacritic == null && game.playtime == null) {
                                 Box(
                                     modifier = Modifier
@@ -239,7 +239,7 @@ fun DetailScreen(
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text(
-                                            text = "Keine Bewertungen verfügbar",
+                                            text = stringResource(R.string.no_rating),
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -249,20 +249,20 @@ fun DetailScreen(
                                 Column {
                                     game.metacritic?.let {
                                         Text(
-                                            "Metacritic: $it",
+                                            stringResource(R.string.game_metacritic_value, it),
                                             style = MaterialTheme.typography.bodyMedium
                                         )
                                     }
                                     game.playtime?.let {
                                         Text(
-                                            "Durchschnittliche Spielzeit: $it Std.",
+                                            stringResource(R.string.game_playtime_value, it),
                                             style = MaterialTheme.typography.bodyMedium
                                         )
                                     }
                                 }
                             }
                         }
-                        SectionCard("Screenshots") {
+                        SectionCard(stringResource(R.string.game_screenshots)) {
                             ScreenshotGallery(
                                 screenshots = game.screenshots,
                                 imageQuality = imageQuality
@@ -276,7 +276,7 @@ fun DetailScreen(
                                 )
                             }
                         }
-                        SectionCard("Trailer") {
+                        SectionCard(stringResource(R.string.game_trailers)) {
                             TrailerGallery(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 movies = game.movies,
@@ -292,7 +292,7 @@ fun DetailScreen(
                                 showEmptyState = true
                             )
                         }
-                        SectionCard("Website") {
+                        SectionCard(stringResource(R.string.game_website)) {
                             if (game.website.isNullOrBlank() || !(game.website.startsWith("http://") || game.website.startsWith("https://"))) {
                                 Box(
                                     modifier = Modifier
@@ -311,7 +311,7 @@ fun DetailScreen(
                                         )
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text(
-                                            text = "Keine Website verfügbar",
+                                            text = stringResource(R.string.game_no_website),
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )

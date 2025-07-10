@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import com.google.accompanist.flowlayout.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun ChipFlowRow(
@@ -28,7 +30,7 @@ fun ChipFlowRow(
         }
     } else {
         Text(
-            "Keine Daten vorhanden",
+            stringResource(R.string.detail_no_data),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(vertical = 4.dp)
@@ -39,5 +41,11 @@ fun ChipFlowRow(
 @Preview(showBackground = true)
 @Composable
 fun ChipFlowRowPreview() {
-    ChipFlowRow(items = listOf("Action", "Adventure", "RPG"))
+    ChipFlowRow(
+        items = listOf(
+            stringResource(R.string.preview_genre_action),
+            stringResource(R.string.preview_genre_adventure),
+            stringResource(R.string.preview_genre_rpg)
+        )
+    )
 } 

@@ -10,8 +10,10 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import coil3.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
 @Composable
@@ -27,7 +29,7 @@ fun ScreenshotGallery(
             // Accessibility-Info
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                text = "Tippen Sie auf ein Bild für Vollbildansicht",
+                text = stringResource(R.string.detail_screenshot_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -70,7 +72,7 @@ fun ScreenshotGallery(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "Für dieses Spiel wurden keine Screenshots gefunden.",
+                    text = stringResource(R.string.detail_no_screenshots),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

@@ -9,11 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
 @Composable
@@ -35,7 +37,7 @@ fun GameHeaderImage(imageUrl: String?, imageQuality: ImageQuality) {
         ) {
             Icon(
                 imageVector = Icons.Default.BrokenImage,
-                contentDescription = "Kein Bild verfügbar",
+                contentDescription = stringResource(R.string.game_headerimage_no_image),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(64.dp)
             )
@@ -62,7 +64,7 @@ fun GameHeaderImage(imageUrl: String?, imageQuality: ImageQuality) {
 @Composable
 fun GameHeaderImagePreview() {
     GameHeaderImage(
-        imageUrl = "https://media.rawg.io/media/games/4fb/4fb548e4816c84d1d70f1a228fb167cc.jpg",
+        imageUrl = stringResource(R.string.preview_game_image_url),
         imageQuality = ImageQuality.HIGH
     )
 }

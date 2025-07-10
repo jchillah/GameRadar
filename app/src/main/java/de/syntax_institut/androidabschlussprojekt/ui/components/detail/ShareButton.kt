@@ -1,39 +1,42 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
 import android.content.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
-import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
-fun ShareButton(game: Game, modifier: Modifier = Modifier) {
+fun ShareButton(
+    gameTitle: String,
+    gameUrl: String,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
-    IconButton(
+    val shareText = stringResource(R.string.detail_share_text, gameTitle)
+    val shareLink = stringResource(R.string.detail_share_link, gameUrl)
+    val chooserTitle = stringResource(R.string.share_games)
+    Button(
+        modifier = modifier,
         onClick = {
-            // TODO wenn Zeit ist nochmal schauen wie das mit dem DeepLink geht
-            // https://gameradar.deeplink/${game.slug}
-            val deepLink = "gameradarapp://game/${game.slug}"
-            val webLink = "https://rawg.io/games/${game.slug}"
-            val shareText = buildString {
-                append("Schau dir dieses Spiel an: ${game.title}\n")
-                // TODO wenn Zeit ist nochmal schauen wie das mit dem DeepLink geht
-                //       append("Öffne direkt in der App: $deepLink\n")
-                append("Oder im Browser: $webLink")
-            }
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, shareText)
+                putExtra(Intent.EXTRA_TEXT, "$shareText\n$shareLink")
             }
-            context.startActivity(Intent.createChooser(shareIntent, "Spiel teilen"))
-        },
-        modifier = modifier
+            val chooser = Intent.createChooser(intent, chooserTitle)
+            context.startActivity(chooser)
+        }
     ) {
-        Icon(Icons.Default.Share, contentDescription = "Teilen")
+        Icon(Icons.Default.Share, contentDescription = null)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = chooserTitle)
     }
 }
 
@@ -41,25 +44,7 @@ fun ShareButton(game: Game, modifier: Modifier = Modifier) {
 @Composable
 fun ShareButtonPreview() {
     ShareButton(
-        game = Game(
-            id = 1,
-            slug = "example-slug",
-            title = "Beispielspiel",
-            releaseDate = "2023-01-01",
-            imageUrl = "https://example.com/image.jpg",
-            rating = 4.2f,
-            description = "Beschreibung des Beispielspiels.",
-            metacritic = 85,
-            website = "https://example.com",
-            esrbRating = "E",
-            genres = listOf("Action", "Adventure"),
-            platforms = listOf("PC", "PS5"),
-            developers = listOf("Beispiel Dev"),
-            publishers = listOf("Beispiel Pub"),
-            tags = listOf("Indie", "Open World"),
-            screenshots = listOf("https://example.com/screenshot1.jpg"),
-            stores = listOf("Steam"),
-            playtime = 20
-        )
+        gameTitle = stringResource(R.string.preview_settings_button_title),
+        gameUrl = stringResource(R.string.preview_game_image_url)
     )
 }

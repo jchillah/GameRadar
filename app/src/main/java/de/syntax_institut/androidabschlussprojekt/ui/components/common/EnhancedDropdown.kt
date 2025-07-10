@@ -24,7 +24,7 @@ fun EnhancedDropdown(
     onValueChange: (String) -> Unit,
     options: List<DropdownOption>,
     enabled: Boolean = true,
-    placeholder: String = "Auswählen",
+    placeholder: String = stringResource(R.string.dropdown_placeholder),
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -46,7 +46,7 @@ fun EnhancedDropdown(
                 )
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Dropdown öffnen",
+                    contentDescription = stringResource(R.string.dropdown_open),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -92,7 +92,7 @@ fun EnhancedDropdown(
                             Icon(
                                 modifier = Modifier.size(16.dp),
                                 imageVector = Icons.Default.Check,
-                                contentDescription = "Ausgewählt",
+                                contentDescription = stringResource(R.string.dropdown_selected),
                                 tint = MaterialTheme.colorScheme.primary,
                             )
                         }
@@ -117,7 +117,7 @@ fun EnhancedDropdownPreview() {
     )
 
     EnhancedDropdown(
-        selectedValue = "Deutsch",
+        selectedValue = stringResource(R.string.language_german),
         onValueChange = {},
         options = options
     )

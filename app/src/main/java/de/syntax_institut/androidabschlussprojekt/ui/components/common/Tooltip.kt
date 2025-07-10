@@ -10,8 +10,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Tooltip-Komponente für Hilfestellungen und zusätzliche Informationen.
@@ -34,7 +36,7 @@ fun Tooltip(
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = "Info anzeigen",
+                contentDescription = stringResource(R.string.tooltip_info_content_description),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(16.dp)
             )
@@ -85,7 +87,7 @@ fun PositionedTooltip(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.Help,
-                contentDescription = "Hilfe anzeigen",
+                contentDescription = stringResource(R.string.tooltip_help_content_description),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(16.dp)
             )
@@ -145,7 +147,7 @@ enum class TooltipPosition {
 @Composable
 fun TooltipPreview() {
     Tooltip(
-        text = "Dies ist ein hilfreicher Tooltip mit zusätzlichen Informationen."
+        text = stringResource(R.string.preview_tooltip_text)
     )
 }
 
@@ -153,7 +155,7 @@ fun TooltipPreview() {
 @Composable
 fun PositionedTooltipPreview() {
     PositionedTooltip(
-        text = "Tooltip mit Positionierung",
+        text = stringResource(R.string.preview_tooltip_positioned_text),
         position = TooltipPosition.BOTTOM
     )
 } 

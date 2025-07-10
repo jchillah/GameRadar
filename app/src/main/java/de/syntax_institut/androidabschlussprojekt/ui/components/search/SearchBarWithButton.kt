@@ -60,7 +60,7 @@ fun SearchBarWithButton(
 fun SearchBarWithButtonPreview() {
     MyAppTheme {
         SearchBarWithButton(
-            searchText = TextFieldValue("Zelda"),
+            searchText = TextFieldValue(stringResource(R.string.search_placeholder)),
             onTextChange = {},
             onSearchClick = {},
             isLoading = false,

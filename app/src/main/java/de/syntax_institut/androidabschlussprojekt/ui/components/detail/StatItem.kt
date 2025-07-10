@@ -8,8 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun StatItem(
@@ -45,7 +47,8 @@ fun StatItem(
 @Composable
 fun StatItemPreview() {
     StatItem(
-        label = "Bewertung", value = "4.5",
+        label = stringResource(R.string.detail_rating),
+        value = stringResource(R.string.preview_stat_rating_value),
         icon = Icons.Filled.Star,
         color = Color(0xFFFFA500)
     )

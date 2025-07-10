@@ -7,8 +7,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 /**
@@ -34,7 +36,7 @@ fun GameStatsCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "Spielstatistiken",
+                text = stringResource(R.string.detail_game_stats),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
@@ -47,7 +49,7 @@ fun GameStatsCard(
                 playtime?.let { time ->
                     StatItem(
                         icon = Icons.Filled.Timer,
-                        label = "Spielzeit",
+                        label = stringResource(R.string.detail_playtime),
                         value = "${time}h",
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -56,7 +58,7 @@ fun GameStatsCard(
                 metacritic?.let { score ->
                     StatItem(
                         icon = Icons.Filled.Star,
-                        label = "Metacritic",
+                        label = stringResource(R.string.detail_metacritic),
                         value = score.toString(),
                         color = when {
                             score >= 80 -> Color(0xFF4CAF50)

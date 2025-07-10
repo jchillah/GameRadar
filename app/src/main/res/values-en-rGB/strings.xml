@@ -264,7 +264,74 @@
     <string name="dialog_delete_all_favorites_text">Do you really want to delete all favorites permanently?</string>
     <string name="dialog_delete_all_favorites_confirm">Delete</string>
     <string name="dialog_delete_all_favorites_cancel">Cancel</string>
-    <string name="data_sync_section">Data &amp; Synchronization</string>
+    <string name="data_sync_section">Data &amp; Synchronisation</string>
+
+    <!-- Detail Screen Sections -->
+    <string name="detail_section_platforms">Platforms</string>
+    <string name="detail_section_genres">Genres</string>
+    <string name="detail_section_developers">Developers</string>
+    <string name="detail_section_publishers">Publishers</string>
+    <string name="detail_section_tags">Tags</string>
+    <string name="detail_section_stores">Stores</string>
+    <string name="detail_section_screenshots">Screenshots</string>
+    <string name="detail_section_trailer">Trailer</string>
+
+    <!-- Detail Components -->
+    <string name="detail_no_data">No data available</string>
+    <string name="detail_rating">Rating</string>
+    <string name="detail_game_stats">Game Statistics</string>
+    <string name="detail_playtime">Playtime</string>
+    <string name="detail_metacritic">Metacritic</string>
+    <string name="detail_share_game">Share Game</string>
+    <string name="detail_play">Play</string>
+    <string name="detail_previous_image">Previous Image</string>
+    <string name="detail_trailer_default">Trailer</string>
+
+    <!-- Common UI Elements -->
+    <string name="ui_empty_state">Empty State</string>
+    <string name="ui_info_show">Show Info</string>
+    <string name="ui_help_show">Show Help</string>
+    <string name="ui_tooltip_positioning">Tooltip with Positioning</string>
+    <string name="ui_retry">Retry</string>
+    <string name="ui_error_occurred">An error occurred</string>
+
+    <!-- Preview/Test Data -->
+    <string name="preview_language">Language</string>
+    <string name="preview_german">German</string>
+    <string name="preview_english">English</string>
+    <string name="preview_french">French</string>
+    <string name="preview_general">General</string>
+    <string name="preview_notifications">Notifications</string>
+    <string name="preview_description">Description</string>
+    <string name="preview_example_game">Example Game</string>
+    <string name="preview_example_dev">Example Dev</string>
+    <string name="preview_example_pub">Example Pub</string>
+    <string name="preview_sample_game">Sample Game</string>
+    <string name="preview_sample_dev">Sample Dev</string>
+    <string name="preview_sample_pub">Sample Pub</string>
+    <string name="preview_sample_description">This is a sample game description.</string>
+
+    <!-- Navigation -->
+    <string name="nav_debug">Navigation</string>
+
+    <!-- Language Values -->
+    <string name="language_value_system">system</string>
+    <string name="language_value_german">de</string>
+    <string name="language_value_english">en</string>
+
+    <!-- Filter Values -->
+    <string name="filter_value_rating_desc">-rating</string>
+    <string name="filter_value_rating_asc">rating</string>
+    <string name="filter_value_release_desc">-released</string>
+    <string name="filter_value_release_asc">released</string>
+    <string name="filter_value_name_asc">name</string>
+    <string name="filter_value_name_desc">-name</string>
+
+    <!-- Activity Extras -->
+    <string name="activity_extra_screenshots">screenshots</string>
+    <string name="activity_extra_video_title">video_title</string>
+    <string name="activity_extra_video_url">video_url</string>
+    <string name="activity_scale">scale</string>
 
     <!-- Search Content Placeholders (added for full localization, context: search screen empty state and hints) -->
     <string name="search_empty_title">Search for games</string>

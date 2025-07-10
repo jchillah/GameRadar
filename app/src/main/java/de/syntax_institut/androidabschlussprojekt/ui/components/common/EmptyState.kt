@@ -6,8 +6,11 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
+
 
 /**
  * Zeigt einen leeren Zustand mit Icon, Titel, Nachricht und optionaler Aktion.
@@ -51,7 +54,7 @@ fun EmptyState(
             ) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "Leerer Zustand",
+                    contentDescription = stringResource(R.string.empty_state_icon_content_description),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(64.dp)
                 )

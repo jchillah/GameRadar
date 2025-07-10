@@ -8,8 +8,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.vector.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun SettingsButtonItem(
@@ -58,8 +60,8 @@ fun SettingsButtonItem(
 fun SettingsButtonItemPreview() {
     SettingsButtonItem(
         icon = Icons.Filled.Info,
-        title = "Über die App",
-        subtitle = "Version 1.0.0",
+        title = stringResource(R.string.preview_settings_button_title),
+        subtitle = stringResource(R.string.preview_settings_button_subtitle),
         onClick = {}
     )
 } 

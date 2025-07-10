@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Zeigt die Beschreibung eines Spiels.
@@ -14,7 +16,7 @@ import androidx.compose.ui.unit.*
 fun GameDescription(description: String?, modifier: Modifier = Modifier) {
     Spacer(modifier = Modifier.height(16.dp))
     Text(
-        description ?: "No description available.",
+        description ?: stringResource(R.string.detail_no_description),
         style = MaterialTheme.typography.bodyLarge,
         modifier = modifier
     )
@@ -23,5 +25,5 @@ fun GameDescription(description: String?, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GameDescriptionPreview() {
-    GameDescription(description = "Dies ist eine Beispielbeschreibung für ein Spiel.")
+    GameDescription(description = stringResource(R.string.preview_sectioncard_content))
 } 

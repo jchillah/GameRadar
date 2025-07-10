@@ -7,9 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.vector.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 internal fun SettingsSwitchItem(
@@ -63,8 +65,8 @@ internal fun SettingsSwitchItem(
 fun SettingsSwitchItemPreview() {
     SettingsSwitchItem(
         icon = Icons.Filled.Notifications,
-        title = "Benachrichtigungen",
-        subtitle = "Push-Benachrichtigungen aktivieren",
+        title = stringResource(R.string.push_notifications),
+        subtitle = stringResource(R.string.new_games_updates),
         checked = true,
         onCheckedChange = {}
     )

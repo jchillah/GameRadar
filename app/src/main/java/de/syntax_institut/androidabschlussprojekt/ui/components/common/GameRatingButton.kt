@@ -6,7 +6,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 
 @Composable
@@ -23,7 +25,7 @@ fun GameRatingButton(
     ) {
         Icon(
             imageVector = Icons.Filled.Star,
-            contentDescription = "Bewertung ändern",
+            contentDescription = stringResource(R.string.game_rating_change),
             tint = if (rating > 0) Color(0xFFFFD700) else MaterialTheme.colorScheme.onSurface
         )
     }

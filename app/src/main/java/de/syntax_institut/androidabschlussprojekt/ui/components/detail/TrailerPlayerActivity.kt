@@ -12,12 +12,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.viewinterop.*
 import androidx.core.view.*
 import androidx.media3.common.*
 import androidx.media3.exoplayer.*
 import androidx.media3.ui.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 
 /**
@@ -161,7 +163,7 @@ class TrailerPlayerActivity : ComponentActivity() {
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Schließen",
+                    contentDescription = stringResource(R.string.action_close),
                     tint = Color.White,
                     modifier = Modifier.size(32.dp)
                 )

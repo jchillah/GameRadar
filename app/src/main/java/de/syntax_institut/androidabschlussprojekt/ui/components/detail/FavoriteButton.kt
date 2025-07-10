@@ -8,8 +8,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.tooling.preview.*
+import de.syntax_institut.androidabschlussprojekt.R
 import kotlinx.coroutines.*
 
 
@@ -53,8 +55,7 @@ fun FavoriteButton(
                 rotationZ = rotation
             }
             .semantics {
-                contentDescription =
-                    if (isFavorite) "Favorit entfernen" else "Zu Favoriten hinzufügen"
+                // contentDescription wird im Icon gesetzt, nicht hier
             },
         enabled = enabled
     ) {
@@ -74,7 +75,9 @@ fun FavoriteButton(
         ) { favorite ->
             Icon(
                 imageVector = if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                contentDescription = if (favorite) "Favorit entfernen" else "Zu Favoriten hinzufügen",
+                contentDescription = if (favorite) stringResource(R.string.favorite_remove) else stringResource(
+                    R.string.favorite_add
+                ),
                 tint = if (favorite) Color.Red else MaterialTheme.colorScheme.onSurface
             )
         }

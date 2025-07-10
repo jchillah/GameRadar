@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 internal fun SettingsSection(
@@ -41,7 +43,7 @@ internal fun SettingsSection(
 @Preview(showBackground = true)
 @Composable
 fun SettingsSectionPreview() {
-    SettingsSection(title = "Allgemein") {
-        Text("Beispiel-Inhalt für eine SettingsSection.")
+    SettingsSection(title = stringResource(R.string.preview_settings_section_title)) {
+        Text(stringResource(R.string.preview_settings_section_content))
     }
 }

@@ -158,6 +158,14 @@
     <string name="game_genres">Genres</string>
     <string name="game_developers">Entwickler</string>
     <string name="game_publishers">Publisher</string>
+    <string name="game_tags">Tags</string>
+    <string name="game_stores">Stores</string>
+    <string name="game_metacritic_playtime">Metacritic &amp; Spielzeit</string>
+    <string name="game_metacritic_value">Metacritic: %1$d</string>
+    <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Stunden</string>
+    <string name="game_screenshots">Screenshots</string>
+    <string name="game_trailers">Trailer</string>
+    <string name="game_no_website">Keine Website verfügbar</string>
     <string name="game_playtime">Spielzeit</string>
     <string name="game_website">Website</string>
     <string name="game_metacritic">Metacritic</string>
@@ -168,6 +176,7 @@
     <string name="loading">Lädt…</string>
     <string name="loading_games">Spiele werden geladen…</string>
     <string name="loading_details">Details werden geladen…</string>
+    <string name="loading_state_default">Lade Daten…</string>
 
     <!-- Offline States -->
     <string name="offline_mode">Offline-Modus</string>
@@ -237,6 +246,8 @@
     <string name="favorite_marked">Als Favorit markiert</string>
     <string name="favorite_not_marked">Nicht als Favorit markiert</string>
     <string name="favorite_delete">Favorit entfernen</string>
+    <string name="favorite_add">Zu Favoriten hinzufügen</string>
+    <string name="favorite_remove">Favorit entfernen</string>
 
     <!-- Fehlertexte & UI-Texte aus Constants.kt -->
     <string name="error_unknown_default">Ein unbekannter Fehler ist aufgetreten</string>
@@ -265,4 +276,117 @@
     <string name="dialog_delete_all_favorites_confirm">Löschen</string>
     <string name="dialog_delete_all_favorites_cancel">Abbrechen</string>
     <string name="data_sync_section">Daten &amp; Synchronisation</string>
+
+    <!-- Detail Screen Sections -->
+    <string name="detail_section_platforms">Plattformen</string>
+    <string name="detail_section_genres">Genres</string>
+    <string name="detail_section_developers">Entwickler</string>
+    <string name="detail_section_publishers">Publisher</string>
+    <string name="detail_section_tags">Tags</string>
+    <string name="detail_section_stores">Stores</string>
+    <string name="detail_section_screenshots">Screenshots</string>
+    <string name="detail_section_trailer">Trailer</string>
+
+    <!-- Detail Components -->
+    <string name="detail_no_data">Keine Daten vorhanden</string>
+    <string name="detail_rating">Bewertung</string>
+    <string name="detail_game_stats">Spielstatistiken</string>
+    <string name="detail_playtime">Spielzeit</string>
+    <string name="detail_metacritic">Metacritic</string>
+    <string name="detail_share_game">Spiel teilen</string>
+    <string name="detail_play">Abspielen</string>
+    <string name="detail_previous_image">Vorheriges Bild</string>
+    <string name="detail_trailer_default">Trailer</string>
+    <string name="detail_no_description">Keine Beschreibung verfügbar.</string>
+    <string name="detail_no_trailers">Für dieses Spiel wurden keine Trailer gefunden.</string>
+    <string name="detail_trailer_play">Abspielen</string>
+    <string name="detail_screenshot_hint">Tippen Sie auf ein Bild für Vollbildansicht</string>
+    <string name="detail_no_screenshots">Für dieses Spiel wurden keine Screenshots gefunden.</string>
+    <string name="detail_share_text">Schau dir dieses Spiel an: %1$s</string>
+    <string name="detail_share_link">Oder im Browser: %1$s</string>
+
+    <!-- Common UI Elements -->
+    <string name="ui_empty_state">Leerer Zustand</string>
+    <string name="ui_info_show">Info anzeigen</string>
+    <string name="ui_help_show">Hilfe anzeigen</string>
+    <string name="ui_tooltip_positioning">Tooltip mit Positionierung</string>
+    <string name="ui_retry">Erneut versuchen</string>
+    <string name="ui_error_occurred">Ein Fehler ist aufgetreten</string>
+    <string name="empty_state_icon_content_description">Leerer Zustand Icon</string>
+
+    <!-- Preview/Test Data -->
+    <string name="preview_language">Sprache</string>
+    <string name="preview_german">Deutsch</string>
+    <string name="preview_english">Englisch</string>
+    <string name="preview_french">Französisch</string>
+    <string name="preview_general">Allgemein</string>
+    <string name="preview_notifications">Benachrichtigungen</string>
+    <string name="preview_description">Beschreibung</string>
+    <string name="preview_example_game">Beispielspiel</string>
+    <string name="preview_example_dev">Beispiel Dev</string>
+    <string name="preview_example_pub">Beispiel Pub</string>
+    <string name="preview_sample_game">Sample Game</string>
+    <string name="preview_sample_dev">Sample Dev</string>
+    <string name="preview_sample_pub">Sample Pub</string>
+    <string name="preview_sample_description">This is a sample game description.</string>
+    <string name="preview_sectioncard_content">Dies ist ein Beispielinhalt für eine SectionCard.</string>
+    <string name="preview_genre_action">Action</string>
+    <string name="preview_genre_adventure">Adventure</string>
+    <string name="preview_genre_rpg">RPG</string>
+    <string name="preview_tag_indie">Indie</string>
+    <string name="preview_tag_multiplayer">Multiplayer</string>
+    <string name="preview_tag_open_world">Open World</string>
+    <string name="preview_stat_rating_value">4.5</string>
+
+    <!-- Navigation -->
+    <string name="nav_debug">Navigation</string>
+
+    <!-- Language Values -->
+    <string name="language_value_system">system</string>
+    <string name="language_value_german">de</string>
+    <string name="language_value_english">en</string>
+
+    <!-- Filter Values -->
+    <string name="filter_value_rating_desc">-rating</string>
+    <string name="filter_value_rating_asc">rating</string>
+    <string name="filter_value_release_desc">-released</string>
+    <string name="filter_value_release_asc">released</string>
+    <string name="filter_value_name_asc">name</string>
+    <string name="filter_value_name_desc">-name</string>
+
+    <!-- Activity Extras -->
+    <string name="activity_extra_screenshots">screenshots</string>
+    <string name="activity_extra_video_title">video_title</string>
+    <string name="activity_extra_video_url">video_url</string>
+    <string name="activity_scale">scale</string>
+    <string name="detail_back">Zurück</string>
+    <string name="detail_title_default">Spieldetails</string>
+    <string name="detail_refresh">Neu laden</string>
+    <string name="rating_dialog_title">Spiel bewerten</string>
+    <string name="rating_dialog_question">Wie bewertest du dieses Spiel?</string>
+    <string name="rating_dialog_star_content_description">%1$d Sterne</string>
+    <string name="rating_dialog_rating_of_five">%1$d von 5 Sternen</string>
+    <string name="rating_dialog_confirm">Bewerten</string>
+    <string name="rating_dialog_cancel">Abbrechen</string>
+    <string name="ui_error_icon_content_description">Fehler-Icon</string>
+    <string name="error_retry">Erneut versuchen</string>
+    <string name="game_headerimage_no_image">Kein Bild verfügbar</string>
+    <string name="game_rating_change">Bewertung ändern</string>
+    <string name="dropdown_placeholder">Auswählen</string>
+    <string name="dropdown_open">Dropdown öffnen</string>
+    <string name="dropdown_selected">Ausgewählt</string>
+    <string name="tooltip_info_content_description">Info anzeigen</string>
+    <string name="tooltip_help_content_description">Hilfe anzeigen</string>
+    <string name="preview_tooltip_text">Dies ist ein hilfreicher Tooltip mit zusätzlichen Informationen.</string>
+    <string name="preview_tooltip_positioned_text">Tooltip mit Positionierung</string>
+    <string name="preview_item_index">Item %1$d</string>
+    <string name="preview_error_message">Ein Fehler ist aufgetreten</string>
+    <string name="preview_game_image_url">https://media.rawg.io/media/games/4fb/4fb548e4816c84d1d70f1a228fb167cc.jpg</string>
+    <string name="preview_settings_section_title">Allgemein</string>
+    <string name="preview_settings_section_content">Beispiel-Inhalt für eine SettingsSection.</string>
+    <string name="preview_settings_button_title">Über die App</string>
+    <string name="preview_settings_button_subtitle">Version 1.0.0</string>
+    <string name="preview_settings_dropdown_title">Sprache</string>
+    <string name="preview_settings_dropdown_subtitle">App-Sprache wählen</string>
+    <string name="preview_settings_dropdown_selected">Deutsch</string>
 </resources>

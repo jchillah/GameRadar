@@ -5,8 +5,10 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 
 @Composable
@@ -61,7 +63,7 @@ fun PerformanceOptimizedLazyColumnPreview() {
     ) {
         items(10) { index ->
             Text(
-                text = "Item $index",
+                text = stringResource(R.string.preview_item_index, index),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -80,7 +82,7 @@ fun PerformanceOptimizedLazyColumnWithPlaceholdersPreview() {
     ) {
         items(10) { index ->
             Text(
-                text = "Item $index",
+                text = stringResource(R.string.preview_item_index, index),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
@@ -94,11 +96,11 @@ fun PerformanceOptimizedLazyColumnWithPlaceholdersPreview() {
 fun PerformanceOptimizedLazyColumnWithErrorPreview() {
     PerformanceOptimizedLazyColumnWithError(
         modifier = Modifier.fillMaxSize(),
-        error = "Ein Fehler ist aufgetreten",
+        error = stringResource(R.string.preview_error_message),
     ) {
         items(10) { index ->
             Text(
-                text = "Item $index",
+                text = stringResource(R.string.preview_item_index, index),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)

@@ -9,8 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
 @Composable
@@ -36,7 +38,7 @@ fun TrailerGallery(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "Für dieses Spiel wurden keine Trailer gefunden.",
+                        text = stringResource(R.string.detail_no_trailers),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -60,7 +62,7 @@ fun TrailerGallery(
                         Icon(
                             modifier = Modifier.size(48.dp),
                             imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "Abspielen",
+                            contentDescription = stringResource(R.string.detail_trailer_play),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                         Text(
