@@ -22,7 +22,6 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
-import de.syntax_institut.androidabschlussprojekt.utils.AppAnalytics
 
 
 /**
