@@ -7,9 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.*
-import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.data.*
 
 /**
  * Zeigt einen leeren Zustand mit Icon, Titel, Nachricht und optionaler Aktion.
@@ -86,26 +84,4 @@ fun EmptyState(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EmptyStatePreview() {
-    EmptyState(
-        title = Constants.EMPTY_STATE_NO_RESULTS,
-        message = Constants.EMPTY_STATE_NO_RESULTS_MESSAGE,
-        icon = Icons.Default.Search
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EmptyStateWithActionPreview() {
-    EmptyState(
-        title = Constants.EMPTY_STATE_NO_FAVORITES,
-        message = Constants.EMPTY_STATE_NO_FAVORITES_MESSAGE,
-        icon = Icons.Default.FavoriteBorder,
-        actionLabel = Constants.EMPTY_STATE_DISCOVER_GAMES,
-        onAction = { }
-    )
 }

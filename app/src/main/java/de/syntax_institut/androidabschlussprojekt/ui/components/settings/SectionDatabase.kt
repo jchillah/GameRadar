@@ -9,6 +9,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Datenbank-Management-Sektion für die Einstellungen.
@@ -20,35 +22,49 @@ fun SectionDatabase(
 ) {
     val context = LocalContext.current
     var showClearDatabaseDialog by remember { mutableStateOf(false) }
+    var showRestartHint by remember { mutableStateOf(false) }
 
     Column(modifier = modifier) {
         SettingsButtonItem(
             icon = Icons.Default.DeleteForever,
-            title = Constants.DIALOG_RESET_DATABASE_TITLE,
-            subtitle = Constants.DIALOG_RESET_DATABASE_SUBTITLE,
+            title = stringResource(R.string.reset_database_dialog_title),
+            subtitle = stringResource(R.string.reset_database_description),
             onClick = { showClearDatabaseDialog = true }
         )
 
         if (showClearDatabaseDialog) {
             AlertDialog(
                 onDismissRequest = { showClearDatabaseDialog = false },
-                title = { Text(Constants.DIALOG_RESET_DATABASE_TITLE) },
+                title = { Text(stringResource(R.string.reset_database_dialog_title)) },
                 text = {
-                    Text(Constants.DIALOG_RESET_DATABASE_TEXT)
+                    Text(stringResource(R.string.reset_database_dialog_text))
                 },
                 confirmButton = {
                     TextButton(
                         onClick = {
                             GameDatabase.clearDatabase(context)
                             showClearDatabaseDialog = false
+                            showRestartHint = true
                         }
                     ) {
-                        Text(Constants.DIALOG_DELETE_ALL_CONFIRM)
+                        Text(stringResource(R.string.action_delete))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showClearDatabaseDialog = false }) {
-                        Text(Constants.DIALOG_DELETE_ALL_CANCEL)
+                        Text(stringResource(R.string.action_cancel))
+                    }
+                }
+            )
+        }
+        if (showRestartHint) {
+            AlertDialog(
+                onDismissRequest = { showRestartHint = false },
+                title = { Text(stringResource(R.string.reset_database_dialog_title)) },
+                text = { Text(stringResource(R.string.reset_database_restart_hint)) },
+                confirmButton = {
+                    TextButton(onClick = { showRestartHint = false }) {
+                        Text(stringResource(R.string.action_ok))
                     }
                 }
             )

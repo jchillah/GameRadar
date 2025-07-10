@@ -20,6 +20,8 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +37,9 @@ fun FavoritesScreen(
     val context = LocalContext.current
     val isOnline by NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
+
+    // Fix: stringResource im Composable-Kontext holen
+    val deleteAllContentDescription = stringResource(R.string.dialog_delete_all_favorites_title)
 
     LaunchedEffect(Unit) {
         viewModel.loadFavorites()
@@ -52,7 +57,7 @@ fun FavoritesScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Meine Favoriten",
+                text = stringResource(R.string.favorites_title),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -65,7 +70,7 @@ fun FavoritesScreen(
                     ),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     modifier = Modifier.semantics {
-                        contentDescription = Constants.DIALOG_DELETE_ALL_FAVORITES_TITLE
+                        contentDescription = deleteAllContentDescription
                     }
                 ) {
                     Icon(
@@ -74,7 +79,7 @@ fun FavoritesScreen(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Alle löschen")
+                    Text(stringResource(R.string.dialog_delete_all_favorites_confirm))
                 }
             }
         }
@@ -94,8 +99,8 @@ fun FavoritesScreen(
 
                 state.favorites.isEmpty() -> {
                     EmptyState(
-                        title = "Keine Favoriten",
-                        message = if (!isOnline) "Du bist offline. Deine Favoriten werden angezeigt, sobald du wieder online bist." else "Du hast noch keine Favoriten gespeichert.",
+                        title = stringResource(R.string.favorites_empty_title),
+                        message = if (!isOnline) stringResource(R.string.favorites_empty_offline) else stringResource(R.string.favorites_empty_message),
                         icon = Icons.Default.FavoriteBorder,
                         modifier = Modifier.fillMaxSize()
                     )
@@ -134,13 +139,10 @@ fun FavoritesScreen(
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
             title = {
-                Text(Constants.DIALOG_DELETE_ALL_FAVORITES_TITLE)
+                Text(stringResource(R.string.dialog_delete_all_favorites_title))
             },
             text = {
-                Text(
-                    "Möchten Sie wirklich alle ${state.favorites.size} Favoriten löschen? " +
-                            "Diese Aktion kann nicht rückgängig gemacht werden."
-                )
+                Text(stringResource(R.string.dialog_delete_all_favorites_text))
             },
             confirmButton = {
                 TextButton(
@@ -152,14 +154,14 @@ fun FavoritesScreen(
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Text("Alle löschen")
+                    Text(stringResource(R.string.dialog_delete_all_favorites_confirm))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDeleteConfirmation = false }
                 ) {
-                    Text("Abbrechen")
+                    Text(stringResource(R.string.dialog_delete_all_favorites_cancel))
                 }
             },
             icon = {

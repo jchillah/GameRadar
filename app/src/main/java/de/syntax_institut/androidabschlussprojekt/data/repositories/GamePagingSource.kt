@@ -56,7 +56,7 @@ class GamePagingSource(
                     nextKey = null
                 )
             } else {
-                return LoadResult.Error(Exception(Constants.ERROR_NO_CONNECTION_AND_NO_CACHE))
+                return LoadResult.Error(Exception("Fehler beim Laden der Spiele: Kein Netzwerk und kein Cache verfügbar"))
             }
         }
         // API-Call
@@ -119,7 +119,7 @@ class GamePagingSource(
                         nextKey = null
                     )
                 } else {
-                    LoadResult.Error(Exception(Constants.ERROR_SERVER))
+                    LoadResult.Error(Exception("Serverfehler"))
                 }
             }
         } catch (e: Exception) {
@@ -140,10 +140,9 @@ class GamePagingSource(
             } else {
                 LoadResult.Error(
                     Exception(
-                        ErrorHandler.handleException(
-                            e,
-                            Constants.ERROR_SERVER + e.localizedMessage
-                        )
+                        // Ursprünglich: ErrorHandler.handleException(e, "Serverfehler")
+                        // Jetzt: Nur einfacher Fehlertext, keine Compose-Funktion!
+                        "Serverfehler: " + (e.localizedMessage ?: "Unbekannter Fehler")
                     )
                 )
             }
@@ -151,4 +150,4 @@ class GamePagingSource(
     }
 
     override fun getRefreshKey(state: PagingState<Int, Game>): Int? = 1
-} 
+}

@@ -11,6 +11,8 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.models.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Erweiterte Dropdown-Komponente mit Icons, Trennlinien und verbesserter UX.
@@ -111,15 +113,8 @@ fun EnhancedDropdown(
 @Composable
 fun EnhancedDropdownPreview() {
     val options = listOf(
-        DropdownOption("de", Constants.UI_LANGUAGE_GERMAN, Icons.Default.Language),
-        DropdownOption("en", Constants.UI_LANGUAGE_ENGLISH, Icons.Default.Language),
-        DropdownOption(
-            "fr",
-            Constants.UI_LANGUAGE_FRENCH,
-            Icons.Default.Language,
-            showDividerBefore = true
-        ),
-        DropdownOption("es", Constants.UI_LANGUAGE_ESPANOL, Icons.Default.Language)
+        DropdownOption("de", stringResource(R.string.language_german), Icons.Default.Language),
+        DropdownOption("en", stringResource(R.string.language_english), Icons.Default.Language)
     )
 
     EnhancedDropdown(

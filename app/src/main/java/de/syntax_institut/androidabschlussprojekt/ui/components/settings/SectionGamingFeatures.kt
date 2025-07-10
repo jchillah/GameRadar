@@ -5,7 +5,8 @@ import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import de.syntax_institut.androidabschlussprojekt.data.*
+import androidx.compose.ui.res.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Gaming-Features Sektion für die Einstellungen.
@@ -24,24 +25,24 @@ fun SectionGamingFeatures(
     Column(modifier = modifier) {
         SettingsSwitchItem(
             icon = Icons.Default.Games,
-            title = Constants.UI_GAMING_MODE,
-            subtitle = Constants.UI_GAMING_MODE_DESC,
+            title = stringResource(R.string.gaming_mode),
+            subtitle = stringResource(R.string.gaming_mode_description),
             checked = gamingModeEnabled,
             onCheckedChange = onGamingModeChange
         )
 
         SettingsSwitchItem(
             icon = Icons.Default.Speed,
-            title = Constants.UI_PERFORMANCE_MODE,
-            subtitle = Constants.UI_PERFORMANCE_MODE_DESC,
+            title = stringResource(R.string.performance_mode),
+            subtitle = stringResource(R.string.performance_mode_description),
             checked = performanceModeEnabled,
             onCheckedChange = onPerformanceModeChange
         )
 
         SettingsSwitchItem(
             icon = Icons.Default.Share,
-            title = Constants.UI_SHARE_GAMES,
-            subtitle = Constants.UI_SHARE_GAMES_DESC,
+            title = stringResource(R.string.share_games),
+            subtitle = stringResource(R.string.share_games_description),
             checked = shareGamesEnabled,
             onCheckedChange = onShareGamesChange
         )

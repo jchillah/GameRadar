@@ -13,6 +13,8 @@ import androidx.paging.*
 import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun SearchResultContent(
@@ -35,13 +37,13 @@ fun SearchResultContent(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    "Fehler: ${error.localizedMessage}",
+                    stringResource(R.string.error_unknown) + ": ${error.localizedMessage}",
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(8.dp))
                 Button(onClick = { pagingItems.retry() }) {
-                    Text("Erneut versuchen")
+                    Text(stringResource(R.string.action_retry))
                 }
             }
         }
@@ -49,8 +51,8 @@ fun SearchResultContent(
         else -> {
             if (pagingItems.itemCount == 0) {
                 EmptyState(
-                    title = "Keine Ergebnisse",
-                    message = "Für deine Suche konnten keine Spiele gefunden werden.",
+                    title = stringResource(R.string.no_results),
+                    message = stringResource(R.string.no_results_message),
                     icon = Icons.Default.SearchOff,
                     modifier = modifier
                 )

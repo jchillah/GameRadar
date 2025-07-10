@@ -27,10 +27,10 @@ class GameRadarApp : Application() {
     private fun createNewGamesNotificationChannel(context: Context) {
         val channel = NotificationChannel(
             Constants.NOTIFICATION_CHANNEL_ID,
-            Constants.NOTIFICATION_CHANNEL_NAME,
+            context.getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
-            description = Constants.NOTIFICATION_CHANNEL_DESC
+            description = context.getString(R.string.notification_channel_desc)
         }
         val notificationManager: NotificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager

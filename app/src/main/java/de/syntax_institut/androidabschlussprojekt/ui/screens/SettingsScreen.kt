@@ -122,7 +122,7 @@ fun SettingsScreen(
         }
 
         // Daten & Synchronisation-Sektion ausgelagert
-        SettingsSection(title = "Daten & Synchronisation") {
+        SettingsSection(title = stringResource(R.string.data_sync_section)) {
             SectionDataSync(
                 autoRefreshEnabled = autoRefreshEnabled,
                 imageQuality = imageQuality,
@@ -140,7 +140,7 @@ fun SettingsScreen(
         }
 
         // Gaming-Features-Sektion ausgelagert
-        SettingsSection(title = "Gaming-Features") {
+        SettingsSection(title = stringResource(R.string.gaming_features_section)) {
             SectionGamingFeatures(
                 gamingModeEnabled = gamingModeEnabled,
                 performanceModeEnabled = performanceModeEnabled,
@@ -152,7 +152,7 @@ fun SettingsScreen(
         }
 
         // Design-Sektion ausgelagert
-        SettingsSection(title = "Design") {
+        SettingsSection(title = stringResource(R.string.design_section)) {
             SectionDesign(
                 darkModeEnabled = darkModeEnabled,
                 onDarkModeChange = viewModel::setDarkModeEnabled
@@ -160,7 +160,7 @@ fun SettingsScreen(
         }
 
         // "Über die App"-Sektion ausgelagert
-        SettingsSection(title = "Über die App") {
+        SettingsSection(title = stringResource(R.string.about_app_section)) {
             SectionAbout(
                 onShowAboutDialog = { showAboutDialog = true },
                 onShowPrivacyDialog = { showPrivacyDialog = true }
@@ -168,7 +168,7 @@ fun SettingsScreen(
         }
 
         // Datenbank-Management und Dialoge werden immer angezeigt (oder nach Wunsch)
-        SettingsSection(title = "Datenbank-Management") {
+        SettingsSection(title = stringResource(R.string.database_management_section)) {
             SectionDatabase()
         }
         if (showAboutDialog) {

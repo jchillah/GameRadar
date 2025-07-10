@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun OfflineBanner(
@@ -26,13 +28,13 @@ fun OfflineBanner(
             ) {
                 Icon(
                     imageVector = Icons.Default.CloudOff,
-                    contentDescription = "Offline",
+                    contentDescription = stringResource(R.string.offline_mode),
                     tint = MaterialTheme.colorScheme.onErrorContainer,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Offline - Gecachte Daten",
+                    text = stringResource(R.string.offline_no_data),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onErrorContainer
                 )

@@ -29,6 +29,7 @@ class GameRepository @Inject constructor(
         context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
 
     private val lastSyncTime = Constants.LAST_SYNC_TIME
+    
     suspend fun getGameDetail(gameId: Int): Resource<Game> {
         AppLogger.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
         AppLogger.i("GameRepository", "getGameDetail() aufgerufen für ID: $gameId")
@@ -78,7 +79,7 @@ class GameRepository @Inject constructor(
                 )
                 Resource.Success(game)
             } else {
-                Resource.Error(Constants.ERROR_NO_CONNECTION_AND_NO_CACHE)
+                Resource.Error("Fehler beim Laden der Screenshots: Kein Netzwerk und kein Cache verfügbar")
             }
         }
 
@@ -122,7 +123,7 @@ class GameRepository @Inject constructor(
                         } else {
                             AppLogger.w(
                                 "GameRepository",
-                                "${Constants.ERROR} beim Laden der Screenshots: ${screenshotsResp.code()}"
+                                "Fehler beim Laden der Screenshots: ${screenshotsResp.code()}"
                             )
                             emptyList()
                         }
@@ -169,7 +170,7 @@ class GameRepository @Inject constructor(
                         } else {
                             AppLogger.w(
                                 "GameRepository",
-                                "${Constants.ERROR} beim Laden der Movies: ${moviesResp.code()}"
+                                "Fehler beim Laden der Movies: ${moviesResp.code()}"
                             )
                             emptyList()
                         }
@@ -220,7 +221,7 @@ class GameRepository @Inject constructor(
                         } catch (e: Exception) {
                             AppLogger.e(
                                 "GameRepository",
-                                "${Constants.ERROR} beim Cachen im Detail-Cache: ${e.localizedMessage}",
+                                "Fehler beim Cachen im Detail-Cache: ${e.localizedMessage}",
                                 e
                             )
                         }
@@ -244,7 +245,7 @@ class GameRepository @Inject constructor(
                     )
                     Resource.Success(game)
                 } else {
-                    Resource.Error(Constants.ERROR_SERVER + resp.code())
+                    Resource.Error("Fehler beim Laden der Screenshots: Serverfehler ${resp.code()}")
                 }
             }
         } catch (e: Exception) {
@@ -262,7 +263,7 @@ class GameRepository @Inject constructor(
                 Resource.Error(
                     ErrorHandler.handleException(
                         e,
-                        Constants.ERROR_NETWORK + e.localizedMessage
+                        "Fehler beim Laden der Screenshots: Netzwerkfehler ${e.localizedMessage}"
                     )
                 )
             }
@@ -281,15 +282,15 @@ class GameRepository @Inject constructor(
                         )
                     }
                     Resource.Success(platforms)
-                } ?: Resource.Error(Constants.ERROR_NO_PLATFORM_DATA)
+                } ?: Resource.Error("Fehler beim Laden der Plattformen: Keine Plattformdaten verfügbar")
             } else {
-                Resource.Error(Constants.ERROR_API + response.code())
+                Resource.Error("Fehler beim Laden der Plattformen: API-Fehler ${response.code()}")
             }
         } catch (e: Exception) {
             Resource.Error(
                 ErrorHandler.handleException(
                     e,
-                    Constants.ERROR_NETWORK + e.localizedMessage
+                    "Fehler beim Laden der Plattformen: Netzwerkfehler ${e.localizedMessage}"
                 )
             )
         }
@@ -307,15 +308,15 @@ class GameRepository @Inject constructor(
                         )
                     }
                     Resource.Success(genres)
-                } ?: Resource.Error(Constants.ERROR_NO_GENRE_DATA)
+                } ?: Resource.Error("Fehler beim Laden der Genres: Keine Genres verfügbar")
             } else {
-                Resource.Error(Constants.ERROR_API + response.code())
+                Resource.Error("Fehler beim Laden der Genres: API-Fehler ${response.code()}")
             }
         } catch (e: Exception) {
             Resource.Error(
                 ErrorHandler.handleException(
                     e,
-                    Constants.ERROR_NETWORK + e.localizedMessage
+                    "Fehler beim Laden der Genres: Netzwerkfehler ${e.localizedMessage}"
                 )
             )
         }
@@ -404,7 +405,7 @@ class GameRepository @Inject constructor(
                 game?.id
             } else null
         } catch (e: Exception) {
-            AppLogger.e("GameRepository", "${Constants.ERROR} beim Suchen der GameId per API", e)
+            AppLogger.e("GameRepository", "Fehler beim Suchen der GameId per API", e)
             null
         }
     }

@@ -35,16 +35,6 @@ fun SectionLanguage(
             "en",
             stringResource(R.string.language_english),
             Icons.Default.Language
-        ),
-        DropdownOption(
-            "fr",
-            stringResource(R.string.language_french),
-            Icons.Default.Language
-        ),
-        DropdownOption(
-            "es",
-            stringResource(R.string.language_spanish),
-            Icons.Default.Language
         )
     )
 
@@ -74,7 +64,7 @@ fun SectionLanguage(
         Spacer(modifier = Modifier.height(8.dp))
         EnhancedDropdown(
             modifier = Modifier.padding(top = 8.dp),
-            selectedValue = LocaleManager.getLanguageDisplayName(language),
+            selectedValue = languageOptions.firstOrNull { it.value == language }?.label ?: languageOptions[0].label,
             onValueChange = onLanguageChange,
             options = languageOptions
         )

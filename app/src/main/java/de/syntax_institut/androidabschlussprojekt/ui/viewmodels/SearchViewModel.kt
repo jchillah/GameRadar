@@ -89,7 +89,7 @@ class SearchViewModel(
             } catch (e: Exception) {
                 _uiState.update { 
                     it.copy(
-                        platformsError = "${Constants.ERROR_LOAD_PLATFORMS}: ${e.localizedMessage}",
+                        platformsError = "Fehler beim Laden der Plattformen: ${e.localizedMessage}",
                         isLoadingPlatforms = false
                     ) 
                 }
@@ -115,7 +115,7 @@ class SearchViewModel(
             } catch (e: Exception) {
                 _uiState.update { 
                     it.copy(
-                        genresError = "${Constants.ERROR_LOAD_GENRES}: ${e.localizedMessage}",
+                        genresError = "Fehler beim Laden der Genres: ${e.localizedMessage}",
                         isLoadingGenres = false
                     ) 
                 }
@@ -182,7 +182,7 @@ class SearchViewModel(
                 _cacheSize.value = 0
                 AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
             } catch (e: Exception) {
-                AppLogger.e("SearchViewModel", Constants.ERROR_CLEAR_CACHE, e)
+                AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
             }
         }
     }

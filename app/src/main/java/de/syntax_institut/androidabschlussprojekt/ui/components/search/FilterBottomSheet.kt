@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.Constants
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -50,7 +52,7 @@ fun FilterBottomSheet(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Plattformen Dropdown
-        Text("Plattformen", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.game_platforms), style = MaterialTheme.typography.titleMedium)
         
         if (isLoadingPlatforms) {
             Loading(modifier = Modifier.padding(16.dp))
@@ -63,7 +65,7 @@ fun FilterBottomSheet(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = Constants.ERROR_LOAD_PLATFORMS,
+                        text = stringResource(R.string.error_load_platforms),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
@@ -77,7 +79,7 @@ fun FilterBottomSheet(
                         onClick = onRetryPlatforms,
                         enabled = !isOffline
                     ) {
-                        Text("Erneut versuchen")
+                        Text(stringResource(R.string.action_retry))
                     }
                 }
             }
@@ -89,8 +91,8 @@ fun FilterBottomSheet(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        if (selectedPlatformState.isEmpty()) "Plattformen auswählen" 
-                        else "${selectedPlatformState.size} Plattform(en) ausgewählt"
+                        if (selectedPlatformState.isEmpty()) stringResource(R.string.filter_select_platforms)
+                        else stringResource(R.string.filter_selected_platforms, selectedPlatformState.size)
                     )
                 }
                 DropdownMenu(
@@ -127,7 +129,7 @@ fun FilterBottomSheet(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Genres Dropdown
-        Text("Genres", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.game_genres), style = MaterialTheme.typography.titleMedium)
         
         if (isLoadingGenres) {
             Loading(modifier = Modifier.padding(16.dp))
@@ -140,7 +142,7 @@ fun FilterBottomSheet(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Fehler beim Laden der Genres:",
+                        text = stringResource(R.string.error_load_genres),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
@@ -154,7 +156,7 @@ fun FilterBottomSheet(
                         onClick = onRetryGenres,
                         enabled = !isOffline
                     ) {
-                        Text("Erneut versuchen")
+                        Text(stringResource(R.string.action_retry))
                     }
                 }
             }
@@ -166,8 +168,8 @@ fun FilterBottomSheet(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        if (selectedGenreState.isEmpty()) "Genres auswählen" 
-                        else "${selectedGenreState.size} Genre(s) ausgewählt"
+                        if (selectedGenreState.isEmpty()) stringResource(R.string.filter_select_genres)
+                        else stringResource(R.string.filter_selected_genres, selectedGenreState.size)
                     )
                 }
                 DropdownMenu(
@@ -204,7 +206,7 @@ fun FilterBottomSheet(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Mindestbewertung
-        Text("Mindestbewertung: ${ratingState.roundToInt()}", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.filter_min_rating, ratingState.roundToInt()), style = MaterialTheme.typography.titleMedium)
         Slider(
             value = ratingState,
             onValueChange = { ratingState = it },
@@ -216,14 +218,14 @@ fun FilterBottomSheet(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Sortierung Dropdown
-        Text("Sortierung", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.filter_sorting), style = MaterialTheme.typography.titleMedium)
         val orderings = listOf(
-            "-rating" to "Bewertung (absteigend)",
-            "rating" to "Bewertung (aufsteigend)",
-            "-released" to "Release (neueste)",
-            "released" to "Release (älteste)",
-            "name" to "Name (A-Z)",
-            "-name" to "Name (Z-A)"
+            "-rating" to stringResource(R.string.filter_ordering_rating_desc),
+            "rating" to stringResource(R.string.filter_ordering_rating_asc),
+            "-released" to stringResource(R.string.filter_ordering_release_desc),
+            "released" to stringResource(R.string.filter_ordering_release_asc),
+            "name" to stringResource(R.string.filter_ordering_name_asc),
+            "-name" to stringResource(R.string.filter_ordering_name_desc)
         )
         Box {
             OutlinedButton(
@@ -232,7 +234,7 @@ fun FilterBottomSheet(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    orderings.find { it.first == orderingState }?.second ?: "Sortierung wählen",
+                    orderings.find { it.first == orderingState }?.second ?: stringResource(R.string.filter_select_sorting),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -282,12 +284,12 @@ fun FilterBottomSheet(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "Offline-Modus",
+                        text = stringResource(R.string.offline_mode),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                     Text(
-                        text = "Nur gecachte Daten verfügbar",
+                        text = stringResource(R.string.offline_no_data),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -298,7 +300,7 @@ fun FilterBottomSheet(
                             containerColor = MaterialTheme.colorScheme.error
                         )
                     ) {
-                        Text("Cache leeren")
+                        Text(stringResource(R.string.clear_cache))
                     }
                 }
             }
@@ -317,7 +319,7 @@ fun FilterBottomSheet(
             enabled = !isOffline || (platforms.isNotEmpty() && genres.isNotEmpty()),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Filter anwenden")
+            Text(stringResource(R.string.filter_apply))
         }
     }
 }

@@ -219,7 +219,7 @@ class FavoritesRepository @Inject constructor(
                 "FavoritesRepository",
                 "${Constants.ERROR} beim Hinzufügen des Favoriten: ${e.message}"
             )
-            Resource.Error(Constants.ERROR_ADD_FAVORITE + e.localizedMessage)
+            Resource.Error("Fehler beim Hinzufügen zu Favoriten: " + e.localizedMessage)
         }
     }
     
@@ -231,7 +231,7 @@ class FavoritesRepository @Inject constructor(
             favoriteGameDao.removeFavorite(gameId)
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(Constants.ERROR_REMOVE_FAVORITE + e.localizedMessage)
+            Resource.Error("Fehler beim Entfernen aus Favoriten: " + e.localizedMessage)
         }
     }
     
@@ -321,7 +321,7 @@ class FavoritesRepository @Inject constructor(
                 "FavoritesRepository",
                 "${Constants.ERROR} beim Umschalten des Favoriten: ${e.message}"
             )
-            Resource.Error(Constants.ERROR_TOGGLE_FAVORITE + e.localizedMessage)
+            Resource.Error("Fehler beim Umschalten des Favoriten: " + e.localizedMessage)
         }
     }
     
@@ -333,7 +333,7 @@ class FavoritesRepository @Inject constructor(
             favoriteGameDao.clearAllFavorites()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(Constants.ERROR_CLEAR_FAVORITES + e.localizedMessage)
+            Resource.Error("Fehler beim Löschen aller Favoriten: " + e.localizedMessage)
         }
     }
 

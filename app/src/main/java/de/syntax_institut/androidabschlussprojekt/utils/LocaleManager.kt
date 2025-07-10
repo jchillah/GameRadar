@@ -14,8 +14,6 @@ object LocaleManager {
     private const val LANGUAGE_SYSTEM = "system"
     private const val LANGUAGE_GERMAN = "de"
     private const val LANGUAGE_ENGLISH = "en"
-    private const val LANGUAGE_FRENCH = "fr"
-    private const val LANGUAGE_SPANISH = "es"
     /**
      * Verfügbare Sprachen mit ihren Anzeigenamen.
      */
@@ -23,24 +21,18 @@ object LocaleManager {
         LANGUAGE_SYSTEM to "Systemsprache",
         LANGUAGE_GERMAN to "Deutsch",
         LANGUAGE_ENGLISH to "English",
-        LANGUAGE_FRENCH to "Français",
-        LANGUAGE_SPANISH to "Español"
     )
 
     /**
      * Erstellt einen Context mit der angegebenen Sprache.
      */
     fun createLocalizedContext(context: Context, languageCode: String): Context {
-        val locale = when (languageCode) {
-            LANGUAGE_SYSTEM -> getSystemLocale(context)
-            LANGUAGE_GERMAN -> Locale.GERMAN
-            LANGUAGE_ENGLISH -> Locale.ENGLISH
-            LANGUAGE_FRENCH -> Locale.FRENCH
-            LANGUAGE_SPANISH -> Locale("es")
-            else -> getSystemLocale(context)
+        return when (languageCode) {
+            LANGUAGE_SYSTEM -> context // System: Context unverändert zurückgeben
+            LANGUAGE_GERMAN -> updateResources(context, Locale.GERMAN)
+            LANGUAGE_ENGLISH -> updateResources(context, Locale.ENGLISH)
+            else -> context
         }
-
-        return updateResources(context, locale)
     }
 
     /**
@@ -61,12 +53,5 @@ object LocaleManager {
         configuration.setLocales(LocaleList(locale))
 
         return context.createConfigurationContext(configuration)
-    }
-
-    /**
-     * Erhält den Anzeigenamen für einen Sprachcode.
-     */
-    fun getLanguageDisplayName(languageCode: String): String {
-        return availableLanguages[languageCode] ?: availableLanguages[LANGUAGE_SYSTEM]!!
     }
 } 

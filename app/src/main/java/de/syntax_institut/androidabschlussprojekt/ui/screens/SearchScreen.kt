@@ -21,6 +21,8 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,7 +39,11 @@ fun SearchScreen(
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
-    val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
+    val tabTitles = listOf(
+        stringResource(R.string.search_tab_all),
+        stringResource(R.string.search_tab_new),
+        stringResource(R.string.search_tab_top_rated)
+    )
     var selectedTab by remember { mutableIntStateOf(0) }
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
@@ -63,12 +69,12 @@ fun SearchScreen(
         ) {
             Text(
                 maxLines = 1,
-                text = "Spielsuche",
+                text = stringResource(R.string.search_title),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
             IconButton(onClick = { showFilters = true }) {
-                Icon(Icons.Default.FilterList, contentDescription = "Filter anzeigen")
+                Icon(Icons.Default.FilterList, contentDescription = stringResource(R.string.filter_button_content_description))
             }
         }
         TabRow(selectedTabIndex = selectedTab) {
@@ -129,8 +135,8 @@ fun SearchScreen(
                 )
             } else if (!state.hasSearched) {
                 EmptyState(
-                    title = "Suche nach Spielen",
-                    message = if (!isOnline) "Du bist offline. Die Suche ist nur online möglich." else "Gib einen Suchbegriff ein, um Spiele zu finden.",
+                    title = stringResource(R.string.search_empty_title),
+                    message = if (!isOnline) stringResource(R.string.search_empty_message_offline) else stringResource(R.string.search_empty_message_online),
                     modifier = Modifier.fillMaxSize()
                 )
             } else {

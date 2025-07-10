@@ -8,9 +8,11 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import kotlinx.coroutines.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @ExperimentalMaterial3Api
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,7 +27,7 @@ fun CacheBanner(
     val isCacheFull = cachePercentage >= 90f
     val isCacheWarning = cachePercentage >= 70f && cachePercentage < 90f
     val isUnlimited = maxCacheSize >= 100000
-    val displayMax = if (isUnlimited) "∞" else maxCacheSize.toString()
+    val displayMax = if (isUnlimited) stringResource(R.string.cache_unlimited) else maxCacheSize.toString()
     val containerColor = when {
         isCacheFull -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.7f)
         isCacheWarning -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.8f)
@@ -42,9 +44,9 @@ fun CacheBanner(
         else -> MaterialTheme.colorScheme.primary
     }
     val label = when {
-        isCacheFull -> "Performance kritisch"
-        isCacheWarning -> "Performance eingeschränkt"
-        else -> "Performance optimal"
+        isCacheFull -> stringResource(R.string.cache_performance_critical)
+        isCacheWarning -> stringResource(R.string.cache_performance_warning)
+        else -> stringResource(R.string.cache_performance_optimal)
     }
     val tooltipState = rememberTooltipState()
     val coroutineScope = rememberCoroutineScope()
@@ -63,14 +65,14 @@ fun CacheBanner(
             ) {
                 Icon(
                     imageVector = Icons.Default.Storage,
-                    contentDescription = "Cache",
+                    contentDescription = stringResource(R.string.cache_content_description),
                     tint = progressColor,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Cache: $cacheSize/$displayMax Spiele",
+                        text = stringResource(R.string.cache_label, cacheSize, displayMax),
                         style = MaterialTheme.typography.bodySmall,
                         color = textColor
                     )
@@ -100,18 +102,13 @@ fun CacheBanner(
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
-                                    text = "Cache-Info",
+                                    text = stringResource(R.string.cache_info_title),
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
-                                    text = "Der Cache speichert Spiele für Offline-Nutzung und schnellere Ladezeiten.\n\n" +
-                                            "Farben:\n" +
-                                            "• Grün: Performance optimal (bis 70%)\n" +
-                                            "• Gelb: Performance eingeschränkt (ab 70%)\n" +
-                                            "• Rot: Performance kritisch (ab 90%)\n\n" +
-                                            "Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur durch den Gerätespeicher begrenzt wird.",
+                                    text = stringResource(R.string.cache_info_text),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -127,7 +124,7 @@ fun CacheBanner(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Info,
-                            contentDescription = "Cache-Info",
+                            contentDescription = stringResource(R.string.cache_info_content_description),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
                         )

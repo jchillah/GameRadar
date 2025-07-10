@@ -28,6 +28,8 @@ import de.syntax_institut.androidabschlussprojekt.data.Constants
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import kotlin.math.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Fullscreen Activity für die Screenshot-Galerie.
@@ -206,7 +208,7 @@ class ScreenshotGalleryActivity : ComponentActivity() {
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = Constants.ERROR_LOAD,
+                                        text = stringResource(R.string.error_load_data),
                                         color = Color.White,
                                         style = MaterialTheme.typography.bodyMedium
                                     )

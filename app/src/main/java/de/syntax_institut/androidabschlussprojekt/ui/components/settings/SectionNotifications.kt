@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.*
 import androidx.core.app.*
 import de.syntax_institut.androidabschlussprojekt.*
@@ -24,8 +25,8 @@ fun SectionNotifications(
     Column(modifier = Modifier.fillMaxWidth()) {
         SettingsSwitchItem(
             icon = Icons.Default.Notifications,
-            title = Constants.UI_PUSH_NOTIFICATIONS,
-            subtitle = Constants.UI_NEW_GAMES_AND_UPDATES,
+            title = stringResource(R.string.push_notifications),
+            subtitle = stringResource(R.string.new_games_updates),
             checked = notificationsEnabled,
             onCheckedChange = onCheckedChange
         )
@@ -40,15 +41,15 @@ fun SectionNotifications(
                     // Channel erstellen falls nicht vorhanden
                     val channel = NotificationChannel(
                         channelId,
-                        Constants.NOTIFICATION_CHANNEL_NAME,
+                        context.getString(R.string.notification_channel_name),
                         NotificationManager.IMPORTANCE_DEFAULT
                     )
                     notificationManager.createNotificationChannel(channel)
 
                     val notification = NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.drawable.ic_dialog_info)
-                        .setContentTitle(Constants.NOTIFICATION_TITLE_TEST)
-                        .setContentText(Constants.NOTIFICATION_TEXT_TEST)
+                        .setContentTitle(context.getString(R.string.notification_title_test))
+                        .setContentText(context.getString(R.string.notification_text_test))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true)
                         .build()
@@ -59,7 +60,7 @@ fun SectionNotifications(
             ) {
                 Icon(Icons.Default.NotificationsActive, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Test: Neue Spiel-Benachrichtigung")
+                Text(stringResource(R.string.test_new_game_notification))
             }
         }
     }

@@ -6,6 +6,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import de.syntax_institut.androidabschlussprojekt.data.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Design-Sektion für die Einstellungen.
@@ -20,8 +22,8 @@ fun SectionDesign(
     Column(modifier = modifier) {
         SettingsSwitchItem(
             icon = Icons.Default.DarkMode,
-            title = Constants.UI_DARK_MODE,
-            subtitle = Constants.UI_DARK_MODE_DESC,
+            title = stringResource(R.string.ui_dark_mode),
+            subtitle = stringResource(R.string.ui_dark_mode_desc),
             checked = darkModeEnabled,
             onCheckedChange = onDarkModeChange
         )

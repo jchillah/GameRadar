@@ -9,6 +9,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 
@@ -28,7 +30,7 @@ fun SearchBarWithButton(
         TextField(
             value = searchText,
             onValueChange = onTextChange,
-            label = { Text("Suche nach Spielen") },
+            label = { Text(stringResource(R.string.search_placeholder)) },
             modifier = Modifier.weight(1f),
             trailingIcon = {
                 Row {
@@ -39,7 +41,7 @@ fun SearchBarWithButton(
                         IconButton(onClick = { onClear() }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = "Leeren"
+                                contentDescription = stringResource(R.string.action_delete)
                             )
                         }
                     }
@@ -48,7 +50,7 @@ fun SearchBarWithButton(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Button(onClick = onSearchClick) {
-            Text("Suchen")
+            Text(stringResource(R.string.search_button))
         }
     }
 }

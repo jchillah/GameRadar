@@ -4,6 +4,7 @@ import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import kotlinx.coroutines.flow.*
+import androidx.compose.ui.res.stringResource
 
 /**
  * UseCase zum Laden von Spielen mit optionalen Filtern und Paging.

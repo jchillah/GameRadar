@@ -20,10 +20,10 @@ object CommonUtils {
     ): String {
         return when {
             items.isNullOrEmpty() && isOffline ->
-                Constants.EMPTY_STATE_OFFLINE_PREFIX + itemName + Constants.EMPTY_STATE_OFFLINE_SUFFIX
+                "" + itemName + ""
 
             items.isNullOrEmpty() ->
-                Constants.EMPTY_STATE_PREFIX + itemName + Constants.EMPTY_STATE_SUFFIX
+                "" + itemName + ""
 
             else -> ""
         }
@@ -36,7 +36,7 @@ object CommonUtils {
         return if (rating > 0f) {
             String.format(java.util.Locale.getDefault(), "%.1f", rating)
         } else {
-            Constants.NO_RATING
+            "-"
         }
     }
 

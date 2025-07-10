@@ -25,17 +25,17 @@ fun SectionDataSync(
     val imageQualityOptions = listOf(
         DropdownOption(
             ImageQuality.LOW.name,
-            stringResource(R.string.image_quality_low) + " (640x480)",
+            stringResource(R.string.image_quality_low),
             Icons.Default.HighQuality
         ),
         DropdownOption(
             ImageQuality.MEDIUM.name,
-            stringResource(R.string.image_quality_medium) + " (1024x768)",
+            stringResource(R.string.image_quality_medium),
             Icons.Default.HighQuality
         ),
         DropdownOption(
             ImageQuality.HIGH.name,
-            stringResource(R.string.image_quality_high) + " (höchste verfügbare)",
+            stringResource(R.string.image_quality_high),
             Icons.Default.HighQuality
         )
     )
@@ -76,7 +76,7 @@ fun SectionDataSync(
             }
             Spacer(modifier = Modifier.height(8.dp))
             EnhancedDropdown(
-                selectedValue = imageQuality.displayName + " (" + getResolutionText(imageQuality) + ")",
+                selectedValue = imageQualityOptions.firstOrNull { it.value == imageQuality.name }?.label ?: stringResource(R.string.image_quality_high),
                 onValueChange = { selectedValue ->
                     val quality = ImageQuality.entries.find { it.name == selectedValue }
                         ?: ImageQuality.HIGH
@@ -86,13 +86,5 @@ fun SectionDataSync(
                 options = imageQualityOptions
             )
         }
-    }
-}
-
-private fun getResolutionText(quality: ImageQuality): String {
-    return when (quality) {
-        ImageQuality.LOW -> "640x480"
-        ImageQuality.MEDIUM -> "1024x768"
-        ImageQuality.HIGH -> "höchste verfügbare"
     }
 } 

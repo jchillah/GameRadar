@@ -1,15 +1,16 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.settings
 
+import android.app.*
 import android.content.*
-import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
-import androidx.core.net.*
-import de.syntax_institut.androidabschlussprojekt.data.*
+import androidx.compose.ui.res.*
+import de.syntax_institut.androidabschlussprojekt.R
+import androidx.core.net.toUri
 
 /**
  * "Über die App"-Sektion für die Einstellungen.
@@ -22,30 +23,32 @@ fun SectionAbout(
     onShowPrivacyDialog: () -> Unit,
 ) {
     val context = LocalContext.current
+    val email = stringResource(R.string.email)
+    val subject = stringResource(R.string.contact_support_subject)
 
     Column(modifier = modifier) {
         SettingsButtonItem(
             icon = Icons.Default.Info,
-            title = "Über GameRadar",
-            subtitle = "Version 1.0.0",
+            title = stringResource(R.string.about_app),
+            subtitle = stringResource(R.string.app_version),
             onClick = onShowAboutDialog
         )
 
         SettingsButtonItem(
             icon = Icons.Default.PrivacyTip,
-            title = "Datenschutz",
-            subtitle = "Datenschutzerklärung lesen",
+            title = stringResource(R.string.privacy_policy),
+            subtitle = stringResource(R.string.privacy_policy_description),
             onClick = onShowPrivacyDialog
         )
 
         SettingsButtonItem(
             icon = Icons.Default.Email,
-            title = "Support kontaktieren",
-            subtitle = Constants.EMAIL,
+            title = stringResource(R.string.contact_support),
+            subtitle = email,
             onClick = {
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
-                    data = "mailto:${Constants.EMAIL}".toUri()
-                    putExtra(Intent.EXTRA_SUBJECT, "Support GameRadar")
+                    data = "mailto:$email".toUri()
+                    putExtra(Intent.EXTRA_SUBJECT, subject)
                 }
                 if (context !is Activity) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

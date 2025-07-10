@@ -11,6 +11,8 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Zeigt eine Fehlerkarte mit Icon, Titel, Nachricht und optionaler Retry-Aktion.
@@ -29,7 +31,7 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 fun ErrorCard(
     modifier: Modifier = Modifier,
     error: String,
-    title: String = Constants.ERROR_CARD_DEFAULT_TITLE,
+    title: String = stringResource(R.string.error_card_default_title),
     showRetryButton: Boolean = false,
     onRetry: (() -> Unit)? = null,
 ) {
