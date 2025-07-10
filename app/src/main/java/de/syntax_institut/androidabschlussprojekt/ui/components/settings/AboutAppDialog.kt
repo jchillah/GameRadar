@@ -6,10 +6,12 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun AboutAppDialog(
@@ -28,7 +30,7 @@ fun AboutAppDialog(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Über GameFinder",
+                    text = stringResource(R.string.about_app),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -39,18 +41,18 @@ fun AboutAppDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "GameFinder v1.0.0",
+                    text = stringResource(R.string.app_version),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
-                    text = "Deine ultimative Gaming-Datenbank mit über 350.000 Spielen aus der RAWG-API.",
+                    text = stringResource(R.string.about_app_description),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
                 Text(
-                    text = "Features:",
+                    text = stringResource(R.string.about_app_features),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -58,17 +60,17 @@ fun AboutAppDialog(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    FeatureItem("🔍 Erweiterte Spielsuche")
-                    FeatureItem("⭐ Favoriten-Verwaltung")
-                    FeatureItem("📱 Offline-Cache")
-                    FeatureItem("🎮 Gaming-Features")
-                    FeatureItem("🌙 Dark Mode")
+                    FeatureItem(stringResource(R.string.about_app_feature_search))
+                    FeatureItem(stringResource(R.string.about_app_feature_favorites))
+                    FeatureItem(stringResource(R.string.about_app_feature_offline))
+                    FeatureItem(stringResource(R.string.about_app_feature_gaming))
+                    FeatureItem(stringResource(R.string.about_app_feature_darkmode))
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Entwickelt mit ❤️ für die Gaming-Community",
+                    text = stringResource(R.string.about_app_community),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -77,7 +79,7 @@ fun AboutAppDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Schließen")
+                Text(stringResource(R.string.action_close))
             }
         }
     )

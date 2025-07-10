@@ -7,12 +7,12 @@ import de.syntax_institut.androidabschlussprojekt.data.local.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
+import io.mockk.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runner.*
-import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
 class FavoritesRepositoryTest {
@@ -31,9 +31,11 @@ class FavoritesRepositoryTest {
         repository = FavoritesRepository(
             favoriteGameDao = dao,
             repo = GameRepository(
-                api = mock(),
-                gameCacheDao = mock(),
-                context = ApplicationProvider.getApplicationContext()
+                api = mockk(),
+                gameCacheDao = mockk(),
+                context = ApplicationProvider.getApplicationContext(),
+                favoriteGameDao = mockk(),
+                gameDetailCacheDao = mockk()
             )
         )
     }
@@ -48,6 +50,7 @@ class FavoritesRepositoryTest {
         // Given
         val game = Game(
             id = 1,
+            slug = "test-game",
             title = "Test Game",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image.jpg",
@@ -63,7 +66,8 @@ class FavoritesRepositoryTest {
             tags = listOf("Action", "RPG"),
             screenshots = listOf("https://example.com/screenshot1.jpg"),
             stores = listOf("Steam", "PlayStation Store"),
-            playtime = 20
+            playtime = 20,
+            movies = emptyList()
         )
 
         // When
@@ -83,6 +87,7 @@ class FavoritesRepositoryTest {
         // Given
         val game1 = Game(
             id = 1,
+            slug = "game-1",
             title = "Game 1",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image1.jpg",
@@ -98,11 +103,13 @@ class FavoritesRepositoryTest {
             tags = listOf("Action"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         val game2 = Game(
             id = 2,
+            slug = "game-2",
             title = "Game 2",
             releaseDate = "2023-01-02",
             imageUrl = "https://example.com/image2.jpg",
@@ -118,7 +125,8 @@ class FavoritesRepositoryTest {
             tags = listOf("RPG"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When
@@ -137,6 +145,7 @@ class FavoritesRepositoryTest {
         // Given
         val game = Game(
             id = 1,
+            slug = "test-game",
             title = "Test Game",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image.jpg",
@@ -152,7 +161,8 @@ class FavoritesRepositoryTest {
             tags = listOf("Action"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When
@@ -170,6 +180,7 @@ class FavoritesRepositoryTest {
         // Given
         val game = Game(
             id = 1,
+            slug = "test-game",
             title = "Test Game",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image.jpg",
@@ -185,7 +196,8 @@ class FavoritesRepositoryTest {
             tags = listOf("Action"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When
@@ -205,6 +217,7 @@ class FavoritesRepositoryTest {
         // Given
         val game = Game(
             id = 1,
+            slug = "test-game",
             title = "Test Game",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image.jpg",
@@ -220,7 +233,8 @@ class FavoritesRepositoryTest {
             tags = listOf("Action"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When
@@ -244,6 +258,7 @@ class FavoritesRepositoryTest {
         // Given
         val game1 = Game(
             id = 1,
+            slug = "game-1",
             title = "Game 1",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image1.jpg",
@@ -259,11 +274,13 @@ class FavoritesRepositoryTest {
             tags = listOf("Action"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         val game2 = Game(
             id = 2,
+            slug = "game-2",
             title = "Game 2",
             releaseDate = "2023-01-02",
             imageUrl = "https://example.com/image2.jpg",
@@ -279,7 +296,8 @@ class FavoritesRepositoryTest {
             tags = listOf("RPG"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When
@@ -300,6 +318,7 @@ class FavoritesRepositoryTest {
         // Given
         val game1 = Game(
             id = 1,
+            slug = "game-1",
             title = "Game 1",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image1.jpg",
@@ -315,11 +334,13 @@ class FavoritesRepositoryTest {
             tags = listOf("Action"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         val game2 = Game(
             id = 2,
+            slug = "game-2",
             title = "Game 2",
             releaseDate = "2023-01-02",
             imageUrl = "https://example.com/image2.jpg",
@@ -335,7 +356,8 @@ class FavoritesRepositoryTest {
             tags = listOf("RPG"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When
@@ -356,6 +378,7 @@ class FavoritesRepositoryTest {
         // Given
         val game1 = Game(
             id = 1,
+            slug = "action-game",
             title = "Action Game",
             releaseDate = "2023-01-01",
             imageUrl = "https://example.com/image1.jpg",
@@ -371,11 +394,13 @@ class FavoritesRepositoryTest {
             tags = listOf("Action"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         val game2 = Game(
             id = 2,
+            slug = "rpg-game",
             title = "RPG Game",
             releaseDate = "2023-01-02",
             imageUrl = "https://example.com/image2.jpg",
@@ -391,7 +416,8 @@ class FavoritesRepositoryTest {
             tags = listOf("RPG"),
             screenshots = emptyList(),
             stores = listOf("Steam"),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When
@@ -417,6 +443,7 @@ class FavoritesRepositoryTest {
         // Given
         val invalidGame = Game(
             id = -1, // Ungültige ID könnte zu Fehler führen
+            slug = "invalid-game",
             title = "",
             releaseDate = null,
             imageUrl = null,
@@ -432,7 +459,8 @@ class FavoritesRepositoryTest {
             tags = emptyList(),
             screenshots = emptyList(),
             stores = emptyList(),
-            playtime = null
+            playtime = null,
+            movies = emptyList()
         )
 
         // When

@@ -5,6 +5,9 @@ enum class ImageQuality(val displayName: String) {
     MEDIUM("Mittel"),
     HIGH("Hoch");
 
+    val title: String
+        get() = displayName
+
     companion object {
         fun fromDisplayName(displayName: String): ImageQuality {
             return entries.find { it.displayName == displayName } ?: HIGH

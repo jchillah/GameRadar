@@ -7,7 +7,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
 
 @Composable
@@ -46,7 +48,7 @@ fun ActiveFiltersRow(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Plattform-Filter entfernen"
+                        contentDescription = stringResource(R.string.filter_remove_platform),
                     )
                 }
             )
@@ -61,7 +63,7 @@ fun ActiveFiltersRow(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Genre-Filter entfernen"
+                        contentDescription = stringResource(R.string.filter_remove_genre),
                     )
                 }
             )
@@ -70,12 +72,12 @@ fun ActiveFiltersRow(
         if (rating > 0f) {
             FilterChip(
                 selected = true,
-                label = { Text("Bewertung ≥ ${rating.toInt()}") },
+                label = { Text(stringResource(R.string.filter_rating_label, rating.toInt())) },
                 onClick = onRemoveRating,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Bewertungs-Filter entfernen"
+                        contentDescription = stringResource(R.string.filter_remove_rating),
                     )
                 }
             )
@@ -83,12 +85,12 @@ fun ActiveFiltersRow(
         // Sortierung
         if (ordering.isNotBlank()) {
             val orderingLabel = when (ordering) {
-                "-rating" -> "Bewertung (absteigend)"
-                "rating" -> "Bewertung (aufsteigend)"
-                "-released" -> "Release (neueste)"
-                "released" -> "Release (älteste)"
-                "name" -> "Name (A-Z)"
-                "-name" -> "Name (Z-A)"
+                "-rating" -> stringResource(R.string.filter_ordering_rating_desc)
+                "rating" -> stringResource(R.string.filter_ordering_rating_asc)
+                "-released" -> stringResource(R.string.filter_ordering_release_desc)
+                "released" -> stringResource(R.string.filter_ordering_release_asc)
+                "name" -> stringResource(R.string.filter_ordering_name_asc)
+                "-name" -> stringResource(R.string.filter_ordering_name_desc)
                 else -> ordering
             }
             FilterChip(
@@ -98,7 +100,7 @@ fun ActiveFiltersRow(
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Sortierung entfernen"
+                        contentDescription = stringResource(R.string.filter_remove_ordering),
                     )
                 }
             )
@@ -106,12 +108,12 @@ fun ActiveFiltersRow(
         // Alle Filter zurücksetzen
         FilterChip(
             selected = true,
-            label = { Text("Alle Filter zurücksetzen") },
+            label = { Text(stringResource(R.string.filter_reset_all)) },
             onClick = onClearAll,
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Alle Filter entfernen"
+                    contentDescription = stringResource(R.string.filter_remove_all),
                 )
             },
             colors = FilterChipDefaults.filterChipColors(

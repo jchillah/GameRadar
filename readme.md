@@ -1,4 +1,4 @@
-# GameFinder 🎮
+passe meine Readme an dieses schema an # GameFinder 🎮
 
 **Entdecke deine nächste Gaming-Leidenschaft – modern, schnell, fehlerrobust.**
 
@@ -10,29 +10,37 @@ Favoriten zu speichern. Entwickelt mit **Jetpack Compose**, **MVVM**, **Room** u
 
 ## Highlights
 
-- **Edge-to-Edge-Design:** Inhalte beginnen direkt unter der Statusleiste, keine doppelten AppBars, keine verschachtelten Scaffold-Strukturen.
-- **Konsistente UI:** Einheitliche Titelzeile mit Actions (Teilen, Favorit, Refresh) auf allen Hauptscreens.
-- **Dark-/Light-Mode-Umschaltung:** Nutzer können das Design jederzeit in den Einstellungen wechseln.
-- **Settings-Screen:** Alle App-Einstellungen (Design, Sprache, Bildqualität, Benachrichtigungen, etc.) zentral und MVVM-konform.
-- **Fehlerbehandlung pro Feld:** Fehler wie „Keine Website verfügbar“ oder „Keine Screenshots verfügbar“ werden gezielt im jeweiligen Bereich angezeigt.
-- **Null-Safety & Logging:** Alle Datenzugriffe sind null-sicher, Navigation und Datenübergaben werden geloggt.
-- **Navigation nur mit primitiven Typen:** Es werden ausschließlich IDs oder Strings übergeben, keine komplexen Objekte.
+- **Edge-to-Edge-Design:** Inhalte beginnen direkt unter der Statusleiste, keine doppelten AppBars,
+  keine verschachtelten Scaffold-Strukturen.
+- **Konsistente UI:** Einheitliche Titelzeile mit Actions (Teilen, Favorit, Refresh) auf allen
+  Hauptscreens.
+- **Dark-/Light-Mode-Umschaltung:** Nutzer können das Design jederzeit in den Einstellungen
+  wechseln.
+- **Settings-Screen:** Alle App-Einstellungen (Design, Sprache, Bildqualität, Benachrichtigungen,
+  etc.) zentral und MVVM-konform.
+- **Fehlerbehandlung pro Feld:** Fehler wie „Keine Website verfügbar“ oder „Keine Screenshots
+  verfügbar“ werden gezielt im jeweiligen Bereich angezeigt.
+- **Null-Safety & Logging:** Alle Datenzugriffe sind null-sicher, Navigation und Datenübergaben
+  werden geloggt.
+- **Navigation nur mit primitiven Typen:** Es werden ausschließlich IDs oder Strings übergeben,
+  keine komplexen Objekte.
 - **Offline-First:** Favoriten und Detaildaten werden lokal mit Room gecacht.
-- **Moderne Compose-Architektur:** Klare Trennung von UI, State und Logik, State-Hoisting, keine UI-Logik im ViewModel.
+- **Moderne Compose-Architektur:** Klare Trennung von UI, State und Logik, State-Hoisting, keine
+  UI-Logik im ViewModel.
 
 ---
 
 ## Screenshots
 
-<p>
-  <img src="./img/screen1.png" width="300" alt="Suchbildschirm LightMode">
-  <img src="./img/screen2.png" width="300" alt="Suchbildschirm DarkMode">
-  <img src="./img/screen3.png" width="300" alt="Detailansicht">
-  <img src="./img/screen4.png" width="300" alt="Detailansicht mit Screenshots">
-  <img src="./img/screen5.png" width="300" alt="Favoriten-Liste">
-  <img src="./img/screen6.png" width="300" alt="Settings-Screen">
-  <img src="./img/screen7.png" width="300" alt="Settings-Screen über App">
-</p>
+Hier ein Überblick über die wichtigsten App-Bereiche im Entwickler Modus:
+
+| Startscreen               | Suche                     | Detailansicht              |
+|---------------------------|---------------------------|----------------------------|
+| ![Start](img/screen1.png) | ![Suche](img/screen2.png) | ![Detail](img/screen3.png) |
+
+| Favoriten                     | Einstellungen                     | Dark Mode                     | Fehlerfall                 |
+|-------------------------------|-----------------------------------|-------------------------------|----------------------------|
+| ![Favoriten](img/screen4.png) | ![Einstellungen](img/screen5.png) | ![Dark Mode](img/screen6.png) | ![Fehler](img/screen7.png) |
 
 ---
 
@@ -86,6 +94,9 @@ de.syntax_institut.androidabschlussprojekt
   - Endpoints: `/games?search=...`, `/games/{id}`
   - Filter: Plattform, Genre, Bewertung, Datum
   - API-Key in `local.properties` eintragen
+    ```bash
+    API_KEY=YOUR_API_KEY
+    ```
 
 ### Frameworks & Libraries
 
@@ -101,7 +112,8 @@ de.syntax_institut.androidabschlussprojekt
 
 ## Fehlerbehandlung & UX
 
-- **Fehler pro Feld:**  Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich  Echte API-/Netzwerkfehler? → Globale ErrorCard mit Retry
+- **Fehler pro Feld:**  Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich Echte
+  API-/Netzwerkfehler? → Globale ErrorCard mit Retry
 - **Null-Safety:**  Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
 - **Logging:**  Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
 - **Keine komplexen Objekte in Navigation:**  Es werden nur primitive Typen (Int, String) übergeben
@@ -118,7 +130,7 @@ de.syntax_institut.androidabschlussprojekt
 
 ## Ausblick
 
-- [ ] Push-Notifikationen zu neuen Top-Spielen
+- [x] Push-Notifikationen zu neuen Top-Spielen
 - [x] Dark Mode (umschaltbar)
 - [x] Vollbild-Screenshot-Galerie in Detailseite
 - [x] Fehlerbehandlung pro Feld (statt global)
@@ -131,10 +143,11 @@ de.syntax_institut.androidabschlussprojekt
 
 ## Lizenz
 
-MIT License – siehe [LICENSE](LICENSE)
+MIT License – Siehe [LICENSE](LICENSE) für weitere Informationen.
 
 ---
 
 **Tipp:**  
-Das Projekt ist ein modernes Compose-Vorzeigeprojekt – ideal als Lern- und Referenzbasis für saubere Android-Architektur!
+Das Projekt ist ein modernes Compose-Vorzeigeprojekt – ideal als Lern- und Referenzbasis für saubere
+Android-Architektur!
 

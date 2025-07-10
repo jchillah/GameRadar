@@ -1,12 +1,13 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import android.content.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import kotlinx.coroutines.flow.*
 
 class SettingsRepository(context: Context) {
     private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("gamefinder_settings", Context.MODE_PRIVATE)
+        context.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
     private val _notificationsEnabled = MutableStateFlow(true)
     val notificationsEnabled: StateFlow<Boolean> = _notificationsEnabled.asStateFlow()
@@ -17,7 +18,7 @@ class SettingsRepository(context: Context) {
     private val _imageQuality = MutableStateFlow(ImageQuality.HIGH)
     val imageQuality: StateFlow<ImageQuality> = _imageQuality.asStateFlow()
 
-    private val _language = MutableStateFlow("Deutsch")
+    private val _language = MutableStateFlow("system")
     val language: StateFlow<String> = _language.asStateFlow()
 
     private val _gamingModeEnabled = MutableStateFlow(false)
@@ -78,30 +79,36 @@ class SettingsRepository(context: Context) {
 
     private fun saveSettings() {
         sharedPreferences.edit().apply {
-            putBoolean("notifications_enabled", _notificationsEnabled.value)
-            putBoolean("auto_refresh_enabled", _autoRefreshEnabled.value)
-            putString("image_quality", _imageQuality.value.name)
-            putString("language", _language.value)
-            putBoolean("gaming_mode_enabled", _gamingModeEnabled.value)
-            putBoolean("performance_mode_enabled", _performanceModeEnabled.value)
-            putBoolean("share_games_enabled", _shareGamesEnabled.value)
-            putBoolean("dark_mode_enabled", _darkModeEnabled.value)
+            putBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, _notificationsEnabled.value)
+            putBoolean(Constants.PREF_AUTO_REFRESH_ENABLED, _autoRefreshEnabled.value)
+            putString(Constants.PREF_IMAGE_QUALITY, _imageQuality.value.name)
+            putString(Constants.PREF_LANGUAGE, _language.value)
+            putBoolean(Constants.PREF_GAMING_MODE_ENABLED, _gamingModeEnabled.value)
+            putBoolean(Constants.PREF_PERFORMANCE_MODE_ENABLED, _performanceModeEnabled.value)
+            putBoolean(Constants.PREF_SHARE_GAMES_ENABLED, _shareGamesEnabled.value)
+            putBoolean(Constants.PREF_DARK_MODE_ENABLED, _darkModeEnabled.value)
             apply()
         }
     }
 
     private fun loadSettings() {
-        _notificationsEnabled.value = sharedPreferences.getBoolean("notifications_enabled", true)
-        _autoRefreshEnabled.value = sharedPreferences.getBoolean("auto_refresh_enabled", true)
+        _notificationsEnabled.value =
+            sharedPreferences.getBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, true)
+        _autoRefreshEnabled.value =
+            sharedPreferences.getBoolean(Constants.PREF_AUTO_REFRESH_ENABLED, true)
         _imageQuality.value = ImageQuality.valueOf(
-            sharedPreferences.getString("image_quality", ImageQuality.HIGH.name)
+            sharedPreferences.getString(Constants.PREF_IMAGE_QUALITY, ImageQuality.HIGH.name)
                 ?: ImageQuality.HIGH.name
         )
-        _language.value = sharedPreferences.getString("language", "Deutsch") ?: "Deutsch"
-        _gamingModeEnabled.value = sharedPreferences.getBoolean("gaming_mode_enabled", false)
+        _language.value =
+            sharedPreferences.getString(Constants.PREF_LANGUAGE, "system") ?: "system"
+        _gamingModeEnabled.value =
+            sharedPreferences.getBoolean(Constants.PREF_GAMING_MODE_ENABLED, false)
         _performanceModeEnabled.value =
-            sharedPreferences.getBoolean("performance_mode_enabled", true)
-        _shareGamesEnabled.value = sharedPreferences.getBoolean("share_games_enabled", true)
-        _darkModeEnabled.value = sharedPreferences.getBoolean("dark_mode_enabled", false)
+            sharedPreferences.getBoolean(Constants.PREF_PERFORMANCE_MODE_ENABLED, true)
+        _shareGamesEnabled.value =
+            sharedPreferences.getBoolean(Constants.PREF_SHARE_GAMES_ENABLED, true)
+        _darkModeEnabled.value =
+            sharedPreferences.getBoolean(Constants.PREF_DARK_MODE_ENABLED, false)
     }
 } 

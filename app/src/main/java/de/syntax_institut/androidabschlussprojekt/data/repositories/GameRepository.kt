@@ -1,12 +1,14 @@
 package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import android.content.*
-import android.util.*
+import androidx.core.content.*
 import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
-import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
-import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toGame
+import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toGame
+import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toDetailCacheEntity
+import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toGame
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
@@ -19,133 +21,253 @@ class GameRepository @Inject constructor(
     private val api: RawgApi,
     private val gameCacheDao: GameCacheDao,
     private val favoriteGameDao: FavoriteGameDao,
+    private val gameDetailCacheDao: GameDetailCacheDao,
     private val context: Context,
 ) {
 
-    suspend fun getGameDetail(gameId: Int): Resource<Game> {
-        Log.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
-        Log.d("GameRepository", "Lade Spieldetails für ID: $gameId")
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
 
-        // Prüfe zuerst den Cache
-        val cachedGame = gameCacheDao.getGameById(gameId)
-        Log.d(
+    private val lastSyncTime = Constants.LAST_SYNC_TIME
+
+    suspend fun getGameDetail(gameId: Int): Resource<Game> {
+        AppLogger.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
+        AppLogger.i("GameRepository", "getGameDetail() aufgerufen für ID: $gameId")
+        AppLogger.d("GameRepository", "Lade Spieldetails für ID: $gameId")
+
+        // NEU: Prüfe zuerst, ob das Spiel ein Favorit ist
+        val favorite = favoriteGameDao.getFavoriteById(gameId)
+        if (favorite != null) {
+            AppLogger.d(
+                "GameRepository",
+                "[DEBUG] Favorit gefunden für $gameId – lade aus Favoriten-Tabelle"
+            )
+            AppLogger.i(
+                "GameRepository",
+                "Favorit gefunden für $gameId – lade aus Favoriten-Tabelle"
+            )
+            return Resource.Success(favorite.toGame())
+        }
+
+        // Prüfe zuerst den Detail-Cache
+        val cachedDetail = gameDetailCacheDao.getGameDetailById(gameId)
+        AppLogger.d(
             "GameRepository",
-            "[DEBUG] cachedGame: ${cachedGame != null}, Screenshots: ${cachedGame?.toGame()?.screenshots?.size ?: 0}"
+            "[DEBUG] cachedDetail: ${cachedDetail != null}, Screenshots: ${cachedDetail?.toGame()?.screenshots?.size ?: 0}"
         )
-        if (cachedGame != null && NetworkUtils.isCacheValid(cachedGame.cachedAt)) {
-            Log.d("GameRepository", "[DEBUG] Gültiger Cache gefunden für $gameId")
-            val game = cachedGame.toGame()
-            Log.d("GameRepository", "Gecachte Screenshots: ${game.screenshots.size}")
-            Log.d("GameRepository", "Gecachte Website: '${game.website}'")
+        if (cachedDetail != null && NetworkUtils.isCacheValid(cachedDetail.detailCachedAt)) {
+            AppLogger.d("GameRepository", "[DEBUG] Gültiger Detail-Cache gefunden für $gameId")
+            AppLogger.i("GameRepository", "Gültiger Detail-Cache gefunden für $gameId")
+            val game = cachedDetail.toGame()
+            AppLogger.d("GameRepository", "Gecachte Screenshots: ${game.screenshots.size}")
+            AppLogger.d("GameRepository", "Gecachte Website: '${game.website}'")
             return Resource.Success(game)
         }
 
-        // Wenn kein Netzwerk verfügbar und Cache vorhanden, verwende Cache auch wenn abgelaufen
+        // Wenn kein Netzwerk verfügbar und Detail-Cache vorhanden, verwende Cache auch wenn abgelaufen
         if (!NetworkUtils.isNetworkAvailable(context)) {
-            Log.d("GameRepository", "[DEBUG] Kein Netzwerk, prüfe Offline-Cache für $gameId")
-            Log.d("GameRepository", "Kein Netzwerk verfügbar")
-            return if (cachedGame != null) {
-                val game = cachedGame.toGame()
-                Log.d("GameRepository", "Offline-Cache Screenshots: ${game.screenshots.size}")
+            AppLogger.d(
+                "GameRepository",
+                "[DEBUG] Kein Netzwerk, prüfe Offline-Detail-Cache für $gameId"
+            )
+            AppLogger.i("GameRepository", "Kein Netzwerk verfügbar für $gameId")
+            return if (cachedDetail != null) {
+                val game = cachedDetail.toGame()
+                AppLogger.d(
+                    "GameRepository",
+                    "Offline-Detail-Cache Screenshots: ${game.screenshots.size}"
+                )
                 Resource.Success(game)
             } else {
-                Resource.Error("Keine Internetverbindung und keine gecachten Daten verfügbar")
+                Resource.Error("Fehler beim Laden der Screenshots: Kein Netzwerk und kein Cache verfügbar")
             }
         }
 
         return try {
-            Log.d("GameRepository", "[DEBUG] Starte API-Call für Spieldetails $gameId")
+            AppLogger.d("GameRepository", "[DEBUG] Starte API-Call für Spieldetails $gameId")
+            AppLogger.i("GameRepository", "Starte API-Call für Spieldetails $gameId")
             val resp = api.getGameDetail(gameId)
             
             if (resp.isSuccessful) {
+                AppLogger.i("GameRepository", "API-Call erfolgreich für $gameId")
                 resp.body()?.let { gameDto ->
-                    Log.d("GameRepository", "[DEBUG] API-Response erhalten: ${gameDto.name}")
-                    Log.d(
+                    AppLogger.d(
+                        "GameRepository",
+                        "[DEBUG] API-Response erhalten: ${gameDto.name}"
+                    )
+                    AppLogger.d(
                         "GameRepository",
                         "[DEBUG] API-Response Screenshots: ${gameDto.shortScreenshots?.size ?: 0}"
                     )
-                    Log.d(
+                    AppLogger.d(
                         "GameRepository",
                         "API Website: '${gameDto.website}' (Typ: ${if (gameDto.website == null) "null" else "'${gameDto.website}'"})"
                     )
                     gameDto.shortScreenshots?.forEachIndexed { index, screenshot ->
-                        Log.d("GameRepository", "API Screenshot $index: ${screenshot.image}")
+                        AppLogger.d(
+                            "GameRepository",
+                            "API Screenshot $index: ${screenshot.image}"
+                        )
                     }
 
                     // Lade Screenshots separat, da sie nicht automatisch mitgeliefert werden
                     val screenshots = try {
-                        Log.d("GameRepository", "[DEBUG] Lade separate Screenshots für $gameId")
+                        AppLogger.d(
+                            "GameRepository",
+                            "[DEBUG] Lade separate Screenshots für $gameId"
+                        )
                         val screenshotsResp = api.getGameScreenshots(gameId, BuildConfig.API_KEY)
                         if (screenshotsResp.isSuccessful) {
                             val screenshotResponse = screenshotsResp.body()
                             screenshotResponse?.results?.map { it.image } ?: emptyList()
                         } else {
-                            Log.w(
+                            AppLogger.w(
                                 "GameRepository",
                                 "Fehler beim Laden der Screenshots: ${screenshotsResp.code()}"
                             )
                             emptyList()
                         }
                     } catch (e: Exception) {
-                        Log.e("GameRepository", "[ERROR] Exception beim Laden der Screenshots", e)
+                        AppLogger.e(
+                            "GameRepository",
+                            "[ERROR] Exception beim Laden der Screenshots",
+                            e
+                        )
                         emptyList()
                     }
 
-                    Log.d(
+                    AppLogger.d(
                         "GameRepository",
                         "[DEBUG] Separate Screenshots geladen: ${screenshots.size}"
                     )
 
-                    val game = gameDto.toDomain().copy(screenshots = screenshots)
-                    Log.d("GameRepository", "Konvertiert zu Domain: ${game.screenshots.size} Screenshots")
-                    Log.d(
+                    // Lade Movies/Trailer separat
+                    val movies = try {
+                        AppLogger.d(
+                            "GameRepository",
+                            "[DEBUG] Lade separate Movies für $gameId"
+                        )
+                        val moviesResp = api.getGameMovies(gameId, BuildConfig.API_KEY)
+                        if (moviesResp.isSuccessful) {
+                            val movieResponse = moviesResp.body()
+                            val movieList =
+                                movieResponse?.results?.map { it.toDomain() } ?: emptyList()
+                            AppLogger.d(
+                                "GameRepository",
+                                "[DEBUG] Movies API Response: ${movieResponse?.count ?: 0} Movies gefunden"
+                            )
+                            AppLogger.d(
+                                "GameRepository",
+                                "[DEBUG] Movies konvertiert: ${movieList.size} Movies"
+                            )
+                            movieList.forEachIndexed { index, movie ->
+                                AppLogger.d(
+                                    "GameRepository",
+                                    "[DEBUG] Movie $index: ${movie.name} (ID: ${movie.id})"
+                                )
+                            }
+                            movieList
+                        } else {
+                            AppLogger.w(
+                                "GameRepository",
+                                "Fehler beim Laden der Movies: ${moviesResp.code()}"
+                            )
+                            emptyList()
+                        }
+                    } catch (e: Exception) {
+                        AppLogger.e(
+                            "GameRepository",
+                            "[ERROR] Exception beim Laden der Movies",
+                            e
+                        )
+                        emptyList()
+                    }
+
+                    AppLogger.d(
                         "GameRepository",
-                        "Domain Website: '${game.website}' (Typ: ${if (game.website == null) "null" else "'${game.website}'"})"
+                        "[DEBUG] Separate Movies geladen: ${movies.size}"
                     )
 
-                    // Cache das Spiel
-                    // Screenshots nur überschreiben, wenn sie nicht schon im Cache vorhanden sind oder nicht leer sind
-                    val cachedEntity = gameCacheDao.getGameById(game.id)
-                    Log.d(
-                        "GameRepository",
-                        "[DEBUG] cachedEntity für Speicherung: ${cachedEntity != null}, Screenshots: ${cachedEntity?.toGame()?.screenshots?.size ?: 0}"
+                    // Prüfe, ob bereits Screenshots und Movies im Detail-Cache vorhanden sind
+                    val existingScreenshots = cachedDetail?.toGame()?.screenshots ?: emptyList()
+                    val existingMovies = cachedDetail?.toGame()?.movies ?: emptyList()
+                    
+                    val game = gameDto.toDomain().copy(
+                        screenshots = screenshots.ifEmpty { existingScreenshots },
+                        movies = movies.ifEmpty { existingMovies }
                     )
-                    val cachedScreenshots = cachedEntity?.toGame()?.screenshots ?: emptyList()
-                    val finalScreenshots =
-                        if (cachedScreenshots.isNotEmpty()) cachedScreenshots else game.screenshots
-                    val gameToCache = game.copy(screenshots = finalScreenshots)
-                    gameCacheDao.insertGame(gameToCache.toCacheEntity())
-
-                    Log.d(
+                    // Cache das Spiel im Detail-Cache
+                    val cachedGame = cachedDetail?.toGame()
+                    val mergedGame = if (cachedGame != null) {
+                        game.copy(
+                            screenshots = game.screenshots.ifEmpty { cachedGame.screenshots },
+                            movies = game.movies.ifEmpty { cachedGame.movies }
+                        )
+                    } else {
+                        game
+                    }
+                    // Nur speichern, wenn sich etwas geändert hat
+                    if (cachedGame == null || mergedGame != cachedGame) {
+                        try {
+                            AppLogger.d(
+                                "GameRepository",
+                                "Versuche Detail-Spiel zu cachen: ${mergedGame.title} (ID: ${mergedGame.id})"
+                            )
+                            gameDetailCacheDao.insertGameDetail(mergedGame.toDetailCacheEntity())
+                            AppLogger.d(
+                                "GameRepository",
+                                "Detail-Spiel gecacht: ${mergedGame.title} (ID: ${mergedGame.id})"
+                            )
+                        } catch (e: Exception) {
+                            AppLogger.e(
+                                "GameRepository",
+                                "Fehler beim Cachen im Detail-Cache: ${e.localizedMessage}",
+                                e
+                            )
+                        }
+                    }
+                    AppLogger.i(
                         "GameRepository",
-                        "[DEBUG] Spiel wird gecacht: ${gameToCache.screenshots.size} Screenshots"
+                        "Detail-Spiel wird gecacht: ${mergedGame.screenshots.size} Screenshots für $gameId"
                     )
 
-                    Resource.Success(game)
+                    Resource.Success(mergedGame)
                 } ?: Resource.Error("Leere Antwort von der API")
             } else {
-                Log.e("GameRepository", "[ERROR] API-Fehler: ${resp.code()} für $gameId")
-                // Fallback auf Cache wenn API fehlschlägt
-                if (cachedGame != null) {
-                    val game = cachedGame.toGame()
-                    Log.d("GameRepository", "Fallback-Cache Screenshots: ${game.screenshots.size}")
+                AppLogger.e("GameRepository", "[ERROR] API-Fehler: ${resp.code()} für $gameId")
+                AppLogger.i("GameRepository", "API-Fehler: ${resp.code()} für $gameId")
+                // Fallback auf Detail-Cache wenn API fehlschlägt
+                if (cachedDetail != null) {
+                    val game = cachedDetail.toGame()
+                    AppLogger.d(
+                        "GameRepository",
+                        "Fallback-Detail-Cache Screenshots: ${game.screenshots.size}"
+                    )
                     Resource.Success(game)
                 } else {
-                    Resource.Error("Server Error ${resp.code()}")
+                    Resource.Error("Fehler beim Laden der Screenshots: Serverfehler ${resp.code()}")
                 }
             }
         } catch (e: Exception) {
-            Log.e("GameRepository", "Netzwerkfehler", e)
-            // Fallback auf Cache bei Netzwerkfehler
-            if (cachedGame != null) {
-                val game = cachedGame.toGame()
-                Log.d("GameRepository", "Error-Cache Screenshots: ${game.screenshots.size}")
+            AppLogger.e("GameRepository", "Netzwerkfehler", e)
+            AppLogger.i("GameRepository", "Netzwerkfehler für $gameId: ${e.localizedMessage}")
+            // Fallback auf Detail-Cache bei Netzwerkfehler
+            if (cachedDetail != null) {
+                val game = cachedDetail.toGame()
+                AppLogger.d(
+                    "GameRepository",
+                    "Error-Detail-Cache Screenshots: ${game.screenshots.size}"
+                )
                 Resource.Success(game)
             } else {
-                Resource.Error("Netzwerkfehler: ${e.localizedMessage}")
+                Resource.Error(
+                    ErrorHandler.handleException(
+                        e,
+                        "Fehler beim Laden der Screenshots: Netzwerkfehler ${e.localizedMessage}"
+                    )
+                )
             }
         }
-        Log.d("GameRepository", "[DEBUG] getGameDetail() fertig für $gameId")
     }
 
     suspend fun getPlatforms(): Resource<List<Platform>> {
@@ -160,12 +282,18 @@ class GameRepository @Inject constructor(
                         )
                     }
                     Resource.Success(platforms)
-                } ?: Resource.Error("Keine Plattform-Daten erhalten")
+                }
+                    ?: Resource.Error("Fehler beim Laden der Plattformen: Keine Plattformdaten verfügbar")
             } else {
-                Resource.Error("API-Fehler: ${response.code()}")
+                Resource.Error("Fehler beim Laden der Plattformen: API-Fehler ${response.code()}")
             }
         } catch (e: Exception) {
-            Resource.Error("Netzwerkfehler: ${e.localizedMessage}")
+            Resource.Error(
+                ErrorHandler.handleException(
+                    e,
+                    "Fehler beim Laden der Plattformen: Netzwerkfehler ${e.localizedMessage}"
+                )
+            )
         }
     }
 
@@ -181,136 +309,18 @@ class GameRepository @Inject constructor(
                         )
                     }
                     Resource.Success(genres)
-                } ?: Resource.Error("Keine Genre-Daten erhalten")
+                } ?: Resource.Error("Fehler beim Laden der Genres: Keine Genres verfügbar")
             } else {
-                Resource.Error("API-Fehler: ${response.code()}")
+                Resource.Error("Fehler beim Laden der Genres: API-Fehler ${response.code()}")
             }
         } catch (e: Exception) {
-            Resource.Error("Netzwerkfehler: ${e.localizedMessage}")
-        }
-    }
-
-    // PagingSource für die Suche mit Offline-Support
-    private inner class GamePagingSource(
-        private val query: String,
-        private val platforms: String?,
-        private val genres: String?,
-        private val ordering: String?,
-        private val rating: Float?
-    ) : PagingSource<Int, Game>() {
-
-        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Game> {
-            val page = params.key ?: 1
-            val filterHash = NetworkUtils.createFilterHash(platforms, genres, ordering, rating)
-            
-            // Prüfe Cache für erste Seite
-            if (page == 1) {
-                val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                if (cachedGames.isNotEmpty() && NetworkUtils.isCacheValid(cachedGames.first().cachedAt)) {
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                    } else {
-                        cachedGames.map { it.toGame() }
-                    }
-                    return LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = null,
-                        nextKey = if (filteredGames.size >= params.loadSize) 2 else null
-                    )
-                }
-            }
-            
-            // Wenn kein Netzwerk verfügbar, verwende Cache auch wenn abgelaufen
-            if (!NetworkUtils.isNetworkAvailable(context)) {
-                val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                if (cachedGames.isNotEmpty()) {
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                    } else {
-                        cachedGames.map { it.toGame() }
-                    }
-                    return LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = null,
-                        nextKey = null
-                    )
-                } else {
-                    return LoadResult.Error(Exception("Keine Internetverbindung und keine gecachten Daten verfügbar"))
-                }
-            }
-            
-            // API-Call
-            return try {
-                val resp = api.searchGames(
-                    query = query,
-                    platforms = platforms,
-                    genres = genres,
-                    ordering = ordering,
-                    page = page,
-                    pageSize = params.loadSize
+            Resource.Error(
+                ErrorHandler.handleException(
+                    e,
+                    "Fehler beim Laden der Genres: Netzwerkfehler ${e.localizedMessage}"
                 )
-                if (resp.isSuccessful) {
-                    val body = resp.body()
-                    val allGames = body?.results?.map { it.toDomain() } ?: emptyList()
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        allGames.filter { it.rating >= rating }
-                    } else {
-                        allGames
-                    }
-                    
-                    // Speichere in Cache (nur erste Seite)
-                    if (page == 1) {
-                        val cacheEntities = allGames.map { game ->
-                            game.toCacheEntity(query, filterHash)
-                        }
-                        gameCacheDao.insertGames(cacheEntities)
-                    }
-                    
-                    val nextPage = if (body?.next != null) page + 1 else null
-                    LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = if (page == 1) null else page - 1,
-                        nextKey = nextPage
-                    )
-                } else {
-                    // Fallback auf Cache
-                    val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                    if (cachedGames.isNotEmpty()) {
-                        val filteredGames = if (rating != null && rating > 0f) {
-                            cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                        } else {
-                            cachedGames.map { it.toGame() }
-                        }
-                        LoadResult.Page(
-                            data = filteredGames,
-                            prevKey = null,
-                            nextKey = null
-                        )
-                    } else {
-                        LoadResult.Error(Exception("Server Error ${resp.code()}"))
-                    }
-                }
-            } catch (e: Exception) {
-                // Fallback auf Cache bei Netzwerkfehler
-                val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
-                if (cachedGames.isNotEmpty()) {
-                    val filteredGames = if (rating != null && rating > 0f) {
-                        cachedGames.map { it.toGame() }.filter { it.rating >= rating }
-                    } else {
-                        cachedGames.map { it.toGame() }
-                    }
-                    LoadResult.Page(
-                        data = filteredGames,
-                        prevKey = null,
-                        nextKey = null
-                    )
-                } else {
-                    LoadResult.Error(e)
-                }
-            }
+            )
         }
-        
-        override fun getRefreshKey(state: PagingState<Int, Game>): Int? = 1
     }
 
     fun getPagedGames(
@@ -318,11 +328,22 @@ class GameRepository @Inject constructor(
         platforms: String? = null,
         genres: String? = null,
         ordering: String? = null,
-        rating: Float? = null
+        rating: Float? = null,
     ): Flow<PagingData<Game>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { GamePagingSource(query, platforms, genres, ordering, rating) }
+            pagingSourceFactory = {
+                GamePagingSource(
+                    api,
+                    gameCacheDao,
+                    context,
+                    query,
+                    platforms,
+                    genres,
+                    ordering,
+                    rating
+                )
+            }
         ).flow
     }
     
@@ -330,53 +351,37 @@ class GameRepository @Inject constructor(
      * Cache verwalten
      */
     suspend fun clearCache() {
-        Log.d("GameRepository", "Lösche gesamten Cache")
+        AppLogger.d("GameRepository", "Lösche gesamten Cache")
         gameCacheDao.clearAllGames()
+        setLastSyncTime(System.currentTimeMillis())
     }
     
     suspend fun getCacheSize(): Int {
         return gameCacheDao.getCacheSize()
     }
 
-    suspend fun getGameFromCache(id: Int): Game? {
-        val entity = gameCacheDao.getGameById(id)
-        return entity?.toGame()
-    }
-    
     /**
      * Cache optimieren - entferne alte Einträge
      */
     suspend fun optimizeCache() {
-        try {
-            val currentSize = gameCacheDao.getCacheSize()
-            val oldestCacheTime = gameCacheDao.getOldestCacheTime()
-            
-            if (oldestCacheTime != null) {
-                // Entferne Einträge die älter als 7 Tage sind
-                val sevenDaysAgo = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000L)
-                gameCacheDao.deleteExpiredGames(sevenDaysAgo)
-                
-                val newSize = gameCacheDao.getCacheSize()
-                Log.d("GameRepository", "Cache optimiert: $currentSize -> $newSize Einträge")
-            }
-        } catch (e: Exception) {
-            Log.e("GameRepository", "Fehler bei Cache-Optimierung", e)
-        }
+        CacheUtils.optimizeCache(gameCacheDao)
+        setLastSyncTime(System.currentTimeMillis())
     }
     
     /**
      * Cache-Statistiken abrufen
      */
     suspend fun getCacheStats(): CacheStats {
-        val totalSize = gameCacheDao.getCacheSize()
-        val oldestTime = gameCacheDao.getOldestCacheTime()
-        val isExpired = oldestTime?.let { !NetworkUtils.isCacheValid(it) } ?: true
-        
-        return CacheStats(
-            totalEntries = totalSize,
-            oldestEntryTime = oldestTime,
-            isExpired = isExpired
-        )
+        return CacheUtils.getCacheStats(gameCacheDao)
+    }
+
+    fun getLastSyncTime(): Long? {
+        val value = prefs.getLong(lastSyncTime, -1L)
+        return if (value > 0) value else null
+    }
+
+    private fun setLastSyncTime(timestamp: Long) {
+        prefs.edit { putLong(lastSyncTime, timestamp) }
     }
 
     /**
@@ -401,6 +406,7 @@ class GameRepository @Inject constructor(
                 game?.id
             } else null
         } catch (e: Exception) {
+            AppLogger.e("GameRepository", "Fehler beim Suchen der GameId per API", e)
             null
         }
     }
@@ -413,33 +419,6 @@ class GameRepository @Inject constructor(
         prefs: SharedPreferences,
         count: Int = 10,
     ): List<Game> {
-        // 1. Hole die letzten Spiele von der API
-        val response = api.searchGames(page = 1, pageSize = count, query = "")
-        if (!response.isSuccessful) return emptyList()
-        val games = response.body()?.results?.map { it.toDomain() } ?: return emptyList()
-
-        // 2. Lade die letzten bekannten IDs/Slugs aus den SharedPreferences
-        val lastIds = prefs.getStringSet("last_known_game_ids", emptySet()) ?: emptySet()
-        val lastSlugs = prefs.getStringSet("last_known_game_slugs", emptySet()) ?: emptySet()
-
-        // 3. Finde neue Spiele (ID oder Slug noch nicht bekannt)
-        val newGames = games.filter { it.id.toString() !in lastIds || it.slug !in lastSlugs }
-
-        // 4. Aktualisiere die gespeicherten IDs/Slugs (nur die neuesten)
-        prefs.edit()
-            .putStringSet("last_known_game_ids", games.map { it.id.toString() }.toSet())
-            .putStringSet("last_known_game_slugs", games.map { it.slug }.toSet())
-            .apply()
-
-        return newGames
+        return checkForNewGamesAndUpdatePrefs(api, prefs, count)
     }
 }
-
-/**
- * Cache-Statistiken
- */
-data class CacheStats(
-    val totalEntries: Int,
-    val oldestEntryTime: Long?,
-    val isExpired: Boolean
-)

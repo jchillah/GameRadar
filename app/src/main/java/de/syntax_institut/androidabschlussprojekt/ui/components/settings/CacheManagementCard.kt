@@ -6,9 +6,12 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun CacheManagementCard(
@@ -44,10 +47,14 @@ fun CacheManagementCard(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Cache-Verwaltung",
+                    text = stringResource(R.string.cache_section), // TODO: Key ggf. anlegen
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Tooltip(
+                    text = stringResource(R.string.cache_section_tooltip) // TODO: Key ggf. anlegen
                 )
             }
 
@@ -58,18 +65,20 @@ fun CacheManagementCard(
             ) {
                 CacheStatItem(
                     icon = Icons.Default.Games,
-                    label = "Gespeicherte Spiele",
+                    label = stringResource(R.string.cache_stat_saved_games), // TODO: Key ggf. anlegen
                     value = "$cacheSize"
                 )
                 CacheStatItem(
                     icon = Icons.Default.Storage,
-                    label = "Speicherplatz",
+                    label = stringResource(R.string.cache_stat_storage), // TODO: Key ggf. anlegen
                     value = "${(cacheSize * 0.5).toInt()} MB"
                 )
                 CacheStatItem(
                     icon = Icons.Default.Schedule,
-                    label = "Letzte Synchronisation",
-                    value = if (lastSyncTime != null) "Heute" else "Nie"
+                    label = stringResource(R.string.cache_stat_last_sync), // TODO: Key ggf. anlegen
+                    value = if (lastSyncTime != null) stringResource(R.string.cache_stat_today) else stringResource(
+                        R.string.cache_stat_never
+                    ) // TODO: Keys ggf. anlegen
                 )
             }
 
@@ -80,7 +89,7 @@ fun CacheManagementCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Cache-Auslastung",
+                        text = stringResource(R.string.cache_stat_usage), // TODO: Key ggf. anlegen
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -115,12 +124,12 @@ fun CacheManagementCard(
                     )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Tune,
-                        contentDescription = null,
+                        imageVector = Icons.Default.Sync,
+                        contentDescription = stringResource(R.string.sync_favorites),
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Optimieren")
+                    Text(stringResource(R.string.sync_favorites))
                 }
 
                 Button(
@@ -133,11 +142,11 @@ fun CacheManagementCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.ClearAll,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.clear_cache),
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Leeren")
+                    Text(stringResource(R.string.clear_cache))
                 }
             }
         }
@@ -179,7 +188,7 @@ private fun CacheStatItem(
 fun CacheManagementCardPreview() {
     CacheManagementCard(
         cacheSize = 150,
-        maxCacheSize = 1000,
+        maxCacheSize = 100000,
         lastSyncTime = System.currentTimeMillis(),
         onClearCache = {},
         onOptimizeCache = {}

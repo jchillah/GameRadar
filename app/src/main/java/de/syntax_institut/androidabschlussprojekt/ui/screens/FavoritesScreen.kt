@@ -7,16 +7,19 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.semantics.*
-import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,6 +33,12 @@ fun FavoritesScreen(
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val isOnline by NetworkUtils.observeNetworkStatus(context)
+        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
+
+    // Fix: stringResource im Composable-Kontext holen
+    val deleteAllContentDescription = stringResource(R.string.dialog_delete_all_favorites_title)
 
     LaunchedEffect(Unit) {
         viewModel.loadFavorites()
@@ -37,7 +46,7 @@ fun FavoritesScreen(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
@@ -47,7 +56,7 @@ fun FavoritesScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Meine Favoriten",
+                text = stringResource(R.string.favorites_title),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -60,7 +69,7 @@ fun FavoritesScreen(
                     ),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     modifier = Modifier.semantics {
-                        contentDescription = "Alle Favoriten löschen"
+                        contentDescription = deleteAllContentDescription
                     }
                 ) {
                     Icon(
@@ -69,7 +78,7 @@ fun FavoritesScreen(
                         modifier = Modifier.size(18.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Alle löschen")
+                    Text(stringResource(R.string.dialog_delete_all_favorites_confirm))
                 }
             }
         }
@@ -77,48 +86,25 @@ fun FavoritesScreen(
         Box(modifier = Modifier.weight(1f)) {
             when {
                 state.isLoading -> {
-                    Loading()
+                    Loading(modifier = Modifier.fillMaxSize())
                 }
 
                 state.error != null -> {
-                    Box(
+                    ErrorCard(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "Fehler: ${state.error}",
-                                color = MaterialTheme.colorScheme.error,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Button(onClick = { viewModel.loadFavorites() }) {
-                                Text("Erneut versuchen")
-                            }
-                        }
-                    }
+                        error = state.error ?: stringResource(R.string.error_unknown_default),
+                    )
                 }
 
                 state.favorites.isEmpty() -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = "Keine Favoriten vorhanden",
-                                style = MaterialTheme.typography.headlineSmall,
-                                textAlign = TextAlign.Center
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "Füge Spiele zu deinen Favoriten hinzu, um sie hier zu sehen.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+                    EmptyState(
+                        title = stringResource(R.string.favorites_empty_title),
+                        message = if (!isOnline) stringResource(R.string.favorites_empty_offline) else stringResource(
+                            R.string.favorites_empty_message
+                        ),
+                        icon = Icons.Default.FavoriteBorder,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
 
                 else -> {
@@ -135,12 +121,13 @@ fun FavoritesScreen(
                                         "Navigation",
                                         "Navigiere zu DetailScreen mit gameId=${game.id}"
                                     )
-                                    navController.navigate(Routes.detail(game.id))
+                                    navController.navigateSingleTopTo(Routes.detail(game.id))
                                 },
                                 onDelete = {
                                     viewModel.removeFavorite(game.id)
                                 },
-                                imageQuality = imageQuality
+                                imageQuality = imageQuality,
+                                showFavoriteIcon = false
                             )
                         }
                     }
@@ -153,13 +140,10 @@ fun FavoritesScreen(
         AlertDialog(
             onDismissRequest = { showDeleteConfirmation = false },
             title = {
-                Text("Alle Favoriten löschen?")
+                Text(stringResource(R.string.dialog_delete_all_favorites_title))
             },
             text = {
-                Text(
-                    "Möchten Sie wirklich alle ${state.favorites.size} Favoriten löschen? " +
-                            "Diese Aktion kann nicht rückgängig gemacht werden."
-                )
+                Text(stringResource(R.string.dialog_delete_all_favorites_text))
             },
             confirmButton = {
                 TextButton(
@@ -171,14 +155,14 @@ fun FavoritesScreen(
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Text("Alle löschen")
+                    Text(stringResource(R.string.dialog_delete_all_favorites_confirm))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDeleteConfirmation = false }
                 ) {
-                    Text("Abbrechen")
+                    Text(stringResource(R.string.dialog_delete_all_favorites_cancel))
                 }
             },
             icon = {

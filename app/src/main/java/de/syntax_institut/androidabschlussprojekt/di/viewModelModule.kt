@@ -1,6 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.di
 
-import android.content.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.viewmodel.dsl.*
 import org.koin.dsl.*
@@ -9,9 +8,34 @@ import org.koin.dsl.*
  * Modul für ViewModels.
  */
 val viewModelModule = module {
-    viewModel { SearchViewModel(get(), get<Context>()) }
-    viewModel { DetailViewModel(get(), get()) }
-    viewModel { FavoritesViewModel(get(), get()) }
-    viewModel { de.syntax_institut.androidabschlussprojekt.ui.viewmodels.SettingsViewModel(get()) }
+    viewModel {
+        SearchViewModel(
+            get(), // LoadGamesUseCase
+            get(), // GetPlatformsUseCase
+            get(), // GetGenresUseCase
+            get(), // ClearCacheUseCase
+            get()  // GetCacheSizeUseCase
+        )
+    }
+    viewModel {
+        DetailViewModel(
+            get(), // GetGameDetailUseCase
+            get(), // ToggleFavoriteUseCase
+            get(), // IsFavoriteUseCase
+            get()  // GetFavoriteByIdUseCase
+        )
+    }
+    viewModel {
+        FavoritesViewModel(
+            get(), // GetAllFavoritesUseCase
+            get(), // ClearAllFavoritesUseCase
+            get(), // RemoveFavoriteUseCase
+            get(), // SyncFavoritesWithApiUseCase
+            get()  // RawgApi
+        )
+    }
+    viewModel { SettingsViewModel(get()) }
+    viewModel { ScreenshotGalleryViewModel() }
+    viewModel { TrailerPlayerViewModel() }
 }
 

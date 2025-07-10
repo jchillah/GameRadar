@@ -6,8 +6,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun NetworkErrorHandler(
@@ -30,18 +32,18 @@ fun NetworkErrorHandler(
             ) {
                 Icon(
                     imageVector = Icons.Default.WifiOff,
-                    contentDescription = "Offline",
+                    contentDescription = stringResource(R.string.offline_mode),
                     tint = MaterialTheme.colorScheme.onErrorContainer
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Keine Internetverbindung",
+                        text = stringResource(R.string.error_no_connection),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                     Text(
-                        text = "Überprüfe deine Verbindung und versuche es erneut",
+                        text = stringResource(R.string.error_check_connection),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.8f)
                     )
@@ -50,7 +52,7 @@ fun NetworkErrorHandler(
                     IconButton(onClick = onRetry) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
-                            contentDescription = "Erneut versuchen",
+                            contentDescription = stringResource(R.string.action_retry),
                             tint = MaterialTheme.colorScheme.onErrorContainer
                         )
                     }

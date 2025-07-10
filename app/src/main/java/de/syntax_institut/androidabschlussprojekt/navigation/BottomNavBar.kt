@@ -6,8 +6,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.navigation.*
 import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.compose.*
 
@@ -33,7 +35,10 @@ fun BottomNavBar(
         NavigationBarItem(
             icon = {
                 Box {
-                    Icon(Icons.Filled.Search, contentDescription = "Suche")
+                    Icon(
+                        Icons.Filled.Search,
+                        contentDescription = stringResource(R.string.nav_search)
+                    )
                     if (searchResultsCount > 0) {
                         Badge(
                             modifier = Modifier.align(Alignment.TopEnd)
@@ -43,7 +48,7 @@ fun BottomNavBar(
                     }
                 }
             },
-            label = { Text("Suche") },
+            label = { Text(stringResource(R.string.nav_search)) },
             selected = currentRoute == Routes.SEARCH,
             onClick = {
                 navController.navigateToTab(Routes.SEARCH)
@@ -53,7 +58,10 @@ fun BottomNavBar(
         NavigationBarItem(
             icon = {
                 Box {
-                    Icon(Icons.Filled.Favorite, contentDescription = "Favoriten")
+                    Icon(
+                        Icons.Filled.Favorite,
+                        contentDescription = stringResource(R.string.nav_favorites)
+                    )
                     if (favoritesCount > 0) {
                         Badge(modifier = Modifier.align(Alignment.TopEnd)) {
                             Text(if (favoritesCount > 99) "99+" else favoritesCount.toString())
@@ -61,7 +69,7 @@ fun BottomNavBar(
                     }
                 }
             },
-            label = { Text("Favoriten") },
+            label = { Text(stringResource(R.string.nav_favorites)) },
             selected = currentRoute == Routes.FAVORITES,
             onClick = {
                 navController.navigateToTab(Routes.FAVORITES)
@@ -69,8 +77,13 @@ fun BottomNavBar(
         )
 
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Settings, contentDescription = "Einstellungen") },
-            label = { Text("Einstellungen") },
+            icon = {
+                Icon(
+                    Icons.Filled.Settings,
+                    contentDescription = stringResource(R.string.nav_settings)
+                )
+            },
+            label = { Text(stringResource(R.string.nav_settings)) },
             selected = currentRoute == Routes.SETTINGS,
             onClick = {
                 navController.navigateToTab(Routes.SETTINGS)

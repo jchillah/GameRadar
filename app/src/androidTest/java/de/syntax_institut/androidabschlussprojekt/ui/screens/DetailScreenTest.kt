@@ -1,18 +1,18 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import de.syntax_institut.androidabschlussprojekt.data.local.models.Game
-import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.DetailViewModel
-import de.syntax_institut.androidabschlussprojekt.ui.states.DetailUiState
+import androidx.compose.ui.test.junit4.*
+import androidx.navigation.testing.*
+import androidx.test.core.app.*
+import androidx.test.ext.junit.runners.*
+import de.syntax_institut.androidabschlussprojekt.data.*
+import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.ui.states.*
+import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import io.mockk.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
+import kotlinx.coroutines.flow.*
+import org.junit.*
+import org.junit.runner.*
 
 @RunWith(AndroidJUnit4::class)
 class DetailScreenTest {
@@ -24,7 +24,7 @@ class DetailScreenTest {
     fun detailScreen_showsLoadingState() {
         // Given
         val mockViewModel = mockk<DetailViewModel>()
-        val loadingState = DetailUiState(isLoading = true)
+        val loadingState = DetailUiState()
         every { mockViewModel.uiState } returns MutableStateFlow(loadingState)
 
         // When
@@ -46,6 +46,7 @@ class DetailScreenTest {
         val mockViewModel = mockk<DetailViewModel>()
         val game = Game(
             id = 1,
+            slug = "test-game",
             title = "Test Game",
             releaseDate = "2023-01-01",
             rating = 4.5f,

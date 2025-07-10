@@ -7,10 +7,12 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun PrivacyPolicyDialog(
@@ -30,7 +32,7 @@ fun PrivacyPolicyDialog(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Datenschutzerklärung",
+                    text = stringResource(R.string.privacy_policy),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -44,55 +46,49 @@ fun PrivacyPolicyDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "GameFinder Datenschutzerklärung",
+                    text = stringResource(R.string.privacy_policy_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
-                    text = "Stand: ${java.time.LocalDate.now()}",
+                    text = stringResource(
+                        R.string.privacy_policy_date,
+                        java.time.LocalDate.now().toString()
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 PrivacySection(
-                    title = "1. Datenerhebung",
-                    content = "GameFinder sammelt nur die Daten, die für die Funktionalität der App notwendig sind. " +
-                            "Dazu gehören deine Suchanfragen, Favoriten und App-Einstellungen, die lokal auf deinem Gerät gespeichert werden."
+                    title = stringResource(R.string.privacy_section_1_title),
+                    content = stringResource(R.string.privacy_section_1_content)
                 )
-
                 PrivacySection(
-                    title = "2. Externe Dienste",
-                    content = "Die App nutzt die RAWG-API für Spieldaten. Diese API sammelt keine persönlichen Daten von dir. " +
-                            "Alle API-Anfragen erfolgen anonym ohne persönliche Identifikation."
+                    title = stringResource(R.string.privacy_section_2_title),
+                    content = stringResource(R.string.privacy_section_2_content)
                 )
-
                 PrivacySection(
-                    title = "3. Lokale Speicherung",
-                    content = "Deine Favoriten, Suchverlauf und Einstellungen werden ausschließlich lokal auf deinem Gerät gespeichert. " +
-                            "Diese Daten werden nicht an externe Server übertragen."
+                    title = stringResource(R.string.privacy_section_3_title),
+                    content = stringResource(R.string.privacy_section_3_content)
                 )
-
                 PrivacySection(
-                    title = "4. Cache-Daten",
-                    content = "Die App speichert Spieldaten im lokalen Cache, um die Performance zu verbessern. " +
-                            "Diese Daten können jederzeit über die Einstellungen gelöscht werden."
+                    title = stringResource(R.string.privacy_section_4_title),
+                    content = stringResource(R.string.privacy_section_4_content)
                 )
-
                 PrivacySection(
-                    title = "5. Analytics",
-                    content = "GameFinder sammelt anonyme Nutzungsdaten zur Verbesserung der App. " +
-                            "Diese Daten enthalten keine persönlichen Informationen und werden nur für interne Zwecke verwendet."
+                    title = stringResource(R.string.privacy_section_5_title),
+                    content = stringResource(R.string.privacy_section_5_content)
                 )
-
                 PrivacySection(
-                    title = "6. Deine Rechte",
-                    content = "Du hast das Recht, alle deine Daten zu löschen, indem du die App-Einstellungen verwendest. " +
-                            "Alle Daten werden lokal gespeichert und können vollständig entfernt werden."
+                    title = stringResource(R.string.privacy_section_6_title),
+                    content = stringResource(R.string.privacy_section_6_content)
                 )
-
                 Text(
-                    text = "Bei Fragen zum Datenschutz kontaktiere uns unter: michael.winkler.developer@gmail.com",
+                    text = stringResource(
+                        R.string.privacy_policy_contact,
+                        "michael.winkler.developer@gmail.com"
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -101,7 +97,7 @@ fun PrivacyPolicyDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Verstanden")
+                Text(stringResource(R.string.action_ok))
             }
         }
     )

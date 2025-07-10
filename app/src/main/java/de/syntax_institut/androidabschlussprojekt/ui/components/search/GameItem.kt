@@ -9,11 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
@@ -24,6 +26,7 @@ fun GameItem(
     onDelete: (() -> Unit)? = null,
     imageQuality: ImageQuality = ImageQuality.HIGH,
     isFavorite: Boolean = false,
+    showFavoriteIcon: Boolean = true,
 ) {
     val context = LocalContext.current
 
@@ -38,8 +41,8 @@ fun GameItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             val size = when (imageQuality) {
-                ImageQuality.LOW -> Size(80, 80)
-                ImageQuality.MEDIUM -> Size(160, 160)
+                ImageQuality.LOW -> Size(160, 90)
+                ImageQuality.MEDIUM -> Size(320, 180)
                 ImageQuality.HIGH -> Size.ORIGINAL
             }
             SubcomposeAsyncImage(
@@ -51,12 +54,14 @@ fun GameItem(
                 contentDescription = game.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(80.dp)
+                    .width(160.dp)
+                    .aspectRatio(16f / 9f)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 loading = {
                     Box(
                         modifier = Modifier
-                            .size(80.dp),
+                            .width(160.dp)
+                            .aspectRatio(16f / 9f),
                         contentAlignment = Alignment.Center
                     ) {
                         Loading(modifier = Modifier.size(24.dp))
@@ -65,7 +70,8 @@ fun GameItem(
                 error = {
                     Box(
                         modifier = Modifier
-                            .size(80.dp)
+                            .width(160.dp)
+                            .aspectRatio(16f / 9f)
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center
                     ) {
@@ -82,18 +88,28 @@ fun GameItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = game.title, style = MaterialTheme.typography.titleMedium)
                 game.releaseDate?.let {
-                    Text(text = "Release: $it", fontSize = 12.sp)
+                    Text(
+                        text = stringResource(R.string.game_release_date_search_gameitem, it),
+                        fontSize = 12.sp
+                    )
                 }
-                Text(text = "Rating: ${game.rating}", fontSize = 12.sp)
+                Text(
+                    text = stringResource(R.string.game_rating_search_gameitem, game.rating),
+                    fontSize = 12.sp
+                )
             }
 
             // Herz-Icon für Favoritenstatus
-            Icon(
-                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = if (isFavorite) "Als Favorit markiert" else "Nicht als Favorit",
-                tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(28.dp)
-            )
+            if (showFavoriteIcon) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = if (isFavorite) stringResource(R.string.favorite_marked) else stringResource(
+                        R.string.favorite_not_marked
+                    ),
+                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
             // Löschen-Button nur anzeigen, wenn onDelete nicht null ist
             onDelete?.let { deleteFunction ->
                 IconButton(
@@ -101,7 +117,7 @@ fun GameItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Favorit löschen",
+                        contentDescription = stringResource(R.string.favorite_delete),
                         tint = MaterialTheme.colorScheme.error
                     )
                 }

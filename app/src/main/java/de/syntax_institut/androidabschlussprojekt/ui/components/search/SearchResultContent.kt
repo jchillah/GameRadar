@@ -1,16 +1,17 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.search
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.paging.*
 import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
@@ -35,13 +36,13 @@ fun SearchResultContent(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    "Fehler: ${error.localizedMessage}",
+                    stringResource(R.string.error_unknown) + ": ${error.localizedMessage}",
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(8.dp))
                 Button(onClick = { pagingItems.retry() }) {
-                    Text("Erneut versuchen")
+                    Text(stringResource(R.string.action_retry))
                 }
             }
         }
@@ -49,13 +50,13 @@ fun SearchResultContent(
         else -> {
             if (pagingItems.itemCount == 0) {
                 EmptyState(
-                    title = "Keine Ergebnisse",
-                    message = "Für deine Suche konnten keine Spiele gefunden werden.",
+                    title = stringResource(R.string.no_results),
+                    message = stringResource(R.string.no_results_message),
                     icon = Icons.Default.SearchOff,
                     modifier = modifier
                 )
             } else {
-                LazyColumn(
+                PerformanceOptimizedLazyColumn(
                     modifier = modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -66,7 +67,8 @@ fun SearchResultContent(
                                 game = game,
                                 onClick = { onGameClick(game) },
                                 imageQuality = imageQuality,
-                                isFavorite = favoriteIds.contains(game.id)
+                                isFavorite = true,
+                                showFavoriteIcon = favoriteIds.contains(game.id)
                             )
                         }
                     }
@@ -78,7 +80,7 @@ fun SearchResultContent(
                                     .padding(vertical = 16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Loading(modifier = Modifier.size(32.dp))
+                                LoadingState(modifier = Modifier.size(32.dp))
                             }
                         }
                     }

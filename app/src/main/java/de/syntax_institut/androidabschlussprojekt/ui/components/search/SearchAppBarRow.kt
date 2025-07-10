@@ -6,7 +6,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -15,12 +17,12 @@ fun SearchAppBarRow(
     onFilterClick: () -> Unit,
 ) {
     TopAppBar(
-        title = { Text("Spielsuche") },
+        title = { Text(stringResource(R.string.search_placeholder)) },
         actions = {
             IconButton(onClick = onFilterClick) {
                 Icon(
                     imageVector = Icons.Default.FilterList,
-                    contentDescription = "Filter anzeigen"
+                    contentDescription = stringResource(R.string.filter_button_content_description)
                 )
             }
         },

@@ -1,28 +1,26 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.content.*
-import android.util.*
 import androidx.lifecycle.*
 import androidx.paging.*
+import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
-import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import java.lang.ref.*
 
 /**
  * ViewModel für die Suche mit Offline-Support.
  * Folgt MVVM-Pattern und Clean Code Prinzipien.
  */
 class SearchViewModel(
-    private val repo: GameRepository,
-    context: Context
+    private val loadGamesUseCase: LoadGamesUseCase,
+    private val getPlatformsUseCase: GetPlatformsUseCase,
+    private val getGenresUseCase: GetGenresUseCase,
+    private val clearCacheUseCase: ClearCacheUseCase,
+    private val getCacheSizeUseCase: GetCacheSizeUseCase,
 ) : ViewModel() {
-
-    // WeakReference um Context-Leak zu vermeiden
-    private val contextRef = WeakReference(context)
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState
@@ -36,10 +34,6 @@ class SearchViewModel(
     // Aktueller Suchtext für automatische Neuausführung
     private var currentSearchQuery: String = ""
     
-    // Netzwerkstatus
-    private val _isOffline = MutableStateFlow(false)
-    val isOffline: StateFlow<Boolean> = _isOffline.asStateFlow()
-    
     // Cache-Informationen
     private val _cacheSize = MutableStateFlow(0)
 
@@ -47,44 +41,7 @@ class SearchViewModel(
         // Verzögerte Initialisierung um Binder-Transaktionsfehler zu vermeiden
         viewModelScope.launch {
             delay(100) // Kurze Verzögerung für stabilen App-Start
-            initializeNetworkMonitoring()
             initializeCacheMonitoring()
-        }
-    }
-
-    private fun initializeNetworkMonitoring() {
-        viewModelScope.launch {
-            try {
-                delay(200) // Kurze Verzögerung für stabilen Start
-                contextRef.get()?.let { context ->
-                    NetworkUtils.observeNetworkStatus(context).collect { isOnline ->
-                        try {
-                            _isOffline.value = !isOnline
-                            Log.d(
-                                "SearchViewModel",
-                                "Netzwerkstatus geändert: ${if (isOnline) "Online" else "Offline"}"
-                            )
-                        } catch (e: Exception) {
-                            Log.e(
-                                "SearchViewModel",
-                                "Fehler beim Aktualisieren des Netzwerkstatus",
-                                e
-                            )
-                        }
-                    }
-                } ?: run {
-                    Log.w(
-                        "SearchViewModel",
-                        "Context ist null, Network-Monitoring wird nicht gestartet"
-                    )
-                    // Fallback auf Offline-Status
-                    _isOffline.value = true
-                }
-            } catch (e: Exception) {
-                Log.e("SearchViewModel", "Kritischer Fehler im Network-Monitoring", e)
-                // Fallback auf Offline-Status bei Fehlern
-                _isOffline.value = true
-            }
         }
     }
 
@@ -92,23 +49,23 @@ class SearchViewModel(
         viewModelScope.launch {
             try {
                 // Initiale Cache-Größe abrufen mit Verzögerung
-                delay(500) // Längere Verzögerung für stabilen Start
-                _cacheSize.value = repo.getCacheSize()
+                delay(Constants.CACHE_MONITORING_DELAY) // Längere Verzögerung für stabilen Start
+                _cacheSize.value = getCacheSizeUseCase()
                 _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
 
                 // Nur alle 60 Sekunden aktualisieren, nicht in einer unendlichen Schleife
                 while (true) {
-                    delay(60000) // 60 Sekunden warten (weniger aggressiv)
+                    delay(Constants.CACHE_MONITORING_INTERVAL) // 60 Sekunden warten (weniger aggressiv)
                     try {
-                        _cacheSize.value = repo.getCacheSize()
+                        _cacheSize.value = getCacheSizeUseCase()
                         _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
                     } catch (e: Exception) {
-                        Log.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
+                        AppLogger.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
                         // Bei Fehlern nicht abbrechen, sondern weiter versuchen
                     }
                 }
             } catch (e: Exception) {
-                Log.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring", e)
+                AppLogger.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring", e)
                 // Bei kritischen Fehlern das Monitoring stoppen
             }
         }
@@ -118,7 +75,7 @@ class SearchViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingPlatforms = true, platformsError = null) }
             try {
-                val platformResponse = repo.getPlatforms()
+                val platformResponse = getPlatformsUseCase()
                 if (platformResponse is Resource.Success) {
                     _uiState.update { it.copy(platforms = platformResponse.data ?: emptyList(), isLoadingPlatforms = false) }
                 } else {
@@ -144,7 +101,7 @@ class SearchViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingGenres = true, genresError = null) }
             try {
-                val genreResponse = repo.getGenres()
+                val genreResponse = getGenresUseCase()
                 if (genreResponse is Resource.Success) {
                     _uiState.update { it.copy(genres = genreResponse.data ?: emptyList(), isLoadingGenres = false) }
                 } else {
@@ -167,7 +124,7 @@ class SearchViewModel(
     }
 
     fun search(query: String) {
-        Log.d("SearchViewModel", "Paging-Search gestartet mit Query: $query")
+        AppLogger.d("SearchViewModel", "Paging-Search gestartet mit Query: $query")
         currentSearchQuery = query
         val state = _uiState.value
         val platformIds = state.selectedPlatforms.joinToString(",")
@@ -177,12 +134,12 @@ class SearchViewModel(
         _uiState.update { it.copy(hasSearched = true) }
         _searchParams.value = SearchParams(
             query = query,
-            platforms = if (platformIds.isNotBlank()) platformIds else null,
-            genres = if (genreIds.isNotBlank()) genreIds else null,
-            ordering = if (ordering.isNotBlank()) ordering else null
+            platforms = platformIds.ifBlank { null },
+            genres = genreIds.ifBlank { null },
+            ordering = ordering.ifBlank { null }
         )
         viewModelScope.launch {
-            repo.getPagedGames(
+            loadGamesUseCase(
                 query = _searchParams.value.query,
                 platforms = _searchParams.value.platforms,
                 genres = _searchParams.value.genres,
@@ -221,11 +178,11 @@ class SearchViewModel(
     fun clearCache() {
         viewModelScope.launch {
             try {
-                repo.clearCache()
+                clearCacheUseCase()
                 _cacheSize.value = 0
-                Log.d("SearchViewModel", "Cache erfolgreich geleert")
+                AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
             } catch (e: Exception) {
-                Log.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
+                AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
             }
         }
     }

@@ -1,8 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
-import android.util.*
 import androidx.lifecycle.*
-import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
@@ -12,8 +11,10 @@ import kotlinx.coroutines.flow.*
  * ViewModel für Spieldetails.
  */
 class DetailViewModel(
-    private val repo: GameRepository,
-    private val favoritesRepo: FavoritesRepository
+    private val getGameDetailUseCase: GetGameDetailUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val isFavoriteUseCase: IsFavoriteUseCase,
+    private val getFavoriteByIdUseCase: GetFavoriteByIdUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState())
@@ -23,67 +24,54 @@ class DetailViewModel(
     val isFavorite: StateFlow<Boolean> = _isFavorite
 
     fun loadDetail(id: Int, forceReload: Boolean = false) {
-        Log.d(
+        AppLogger.d(
             "DetailViewModel",
-            "[DEBUG] loadDetail() aufgerufen für ID: $id, forceReload=$forceReload"
+            "loadDetail() aufgerufen für ID: $id, forceReload=$forceReload"
         )
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = DetailUiState(isLoading = true)
+            _uiState.value = DetailUiState(resource = Resource.Loading())
 
-            if (forceReload) {
-                repo.clearCache()
-                Log.d("DetailViewModel", "Cache für Detailansicht gelöscht")
-            }
-
-            val cachedGame = repo.getGameFromCache(id)
-            Log.d(
-                "DetailViewModel",
-                "[DEBUG] cachedGame: ${cachedGame != null}, Screenshots: ${cachedGame?.screenshots?.size ?: 0}"
-            )
-            val gameResult = repo.getGameDetail(id)
-            Log.d(
-                "DetailViewModel",
-                "[DEBUG] gameResult: ${gameResult is Resource.Success}, error: ${(gameResult as? Resource.Error)?.message}"
-            )
-            val favoriteResult = favoritesRepo.isFavorite(id)
+            // forceReload-Logik für Cache ggf. in UseCase auslagern, hier nur noch UseCase-Aufrufe
+            val gameResult = getGameDetailUseCase(id)
+            val favoriteResult = isFavoriteUseCase(id)
 
             when (gameResult) {
                 is Resource.Success -> {
                     var game = gameResult.data
-                    Log.d(
-                        "DetailViewModel",
-                        "[DEBUG] Resource.Success: Website='${game?.website}', Screenshots=${game?.screenshots?.size ?: 0}"
-                    )
-                    if (forceReload && cachedGame != null && cachedGame.screenshots.isNotEmpty()) {
-                        Log.d(
-                            "DetailViewModel",
-                            "[DEBUG] forceReload: Übernehme gecachte Screenshots (${cachedGame.screenshots.size})"
-                        )
-                        game = game?.copy(screenshots = cachedGame.screenshots)
-                    }
-                    Log.d(
-                        "DetailViewModel",
-                        "Geladen: Website='${game?.website}', Screenshots=${game?.screenshots?.size ?: 0}"
-                    )
 
-                    if ((game?.website.isNullOrBlank() == true && game?.screenshots.isNullOrEmpty() == true) && !forceReload) {
-                        Log.d(
-                            "DetailViewModel",
-                            "[DEBUG] Website und Screenshots leer, versuche forceReload für $id"
-                        )
+                    // Wenn es ein Favorit ist und forceReload aktiviert ist, hole die vollständigen Daten aus dem Favoriten
+                    if (forceReload && favoriteResult) {
+                        val favoriteGame = getFavoriteByIdUseCase(id)
+                        if (favoriteGame != null) {
+                            game = favoriteGame
+                        }
+                    }
+
+                    if ((game?.website.isNullOrBlank() && game?.screenshots.isNullOrEmpty()) && !forceReload) {
                         loadDetail(id, forceReload = true)
-                    } else {
-                        _uiState.value = DetailUiState(game = game)
+                    } else if (game != null) {
+                        _uiState.value =
+                            DetailUiState(resource = Resource.Success(game), game = game)
                         _isFavorite.value = favoriteResult
+                    } else {
+                        _uiState.value = DetailUiState(
+                            resource = Resource.Error("Spiel konnte nicht geladen werden."),
+                            error = "Spiel konnte nicht geladen werden."
+                        )
                     }
                 }
 
                 is Resource.Error -> {
-                    Log.e("DetailViewModel", "[ERROR] Fehler beim Laden: ${gameResult.message}")
-                    _uiState.value = DetailUiState(error = gameResult.message)
+                    AppLogger.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")
+                    _uiState.value = DetailUiState(
+                        resource = Resource.Error(gameResult.message ?: "Unbekannter Fehler"),
+                        error = gameResult.message
+                    )
                 }
 
-                else -> {}
+                is Resource.Loading -> {
+                    _uiState.value = DetailUiState(resource = Resource.Loading())
+                }
             }
         }
     }
@@ -91,15 +79,41 @@ class DetailViewModel(
     fun toggleFavorite() {
         val currentGame = _uiState.value.game
         if (currentGame != null) {
+            AppLogger.d(
+                "DetailViewModel",
+                "toggleFavorite() aufgerufen für Spiel: ${currentGame.title}"
+            )
             viewModelScope.launch(Dispatchers.IO) {
-                when (val result = favoritesRepo.toggleFavorite(currentGame)) {
+                when (val result = toggleFavoriteUseCase(currentGame)) {
                     is Resource.Success -> {
                         _isFavorite.value = result.data == true
-                        Log.d("DetailViewModel", "Favorit umgeschaltet: ${result.data}")
+                        if (result.data == true) {
+                            // Hole die vollständigen Daten aus dem Favoriten
+                            val favoriteGame = getFavoriteByIdUseCase(currentGame.id)
+                            if (favoriteGame != null) {
+                                _uiState.value = _uiState.value.copy(
+                                    resource = Resource.Success(favoriteGame),
+                                    game = favoriteGame
+                                )
+                            } else {
+                                _uiState.value = _uiState.value.copy(
+                                    resource = Resource.Success(currentGame),
+                                    game = currentGame
+                                )
+                            }
+                        } else {
+                            // Spiel wurde aus Favoriten entfernt - verwende die aktuellen Daten
+                            _uiState.value = _uiState.value.copy(
+                                resource = Resource.Success(currentGame),
+                                game = currentGame
+                            )
+                        }
                     }
                     is Resource.Error -> {
-                        Log.e("DetailViewModel", "Fehler beim Umschalten des Favoriten: ${result.message}")
-                        // Hier könnte man einen Snackbar oder Toast anzeigen
+                        AppLogger.e(
+                            "DetailViewModel",
+                            "Fehler beim Umschalten des Favoriten: ${result.message}"
+                        )
                     }
                     else -> {}
                 }
@@ -109,7 +123,7 @@ class DetailViewModel(
 
     fun updateUserRating(rating: Float) {
         _uiState.value = _uiState.value.copy(userRating = rating)
-        Log.d("DetailViewModel", "User Rating aktualisiert: $rating")
+        AppLogger.d("DetailViewModel", "User Rating aktualisiert: $rating")
     }
 }
 

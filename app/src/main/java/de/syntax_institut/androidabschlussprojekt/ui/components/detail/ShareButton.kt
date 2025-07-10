@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
 import android.content.*
 import androidx.compose.material.icons.*
@@ -15,12 +15,14 @@ fun ShareButton(game: Game, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     IconButton(
         onClick = {
-            // https://gamefinder.deeplink/${game.slug}
+            // TODO wenn Zeit ist nochmal schauen wie das mit dem DeepLink geht
+            // https://gameradar.deeplink/${game.slug}
             val deepLink = "gameradarapp://game/${game.slug}"
             val webLink = "https://rawg.io/games/${game.slug}"
             val shareText = buildString {
                 append("Schau dir dieses Spiel an: ${game.title}\n")
-                append("Öffne direkt in der App: $deepLink\n")
+                // TODO wenn Zeit ist nochmal schauen wie das mit dem DeepLink geht
+                //       append("Öffne direkt in der App: $deepLink\n")
                 append("Oder im Browser: $webLink")
             }
             val shareIntent = Intent(Intent.ACTION_SEND).apply {

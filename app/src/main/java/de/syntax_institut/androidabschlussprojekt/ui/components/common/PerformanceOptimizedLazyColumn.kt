@@ -48,7 +48,7 @@ fun PerformanceOptimizedLazyColumnWithPlaceholders(
             }
         } else {
             content()
-                }
+        }
     }
 }
 

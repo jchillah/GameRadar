@@ -7,14 +7,21 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
+import androidx.navigation.compose.*
 import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -26,11 +33,17 @@ fun SearchScreen(
     viewModel: SearchViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsState()
-    val isOffline by viewModel.isOffline.collectAsState()
+    val context = LocalContext.current
+    val isOnline by NetworkUtils.observeNetworkStatus(context)
+        .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
-    val tabTitles = listOf("Alle", "Neuerscheinungen", "Top-rated")
+    val tabTitles = listOf(
+        stringResource(R.string.search_tab_all),
+        stringResource(R.string.search_tab_new),
+        stringResource(R.string.search_tab_top_rated)
+    )
     var selectedTab by remember { mutableIntStateOf(0) }
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
@@ -45,7 +58,7 @@ fun SearchScreen(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
+            .fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier
@@ -56,12 +69,15 @@ fun SearchScreen(
         ) {
             Text(
                 maxLines = 1,
-                text = "Spielsuche",
+                text = stringResource(R.string.search_title),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
             IconButton(onClick = { showFilters = true }) {
-                Icon(Icons.Default.FilterList, contentDescription = "Filter anzeigen")
+                Icon(
+                    Icons.Default.FilterList,
+                    contentDescription = stringResource(R.string.filter_button_content_description)
+                )
             }
         }
         TabRow(selectedTabIndex = selectedTab) {
@@ -80,7 +96,9 @@ fun SearchScreen(
                     text = {
                         Text(
                             title,
-                            maxLines = 1
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+
                         )
                     }
                 )
@@ -118,12 +136,14 @@ fun SearchScreen(
             if (state.error != null) {
                 ErrorCard(
                     modifier = Modifier.fillMaxSize(),
-                    error = state.error ?: "Unbekannter Fehler",
+                    error = state.error ?: stringResource(R.string.error_unknown_default),
                 )
             } else if (!state.hasSearched) {
                 EmptyState(
-                    title = "Suche nach Spielen",
-                    message = "Gib einen Suchbegriff ein, um Spiele zu finden.",
+                    title = stringResource(R.string.search_empty_title),
+                    message = if (!isOnline) stringResource(R.string.search_empty_message_offline) else stringResource(
+                        R.string.search_empty_message_online
+                    ),
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
@@ -134,7 +154,7 @@ fun SearchScreen(
                             "Navigation",
                             "Navigiere zu DetailScreen mit gameId=${game.id}"
                         )
-                        navController.navigate(Routes.detail(game.id))
+                        navController.navigateSingleTopTo(Routes.detail(game.id))
                     },
                     modifier = Modifier.fillMaxSize(),
                     imageQuality = imageQuality,
@@ -158,7 +178,7 @@ fun SearchScreen(
                 isLoadingGenres = state.isLoadingGenres,
                 platformsError = state.platformsError,
                 genresError = state.genresError,
-                isOffline = isOffline,
+                isOffline = !isOnline,
                 onOrderingChange = { newOrdering ->
                     viewModel.updateOrdering(newOrdering)
                 },
@@ -175,4 +195,12 @@ fun SearchScreen(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchScreenPreview() {
+    SearchScreen(
+        navController = rememberNavController()
+    )
 }

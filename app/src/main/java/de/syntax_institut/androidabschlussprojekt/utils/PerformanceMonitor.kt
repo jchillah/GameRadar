@@ -1,7 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.utils
 
-import android.util.*
-
 object PerformanceMonitor {
     private val startTimes = mutableMapOf<String, Long>()
 
@@ -12,7 +10,7 @@ object PerformanceMonitor {
     fun endTimer(timerName: String): Long {
         val startTime = startTimes[timerName] ?: return 0L
         val duration = System.currentTimeMillis() - startTime
-        Log.d("Performance", "$timerName took " + duration + "ms")
+        AppLogger.d("PerformanceMonitor", "$timerName took ${duration}ms")
         startTimes.remove(timerName)
         return duration
     }
@@ -23,6 +21,6 @@ object PerformanceMonitor {
         val maxMemory = runtime.maxMemory()
         val memoryUsage = (usedMemory.toFloat() / maxMemory.toFloat()) * 100
 
-        Log.d("Performance", "Memory usage in $context: " + memoryUsage.toInt() + "%")
+        AppLogger.d("PerformanceMonitor", "Memory usage in $context: ${memoryUsage.toInt()}%")
     }
 }

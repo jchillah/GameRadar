@@ -3,7 +3,7 @@ package de.syntax_institut.androidabschlussprojekt.navigation
 import androidx.navigation.*
 
 /**
- * Navigiert zu einer Route ohne mehrere Instanzen zu erzeugen.
+ * Navigiert zu einer Route ohne mehrere Instanzen zu erzeugen (SingleTop, State Restore).
  */
 fun NavController.navigateSingleTopTo(route: String) {
     this.navigate(route) {

@@ -29,4 +29,6 @@ class SettingsViewModel(
 
     fun setShareGamesEnabled(enabled: Boolean) = settingsRepository.setShareGamesEnabled(enabled)
     fun setDarkModeEnabled(enabled: Boolean) = settingsRepository.setDarkModeEnabled(enabled)
+
+    // clearDatabase entfernt – Context-Logik gehört in die UI-Schicht
 }

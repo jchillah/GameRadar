@@ -6,18 +6,15 @@ import android.content.pm.*
 import android.graphics.*
 import android.os.*
 import androidx.activity.*
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.*
 import androidx.activity.result.contract.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.unit.*
-import androidx.core.app.*
-import androidx.core.net.*
 import androidx.navigation.compose.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import org.koin.android.ext.android.*
 
@@ -30,6 +27,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // TEMPORÄR: Datenbank-Reset für Entwicklung/Migration
+        // TODO: ENTFERNE DIESEN AUFRUF NACH DEM ERSTEN ERFOLGREICHEN START!
+        // GameDatabase.clearDatabase(this)
         enableEdgeToEdge()
         createNotificationChannel(this)
         val requestPermissionLauncher = registerForActivityResult(
@@ -43,67 +43,53 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
-            val navController = rememberNavController()
-            var pendingSlug by remember { mutableStateOf<String?>(null) }
-            var pendingGameId by remember { mutableStateOf<Int?>(null) }
-            val snackbarHostState = remember { SnackbarHostState() }
-            MyAppTheme {
-                Box(Modifier.fillMaxSize()) {
-                    AppStart(
-                    )
-                    SnackbarHost(hostState = snackbarHostState)
-                    // Test-Button (nur sichtbar im Debug, kann später entfernt werden)
-                    Button(
-                        onClick = {
-                            sendNewGameNotification(
-                                context = this@MainActivity,
-                                gameTitle = "The Witcher 4",
-                                gameSlug = "the-witcher-4",
-                                gameId = 99999
-                            )
-                        },
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(24.dp)
-                    ) {
-                        Text("Test: Neue Spiel-Benachrichtigung")
+            LocalizedApp {
+                val navController = rememberNavController()
+                var pendingSlug by remember { mutableStateOf<String?>(null) }
+                var pendingGameId by remember { mutableStateOf<Int?>(null) }
+                val snackbarHostState = remember { SnackbarHostState() }
+                MyAppTheme {
+                    Box(Modifier.fillMaxSize()) {
+                        App(
+                        )
+                        SnackbarHost(hostState = snackbarHostState)
                     }
                 }
-            }
-            // Deep Link Intent beim Start prüfen
-            LaunchedEffect(Unit) {
-                val slug =
-                    intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
-                if (slug != null) {
-                    pendingSlug = slug
-                }
-            }
-            // Deep Link Intent bei erneutem Öffnen prüfen
-            LaunchedEffect(intent) {
-                val slug =
-                    intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
-                if (slug != null) {
-                    pendingSlug = slug
-                }
-            }
-            // Wenn ein Slug gesetzt wurde, suche die GameId
-            LaunchedEffect(pendingSlug) {
-                pendingSlug?.let { slug ->
-                    val id = gameRepository.getGameIdBySlug(slug)
-                    if (id != null) {
-                        pendingGameId = id
-                    } else {
-                        snackbarHostState.showSnackbar("Spiel nicht gefunden: $slug")
+                // Deep Link Intent beim Start prüfen
+                LaunchedEffect(Unit) {
+                    val slug =
+                        intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
+                    if (slug != null) {
+                        pendingSlug = slug
                     }
-                    pendingSlug = null
                 }
-            }
-            LaunchedEffect(pendingGameId) {
-                pendingGameId?.let { id ->
-                    navController.navigate(
-                        de.syntax_institut.androidabschlussprojekt.navigation.Routes.detail(id)
-                    )
-                    pendingGameId = null
+                // Deep Link Intent bei erneutem Öffnen prüfen
+                LaunchedEffect(intent) {
+                    val slug =
+                        intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
+                    if (slug != null) {
+                        pendingSlug = slug
+                    }
+                }
+                // Wenn ein Slug gesetzt wurde, suche die GameId
+                LaunchedEffect(pendingSlug) {
+                    pendingSlug?.let { slug ->
+                        val id = gameRepository.getGameIdBySlug(slug)
+                        if (id != null) {
+                            pendingGameId = id
+                        } else {
+                            snackbarHostState.showSnackbar("Spiel nicht gefunden: $slug")
+                        }
+                        pendingSlug = null
+                    }
+                }
+                LaunchedEffect(pendingGameId) {
+                    pendingGameId?.let { id ->
+                        navController.navigate(
+                            de.syntax_institut.androidabschlussprojekt.navigation.Routes.detail(id)
+                        )
+                        pendingGameId = null
+                    }
                 }
             }
         }
@@ -116,7 +102,7 @@ class MainActivity : ComponentActivity() {
 
     private fun createNotificationChannel(context: Context) {
         val channel = NotificationChannel(
-            "new_games_channel",
+            "new_games",
             "Neue Spiele",
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
@@ -128,35 +114,5 @@ class MainActivity : ComponentActivity() {
         val notificationManager: NotificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
-    }
-
-    fun sendNewGameNotification(
-        context: Context,
-        gameTitle: String,
-        gameSlug: String,
-        gameId: Int,
-    ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        val intent = Intent(context, MainActivity::class.java).apply {
-            data = "myapp://game/$gameSlug".toUri()
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent = PendingIntent.getActivity(
-            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        val builder = NotificationCompat.Builder(context, "new_games_channel")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Neues Spiel verfügbar!")
-            .setContentText("Schau dir '$gameTitle' jetzt an.")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-        with(NotificationManagerCompat.from(context)) {
-            notify(gameId, builder.build())
-        }
     }
 }
