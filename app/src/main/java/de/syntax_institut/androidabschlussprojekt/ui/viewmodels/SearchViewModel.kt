@@ -81,7 +81,7 @@ class SearchViewModel(
                 } else {
                     _uiState.update { 
                         it.copy(
-                            platformsError = platformResponse.message ?: Constants.ERROR_UNKNOWN,
+                            platformsError = platformResponse.message ?: "Unbekannter Fehler",
                             isLoadingPlatforms = false
                         ) 
                     }
@@ -107,7 +107,7 @@ class SearchViewModel(
                 } else {
                     _uiState.update { 
                         it.copy(
-                            genresError = genreResponse.message ?: Constants.ERROR_UNKNOWN,
+                            genresError = genreResponse.message ?: "Unbekannter Fehler",
                             isLoadingGenres = false
                         ) 
                     }

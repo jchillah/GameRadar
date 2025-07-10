@@ -29,7 +29,7 @@ object FavoriteGameMapper {
         } catch (e: Exception) {
             AppLogger.e(
                 "FavoriteGameMapper",
-                "${Constants.ERROR} beim Parsen der String-Liste: ${e.localizedMessage}",
+                "Fehler beim Parsen der String-Liste: ${e.localizedMessage}",
                 e
             )
             emptyList()
@@ -41,7 +41,7 @@ object FavoriteGameMapper {
         } catch (e: Exception) {
             AppLogger.e(
                 "FavoriteGameMapper",
-                "${Constants.ERROR} beim Parsen der Movie-Liste: ${e.localizedMessage}",
+                "Fehler beim Parsen der Movie-Liste: ${e.localizedMessage}",
                 e
             )
             emptyList()
@@ -53,7 +53,7 @@ object FavoriteGameMapper {
         } catch (e: Exception) {
             AppLogger.e(
                 "FavoriteGameMapper",
-                "${Constants.ERROR} beim Serialisieren der String-Liste: ${e.localizedMessage}",
+                "Fehler beim Serialisieren der String-Liste: ${e.localizedMessage}",
                 e
             )
             Constants.EMPTY_JSON_ARRAY
@@ -65,7 +65,7 @@ object FavoriteGameMapper {
         } catch (e: Exception) {
             AppLogger.e(
                 "FavoriteGameMapper",
-                "${Constants.ERROR} beim Serialisieren der Movie-Liste: ${e.localizedMessage}",
+                "Fehler beim Serialisieren der Movie-Liste: ${e.localizedMessage}",
                 e
             )
             Constants.EMPTY_JSON_ARRAY

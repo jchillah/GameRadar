@@ -17,7 +17,6 @@ import androidx.navigation.*
 import androidx.navigation.compose.*
 import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
-import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -137,7 +136,7 @@ fun SearchScreen(
             if (state.error != null) {
                 ErrorCard(
                     modifier = Modifier.fillMaxSize(),
-                    error = state.error ?: Constants.ERROR_UNKNOWN,
+                    error = state.error ?: stringResource(R.string.error_unknown_default),
                 )
             } else if (!state.hasSearched) {
                 EmptyState(

@@ -1,7 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
 import androidx.lifecycle.*
-import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
@@ -48,7 +47,7 @@ class DetailViewModel(
                         }
                     }
 
-                    if ((game?.website.isNullOrBlank() == true && game?.screenshots.isNullOrEmpty() == true) && !forceReload) {
+                    if ((game?.website.isNullOrBlank() && game?.screenshots.isNullOrEmpty()) && !forceReload) {
                         loadDetail(id, forceReload = true)
                     } else if (game != null) {
                         _uiState.value =
@@ -65,7 +64,7 @@ class DetailViewModel(
                 is Resource.Error -> {
                     AppLogger.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")
                     _uiState.value = DetailUiState(
-                        resource = Resource.Error(gameResult.message ?: Constants.ERROR),
+                        resource = Resource.Error(gameResult.message ?: "Unbekannter Fehler"),
                         error = gameResult.message
                     )
                 }

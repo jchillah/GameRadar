@@ -2,7 +2,6 @@ package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import android.content.*
 import androidx.paging.*
-import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toGame
@@ -123,7 +122,7 @@ class GamePagingSource(
                 }
             }
         } catch (e: Exception) {
-            AppLogger.e("GameRepository", "${Constants.ERROR} beim API-Call in PagingSource", e)
+            AppLogger.e("GameRepository", "Fehler beim API-Call in PagingSource", e)
             // Fallback auf Cache bei Netzwerkfehler
             val cachedGames = gameCacheDao.getGamesByQueryAndFilter(query, filterHash).first()
             if (cachedGames.isNotEmpty()) {

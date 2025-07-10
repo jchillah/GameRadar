@@ -7,8 +7,6 @@ package de.syntax_institut.androidabschlussprojekt.data
 object Constants {
 
     // Allgemeine Fehler-Konstante für Logging und Fehlertexte
-    const val ERROR = "Fehler"
-    const val ERROR_UNKNOWN = "Unbekannter Fehler"
 
     // Datenbanknamen
     const val DATABASE_NAME = "game_database"
