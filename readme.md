@@ -1,4 +1,4 @@
-passe meine Readme an dieses schema an # GameFinder 🎮
+# GameFinder 🎮
 
 **Entdecke deine nächste Gaming-Leidenschaft – modern, schnell, fehlerrobust.**
 
