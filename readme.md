@@ -95,7 +95,7 @@ de.syntax_institut.androidabschlussprojekt
   - Filter: Plattform, Genre, Bewertung, Datum
   - API-Key in `local.properties` eintragen
     ```bash
-    API_KEY="YOUR_API_KEY"
+    API_KEY=YOUR_API_KEY
     ```
 
 ### Frameworks & Libraries

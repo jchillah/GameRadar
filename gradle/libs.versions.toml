@@ -1,7 +1,8 @@
 [versions]
-accompanistNavigationAnimation = "0.34.0"
+accompanistNavigationAnimation = "0.36.0"
 
 agp = "8.9.3"
+firebaseBom = "33.16.0"
 koinTestVersion = "3.5.3"
 koinTestJunit4Version = "3.5.3"
 kotlin = "2.1.21"
@@ -94,6 +95,8 @@ androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", 
 # Networking
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 insert-koin-koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinTestJunit4Version" }
 insert-koin-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinTestVersion" }
 material = { module = "com.google.android.material:material", version.ref = "material" }

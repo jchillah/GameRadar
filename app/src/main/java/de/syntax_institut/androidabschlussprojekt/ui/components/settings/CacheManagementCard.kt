@@ -6,12 +6,12 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 @Composable
 fun CacheManagementCard(
@@ -76,7 +76,9 @@ fun CacheManagementCard(
                 CacheStatItem(
                     icon = Icons.Default.Schedule,
                     label = stringResource(R.string.cache_stat_last_sync), // TODO: Key ggf. anlegen
-                    value = if (lastSyncTime != null) stringResource(R.string.cache_stat_today) else stringResource(R.string.cache_stat_never) // TODO: Keys ggf. anlegen
+                    value = if (lastSyncTime != null) stringResource(R.string.cache_stat_today) else stringResource(
+                        R.string.cache_stat_never
+                    ) // TODO: Keys ggf. anlegen
                 )
             }
 

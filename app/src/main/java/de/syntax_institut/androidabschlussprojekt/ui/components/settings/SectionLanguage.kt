@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.models.*
-import de.syntax_institut.androidabschlussprojekt.utils.*
 
 @Composable
 fun SectionLanguage(
@@ -64,7 +63,8 @@ fun SectionLanguage(
         Spacer(modifier = Modifier.height(8.dp))
         EnhancedDropdown(
             modifier = Modifier.padding(top = 8.dp),
-            selectedValue = languageOptions.firstOrNull { it.value == language }?.label ?: languageOptions[0].label,
+            selectedValue = languageOptions.firstOrNull { it.value == language }?.label
+                ?: languageOptions[0].label,
             onValueChange = onLanguageChange,
             options = languageOptions
         )

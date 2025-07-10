@@ -5,4 +5,5 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.1.21"
     alias(libs.plugins.jetbrains.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.ksp) apply false
+    id("com.google.gms.google-services") version "4.4.3" apply false
 }

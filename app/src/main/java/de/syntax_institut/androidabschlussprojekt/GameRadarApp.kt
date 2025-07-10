@@ -4,6 +4,7 @@ import android.app.*
 import android.content.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.di.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.android.ext.koin.*
 import org.koin.core.context.*
 
@@ -14,6 +15,7 @@ import org.koin.core.context.*
 class GameRadarApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        AppAnalytics.init(this)
         startKoin {
             androidContext(this@GameRadarApp)
             modules(networkModule)

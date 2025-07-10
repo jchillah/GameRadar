@@ -22,6 +22,7 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
+import de.syntax_institut.androidabschlussprojekt.utils.AppAnalytics
 
 
 /**
@@ -49,8 +50,8 @@ fun DetailScreen(
     val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
 
     LaunchedEffect(gameId) {
-        Analytics.trackScreenView("DetailScreen")
-        Analytics.trackEvent("game_viewed", mapOf("game_id" to gameId))
+        AppAnalytics.trackScreenView("DetailScreen")
+        AppAnalytics.trackEvent("game_viewed", mapOf("game_id" to gameId))
         PerformanceMonitor.startTimer("detail_screen_load")
     }
     LaunchedEffect(gameId) {
@@ -73,10 +74,10 @@ fun DetailScreen(
                     vm.loadDetail(
                         gameId,
                         forceReload = true
-                    ); Analytics.trackUserAction("cache_cleared", gameId)
+                    ); AppAnalytics.trackUserAction("cache_cleared", gameId)
                 },
                 onToggleFavorite = {
-                    vm.toggleFavorite(); Analytics.trackUserAction(
+                    vm.toggleFavorite(); AppAnalytics.trackUserAction(
                     "toggle_favorite",
                     gameId
                 )
@@ -112,7 +113,7 @@ fun DetailScreen(
                         Button(
                             onClick = {
                                 vm.loadDetail(gameId, forceReload = true)
-                                Analytics.trackUserAction("retry_detail_load", gameId)
+                                AppAnalytics.trackUserAction("retry_detail_load", gameId)
                             },
                             modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
@@ -143,7 +144,7 @@ fun DetailScreen(
                             Button(
                                 onClick = {
                                     vm.loadDetail(gameId, forceReload = true)
-                                    Analytics.trackUserAction("retry_detail_load", gameId)
+                                    AppAnalytics.trackUserAction("retry_detail_load", gameId)
                                 },
                                 modifier = Modifier.padding(horizontal = 16.dp)
                             ) {
@@ -267,7 +268,7 @@ fun DetailScreen(
                                 imageQuality = imageQuality
                             )
                             if (game.screenshots.isNotEmpty()) {
-                                Analytics.trackEvent(
+                                AppAnalytics.trackEvent(
                                     "screenshots_viewed", mapOf(
                                         "game_id" to gameId,
                                         "screenshot_count" to game.screenshots.size
@@ -322,7 +323,7 @@ fun DetailScreen(
                                     onClick = {
                                         val intent = Intent(Intent.ACTION_VIEW, game.website.toUri())
                                         context.startActivity(intent)
-                                        Analytics.trackUserAction("website_opened", gameId)
+                                        AppAnalytics.trackUserAction("website_opened", gameId)
                                     }
                                 ) {
                                     Text(

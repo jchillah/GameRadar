@@ -29,7 +29,7 @@ class GameRepository @Inject constructor(
         context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
 
     private val lastSyncTime = Constants.LAST_SYNC_TIME
-    
+
     suspend fun getGameDetail(gameId: Int): Resource<Game> {
         AppLogger.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
         AppLogger.i("GameRepository", "getGameDetail() aufgerufen für ID: $gameId")
@@ -282,7 +282,8 @@ class GameRepository @Inject constructor(
                         )
                     }
                     Resource.Success(platforms)
-                } ?: Resource.Error("Fehler beim Laden der Plattformen: Keine Plattformdaten verfügbar")
+                }
+                    ?: Resource.Error("Fehler beim Laden der Plattformen: Keine Plattformdaten verfügbar")
             } else {
                 Resource.Error("Fehler beim Laden der Plattformen: API-Fehler ${response.code()}")
             }

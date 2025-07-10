@@ -8,11 +8,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -20,8 +22,6 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
-import androidx.compose.ui.res.stringResource
-import de.syntax_institut.androidabschlussprojekt.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +100,9 @@ fun FavoritesScreen(
                 state.favorites.isEmpty() -> {
                     EmptyState(
                         title = stringResource(R.string.favorites_empty_title),
-                        message = if (!isOnline) stringResource(R.string.favorites_empty_offline) else stringResource(R.string.favorites_empty_message),
+                        message = if (!isOnline) stringResource(R.string.favorites_empty_offline) else stringResource(
+                            R.string.favorites_empty_message
+                        ),
                         icon = Icons.Default.FavoriteBorder,
                         modifier = Modifier.fillMaxSize()
                     )

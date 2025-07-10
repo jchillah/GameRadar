@@ -8,12 +8,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -21,8 +24,6 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
-import androidx.compose.ui.res.stringResource
-import de.syntax_institut.androidabschlussprojekt.R
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,7 +75,10 @@ fun SearchScreen(
                 color = MaterialTheme.colorScheme.onBackground
             )
             IconButton(onClick = { showFilters = true }) {
-                Icon(Icons.Default.FilterList, contentDescription = stringResource(R.string.filter_button_content_description))
+                Icon(
+                    Icons.Default.FilterList,
+                    contentDescription = stringResource(R.string.filter_button_content_description)
+                )
             }
         }
         TabRow(selectedTabIndex = selectedTab) {
@@ -93,7 +97,9 @@ fun SearchScreen(
                     text = {
                         Text(
                             title,
-                            maxLines = 1
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+
                         )
                     }
                 )
@@ -136,7 +142,9 @@ fun SearchScreen(
             } else if (!state.hasSearched) {
                 EmptyState(
                     title = stringResource(R.string.search_empty_title),
-                    message = if (!isOnline) stringResource(R.string.search_empty_message_offline) else stringResource(R.string.search_empty_message_online),
+                    message = if (!isOnline) stringResource(R.string.search_empty_message_offline) else stringResource(
+                        R.string.search_empty_message_online
+                    ),
                     modifier = Modifier.fillMaxSize()
                 )
             } else {

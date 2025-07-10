@@ -20,7 +20,10 @@ fun LocalizedApp(
 
     // Erstelle einen lokalisierten Context basierend auf der ausgewählten Sprache
     val localizedContext = remember(currentLanguage) {
-        if (currentLanguage == "system") context else LocaleManager.createLocalizedContext(context, currentLanguage)
+        if (currentLanguage == "system") context else LocaleManager.createLocalizedContext(
+            context,
+            currentLanguage
+        )
     }
 
     // Verwende den lokalisierten Context für die gesamte App

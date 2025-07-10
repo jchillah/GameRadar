@@ -19,17 +19,16 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import androidx.core.view.*
 import coil3.compose.*
 import coil3.request.*
 import coil3.size.*
-import de.syntax_institut.androidabschlussprojekt.data.Constants
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import kotlin.math.*
-import androidx.compose.ui.res.stringResource
-import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Fullscreen Activity für die Screenshot-Galerie.

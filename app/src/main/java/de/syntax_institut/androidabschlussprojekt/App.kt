@@ -31,8 +31,8 @@ fun App() {
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
 
     LaunchedEffect(Unit) {
-        Analytics.trackScreenView("AppStart")
-        Analytics.trackEvent("app_started")
+        AppAnalytics.trackScreenView("AppStart")
+        AppAnalytics.trackEvent("app_started")
         val workManager = WorkManager.getInstance(context)
         val workRequest = PeriodicWorkRequestBuilder<NewGameWorker>(6, TimeUnit.HOURS)
             .addTag(Constants.NEW_GAME_WORKER_NAME)

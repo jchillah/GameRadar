@@ -6,9 +6,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.res.stringResource
 import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
@@ -37,7 +37,9 @@ fun IntelligentCacheIndicator(
             ) {
                 Icon(
                     imageVector = if (isOffline) Icons.Default.WifiOff else Icons.Default.CloudSync,
-                    contentDescription = if (isOffline) stringResource(R.string.offline_mode) else stringResource(R.string.online_mode),
+                    contentDescription = if (isOffline) stringResource(R.string.offline_mode) else stringResource(
+                        R.string.online_mode
+                    ),
                     tint = if (isOffline)
                         MaterialTheme.colorScheme.onErrorContainer
                     else
@@ -45,7 +47,9 @@ fun IntelligentCacheIndicator(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = if (isOffline) stringResource(R.string.offline_mode) else stringResource(R.string.online_mode),
+                    text = if (isOffline) stringResource(R.string.offline_mode) else stringResource(
+                        R.string.online_mode
+                    ),
                     style = MaterialTheme.typography.titleSmall,
                     color = if (isOffline)
                         MaterialTheme.colorScheme.onErrorContainer

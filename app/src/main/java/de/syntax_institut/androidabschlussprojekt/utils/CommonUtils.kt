@@ -1,7 +1,5 @@
 package de.syntax_institut.androidabschlussprojekt.utils
 
-import de.syntax_institut.androidabschlussprojekt.data.*
-
 /**
  * Utility-Klasse für häufig verwendete Funktionen.
  * Reduziert Code-Duplikation und verbessert Wartbarkeit.

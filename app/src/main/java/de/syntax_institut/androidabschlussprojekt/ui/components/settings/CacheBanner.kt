@@ -8,11 +8,11 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import kotlinx.coroutines.*
 import de.syntax_institut.androidabschlussprojekt.R
+import kotlinx.coroutines.*
 
 @ExperimentalMaterial3Api
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,7 +27,8 @@ fun CacheBanner(
     val isCacheFull = cachePercentage >= 90f
     val isCacheWarning = cachePercentage >= 70f && cachePercentage < 90f
     val isUnlimited = maxCacheSize >= 100000
-    val displayMax = if (isUnlimited) stringResource(R.string.cache_unlimited) else maxCacheSize.toString()
+    val displayMax =
+        if (isUnlimited) stringResource(R.string.cache_unlimited) else maxCacheSize.toString()
     val containerColor = when {
         isCacheFull -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.7f)
         isCacheWarning -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.8f)

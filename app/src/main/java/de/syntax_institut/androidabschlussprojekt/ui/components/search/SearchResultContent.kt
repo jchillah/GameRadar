@@ -6,15 +6,14 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
-import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.paging.*
 import androidx.paging.compose.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
-import androidx.compose.ui.res.stringResource
-import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
 fun SearchResultContent(
@@ -92,16 +91,4 @@ fun SearchResultContent(
             }
         }
     }
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun SearchResultContentPreview() {
-    SearchResultContent(
-        pagingItems = TODO(),
-        onGameClick = TODO(),
-        modifier = TODO(),
-        imageQuality = TODO(),
-        favoriteIds = TODO()
-    )
 }

@@ -6,13 +6,12 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.data.*
-import de.syntax_institut.androidabschlussprojekt.utils.*
-import androidx.compose.ui.res.stringResource
 import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.utils.*
 
 /**
  * Zeigt eine Fehlerkarte mit Icon, Titel, Nachricht und optionaler Retry-Aktion.
@@ -101,7 +100,7 @@ fun ErrorCard(
     // Analytics-Tracking für Fehler
     if (error.isNotBlank()) {
         LaunchedEffect(error) {
-            Analytics.trackError(error, "ErrorCard")
+            AppAnalytics.trackError(error, "ErrorCard")
         }
     }
 }

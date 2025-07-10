@@ -5,8 +5,7 @@ import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import de.syntax_institut.androidabschlussprojekt.data.*
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.*
 import de.syntax_institut.androidabschlussprojekt.R
 
 /**

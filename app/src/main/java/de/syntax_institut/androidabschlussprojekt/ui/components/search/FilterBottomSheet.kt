@@ -6,11 +6,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.res.stringResource
 import de.syntax_institut.androidabschlussprojekt.R
-import de.syntax_institut.androidabschlussprojekt.data.Constants
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
@@ -92,7 +91,10 @@ fun FilterBottomSheet(
                 ) {
                     Text(
                         if (selectedPlatformState.isEmpty()) stringResource(R.string.filter_select_platforms)
-                        else stringResource(R.string.filter_selected_platforms, selectedPlatformState.size)
+                        else stringResource(
+                            R.string.filter_selected_platforms,
+                            selectedPlatformState.size
+                        )
                     )
                 }
                 DropdownMenu(
@@ -169,7 +171,10 @@ fun FilterBottomSheet(
                 ) {
                     Text(
                         if (selectedGenreState.isEmpty()) stringResource(R.string.filter_select_genres)
-                        else stringResource(R.string.filter_selected_genres, selectedGenreState.size)
+                        else stringResource(
+                            R.string.filter_selected_genres,
+                            selectedGenreState.size
+                        )
                     )
                 }
                 DropdownMenu(
@@ -206,7 +211,10 @@ fun FilterBottomSheet(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Mindestbewertung
-        Text(stringResource(R.string.filter_min_rating, ratingState.roundToInt()), style = MaterialTheme.typography.titleMedium)
+        Text(
+            stringResource(R.string.filter_min_rating, ratingState.roundToInt()),
+            style = MaterialTheme.typography.titleMedium
+        )
         Slider(
             value = ratingState,
             onValueChange = { ratingState = it },
@@ -234,7 +242,8 @@ fun FilterBottomSheet(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    orderings.find { it.first == orderingState }?.second ?: stringResource(R.string.filter_select_sorting),
+                    orderings.find { it.first == orderingState }?.second
+                        ?: stringResource(R.string.filter_select_sorting),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

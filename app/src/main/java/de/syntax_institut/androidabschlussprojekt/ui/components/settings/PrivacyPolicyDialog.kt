@@ -7,11 +7,11 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.res.stringResource
 import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
@@ -52,7 +52,10 @@ fun PrivacyPolicyDialog(
                 )
 
                 Text(
-                    text = stringResource(R.string.privacy_policy_date, java.time.LocalDate.now().toString()),
+                    text = stringResource(
+                        R.string.privacy_policy_date,
+                        java.time.LocalDate.now().toString()
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -82,7 +85,10 @@ fun PrivacyPolicyDialog(
                     content = stringResource(R.string.privacy_section_6_content)
                 )
                 Text(
-                    text = stringResource(R.string.privacy_policy_contact, "michael.winkler.developer@gmail.com"),
+                    text = stringResource(
+                        R.string.privacy_policy_contact,
+                        "michael.winkler.developer@gmail.com"
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

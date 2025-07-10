@@ -9,8 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
+import androidx.core.net.*
 import de.syntax_institut.androidabschlussprojekt.R
-import androidx.core.net.toUri
 
 /**
  * "Über die App"-Sektion für die Einstellungen.

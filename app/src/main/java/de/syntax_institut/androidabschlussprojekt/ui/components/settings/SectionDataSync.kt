@@ -76,7 +76,8 @@ fun SectionDataSync(
             }
             Spacer(modifier = Modifier.height(8.dp))
             EnhancedDropdown(
-                selectedValue = imageQualityOptions.firstOrNull { it.value == imageQuality.name }?.label ?: stringResource(R.string.image_quality_high),
+                selectedValue = imageQualityOptions.firstOrNull { it.value == imageQuality.name }?.label
+                    ?: stringResource(R.string.image_quality_high),
                 onValueChange = { selectedValue ->
                     val quality = ImageQuality.entries.find { it.name == selectedValue }
                         ?: ImageQuality.HIGH

@@ -14,11 +14,12 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose") version "2.1.21"
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "de.syntax_institut.androidabschlussprojekt"
-    compileSdk = 35
+    compileSdk = 36
 
     packaging {
         resources {
@@ -88,6 +89,10 @@ android {
 }
 
 dependencies {
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
     // Core Android
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core)

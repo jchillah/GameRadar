@@ -7,10 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
-import de.syntax_institut.androidabschlussprojekt.data.*
-import de.syntax_institut.androidabschlussprojekt.data.local.*
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.*
 import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.data.local.*
 
 /**
  * Datenbank-Management-Sektion für die Einstellungen.
