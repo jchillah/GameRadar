@@ -109,12 +109,68 @@
     <!-- About Section -->
     <string name="about_section">About</string>
     <string name="about_app">About GameRadar</string>
+    <string name="about_app_section">About the App</string>
     <string name="app_version">Version 1.0.0</string>
+    <string name="about_app_description">Your ultimate gaming database with over 350,000 games from the RAWG API.</string>
+    <string name="about_app_features">Features:</string>
+    <string name="about_app_footer">Made with ❤️ for the gaming community</string>
+    <string name="feature_search">🔍 Advanced game search</string>
+    <string name="feature_favorites">⭐ Favorites management</string>
+    <string name="feature_offline_cache">📱 Offline cache</string>
+    <string name="feature_gaming">🎮 Gaming features</string>
+    <string name="feature_dark_mode">🌙 Dark mode</string>
+    <string name="action_close">Close</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="privacy_policy_description">Read privacy policy</string>
+<<<<<<< Updated upstream
     <string name="contact_support">Contact Support</string>
     <string name="contact_support_description">Send email to support</string>
     <string name="contact_support_subject">Support GameRadar</string>
+=======
+    <string name="privacy_policy_title">GameRadar Privacy Policy</string>
+    <string name="privacy_policy_date">As of: %1$s</string>
+    <string name="privacy_section1_title">1. Data Collection</string>
+    <string name="privacy_section1_content">GameRadar only collects the data necessary for the app\'s functionality. This includes your search queries, favorites, and app settings, all stored locally on your device.</string>
+    <string name="privacy_section2_title">2. External Services</string>
+    <string name="privacy_section2_content">The app uses the RAWG API for game data. This API does not collect any personal data from you. All API requests are made anonymously without personal identification.</string>
+    <string name="privacy_section3_title">3. Local Storage</string>
+    <string name="privacy_section3_content">Your favorites, search history, and settings are stored exclusively on your device. This data is not transmitted to external servers.</string>
+    <string name="privacy_section4_title">4. Cache Data</string>
+    <string name="privacy_section4_content">The app stores game data in the local cache to improve performance. This data can be deleted at any time via the settings.</string>
+    <string name="privacy_section5_title">5. Analytics</string>
+    <string name="privacy_section5_content">GameRadar collects anonymous usage data to improve the app. This data contains no personal information and is used only for internal purposes.</string>
+    <string name="privacy_section6_title">6. Your Rights</string>
+    <string name="privacy_section6_content">You have the right to delete all your data using the app settings. All data is stored locally and can be completely removed.</string>
+    <string name="privacy_policy_contact">For questions about privacy, contact us at: %1$s</string>
+    <string name="action_understood">Understood</string>
+    <string name="contact_support">Contact support</string>
+    <string name="contact_support_description">Send an email to support</string>
+    <string name="cache_performance_critical">Performance critical</string>
+    <string name="cache_performance_limited">Performance limited</string>
+    <string name="cache_performance_optimal">Performance optimal</string>
+    <string name="cache">Cache</string>
+    <string name="cache_status">Cache: %1$d/%2$s games</string>
+    <string name="cache_info_title">Cache info</string>
+    <string name="cache_info_text" formatted="false">The cache stores games for offline use and faster loading times.
+
+Colors:
+• Green: Performance optimal (up to 70%)
+• Yellow: Performance limited (from 70%)
+• Red: Performance critical (from 90%)
+
+The infinity symbol (∞) means the cache is unlimited and only restricted by device storage.</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
+    <string name="offline_mode">Offline mode</string>
+    <string name="online_mode">Online mode</string>
+    <string name="using_cached_data">Using cached data (%1$d games available)</string>
+    <string name="data_auto_sync">Data is automatically synchronized</string>
+    <string name="last_sync_time">Last sync: %1$s</string>
+    <string name="data_sync_section">Data &amp; Synchronization</string>
+    <string name="gaming_features_section">Gaming features</string>
+    <string name="design_section">Design</string>
+    <string name="database_management_section">Database management</string>
+>>>>>>> Stashed changes
 
     <!-- Database Management -->
     <string name="database_section">Database Management</string>
@@ -171,7 +227,6 @@
     <string name="loading_state_default">Loading data…</string>
 
     <!-- Offline States -->
-    <string name="offline_mode">Offline Mode</string>
     <string name="offline_no_data">No data available</string>
     <string name="offline_no_favorites">No favorites available</string>
 

@@ -12,6 +12,10 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+<<<<<<< Updated upstream
+=======
+import androidx.compose.ui.res.stringResource
+>>>>>>> Stashed changes
 import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
@@ -52,43 +56,81 @@ fun PrivacyPolicyDialog(
                 )
 
                 Text(
+<<<<<<< Updated upstream
                     text = stringResource(
                         R.string.privacy_policy_date,
                         java.time.LocalDate.now().toString()
                     ),
+=======
+                    text = stringResource(R.string.privacy_policy_date, java.time.LocalDate.now().toString()),
+>>>>>>> Stashed changes
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 PrivacySection(
+<<<<<<< Updated upstream
                     title = stringResource(R.string.privacy_section_1_title),
                     content = stringResource(R.string.privacy_section_1_content)
+=======
+                    title = stringResource(R.string.privacy_section1_title),
+                    content = stringResource(R.string.privacy_section1_content)
+>>>>>>> Stashed changes
                 )
                 PrivacySection(
+<<<<<<< Updated upstream
                     title = stringResource(R.string.privacy_section_2_title),
                     content = stringResource(R.string.privacy_section_2_content)
+=======
+                    title = stringResource(R.string.privacy_section2_title),
+                    content = stringResource(R.string.privacy_section2_content)
+>>>>>>> Stashed changes
                 )
                 PrivacySection(
+<<<<<<< Updated upstream
                     title = stringResource(R.string.privacy_section_3_title),
                     content = stringResource(R.string.privacy_section_3_content)
+=======
+                    title = stringResource(R.string.privacy_section3_title),
+                    content = stringResource(R.string.privacy_section3_content)
+>>>>>>> Stashed changes
                 )
                 PrivacySection(
+<<<<<<< Updated upstream
                     title = stringResource(R.string.privacy_section_4_title),
                     content = stringResource(R.string.privacy_section_4_content)
+=======
+                    title = stringResource(R.string.privacy_section4_title),
+                    content = stringResource(R.string.privacy_section4_content)
+>>>>>>> Stashed changes
                 )
                 PrivacySection(
+<<<<<<< Updated upstream
                     title = stringResource(R.string.privacy_section_5_title),
                     content = stringResource(R.string.privacy_section_5_content)
+=======
+                    title = stringResource(R.string.privacy_section5_title),
+                    content = stringResource(R.string.privacy_section5_content)
+>>>>>>> Stashed changes
                 )
                 PrivacySection(
+<<<<<<< Updated upstream
                     title = stringResource(R.string.privacy_section_6_title),
                     content = stringResource(R.string.privacy_section_6_content)
+=======
+                    title = stringResource(R.string.privacy_section6_title),
+                    content = stringResource(R.string.privacy_section6_content)
+>>>>>>> Stashed changes
                 )
                 Text(
+<<<<<<< Updated upstream
                     text = stringResource(
                         R.string.privacy_policy_contact,
                         "michael.winkler.developer@gmail.com"
                     ),
+=======
+                    text = stringResource(R.string.privacy_policy_contact, "michael.winkler.developer@gmail.com"),
+>>>>>>> Stashed changes
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -97,7 +139,11 @@ fun PrivacyPolicyDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
+<<<<<<< Updated upstream
                 Text(stringResource(R.string.action_ok))
+=======
+                Text(stringResource(R.string.action_understood))
+>>>>>>> Stashed changes
             }
         }
     )

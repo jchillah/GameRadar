@@ -108,6 +108,7 @@
     <!-- About Section -->
     <string name="about_section">Über die App</string>
     <string name="about_app">Über GameRadar</string>
+<<<<<<< Updated upstream
     <string name="about_app_description">Deine ultimative Gaming-Datenbank mit über 350.000 Spielen aus der RAWG-API.</string>
     <string name="about_app_features">Features:</string>
     <string name="about_app_feature_search">🔍 Erweiterte Spielsuche</string>
@@ -116,17 +117,74 @@
     <string name="about_app_feature_gaming">🎮 Gaming-Features</string>
     <string name="about_app_feature_darkmode">🌙 Dark Mode</string>
     <string name="about_app_community">Entwickelt mit ❤️ für die Gaming-Community</string>
+=======
+    <string name="about_app_section">Über die App</string>
+>>>>>>> Stashed changes
     <string name="app_version">Version 1.0.0</string>
-    <string name="privacy_policy">Datenschutz</string>
+    <string name="about_app_description">Deine ultimative Gaming-Datenbank mit über 350.000 Spielen aus der RAWG-API.</string>
+    <string name="about_app_features">Features:</string>
+    <string name="about_app_footer">Entwickelt mit ❤️ für die Gaming-Community</string>
+    <string name="feature_search">🔍 Erweiterte Spielsuche</string>
+    <string name="feature_favorites">⭐ Favoriten-Verwaltung</string>
+    <string name="feature_offline_cache">📱 Offline-Cache</string>
+    <string name="feature_gaming">🎮 Gaming-Features</string>
+    <string name="feature_dark_mode">🌙 Dark Mode</string>
+    <string name="action_close">Schließen</string>
+    <string name="privacy_policy">Datenschutzerklärung</string>
     <string name="privacy_policy_description">Datenschutzerklärung lesen</string>
+    <string name="privacy_policy_title">GameRadar Datenschutzerklärung</string>
+    <string name="privacy_policy_date">Stand: %1$s</string>
+    <string name="privacy_section1_title">1. Datenerhebung</string>
+    <string name="privacy_section1_content">GameRadar sammelt nur die Daten, die für die Funktionalität der App notwendig sind. Dazu gehören deine Suchanfragen, Favoriten und App-Einstellungen, die lokal auf deinem Gerät gespeichert werden.</string>
+    <string name="privacy_section2_title">2. Externe Dienste</string>
+    <string name="privacy_section2_content">Die App nutzt die RAWG-API für Spieldaten. Diese API sammelt keine persönlichen Daten von dir. Alle API-Anfragen erfolgen anonym ohne persönliche Identifikation.</string>
+    <string name="privacy_section3_title">3. Lokale Speicherung</string>
+    <string name="privacy_section3_content">Deine Favoriten, Suchverlauf und Einstellungen werden ausschließlich lokal auf deinem Gerät gespeichert. Diese Daten werden nicht an externe Server übertragen.</string>
+    <string name="privacy_section4_title">4. Cache-Daten</string>
+    <string name="privacy_section4_content">Die App speichert Spieldaten im lokalen Cache, um die Performance zu verbessern. Diese Daten können jederzeit über die Einstellungen gelöscht werden.</string>
+    <string name="privacy_section5_title">5. Analytics</string>
+    <string name="privacy_section5_content">GameRadar sammelt anonyme Nutzungsdaten zur Verbesserung der App. Diese Daten enthalten keine persönlichen Informationen und werden nur für interne Zwecke verwendet.</string>
+    <string name="privacy_section6_title">6. Deine Rechte</string>
+    <string name="privacy_section6_content">Du hast das Recht, alle deine Daten zu löschen, indem du die App-Einstellungen verwendest. Alle Daten werden lokal gespeichert und können vollständig entfernt werden.</string>
+    <string name="privacy_policy_contact">Bei Fragen zum Datenschutz kontaktiere uns unter: %1$s</string>
+    <string name="action_understood">Verstanden</string>
     <string name="contact_support">Support kontaktieren</string>
+<<<<<<< Updated upstream
     <string name="contact_support_description">E-Mail an Support senden</string>
     <string name="contact_support_subject">Support GameRadar</string>
+=======
+    <string name="contact_support_description">E-Mail an den Support senden</string>
+    <string name="cache_performance_critical">Performance kritisch</string>
+    <string name="cache_performance_limited">Performance eingeschränkt</string>
+    <string name="cache_performance_optimal">Performance optimal</string>
+    <string name="cache">Cache</string>
+    <string name="cache_status">Cache: %1$d/%2$s Spiele</string>
+    <string name="cache_info_title">Cache-Info</string>
+    <string name="cache_info_text" formatted="false">Der Cache speichert Spiele für Offline-Nutzung und schnellere Ladezeiten.
+
+Farben:
+• Grün: Performance optimal (bis 70%)
+• Gelb: Performance eingeschränkt (ab 70%)
+• Rot: Performance kritisch (ab 90%)
+
+Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur durch den Gerätespeicher begrenzt wird.</string>
+    <string name="offline">Offline</string>
+    <string name="online">Online</string>
+    <string name="offline_mode">Offline-Modus</string>
+    <string name="online_mode">Online-Modus</string>
+    <string name="using_cached_data">Verwende gecachte Daten (%1$d Spiele verfügbar)</string>
+    <string name="data_auto_sync">Daten werden automatisch synchronisiert</string>
+    <string name="last_sync_time">Letzte Synchronisation: %1$s</string>
+    <string name="data_sync_section">Data &amp; Synchronization</string>
+    <string name="gaming_features_section">Gaming-Features</string>
+    <string name="design_section">Design</string>
+    <string name="database_management_section">Datenbank-Management</string>
+>>>>>>> Stashed changes
 
     <!-- Database Management -->
     <string name="database_section">Datenbank-Management</string>
     <string name="reset_database">Datenbank zurücksetzen</string>
-    <string name="reset_database_description">Löscht alle Favoriten und Cache-Daten</string>
+    <string name="reset_database_description">Alle Favoriten und Cache-Daten löschen</string>
     <string name="reset_database_dialog_title">Datenbank zurücksetzen</string>
     <string name="reset_database_dialog_text">Möchten Sie wirklich alle Favoriten und Cache-Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <!-- Hinweis nach Datenbank-Reset, dass ein Neustart empfohlen wird -->
@@ -179,7 +237,6 @@
     <string name="loading_state_default">Lade Daten…</string>
 
     <!-- Offline States -->
-    <string name="offline_mode">Offline-Modus</string>
     <string name="offline_no_data">Keine Daten verfügbar</string>
     <string name="offline_no_favorites">Keine Favoriten verfügbar</string>
 
