@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.settings
 
 import android.content.*
+import android.app.Activity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
@@ -45,6 +46,9 @@ fun SectionAbout(
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
                     data = "mailto:${Constants.EMAIL}".toUri()
                     putExtra(Intent.EXTRA_SUBJECT, "Support GameRadar")
+                }
+                if (context !is Activity) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
                 context.startActivity(intent)
             }

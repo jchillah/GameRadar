@@ -35,6 +35,16 @@ fun SectionLanguage(
             "en",
             stringResource(R.string.language_english),
             Icons.Default.Language
+        ),
+        DropdownOption(
+            "fr",
+            stringResource(R.string.language_french),
+            Icons.Default.Language
+        ),
+        DropdownOption(
+            "es",
+            stringResource(R.string.language_spanish),
+            Icons.Default.Language
         )
     )
 

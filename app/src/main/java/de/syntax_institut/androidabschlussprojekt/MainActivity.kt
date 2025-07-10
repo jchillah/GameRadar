@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.compose.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import org.koin.android.ext.android.*
 
@@ -42,51 +43,53 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
-            val navController = rememberNavController()
-            var pendingSlug by remember { mutableStateOf<String?>(null) }
-            var pendingGameId by remember { mutableStateOf<Int?>(null) }
-            val snackbarHostState = remember { SnackbarHostState() }
-            MyAppTheme {
-                Box(Modifier.fillMaxSize()) {
-                    App(
-                    )
-                    SnackbarHost(hostState = snackbarHostState)
-                }
-            }
-            // Deep Link Intent beim Start prüfen
-            LaunchedEffect(Unit) {
-                val slug =
-                    intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
-                if (slug != null) {
-                    pendingSlug = slug
-                }
-            }
-            // Deep Link Intent bei erneutem Öffnen prüfen
-            LaunchedEffect(intent) {
-                val slug =
-                    intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
-                if (slug != null) {
-                    pendingSlug = slug
-                }
-            }
-            // Wenn ein Slug gesetzt wurde, suche die GameId
-            LaunchedEffect(pendingSlug) {
-                pendingSlug?.let { slug ->
-                    val id = gameRepository.getGameIdBySlug(slug)
-                    if (id != null) {
-                        pendingGameId = id
-                    } else {
-                        snackbarHostState.showSnackbar("Spiel nicht gefunden: $slug")
+            LocalizedApp {
+                val navController = rememberNavController()
+                var pendingSlug by remember { mutableStateOf<String?>(null) }
+                var pendingGameId by remember { mutableStateOf<Int?>(null) }
+                val snackbarHostState = remember { SnackbarHostState() }
+                MyAppTheme {
+                    Box(Modifier.fillMaxSize()) {
+                        App(
+                        )
+                        SnackbarHost(hostState = snackbarHostState)
                     }
-                    pendingSlug = null
                 }
-            }
-            LaunchedEffect(pendingGameId) {
-                pendingGameId?.let { id ->
-                    navController.navigate(
-                        de.syntax_institut.androidabschlussprojekt.navigation.Routes.detail(id)
-                    )
-                    pendingGameId = null
+                // Deep Link Intent beim Start prüfen
+                LaunchedEffect(Unit) {
+                    val slug =
+                        intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
+                    if (slug != null) {
+                        pendingSlug = slug
+                    }
+                }
+                // Deep Link Intent bei erneutem Öffnen prüfen
+                LaunchedEffect(intent) {
+                    val slug =
+                        intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
+                    if (slug != null) {
+                        pendingSlug = slug
+                    }
+                }
+                // Wenn ein Slug gesetzt wurde, suche die GameId
+                LaunchedEffect(pendingSlug) {
+                    pendingSlug?.let { slug ->
+                        val id = gameRepository.getGameIdBySlug(slug)
+                        if (id != null) {
+                            pendingGameId = id
+                        } else {
+                            snackbarHostState.showSnackbar("Spiel nicht gefunden: $slug")
+                        }
+                        pendingSlug = null
+                    }
+                }
+                LaunchedEffect(pendingGameId) {
+                    pendingGameId?.let { id ->
+                        navController.navigate(
+                            de.syntax_institut.androidabschlussprojekt.navigation.Routes.detail(id)
+                        )
+                        pendingGameId = null
+                    }
                 }
             }
         }

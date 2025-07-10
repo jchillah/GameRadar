@@ -69,7 +69,6 @@ object Constants {
     const val NOTIFICATION_CHANNEL_ID = "new_games"
     const val NOTIFICATION_CHANNEL_NAME = "Neue Spiele"
     const val NOTIFICATION_CHANNEL_DESC = "Benachrichtigungen über neue Spiele"
-    const val NOTIFICATION_TITLE_NEW_GAME = "Neues Spiel verfügbar!"
     const val NOTIFICATION_TITLE_TEST = "Testspiel: Notification"
     const val NOTIFICATION_TEXT_TEST = "Dies ist eine Test-Benachrichtigung"
 

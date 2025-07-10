@@ -1,22 +1,38 @@
-# Android Abschlussprojekt - Game Radar
+passe meine Readme an dieses schema an # GameFinder 🎮
 
-Eine moderne Android-App zur Spiele-Suche, Verwaltung und Entdeckung – entwickelt mit Jetpack
-Compose, MVVM und Clean Code Best Practices.
+**Entdecke deine nächste Gaming-Leidenschaft – modern, schnell, fehlerrobust.**
 
-## Features
+GameFinder ist eine moderne Android-App, um neue Spiele zu entdecken, zu filtern, zu bewerten und
+Favoriten zu speichern. Entwickelt mit **Jetpack Compose**, **MVVM**, **Room** und der **RAWG-API
+** – für ein konsistentes, performantes und fehlerfreies Nutzererlebnis.
 
-- **Spiele-Suche**: Durchsuche eine umfangreiche Spiele-Datenbank (RAWG API)
-- **Favoriten**: Favoriten: Speichere und verwalte deine Lieblingsspiele lokal
-- **Detailansicht**: Detaillierte Infos, Screenshots & Trailer zu jedem Spiel
-- **Screenshots & Trailer**: Mediengalerien direkt in der App(Bilder und Videos zu den Spielen).
-- **Dark Mode**: Modernes, dunkles Design
-- **Cache- und Datenbank-Management**: Funktioniert auch ohne Internetverbindung
-- **Benachrichtigungen**: Werde über neue Spiele informiert
-- **Mehrsprachigkeit**: Deutsch, Englisch
+---
 
-## 🖼️ Screenshots
+## Highlights
 
-Hier ein Überblick über die wichtigsten App-Bereiche:
+- **Edge-to-Edge-Design:** Inhalte beginnen direkt unter der Statusleiste, keine doppelten AppBars,
+  keine verschachtelten Scaffold-Strukturen.
+- **Konsistente UI:** Einheitliche Titelzeile mit Actions (Teilen, Favorit, Refresh) auf allen
+  Hauptscreens.
+- **Dark-/Light-Mode-Umschaltung:** Nutzer können das Design jederzeit in den Einstellungen
+  wechseln.
+- **Settings-Screen:** Alle App-Einstellungen (Design, Sprache, Bildqualität, Benachrichtigungen,
+  etc.) zentral und MVVM-konform.
+- **Fehlerbehandlung pro Feld:** Fehler wie „Keine Website verfügbar“ oder „Keine Screenshots
+  verfügbar“ werden gezielt im jeweiligen Bereich angezeigt.
+- **Null-Safety & Logging:** Alle Datenzugriffe sind null-sicher, Navigation und Datenübergaben
+  werden geloggt.
+- **Navigation nur mit primitiven Typen:** Es werden ausschließlich IDs oder Strings übergeben,
+  keine komplexen Objekte.
+- **Offline-First:** Favoriten und Detaildaten werden lokal mit Room gecacht.
+- **Moderne Compose-Architektur:** Klare Trennung von UI, State und Logik, State-Hoisting, keine
+  UI-Logik im ViewModel.
+
+---
+
+## Screenshots
+
+Hier ein Überblick über die wichtigsten App-Bereiche im Entwickler Modus:
 
 | Startscreen               | Suche                     | Detailansicht              |
 |---------------------------|---------------------------|----------------------------|
@@ -26,107 +42,112 @@ Hier ein Überblick über die wichtigsten App-Bereiche:
 |-------------------------------|-----------------------------------|-------------------------------|----------------------------|
 | ![Favoriten](img/screen4.png) | ![Einstellungen](img/screen5.png) | ![Dark Mode](img/screen6.png) | ![Fehler](img/screen7.png) |
 
-## Debug-Anleitung: Fehlende Screenshots und Trailer
+---
 
-### Problem
+## Features
 
-Nach dem Neustart der App werden bei favorisierten Spielen keine Screenshots und Trailer mehr
-angezeigt.
+- 🔍 **Spielsuche** nach Titel, Plattform, Genre, Bewertung
+- 🏷️ **Filter & Sortierung** (Plattform, Genre, Bewertung, Erscheinungsjahr)
+- ⭐ **Favoriten speichern** (Offline mit Room)
+- 📝 **Detailseite** mit Beschreibung, Galerie, Entwickler, Plattformen, Metacritic, Spielzeit
+- 🆕 **Listenansicht** für Neuerscheinungen & Top-rated
+- 📤 **Spiele teilen** via Link
+- ⚡ **Offline-Cache** für schnelle Anzeige & Fehlervermeidung
+- 🎨 **Jetpack Compose UI** – modern, performant, flexibel
+- 🏗️ **MVVM-Architektur** mit sauberem Repository-Pattern
+- ⏳ **Ladeindikator & Error-UI** mit Retry-Funktion (zentralisierte Loading-Komponente)
+- 🛡️ **Fehlerhinweise direkt im Feld** (z. B. „Keine Screenshots verfügbar“)
+- 📝 **Logging** für Navigation und Datenübergabe
+- 🌓 **Dark-/Light-Mode** per Schalter im SettingsScreen
+- ⚙️ **SettingsScreen**: Sprache, Bildqualität, Benachrichtigungen, Design, u.v.m.
 
-### Debug-Schritte
+---
 
-#### 1. Erweiterte Log-Ausgabe aktivieren
+## Technischer Aufbau
 
-Die App wurde mit detaillierten Log-Ausgaben erweitert. Öffnen Sie Logcat in Android Studio und
-filtern Sie nach:
+### Projektstruktur (MVVM + Compose)
 
-```
-FavoriteGameMapper
-```
-
-#### 2. Debug-Button verwenden
-
-- Öffnen Sie ein Spiel in der Detailansicht
-- Klicken Sie auf den roten Bug-Button (Debug-Button) in der oberen rechten Ecke
-- Der Dialog zeigt aktuelle Spieldaten und Anweisungen
-
-#### 3. Systematische Fehlerbehebung
-
-1. **Favorisieren Sie ein Spiel** mit Screenshots/Trailern
-2. **Prüfen Sie die Logcat-Ausgabe** beim Favorisieren
-3. **Starten Sie die App neu**
-4. **Öffnen Sie das favorisierte Spiel erneut**
-5. **Vergleichen Sie die Logcat-Ausgaben** vor und nach dem Neustart
-
-#### 4. Erwartete Logcat-Ausgaben
-
-Beim Favorisieren sollten Sie sehen:
-
-```
-=== KONVERTIERUNG GAME → ENTITY ===
-Screenshots Anzahl: X
-Movies Anzahl: Y
-✅ Screenshots JSON erfolgreich erstellt: [...]
-✅ Movies JSON erfolgreich erstellt: [...]
-```
-
-Beim Laden aus der Datenbank:
-
-```
-=== KONVERTIERUNG ENTITY → GAME ===
-✅ Screenshots erfolgreich geparst: X Elemente
-✅ Movies erfolgreich geparst: Y Elemente
+```bash
+de.syntax_institut.androidabschlussprojekt
+├── data
+│   ├── local         # Room: Entities, DAOs, DB, Models
+│   ├── remote        # Retrofit DTOs + API-Service
+│   └── repositories  # Kommunikation zwischen Datenquellen & Settings
+├── domain           # Geschäftslogik, Domain-Modelle (z. B. Genre, Platform)
+├── di               # Dependency Injection (Koin)
+├── navigation       # Jetpack Navigation Komponenten
+├── ui
+│   ├── components   # Wiederverwendbare Composables (common, detail, search, settings)
+│   ├── screens      # Hauptscreens (Search, Detail, Favorites, Settings)
+│   ├── states       # UI-State-Modelle
+│   ├── theme        # Farben, Typographie, Shapes
+│   └── viewmodels   # ViewModel-Logik & UI-State
+├── utils            # Hilfsklassen (z. B. Resource.kt, NetworkUtils)
+└── services         # z. B. Background-Tasks
 ```
 
-#### 5. Mögliche Ursachen
+### Datenhaltung & API
 
-- **Leere Listen beim Favorisieren**: Das Problem liegt in der Datenbeschaffung
-- **Fehlerhafte Serialisierung**: Das Problem liegt im Mapper
-- **Fehlerhafte Deserialisierung**: Das Problem liegt beim Laden aus der Datenbank
+- **Favoriten & Detail-Cache:** Offline verfügbar mit Room
+- **RAWG Video Games API:**
+  - Base URL: `https://api.rawg.io/api/`
+  - Endpoints: `/games?search=...`, `/games/{id}`
+  - Filter: Plattform, Genre, Bewertung, Datum
+  - API-Key in `local.properties` eintragen
+    ```bash
+    API_KEY="YOUR_API_KEY"
+    ```
 
-### Technische Details
+### Frameworks & Libraries
 
-#### Datenbank-Schema
+- **Retrofit** + **Moshi** für API
+- **Room** für lokale Datenhaltung
+- **Jetpack Compose** (UI) + Navigation
+- **Coil** für Bild-Loading
+- **Accompanist** für Paging & SwipeRefresh
+- **Koin** für Dependency Injection
+- Optional: **Firebase Crashlytics & Analytics**
 
-- `screenshots`: JSON-String mit Liste von Screenshot-URLs
-- `movies`: JSON-String mit Liste von Movie-Objekten
+---
 
-#### Mapper-Logik
+## Fehlerbehandlung & UX
 
-- **Serialisierung**: `List<String>` → JSON-String
-- **Deserialisierung**: JSON-String → `List<String>`
-- **Fallback-Mechanismen**: Bei Fehlern werden leere Listen verwendet
+- **Fehler pro Feld:**  Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich Echte
+  API-/Netzwerkfehler? → Globale ErrorCard mit Retry
+- **Null-Safety:**  Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
+- **Logging:**  Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
+- **Keine komplexen Objekte in Navigation:**  Es werden nur primitive Typen (Int, String) übergeben
 
-#### Repository-Logik
+---
 
-- Automatisches Nachladen vollständiger Details beim Favorisieren
-- Fehlerbehandlung mit Fallback auf ursprüngliche Daten
+## Setup
 
-## Installation
+1. **API Key** erstellen: [RAWG API Docs](https://rawg.io/apidocs)
+2. Key in `local.properties` eintragen: `RAWG_API_KEY=dein_key`
+3. Projekt in Android Studio öffnen und ausführen
 
-1. Klonen Sie das Repository
-2. Öffnen Sie das Projekt in Android Studio
-3. Fügen Sie Ihren API-Key in `local.properties` hinzu:
-   ```
-   API_KEY=ihr_api_key_hier
-   ```
-4. Bauen und starten Sie die App
+---
 
-## Technologie-Stack
+## Ausblick
 
-- **UI**: Jetpack Compose
-- **Architektur**: MVVM mit Repository Pattern
-- **Datenbank**: Room
-- **Networking**: Retrofit + Moshi
-- **Dependency Injection**: Koin
-- **Paging**: Android Paging 3
-- **Navigation**: Compose Navigation
+- [x] Push-Notifikationen zu neuen Top-Spielen
+- [x] Dark Mode (umschaltbar)
+- [x] Vollbild-Screenshot-Galerie in Detailseite
+- [x] Fehlerbehandlung pro Feld (statt global)
+- [x] Logging für Navigation und Fehler
+- [x] Erweiterte Paging-Unterstützung
+- [x] SettingsScreen mit allen wichtigen App-Optionen
+- [ ] Firebase-Integration für Sync & Analytics
 
-## API
-
-Die App verwendet die [RAWG Video Games Database API](https://rawg.io/apidocs).
+---
 
 ## Lizenz
 
-Dieses Projekt ist für Bildungszwecke erstellt.
+MIT License – Siehe [LICENSE](LICENSE) für weitere Informationen.
+
+---
+
+**Tipp:**  
+Das Projekt ist ein modernes Compose-Vorzeigeprojekt – ideal als Lern- und Referenzbasis für saubere
+Android-Architektur!
 

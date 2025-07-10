@@ -64,8 +64,10 @@ fun SettingsScreen(
         SettingsHeader()
 
         val recommendedMaxCacheSize =
-            remember(context) { CacheUtils.calculateRecommendedMaxCacheSize(context) }
+            remember { CacheUtils.calculateRecommendedMaxCacheSize() }
 
+        // Debug-Elemente können hier entfernt oder dauerhaft angezeigt werden, falls gewünscht
+        // Beispiel: CacheBanner, IntelligentCacheIndicator, NetworkErrorHandler werden immer angezeigt
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.count ?: 0,
@@ -90,6 +92,7 @@ fun SettingsScreen(
             isOffline = !isOnline,
         )
 
+
         CacheManagementCard(
             modifier = Modifier.fillMaxWidth(),
             cacheSize = cacheStats?.count ?: 0,
@@ -111,7 +114,6 @@ fun SettingsScreen(
             }
         )
 
-        // Benachrichtigungs-Sektion ausgelagert
         SettingsSection(title = stringResource(R.string.notifications_section)) {
             SectionNotifications(
                 notificationsEnabled = notificationsEnabled,
@@ -165,7 +167,7 @@ fun SettingsScreen(
             )
         }
 
-        // Datenbank-Management-Sektion ausgelagert
+        // Datenbank-Management und Dialoge werden immer angezeigt (oder nach Wunsch)
         SettingsSection(title = "Datenbank-Management") {
             SectionDatabase()
         }

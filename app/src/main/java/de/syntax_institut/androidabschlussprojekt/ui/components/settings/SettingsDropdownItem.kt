@@ -50,7 +50,6 @@ internal fun SettingsDropdownItem(
             )
         }
 
-        // Dropdown-Trigger mit besserer Positionierung
         Box {
             Row(
                 modifier = Modifier

@@ -14,14 +14,17 @@ object LocaleManager {
     private const val LANGUAGE_SYSTEM = "system"
     private const val LANGUAGE_GERMAN = "de"
     private const val LANGUAGE_ENGLISH = "en"
-    // Französisch und Spanisch entfernt
+    private const val LANGUAGE_FRENCH = "fr"
+    private const val LANGUAGE_SPANISH = "es"
     /**
      * Verfügbare Sprachen mit ihren Anzeigenamen.
      */
     val availableLanguages = mapOf(
         LANGUAGE_SYSTEM to "Systemsprache",
         LANGUAGE_GERMAN to "Deutsch",
-        LANGUAGE_ENGLISH to "English"
+        LANGUAGE_ENGLISH to "English",
+        LANGUAGE_FRENCH to "Français",
+        LANGUAGE_SPANISH to "Español"
     )
 
     /**
@@ -32,6 +35,8 @@ object LocaleManager {
             LANGUAGE_SYSTEM -> getSystemLocale(context)
             LANGUAGE_GERMAN -> Locale.GERMAN
             LANGUAGE_ENGLISH -> Locale.ENGLISH
+            LANGUAGE_FRENCH -> Locale.FRENCH
+            LANGUAGE_SPANISH -> Locale("es")
             else -> getSystemLocale(context)
         }
 
@@ -63,26 +68,5 @@ object LocaleManager {
      */
     fun getLanguageDisplayName(languageCode: String): String {
         return availableLanguages[languageCode] ?: availableLanguages[LANGUAGE_SYSTEM]!!
-    }
-
-    /**
-     * Prüft, ob eine Sprache die Systemsprache ist.
-     */
-    fun isSystemLanguage(languageCode: String): Boolean {
-        return languageCode == LANGUAGE_SYSTEM
-    }
-
-    /**
-     * Erhält den aktuellen Sprachcode basierend auf der Locale.
-     */
-    fun getCurrentLanguageCode(context: Context): String {
-        val currentLocale =
-            context.resources.configuration.locales[0]
-
-        return when (currentLocale.language) {
-            "de" -> LANGUAGE_GERMAN
-            "en" -> LANGUAGE_ENGLISH
-            else -> LANGUAGE_SYSTEM
-        }
     }
 } 

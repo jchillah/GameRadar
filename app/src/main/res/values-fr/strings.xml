@@ -28,16 +28,18 @@
     <string name="language_section">Langue</string>
     <string name="app_language">Langue de l\'application</string>
     <string name="app_language_description">Langue de l\'interface utilisateur</string>
-    <string name="language_german">Deutsch</string>
-    <string name="language_english">English</string>
+    <string name="language_german">Allemand</string>
+    <string name="language_english">Anglais</string>
     <string name="language_french">Français</string>
-    <string name="language_spanish">Español</string>
+    <string name="language_spanish">Espagnol</string>
     <string name="system_language">Langue du système</string>
 
     <!-- Notifications Section -->
     <string name="notifications_section">Notifications</string>
     <string name="push_notifications">Notifications push</string>
     <string name="new_games_updates">Recevoir de nouveaux jeux et mises à jour</string>
+    <string name="notification_new_games_title">Nouveaux jeux disponibles !</string>
+    <string name="notification_new_games_text">%1$d nouveaux jeux ont été trouvés.</string>
 
     <!-- Performance Section -->
     <string name="performance_section">Performance</string>
