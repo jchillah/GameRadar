@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GameRadar</string>
+
+    <!-- Navigation -->
+    <string name="nav_search">Recherche</string>
+    <string name="nav_favorites">Favoris</string>
+    <string name="nav_settings">Paramètres</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">Rechercher des jeux</string>
+    <string name="search_button">Rechercher</string>
+    <string name="filter_button">Filtre</string>
+    <string name="no_results">Aucun résultat</string>
+    <string name="no_results_message">Essayez d\'autres termes de recherche ou filtres.</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Favoris</string>
+    <string name="no_favorites">Aucun favori</string>
+    <string name="no_favorites_message">Vous n\'avez pas encore ajouté de jeux à vos favoris.</string>
+    <string name="discover_games">Découvrir des jeux</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_subtitle">Personnalisez votre application</string>
+
+    <!-- Language Section -->
+    <string name="language_section">Langue</string>
+    <string name="app_language">Langue de l\'application</string>
+    <string name="app_language_description">Langue de l\'interface utilisateur</string>
+    <string name="language_german">Allemand</string>
+    <string name="language_english">Anglais</string>
+    <string name="language_french">Français</string>
+    <string name="language_spanish">Espagnol</string>
+    <string name="system_language">Langue du système</string>
+
+    <!-- Notifications Section -->
+    <string name="notifications_section">Notifications</string>
+    <string name="push_notifications">Notifications push</string>
+    <string name="new_games_updates">Recevoir de nouveaux jeux et mises à jour</string>
+    <string name="notification_new_games_title">Nouveaux jeux disponibles !</string>
+    <string name="notification_new_games_text">%1$d nouveaux jeux ont été trouvés.</string>
+
+    <!-- Performance Section -->
+    <string name="performance_section">Performance</string>
+    <string name="gaming_mode">Mode jeu</string>
+    <string name="gaming_mode_description">Affichage optimisé pour le jeu</string>
+    <string name="performance_mode">Mode performance</string>
+    <string name="performance_mode_description">Temps de chargement plus rapides</string>
+    <string name="auto_refresh">Actualisation automatique</string>
+    <string name="auto_refresh_description">Actualisation automatique des données</string>
+
+    <!-- Display Section -->
+    <string name="display_section">Affichage</string>
+    <string name="dark_mode">Mode sombre</string>
+    <string name="dark_mode_description">Activer le thème sombre</string>
+    <string name="image_quality">Qualité d\'image</string>
+    <string name="image_quality_high">Élevée</string>
+    <string name="image_quality_medium">Moyenne</string>
+    <string name="image_quality_low">Faible</string>
+    <string name="image_quality_description">Qualité des images de jeux</string>
+
+    <!-- Social Section -->
+    <string name="social_section">Social</string>
+    <string name="share_games">Partager des jeux</string>
+    <string name="share_games_description">Partager des jeux avec des amis</string>
+
+    <!-- Cache Management -->
+    <string name="cache_section">Gestion du cache</string>
+    <string name="cache_size">Taille du cache</string>
+    <string name="clear_cache">Vider le cache</string>
+    <string name="clear_cache_description">Supprimer toutes les données en cache</string>
+    <string name="sync_favorites">Synchroniser</string>
+    <string name="sync_favorites_description">Synchroniser les favoris avec l\'API</string>
+    <string name="last_sync">Dernière synchronisation</string>
+
+    <!-- About Section -->
+    <string name="about_section">À propos</string>
+    <string name="about_app">À propos de GameRadar</string>
+    <string name="about_app_section">À propos de l\'application</string>
+    <string name="app_version">Version 1.0.0</string>
+    <string name="about_app_description">Votre base de données de jeux ultime avec plus de 350 000 jeux issus de l\'API RAWG.</string>
+    <string name="about_app_features">Fonctionnalités :</string>
+    <string name="about_app_footer">Développé avec ❤️ pour la communauté des joueurs</string>
+    <string name="feature_search">🔍 Recherche avancée de jeux</string>
+    <string name="feature_favorites">⭐ Gestion des favoris</string>
+    <string name="feature_offline_cache">📱 Cache hors ligne</string>
+    <string name="feature_gaming">🎮 Fonctionnalités gaming</string>
+    <string name="feature_dark_mode">🌙 Mode sombre</string>
+    <string name="action_close">Fermer</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="privacy_policy_description">Lire la politique de confidentialité</string>
+    <string name="privacy_policy_title">Politique de confidentialité GameRadar</string>
+    <string name="privacy_policy_date">Date : %1$s</string>
+    <string name="privacy_section1_title">1. Collecte des données</string>
+    <string name="privacy_section1_content">GameRadar ne collecte que les données nécessaires au fonctionnement de l\'application. Cela inclut vos recherches, favoris et paramètres, tous stockés localement sur votre appareil.</string>
+    <string name="privacy_section2_title">2. Services externes</string>
+    <string name="privacy_section2_content">L\'application utilise l\'API RAWG pour les données de jeux. Cette API ne collecte aucune donnée personnelle. Toutes les requêtes API sont anonymes sans identification personnelle.</string>
+    <string name="privacy_section3_title">3. Stockage local</string>
+    <string name="privacy_section3_content">Vos favoris, historique de recherche et paramètres sont stockés exclusivement sur votre appareil. Ces données ne sont pas transmises à des serveurs externes.</string>
+    <string name="privacy_section4_title">4. Données en cache</string>
+    <string name="privacy_section4_content">L\'application stocke les données de jeux en cache local pour améliorer les performances. Ces données peuvent être supprimées à tout moment via les paramètres.</string>
+    <string name="privacy_section5_title">5. Analyses</string>
+    <string name="privacy_section5_content">GameRadar collecte des données d\'utilisation anonymes pour améliorer l\'application. Ces données ne contiennent aucune information personnelle et sont utilisées uniquement à des fins internes.</string>
+    <string name="privacy_section6_title">6. Vos droits</string>
+    <string name="privacy_section6_content">Vous avez le droit de supprimer toutes vos données via les paramètres de l\'application. Toutes les données sont stockées localement et peuvent être entièrement supprimées.</string>
+    <string name="privacy_policy_contact">Pour toute question sur la confidentialité, contactez-nous à : %1$s</string>
+    <string name="action_understood">Compris</string>
+    <string name="contact_support">Contacter le support</string>
+    <string name="contact_support_description">Envoyer un e-mail au support</string>
+    <string name="cache_performance_critical">Performance critique</string>
+    <string name="cache_performance_limited">Performance limitée</string>
+    <string name="cache_performance_optimal">Performance optimale</string>
+    <string name="cache">Cache</string>
+    <string name="cache_status">Cache : %1$d/%2$s jeux</string>
+    <string name="cache_info_title">Infos cache</string>
+    <string name="cache_info_text">Le cache stocke les jeux pour une utilisation hors ligne et des temps de chargement plus rapides.
+
+Couleurs :
+• Vert : Performance optimale (jusqu\'à 70 %)
+• Jaune : Performance limitée (à partir de 70 %)
+• Rouge : Performance critique (à partir de 90 %)
+
+Le symbole infini (∞) signifie que le cache est illimité et uniquement limité par le stockage de l'appareil.</string>
+    <string name="offline">Hors ligne</string>
+    <string name="online">En ligne</string>
+    <string name="offline_mode">Mode hors ligne</string>
+    <string name="online_mode">Mode en ligne</string>
+    <string name="using_cached_data">Utilisation des données en cache (%1$d jeux disponibles)</string>
+    <string name="data_auto_sync">Les données sont synchronisées automatiquement</string>
+    <string name="last_sync_time">Dernière synchronisation : %1$s</string>
+    <string name="data_sync_section">Données &amp; Synchronisation</string>
+    <string name="gaming_features_section">Fonctionnalités gaming</string>
+    <string name="design_section">Design</string>
+    <string name="database_management_section">Gestion de la base de données</string>
+
+    <!-- Database Management -->
+    <string name="database_section">Gestion de la base de données</string>
+    <string name="reset_database">Réinitialiser la base de données</string>
+    <string name="reset_database_description">Supprimer tous les favoris et les données du cache</string>
+    <string name="reset_database_dialog_title">Réinitialiser la base de données</string>
+    <string name="reset_database_dialog_text">Voulez-vous vraiment supprimer tous les favoris et les données du cache ? Cette action est irréversible.</string>
+
+    <!-- Common Actions -->
+    <string name="action_delete">Supprimer</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_confirm">Confirmer</string>
+    <string name="action_ok">OK</string>
+    <string name="action_retry">Réessayer</string>
+
+    <!-- Error Messages -->
+    <string name="error_unknown">Erreur inconnue</string>
+    <string name="error_network">Erreur réseau</string>
+    <string name="error_no_connection">Aucune connexion Internet</string>
+    <string name="error_check_connection">Vérifiez votre connexion et réessayez</string>
+    <string name="error_load_data">Erreur lors du chargement des données</string>
+    <string name="error_save_data">Erreur lors de la sauvegarde des données</string>
+
+    <!-- Game Details -->
+    <string name="game_rating">Évaluation</string>
+    <string name="game_release_date">Date de sortie</string>
+    <string name="game_platforms">Plateformes</string>
+    <string name="game_genres">Genres</string>
+    <string name="game_developers">Développeurs</string>
+    <string name="game_publishers">Éditeurs</string>
+    <string name="game_playtime">Temps de jeu</string>
+    <string name="game_website">Site web</string>
+    <string name="game_metacritic">Metacritic</string>
+    <string name="game_esrb_rating">Note ESRB</string>
+    <string name="no_rating">Aucune évaluation</string>
+
+    <!-- Loading States -->
+    <string name="loading">Chargement…</string>
+    <string name="loading_games">Chargement des jeux…</string>
+    <string name="loading_details">Chargement des détails…</string>
+
+    <!-- Offline States -->
+    <string name="offline_no_data">Aucune donnée disponible</string>
+    <string name="offline_no_favorites">Aucun favori disponible</string>
+
+    <!-- Time Formatting -->
+    <string name="time_just_now">À l\'instant</string>
+    <string name="time_minutes_ago">%d minutes</string>
+    <string name="time_hours_ago">%d heures</string>
+    <string name="time_days_ago">%d jours</string>
+</resources> 

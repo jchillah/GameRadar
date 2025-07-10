@@ -10,6 +10,11 @@ import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.core.net.*
+<<<<<<< Updated upstream
+=======
+import de.syntax_institut.androidabschlussprojekt.data.*
+import androidx.compose.ui.res.stringResource
+>>>>>>> Stashed changes
 import de.syntax_institut.androidabschlussprojekt.R
 
 /**
@@ -44,7 +49,11 @@ fun SectionAbout(
         SettingsButtonItem(
             icon = Icons.Default.Email,
             title = stringResource(R.string.contact_support),
+<<<<<<< Updated upstream
             subtitle = email,
+=======
+            subtitle = stringResource(R.string.contact_support_description),
+>>>>>>> Stashed changes
             onClick = {
                 val intent = Intent(Intent.ACTION_SENDTO).apply {
                     data = "mailto:$email".toUri()
