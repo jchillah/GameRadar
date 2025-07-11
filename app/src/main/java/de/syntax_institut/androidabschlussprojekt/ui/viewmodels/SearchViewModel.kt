@@ -10,16 +10,13 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-/**
- * ViewModel für die Suche mit Offline-Support.
- * Folgt MVVM-Pattern und Clean Code Prinzipien.
- */
+/** ViewModel für die Suchfunktionalität. */
 class SearchViewModel(
     private val loadGamesUseCase: LoadGamesUseCase,
     private val getPlatformsUseCase: GetPlatformsUseCase,
     private val getGenresUseCase: GetGenresUseCase,
-    private val clearCacheUseCase: ClearCacheUseCase,
     private val getCacheSizeUseCase: GetCacheSizeUseCase,
+    private val clearCacheUseCase: ClearCacheUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -30,10 +27,10 @@ class SearchViewModel(
     val pagingFlow: StateFlow<PagingData<Game>> = _pagingFlow.asStateFlow()
 
     private val _searchParams = MutableStateFlow(SearchParams())
-    
+
     // Aktueller Suchtext für automatische Neuausführung
     private var currentSearchQuery: String = ""
-    
+
     // Cache-Informationen
     private val _cacheSize = MutableStateFlow(0)
 
@@ -55,17 +52,19 @@ class SearchViewModel(
 
                 // Nur alle 60 Sekunden aktualisieren, nicht in einer unendlichen Schleife
                 while (true) {
-                    delay(Constants.CACHE_MONITORING_INTERVAL) // 60 Sekunden warten (weniger aggressiv)
+                    delay(
+                        Constants.CACHE_MONITORING_INTERVAL
+                    ) // 60 Sekunden warten (weniger aggressiv)
                     try {
                         _cacheSize.value = getCacheSizeUseCase()
                         _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
-                    } catch (e: Exception) {
-                        AppLogger.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe", e)
+                    } catch (_: Exception) {
+                        AppLogger.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe")
                         // Bei Fehlern nicht abbrechen, sondern weiter versuchen
                     }
                 }
-            } catch (e: Exception) {
-                AppLogger.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring", e)
+            } catch (_: Exception) {
+                AppLogger.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring")
                 // Bei kritischen Fehlern das Monitoring stoppen
             }
         }
@@ -77,22 +76,23 @@ class SearchViewModel(
             try {
                 val platformResponse = getPlatformsUseCase()
                 if (platformResponse is Resource.Success) {
-                    _uiState.update { it.copy(platforms = platformResponse.data ?: emptyList(), isLoadingPlatforms = false) }
-                } else {
-                    _uiState.update { 
+                    _uiState.update {
                         it.copy(
-                            platformsError = platformResponse.message ?: Constants.ERROR_UNKNOWN,
-                            isLoadingPlatforms = false
-                        ) 
+                            platforms = platformResponse.data ?: emptyList(),
+                            isLoadingPlatforms = false,
+                            platformsErrorId = null
+                        )
+                    }
+                } else {
+                    val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_unknown
+                    _uiState.update {
+                        it.copy(platformsErrorId = errorId, isLoadingPlatforms = false)
                     }
                 }
-            } catch (e: Exception) {
-                _uiState.update { 
-                    it.copy(
-                        platformsError = "Fehler beim Laden der Plattformen: ${e.localizedMessage}",
-                        isLoadingPlatforms = false
-                    ) 
-                }
+            } catch (_: Exception) {
+                val errorId =
+                    de.syntax_institut.androidabschlussprojekt.R.string.error_load_platforms
+                _uiState.update { it.copy(platformsErrorId = errorId, isLoadingPlatforms = false) }
             }
         }
     }
@@ -103,22 +103,20 @@ class SearchViewModel(
             try {
                 val genreResponse = getGenresUseCase()
                 if (genreResponse is Resource.Success) {
-                    _uiState.update { it.copy(genres = genreResponse.data ?: emptyList(), isLoadingGenres = false) }
-                } else {
-                    _uiState.update { 
+                    _uiState.update {
                         it.copy(
-                            genresError = genreResponse.message ?: Constants.ERROR_UNKNOWN,
-                            isLoadingGenres = false
-                        ) 
+                            genres = genreResponse.data ?: emptyList(),
+                            isLoadingGenres = false,
+                            genresErrorId = null
+                        )
                     }
+                } else {
+                    val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_unknown
+                    _uiState.update { it.copy(genresErrorId = errorId, isLoadingGenres = false) }
                 }
-            } catch (e: Exception) {
-                _uiState.update { 
-                    it.copy(
-                        genresError = "Fehler beim Laden der Genres: ${e.localizedMessage}",
-                        isLoadingGenres = false
-                    ) 
-                }
+            } catch (_: Exception) {
+                val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_load_genres
+                _uiState.update { it.copy(genresErrorId = errorId, isLoadingGenres = false) }
             }
         }
     }
@@ -132,12 +130,13 @@ class SearchViewModel(
         val ordering = state.ordering
         val rating = if (state.rating > 0f) state.rating else null
         _uiState.update { it.copy(hasSearched = true) }
-        _searchParams.value = SearchParams(
-            query = query,
-            platforms = platformIds.ifBlank { null },
-            genres = genreIds.ifBlank { null },
-            ordering = ordering.ifBlank { null }
-        )
+        _searchParams.value =
+            SearchParams(
+                query = query,
+                platforms = platformIds.ifBlank { null },
+                genres = genreIds.ifBlank { null },
+                ordering = ordering.ifBlank { null }
+            )
         viewModelScope.launch {
             loadGamesUseCase(
                 query = _searchParams.value.query,
@@ -146,19 +145,15 @@ class SearchViewModel(
                 ordering = _searchParams.value.ordering,
                 rating = rating
             )
-            .cachedIn(viewModelScope)
-            .collect {
-                _pagingFlow.value = it
-            }
+                .cachedIn(viewModelScope)
+                .collect { _pagingFlow.value = it }
         }
     }
 
     fun updateFilters(platforms: List<String>, genres: List<String>, rating: Float) {
-        _uiState.update { it.copy(
-            selectedPlatforms = platforms,
-            selectedGenres = genres,
-            rating = rating
-        )}
+        _uiState.update {
+            it.copy(selectedPlatforms = platforms, selectedGenres = genres, rating = rating)
+        }
     }
 
     fun updateOrdering(ordering: String) {
@@ -171,18 +166,16 @@ class SearchViewModel(
         _pagingFlow.value = PagingData.empty()
         currentSearchQuery = ""
     }
-    
-    /**
-     * Cache verwalten
-     */
+
+    /** Cache verwalten */
     fun clearCache() {
         viewModelScope.launch {
             try {
                 clearCacheUseCase()
                 _cacheSize.value = 0
                 AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
-            } catch (e: Exception) {
-                AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches", e)
+            } catch (_: Exception) {
+                AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches")
             }
         }
     }

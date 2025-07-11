@@ -41,7 +41,7 @@ fun AboutAppDialog(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = stringResource(R.string.app_version),
+                    text = stringResource(R.string.app_name) + " " + stringResource(R.string.app_version),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )

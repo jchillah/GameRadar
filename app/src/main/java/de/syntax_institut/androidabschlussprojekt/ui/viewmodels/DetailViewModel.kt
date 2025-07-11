@@ -1,16 +1,13 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
 import androidx.lifecycle.*
-import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-/**
- * ViewModel für Spieldetails.
- */
+/** ViewModel für Spieldetails. */
 class DetailViewModel(
     private val getGameDetailUseCase: GetGameDetailUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
@@ -40,7 +37,8 @@ class DetailViewModel(
                 is Resource.Success -> {
                     var game = gameResult.data
 
-                    // Wenn es ein Favorit ist und forceReload aktiviert ist, hole die vollständigen Daten aus dem Favoriten
+                    // Wenn es ein Favorit ist und forceReload aktiviert ist, hole die vollständigen
+                    // Daten aus dem Favoriten
                     if (forceReload && favoriteResult) {
                         val favoriteGame = getFavoriteByIdUseCase(id)
                         if (favoriteGame != null) {
@@ -48,28 +46,38 @@ class DetailViewModel(
                         }
                     }
 
-                    if ((game?.website.isNullOrBlank() == true && game?.screenshots.isNullOrEmpty() == true) && !forceReload) {
+                    if ((game?.website.isNullOrBlank() && game?.screenshots.isNullOrEmpty()) &&
+                        !forceReload
+                    ) {
                         loadDetail(id, forceReload = true)
                     } else if (game != null) {
                         _uiState.value =
                             DetailUiState(resource = Resource.Success(game), game = game)
                         _isFavorite.value = favoriteResult
                     } else {
-                        _uiState.value = DetailUiState(
-                            resource = Resource.Error("Spiel konnte nicht geladen werden."),
-                            error = "Spiel konnte nicht geladen werden."
-                        )
+                        val errorMessageId =
+                            de.syntax_institut
+                                .androidabschlussprojekt
+                                .R
+                                .string
+                                .error_game_load_failed
+                        _uiState.value =
+                            DetailUiState(
+                                resource = Resource.Error(null),
+                                errorMessageId = errorMessageId
+                            )
                     }
                 }
-
                 is Resource.Error -> {
                     AppLogger.e("DetailViewModel", "Fehler beim Laden: ${gameResult.message}")
-                    _uiState.value = DetailUiState(
-                        resource = Resource.Error(gameResult.message ?: Constants.ERROR),
-                        error = gameResult.message
-                    )
+                    val errorMessageId =
+                        de.syntax_institut.androidabschlussprojekt.R.string.error_unknown
+                    _uiState.value =
+                        DetailUiState(
+                            resource = Resource.Error(null),
+                            errorMessageId = errorMessageId
+                        )
                 }
-
                 is Resource.Loading -> {
                     _uiState.value = DetailUiState(resource = Resource.Loading())
                 }
@@ -92,22 +100,25 @@ class DetailViewModel(
                             // Hole die vollständigen Daten aus dem Favoriten
                             val favoriteGame = getFavoriteByIdUseCase(currentGame.id)
                             if (favoriteGame != null) {
-                                _uiState.value = _uiState.value.copy(
-                                    resource = Resource.Success(favoriteGame),
-                                    game = favoriteGame
-                                )
+                                _uiState.value =
+                                    _uiState.value.copy(
+                                        resource = Resource.Success(favoriteGame),
+                                        game = favoriteGame
+                                    )
                             } else {
-                                _uiState.value = _uiState.value.copy(
-                                    resource = Resource.Success(currentGame),
-                                    game = currentGame
-                                )
+                                _uiState.value =
+                                    _uiState.value.copy(
+                                        resource = Resource.Success(currentGame),
+                                        game = currentGame
+                                    )
                             }
                         } else {
                             // Spiel wurde aus Favoriten entfernt - verwende die aktuellen Daten
-                            _uiState.value = _uiState.value.copy(
-                                resource = Resource.Success(currentGame),
-                                game = currentGame
-                            )
+                            _uiState.value =
+                                _uiState.value.copy(
+                                    resource = Resource.Success(currentGame),
+                                    game = currentGame
+                                )
                         }
                     }
                     is Resource.Error -> {
@@ -127,4 +138,3 @@ class DetailViewModel(
         AppLogger.d("DetailViewModel", "User Rating aktualisiert: $rating")
     }
 }
-

@@ -122,6 +122,7 @@
     <string name="contact_support">Support kontaktieren</string>
     <string name="contact_support_description">E-Mail an Support senden</string>
     <string name="contact_support_subject">Support GameRadar</string>
+    <string name="action_understood">Verstanden</string>
 
     <!-- Database Management -->
     <string name="database_section">Datenbank-Management</string>
@@ -148,6 +149,7 @@
     <string name="error_load_data">Fehler beim Laden der Daten</string>
     <string name="error_save_data">Fehler beim Speichern der Daten</string>
     <string name="error_card_default_title">Fehler aufgetreten</string>
+    <string name="error_game_load_failed">Fehler beim Laden der Spieldaten</string>
 
     <!-- Game Details -->
     <string name="game_rating_game_details">Bewertung: %1$.1f</string>
@@ -176,6 +178,7 @@
     <string name="loading">Lädt…</string>
     <string name="loading_games">Spiele werden geladen…</string>
     <string name="loading_details">Details werden geladen…</string>
+    <string name="empty_state">Leerer Zustand</string>
     <string name="loading_state_default">Lade Daten…</string>
 
     <!-- Offline States -->

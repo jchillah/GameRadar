@@ -10,7 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.core.net.*
@@ -24,7 +24,6 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
-
 
 /**
  * Zeigt die Detailansicht eines Spiels mit allen relevanten Informationen.
@@ -55,9 +54,7 @@ fun DetailScreen(
         AppAnalytics.trackEvent("game_viewed", mapOf("game_id" to gameId))
         PerformanceMonitor.startTimer("detail_screen_load")
     }
-    LaunchedEffect(gameId) {
-        vm.loadDetail(gameId, forceReload = true)
-    }
+    LaunchedEffect(gameId) { vm.loadDetail(gameId, forceReload = true) }
     LaunchedEffect(state.game) {
         state.game?.let {
             PerformanceMonitor.endTimer("detail_screen_load")
@@ -72,16 +69,12 @@ fun DetailScreen(
                 isFavorite = isFavorite,
                 navController = navController,
                 onRefresh = {
-                    vm.loadDetail(
-                        gameId,
-                        forceReload = true
-                    ); AppAnalytics.trackUserAction("cache_cleared", gameId)
+                    vm.loadDetail(gameId, forceReload = true)
+                    AppAnalytics.trackUserAction("cache_cleared", gameId)
                 },
                 onToggleFavorite = {
-                    vm.toggleFavorite(); AppAnalytics.trackUserAction(
-                    "toggle_favorite",
-                    gameId
-                )
+                    vm.toggleFavorite()
+                    AppAnalytics.trackUserAction("toggle_favorite", gameId)
                 },
                 shareGamesEnabled = shareGamesEnabled
             )
@@ -99,8 +92,10 @@ fun DetailScreen(
                         message = "Lade Spieldetails..."
                     )
                 }
-
                 is Resource.Error<Game> -> {
+                    val errorText =
+                        state.errorMessageId?.let { stringResource(it) }
+                            ?: Constants.ERROR_UNKNOWN
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -108,7 +103,7 @@ fun DetailScreen(
                     ) {
                         ErrorCard(
                             modifier = Modifier.padding(16.dp),
-                            error = res.message ?: Constants.ERROR_UNKNOWN,
+                            error = errorText,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
@@ -128,10 +123,12 @@ fun DetailScreen(
                         }
                     }
                 }
-
                 is Resource.Success<Game> -> {
                     val game = res.data
                     if (game == null) {
+                        val errorText =
+                            state.errorMessageId?.let { stringResource(it) }
+                                ?: stringResource(R.string.error_game_load_failed)
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -139,7 +136,7 @@ fun DetailScreen(
                         ) {
                             ErrorCard(
                                 modifier = Modifier.padding(16.dp),
-                                error = "Spiel konnte nicht geladen werden.",
+                                error = errorText,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Button(
@@ -164,13 +161,11 @@ fun DetailScreen(
                         //     Log.d("DetailScreen", "Website URL: '${game.website}'")
                         //     Log.d("DetailScreen", "Website is null: "+(game.website == null))
                         //     Log.d("DetailScreen", "Website is blank: "+(game.website?.isBlank()))
-                        //     Log.d("DetailScreen", "Website is not blank: "+(game.website?.isNotBlank()))
+                        //     Log.d("DetailScreen", "Website is not blank:
+                        // "+(game.website?.isNotBlank()))
                         // }
                         Spacer(modifier = Modifier.height(16.dp))
-                        GameHeaderImage(
-                            imageUrl = game.imageUrl ?: "",
-                            imageQuality = imageQuality
-                        )
+                        GameHeaderImage(imageUrl = game.imageUrl ?: "", imageQuality = imageQuality)
                         GameMetaInfo(
                             title = game.title,
                             releaseDate = game.releaseDate ?: emptyString,
@@ -182,15 +177,19 @@ fun DetailScreen(
                             playtime = game.playtime,
                             metacritic = game.metacritic,
                             userRating = state.userRating,
-                            onRatingChanged = { newRating ->
-                                vm.updateUserRating(newRating)
-                            }
+                            onRatingChanged = { newRating -> vm.updateUserRating(newRating) }
                         )
-                        SectionCard(stringResource(R.string.game_platforms)) { ChipRow(game.platforms) }
+                        SectionCard(stringResource(R.string.game_platforms)) {
+                            ChipRow(game.platforms)
+                        }
                         SectionCard(stringResource(R.string.game_genres)) { ChipRow(game.genres) }
-                        SectionCard(stringResource(R.string.game_developers)) { ChipFlowRow(game.developers) }
-                        SectionCard(stringResource(R.string.game_publishers)) { ChipFlowRow(game.publishers) }
-                        SectionCard(stringResource(R.string.game_esrb_rating)) { 
+                        SectionCard(stringResource(R.string.game_developers)) {
+                            ChipFlowRow(game.developers)
+                        }
+                        SectionCard(stringResource(R.string.game_publishers)) {
+                            ChipFlowRow(game.publishers)
+                        }
+                        SectionCard(stringResource(R.string.game_esrb_rating)) {
                             if (game.esrbRating.isNullOrBlank()) {
                                 Box(
                                     modifier = Modifier
@@ -198,9 +197,7 @@ fun DetailScreen(
                                         .height(80.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(
                                             modifier = Modifier.size(32.dp),
                                             imageVector = Icons.AutoMirrored.Filled.Help,
@@ -229,9 +226,7 @@ fun DetailScreen(
                                         .height(80.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(
                                             modifier = Modifier.size(32.dp),
                                             imageVector = Icons.AutoMirrored.Filled.Help,
@@ -270,7 +265,8 @@ fun DetailScreen(
                             )
                             if (game.screenshots.isNotEmpty()) {
                                 AppAnalytics.trackEvent(
-                                    "screenshots_viewed", mapOf(
+                                    "screenshots_viewed",
+                                    mapOf(
                                         "game_id" to gameId,
                                         "screenshot_count" to game.screenshots.size
                                     )
@@ -283,27 +279,24 @@ fun DetailScreen(
                                 movies = game.movies,
                                 onTrailerClick = { movie ->
                                     movie.urlMax?.let {
-                                        TrailerPlayerActivity.start(
-                                            context,
-                                            it,
-                                            movie.name
-                                        )
+                                        TrailerPlayerActivity.start(context, it, movie.name)
                                     }
                                 },
                                 showEmptyState = true
                             )
                         }
                         SectionCard(stringResource(R.string.game_website)) {
-                            if (game.website.isNullOrBlank() || !(game.website.startsWith("http://") || game.website.startsWith("https://"))) {
+                            if (game.website.isNullOrBlank() ||
+                                !(game.website.startsWith("http://") ||
+                                        game.website.startsWith("https://"))
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(80.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                         Icon(
                                             modifier = Modifier.size(32.dp),
                                             imageVector = Icons.Default.Language,
@@ -322,7 +315,8 @@ fun DetailScreen(
                                 TextButton(
                                     modifier = Modifier.align(Alignment.CenterHorizontally),
                                     onClick = {
-                                        val intent = Intent(Intent.ACTION_VIEW, game.website.toUri())
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, game.website.toUri())
                                         context.startActivity(intent)
                                         AppAnalytics.trackUserAction("website_opened", gameId)
                                     }
@@ -337,7 +331,6 @@ fun DetailScreen(
                         Spacer(modifier = Modifier.height(80.dp))
                     }
                 }
-
                 else -> {
                     LoadingState(
                         modifier = Modifier.fillMaxSize(),
@@ -352,10 +345,5 @@ fun DetailScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DetailScreenPreview() {
-    DetailScreen(
-        gameId = 1,
-        navController = rememberNavController()
-    )
+    DetailScreen(gameId = 1, navController = rememberNavController())
 }
-
-
