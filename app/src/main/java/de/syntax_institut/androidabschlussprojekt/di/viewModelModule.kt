@@ -31,7 +31,8 @@ val viewModelModule = module {
             get(), // ClearAllFavoritesUseCase
             get(), // RemoveFavoriteUseCase
             get(), // SyncFavoritesWithApiUseCase
-            get()  // RawgApi
+            get(),  // RawgApi
+            get()   // AppDatabase
         )
     }
     viewModel { SettingsViewModel(get()) }

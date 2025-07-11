@@ -1,5 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import android.content.*
+import android.net.*
 import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
@@ -7,20 +9,27 @@ import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.io.*
 
-/**
- * ViewModel für die Favoriten-Liste.
- */
+/** ViewModel für die Favoriten-Liste. */
 class FavoritesViewModel(
     private val getAllFavoritesUseCase: GetAllFavoritesUseCase,
     private val clearAllFavoritesUseCase: ClearAllFavoritesUseCase,
     private val removeFavoriteUseCase: RemoveFavoriteUseCase,
     private val syncFavoritesWithApiUseCase: SyncFavoritesWithApiUseCase,
     private val rawgApi: RawgApi,
+    private val favoritesRepository:
+    de.syntax_institut.androidabschlussprojekt.data.repositories.FavoritesRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState: StateFlow<FavoritesUiState> = _uiState
+
+    private val _exportResult = MutableStateFlow<Result<Unit>?>(null)
+    val exportResult: StateFlow<Result<Unit>?> = _exportResult
+
+    private val _importResult = MutableStateFlow<Result<Unit>?>(null)
+    val importResult: StateFlow<Result<Unit>?> = _importResult
 
     init {
         loadFavorites()
@@ -94,4 +103,26 @@ class FavoritesViewModel(
             }
         }
     }
-} 
+
+    fun exportFavorites(context: Context, file: File) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _exportResult.value = favoritesRepository.exportFavoritesToJson(context, file)
+        }
+
+    fun importFavorites(context: Context, file: File) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _importResult.value = favoritesRepository.importFavoritesFromJson(context, file)
+            loadFavorites()
+        }
+
+    fun exportFavoritesToUri(context: Context, uri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _exportResult.value = favoritesRepository.exportFavoritesToUri(context, uri)
+        }
+
+    fun importFavoritesFromUri(context: Context, uri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _importResult.value = favoritesRepository.importFavoritesFromUri(context, uri)
+            loadFavorites()
+        }
+}
