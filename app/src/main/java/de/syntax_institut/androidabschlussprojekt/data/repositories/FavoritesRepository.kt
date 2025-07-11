@@ -405,40 +405,6 @@ constructor(
         }
     }
 
-    /** Favoriten als JSON exportieren. */
-    suspend fun exportFavoritesToJson(
-        context: android.content.Context,
-        file: java.io.File,
-    ): Result<Unit> =
-        try {
-            val favorites = getAllFavorites().first()
-            val type = Types.newParameterizedType(List::class.java, Game::class.java)
-            val adapter = moshi.adapter<List<Game>>(type)
-            val json = adapter.toJson(favorites)
-            file.writeText(json)
-            Result.success(Unit)
-        } catch (e: Exception) {
-            AppLogger.e("FavoritesRepository", "Fehler beim Export: ${e.localizedMessage}", e)
-            Result.failure(e)
-        }
-
-    /** Favoriten aus JSON importieren. */
-    suspend fun importFavoritesFromJson(
-        context: android.content.Context,
-        file: java.io.File,
-    ): Result<Unit> =
-        try {
-            val type = Types.newParameterizedType(List::class.java, Game::class.java)
-            val adapter = moshi.adapter<List<Game>>(type)
-            val json = file.readText()
-            val games = adapter.fromJson(json) ?: emptyList()
-            games.forEach { addFavorite(it) }
-            Result.success(Unit)
-        } catch (e: Exception) {
-            AppLogger.e("FavoritesRepository", "Fehler beim Import: ${e.localizedMessage}", e)
-            Result.failure(e)
-            }
-
     suspend fun exportFavoritesToUri(context: Context, uri: Uri): Result<Unit> =
         try {
             val favorites = getAllFavorites().first()

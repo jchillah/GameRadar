@@ -9,7 +9,6 @@ import de.syntax_institut.androidabschlussprojekt.ui.states.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import java.io.*
 
 /** ViewModel für die Favoriten-Liste. */
 class FavoritesViewModel(
@@ -103,17 +102,6 @@ class FavoritesViewModel(
             }
         }
     }
-
-    fun exportFavorites(context: Context, file: File) =
-        viewModelScope.launch(Dispatchers.IO) {
-            _exportResult.value = favoritesRepository.exportFavoritesToJson(context, file)
-        }
-
-    fun importFavorites(context: Context, file: File) =
-        viewModelScope.launch(Dispatchers.IO) {
-            _importResult.value = favoritesRepository.importFavoritesFromJson(context, file)
-            loadFavorites()
-        }
 
     fun exportFavoritesToUri(context: Context, uri: Uri) =
         viewModelScope.launch(Dispatchers.IO) {
