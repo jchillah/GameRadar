@@ -32,7 +32,7 @@ fun PrivacyPolicyDialog(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(R.string.privacy_policy),
+                    text = stringResource(R.string.privacy_policy_title),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
@@ -84,6 +84,7 @@ fun PrivacyPolicyDialog(
                     title = stringResource(R.string.privacy_section_6_title),
                     content = stringResource(R.string.privacy_section_6_content)
                 )
+
                 Text(
                     text = stringResource(
                         R.string.privacy_policy_contact,
@@ -97,7 +98,7 @@ fun PrivacyPolicyDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_ok))
+                Text(stringResource(R.string.action_understood))
             }
         }
     )
@@ -128,4 +129,4 @@ private fun PrivacySection(
 @Composable
 fun PrivacyPolicyDialogPreview() {
     PrivacyPolicyDialog(onDismiss = {})
-} 
+}

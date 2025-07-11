@@ -17,7 +17,6 @@ import androidx.navigation.*
 import androidx.navigation.compose.*
 import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
-import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -35,16 +34,18 @@ fun SearchScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val isOnline by NetworkUtils.observeNetworkStatus(context)
+    val isOnline by
+    NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
     var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var showFilters by remember { mutableStateOf(false) }
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
-    val tabTitles = listOf(
-        stringResource(R.string.search_tab_all),
-        stringResource(R.string.search_tab_new),
-        stringResource(R.string.search_tab_top_rated)
-    )
+    val tabTitles =
+        listOf(
+            stringResource(R.string.search_tab_all),
+            stringResource(R.string.search_tab_new),
+            stringResource(R.string.search_tab_top_rated)
+        )
     var selectedTab by remember { mutableIntStateOf(0) }
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
@@ -58,8 +59,7 @@ fun SearchScreen(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier
@@ -77,7 +77,8 @@ fun SearchScreen(
             IconButton(onClick = { showFilters = true }) {
                 Icon(
                     Icons.Default.FilterList,
-                    contentDescription = stringResource(R.string.filter_button_content_description)
+                    contentDescription =
+                        stringResource(R.string.filter_button_content_description)
                 )
             }
         }
@@ -94,14 +95,7 @@ fun SearchScreen(
                         }
                         viewModel.search(searchText.text.trim())
                     },
-                    text = {
-                        Text(
-                            title,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-
-                        )
-                    }
+                    text = { Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis) }
                 )
             }
         }
@@ -134,17 +128,17 @@ fun SearchScreen(
             onClearAll = { viewModel.clearAllFilters() }
         )
         Box(modifier = Modifier.weight(1f)) {
-            if (state.error != null) {
+            if (state.errorMessageId != null) {
                 ErrorCard(
                     modifier = Modifier.fillMaxSize(),
-                    error = state.error ?: Constants.ERROR_UNKNOWN,
+                    error = stringResource(state.errorMessageId!!),
                 )
             } else if (!state.hasSearched) {
                 EmptyState(
                     title = stringResource(R.string.search_empty_title),
-                    message = if (!isOnline) stringResource(R.string.search_empty_message_offline) else stringResource(
-                        R.string.search_empty_message_online
-                    ),
+                    message =
+                        if (!isOnline) stringResource(R.string.search_empty_message_offline)
+                        else stringResource(R.string.search_empty_message_online),
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
@@ -165,9 +159,7 @@ fun SearchScreen(
         }
     }
     if (showFilters) {
-        ModalBottomSheet(
-            onDismissRequest = { showFilters = false }
-        ) {
+        ModalBottomSheet(onDismissRequest = { showFilters = false }) {
             FilterBottomSheet(
                 platforms = state.platforms,
                 genres = state.genres,
@@ -177,12 +169,10 @@ fun SearchScreen(
                 ordering = state.ordering,
                 isLoadingPlatforms = state.isLoadingPlatforms,
                 isLoadingGenres = state.isLoadingGenres,
-                platformsError = state.platformsError,
-                genresError = state.genresError,
+                platformsErrorId = state.platformsErrorId,
+                genresErrorId = state.genresErrorId,
                 isOffline = !isOnline,
-                onOrderingChange = { newOrdering ->
-                    viewModel.updateOrdering(newOrdering)
-                },
+                onOrderingChange = { newOrdering -> viewModel.updateOrdering(newOrdering) },
                 onFilterChange = { newPlatforms, newGenres, newRating ->
                     viewModel.updateFilters(newPlatforms, newGenres, newRating)
                     if (searchText.text.isNotBlank()) {
@@ -201,7 +191,5 @@ fun SearchScreen(
 @Preview(showBackground = true)
 @Composable
 fun SearchScreenPreview() {
-    SearchScreen(
-        navController = rememberNavController()
-    )
+    SearchScreen(navController = rememberNavController())
 }

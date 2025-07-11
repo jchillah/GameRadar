@@ -122,6 +122,7 @@
     <string name="contact_support">Support kontaktieren</string>
     <string name="contact_support_description">E-Mail an Support senden</string>
     <string name="contact_support_subject">Support GameRadar</string>
+    <string name="action_understood">Verstanden</string>
 
     <!-- Database Management -->
     <string name="database_section">Datenbank-Management</string>
@@ -148,6 +149,7 @@
     <string name="error_load_data">Fehler beim Laden der Daten</string>
     <string name="error_save_data">Fehler beim Speichern der Daten</string>
     <string name="error_card_default_title">Fehler aufgetreten</string>
+    <string name="error_game_load_failed">Fehler beim Laden der Spieldaten</string>
 
     <!-- Game Details -->
     <string name="game_rating_game_details">Bewertung: %1$.1f</string>
@@ -156,26 +158,27 @@
     <string name="game_release_date_search_gameitem">Release: %1$s</string>
     <string name="game_platforms">Plattformen</string>
     <string name="game_genres">Genres</string>
-    <string name="game_playtime">Spielzeit</string>
-    <string name="game_website">Website</string>
-    <string name="game_metacritic">Metacritic</string>
-    <string name="game_esrb_rating">ESRB Rating</string>
-    <string name="no_rating">Keine Bewertung</string>
     <string name="game_developers">Entwickler</string>
     <string name="game_publishers">Publisher</string>
     <string name="game_tags">Tags</string>
     <string name="game_stores">Stores</string>
     <string name="game_metacritic_playtime">Metacritic &amp; Spielzeit</string>
     <string name="game_metacritic_value">Metacritic: %1$d</string>
-    <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Std.</string>
+    <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Stunden</string>
     <string name="game_screenshots">Screenshots</string>
     <string name="game_trailers">Trailer</string>
     <string name="game_no_website">Keine Website verfügbar</string>
+    <string name="game_playtime">Spielzeit</string>
+    <string name="game_website">Website</string>
+    <string name="game_metacritic">Metacritic</string>
+    <string name="game_esrb_rating">ESRB Rating</string>
+    <string name="no_rating">Keine Bewertung</string>
 
     <!-- Loading States -->
     <string name="loading">Lädt…</string>
     <string name="loading_games">Spiele werden geladen…</string>
     <string name="loading_details">Details werden geladen…</string>
+    <string name="empty_state">Leerer Zustand</string>
     <string name="loading_state_default">Lade Daten…</string>
 
     <!-- Offline States -->
@@ -298,9 +301,6 @@
     <string name="detail_previous_image">Vorheriges Bild</string>
     <string name="detail_trailer_default">Trailer</string>
     <string name="detail_no_description">Keine Beschreibung verfügbar.</string>
-    <string name="detail_back">Zurück</string>
-    <string name="detail_title_default">Spieldetails</string>
-    <string name="detail_refresh">Neu laden</string>
     <string name="detail_no_trailers">Für dieses Spiel wurden keine Trailer gefunden.</string>
     <string name="detail_trailer_play">Abspielen</string>
     <string name="detail_screenshot_hint">Tippen Sie auf ein Bild für Vollbildansicht</string>
@@ -362,7 +362,9 @@
     <string name="activity_extra_video_title">video_title</string>
     <string name="activity_extra_video_url">video_url</string>
     <string name="activity_scale">scale</string>
-
+    <string name="detail_back">Zurück</string>
+    <string name="detail_title_default">Spieldetails</string>
+    <string name="detail_refresh">Neu laden</string>
     <string name="rating_dialog_title">Spiel bewerten</string>
     <string name="rating_dialog_question">Wie bewertest du dieses Spiel?</string>
     <string name="rating_dialog_star_content_description">%1$d Sterne</string>
