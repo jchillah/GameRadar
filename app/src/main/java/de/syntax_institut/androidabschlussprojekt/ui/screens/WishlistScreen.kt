@@ -6,6 +6,7 @@ import androidx.activity.compose.*
 import androidx.activity.result.contract.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -17,7 +18,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
-import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -96,7 +97,6 @@ fun WishlistScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = true // Korrektur: enabled-Parameter ergänzt
         )
-        // --- NEU: Button für Wishlist-Count ---
         var wishlistCount by remember { mutableIntStateOf(0) }
         Button(
             onClick = {
@@ -106,7 +106,6 @@ fun WishlistScreen(
             },
             enabled = true
         ) { Text(text = stringResource(R.string.wishlist_count, wishlistCount)) }
-        // --- NEU: Button für alle löschen ---
         Button(
             onClick = {
                 AppAnalytics.trackAppFeatureUsage("wishlist_clear_all", enabled = true)
@@ -125,9 +124,7 @@ fun WishlistScreen(
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.wishlist_clear_all))
         }
-        // --- NEU: Optional: Button für getWishlistGameById ---
         var detailIdText by remember { mutableStateOf("") }
-        var detailGame by remember { mutableStateOf<Game?>(null) }
         OutlinedTextField(
             value = detailIdText,
             onValueChange = { detailIdText = it },
@@ -167,30 +164,39 @@ fun WishlistScreen(
                 )
             }
             else -> {
-                listToShow.sortedBy { it.title.lowercase() }.forEach { game ->
-                    GameItem(
-                        game = game,
-                        onClick = { navController.navigateSingleTopTo(Routes.detail(game.id)) },
-                        onDelete = {
-                            AppAnalytics.trackGameInteraction(
-                                game.id.toString(),
-                                "wishlist_remove"
-                            )
-                            viewModel.removeFromWishlist(game.id)
-                        },
-                        imageQuality =
-                            ImageQuality.HIGH, // Optional: oder aus SettingsViewModel holen
-                        showFavoriteIcon = false,
-                        isInWishlist = wishlist.any { it.id == game.id },
-                        onWishlistChanged = { checked ->
-                            AppAnalytics.trackGameInteraction(
-                                game.id.toString(),
-                                "wishlist_toggle"
-                            )
-                            viewModel.toggleWishlist(game)
-                        },
-                        showWishlistButton = true
-                    )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(listToShow.sortedBy { it.title.lowercase() }) { game ->
+                        GameItem(
+                            game = game,
+                            onClick = {
+                                navController.navigateSingleTopTo(Routes.detail(game.id))
+                            },
+                            onDelete = {
+                                AppAnalytics.trackGameInteraction(
+                                    game.id.toString(),
+                                    "wishlist_remove"
+                                )
+                                viewModel.removeFromWishlist(game.id)
+                            },
+                            imageQuality =
+                                ImageQuality
+                                    .HIGH, // Optional: oder aus SettingsViewModel holen
+                            showFavoriteIcon = false,
+                            isInWishlist = wishlist.any { it.id == game.id },
+                            onWishlistChanged = { checked ->
+                                AppAnalytics.trackGameInteraction(
+                                    game.id.toString(),
+                                    "wishlist_toggle"
+                                )
+                                viewModel.toggleWishlist(game)
+                            },
+                            showWishlistButton = true
+                        )
+                    }
                 }
             }
         }
