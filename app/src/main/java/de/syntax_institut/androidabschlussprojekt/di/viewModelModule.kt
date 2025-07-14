@@ -9,48 +9,48 @@ import org.koin.dsl.*
 val viewModelModule = module {
     viewModel {
         SearchViewModel(
-            get(), // LoadGamesUseCase
-            get(), // GetPlatformsUseCase
-            get(), // GetGenresUseCase
-            get(), // ClearCacheUseCase
-            get() // GetCacheSizeUseCase
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     viewModel { (savedStateHandle: SavedStateHandle) ->
         DetailViewModel(
-            getGameDetailUseCase = get(),
-            toggleFavoriteUseCase = get(),
-            isFavoriteUseCase = get(),
-            toggleWishlistGameUseCase = get(),
-            isInWishlistUseCase = get(),
-            savedStateHandle = savedStateHandle,
-            application = get()
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            savedStateHandle,
+            get()
         )
     }
     viewModel {
         FavoritesViewModel(
-            get(), // GetAllFavoritesUseCase
-            get(), // ClearAllFavoritesUseCase
-            get(), // RemoveFavoriteUseCase
-            get(), // SyncFavoritesWithApiUseCase
-            get(), // RawgApi
-            get() // AppDatabase
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     viewModel {
         WishlistViewModel(
-            addWishlistGameUseCase = get(),
-            removeWishlistGameUseCase = get(),
-            toggleWishlistGameUseCase = get(),
-            getAllWishlistGamesUseCase = get(),
-            clearAllWishlistGamesUseCase = get(),
-            isInWishlistUseCase = get(),
-            getWishlistGameByIdUseCase = get(),
-            getWishlistCountUseCase = get(),
-            searchWishlistGamesUseCase = get(),
-            exportWishlistToUriUseCase = get(),
-            importWishlistFromUriUseCase = get(),
-            application = get()
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     viewModel { SettingsViewModel(get()) }

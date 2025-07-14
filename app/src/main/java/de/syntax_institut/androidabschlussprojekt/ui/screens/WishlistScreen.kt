@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
-import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -168,24 +168,28 @@ fun WishlistScreen(
             }
             else -> {
                 listToShow.sortedBy { it.title.lowercase() }.forEach { game ->
-                    WishlistGameItem(
+                    GameItem(
                         game = game,
-                        onRemove = {
+                        onClick = { navController.navigateSingleTopTo(Routes.detail(game.id)) },
+                        onDelete = {
                             AppAnalytics.trackGameInteraction(
                                 game.id.toString(),
                                 "wishlist_remove"
                             )
                             viewModel.removeFromWishlist(game.id)
                         },
-                        onClick = { navController.navigateSingleTopTo(Routes.detail(game.id)) },
-                        onToggleWishlist = {
+                        imageQuality =
+                            ImageQuality.HIGH, // Optional: oder aus SettingsViewModel holen
+                        showFavoriteIcon = false,
+                        isInWishlist = wishlist.any { it.id == game.id },
+                        onWishlistChanged = { checked ->
                             AppAnalytics.trackGameInteraction(
                                 game.id.toString(),
                                 "wishlist_toggle"
                             )
                             viewModel.toggleWishlist(game)
                         },
-                        isInWishlist = wishlist.any { it.id == game.id }
+                        showWishlistButton = true
                     )
                 }
             }
