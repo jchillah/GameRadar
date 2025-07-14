@@ -22,12 +22,13 @@ fun SearchResultContent(
     modifier: Modifier = Modifier,
     imageQuality: ImageQuality = ImageQuality.HIGH,
     favoriteIds: Set<Int> = emptySet(),
+    wishlistIds: Set<Int> = emptySet(),
+    onWishlistChanged: (Game, Boolean) -> Unit = { _, _ -> },
 ) {
     when (pagingItems.loadState.refresh) {
         is LoadState.Loading -> {
             ShimmerPlaceholder(modifier = modifier)
         }
-
         is LoadState.Error -> {
             val error = (pagingItems.loadState.refresh as LoadState.Error).error
             Column(
@@ -46,7 +47,6 @@ fun SearchResultContent(
                 }
             }
         }
-
         else -> {
             if (pagingItems.itemCount == 0) {
                 EmptyState(
@@ -61,14 +61,21 @@ fun SearchResultContent(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(pagingItems.itemCount) { idx ->
+                    items(pagingItems.itemCount, key = { idx -> pagingItems[idx]?.id ?: idx }) {
+                            idx,
+                        ->
                         pagingItems[idx]?.let { game ->
                             GameItem(
                                 game = game,
                                 onClick = { onGameClick(game) },
                                 imageQuality = imageQuality,
-                                isFavorite = true,
-                                showFavoriteIcon = favoriteIds.contains(game.id)
+                                isFavorite = favoriteIds.contains(game.id),
+                                showFavoriteIcon = true,
+                                isInWishlist = wishlistIds.contains(game.id),
+                                onWishlistChanged = { checked ->
+                                    onWishlistChanged(game, checked)
+                                },
+                                showWishlistButton = true
                             )
                         }
                     }
@@ -79,14 +86,10 @@ fun SearchResultContent(
                                     .fillMaxWidth()
                                     .padding(vertical = 16.dp),
                                 contentAlignment = Alignment.Center
-                            ) {
-                                LoadingState(modifier = Modifier.size(32.dp))
-                            }
+                            ) { LoadingState(modifier = Modifier.size(32.dp)) }
                         }
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
                 }
             }
         }

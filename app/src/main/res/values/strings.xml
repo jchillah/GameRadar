@@ -29,6 +29,10 @@
     <string name="favorites_empty_message">Du hast noch keine Favoriten gespeichert.</string>
     <string name="favorites_empty_offline">Du bist offline. Deine Favoriten werden angezeigt, sobald du wieder online bist.</string>
     <string name="discover_games">Spiele entdecken</string>
+    <string name="favorites_export_import">Favoriten-Export/-Import</string>
+    <string name="favorites_export">Favoriten exportieren</string>
+    <string name="favorites_import">Favoriten importieren</string>
+    <string name="export_import_preview_unavailable">Export/Import nicht im Preview verfügbar</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Einstellungen</string>
@@ -392,4 +396,27 @@
     <string name="preview_settings_dropdown_title">Sprache</string>
     <string name="preview_settings_dropdown_subtitle">App-Sprache wählen</string>
     <string name="preview_settings_dropdown_selected">Deutsch</string>
+    <string name="wishlist_tab">Wunschliste</string>
+    <string name="wishlist_empty_title">Keine Wunschspiele</string>
+    <string name="wishlist_empty_message">Du hast noch keine Spiele auf deiner Wunschliste.</string>
+    <string name="wishlist_add">Zur Wunschliste hinzufügen</string>
+    <string name="wishlist_remove">Von Wunschliste entfernen</string>
+    <string name="wishlist_marked">Auf der Wunschliste</string>
+    <string name="wishlist_not_marked">Nicht auf der Wunschliste</string>
+    <string name="wishlist_export">Wunschliste exportieren</string>
+    <string name="wishlist_import">Wunschliste importieren</string>
+    <string name="wishlist_export_import">Wunschliste Export/Import</string>
+    <string name="wishlist_export_success">Wunschliste erfolgreich exportiert!</string>
+    <string name="wishlist_import_success">Wunschliste erfolgreich importiert!</string>
+    <string name="wishlist_export_error">Fehler beim Exportieren der Wunschliste</string>
+    <string name="wishlist_import_error">Fehler beim Importieren der Wunschliste</string>
+    <string name="wishlist_count">Wunschlistenzähler: %1$d</string>
+    <string name="wishlist_clear_all">Wunschliste leeren</string>
+    <string name="wishlist_game_id_for_details">Spiel-ID für Details</string>
+    <string name="wishlist_show_details">Details anzeigen</string>
+    <string name="wishlist_full_details">Vollständige Details</string>
+
+    <string name="analytics_section">Analytics</string>
+    <string name="analytics_enabled">Analytics aktivieren</string>
+    <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
 </resources>

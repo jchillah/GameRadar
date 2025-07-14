@@ -3,32 +3,119 @@ package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.flow.*
 
-class SettingsViewModel(
-    private val settingsRepository: SettingsRepository,
-) : ViewModel() {
+class SettingsViewModel(private val settingsRepository: SettingsRepository) : ViewModel() {
 
-    val notificationsEnabled = settingsRepository.notificationsEnabled
-    val autoRefreshEnabled = settingsRepository.autoRefreshEnabled
-    val imageQuality = settingsRepository.imageQuality
-    val language = settingsRepository.language
-    val gamingModeEnabled = settingsRepository.gamingModeEnabled
-    val performanceModeEnabled = settingsRepository.performanceModeEnabled
-    val shareGamesEnabled = settingsRepository.shareGamesEnabled
-    val darkModeEnabled = settingsRepository.darkModeEnabled
+    val analyticsEnabled =
+        settingsRepository.analyticsEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
+        )
 
-    fun setNotificationsEnabled(enabled: Boolean) =
+    val notificationsEnabled =
+        settingsRepository.notificationsEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
+        )
+
+    val autoRefreshEnabled =
+        settingsRepository.autoRefreshEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            true
+        )
+
+    val imageQuality =
+        settingsRepository.imageQuality.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            ImageQuality.HIGH
+        )
+
+    val language =
+        settingsRepository.language.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            "system"
+        )
+
+    val gamingModeEnabled =
+        settingsRepository.gamingModeEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
+        )
+
+    val performanceModeEnabled =
+        settingsRepository.performanceModeEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
+        )
+
+    val shareGamesEnabled =
+        settingsRepository.shareGamesEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            true
+        )
+
+    val darkModeEnabled =
+        settingsRepository.darkModeEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
+        )
+
+    fun setAnalyticsEnabled(enabled: Boolean) {
+        settingsRepository.setAnalyticsEnabled(enabled)
+        CrashlyticsHelper.setCrashlyticsEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("analytics_enabled", enabled)
+    }
+
+    fun setNotificationsEnabled(enabled: Boolean) {
         settingsRepository.setNotificationsEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("notifications_enabled", enabled)
+    }
 
-    fun setAutoRefreshEnabled(enabled: Boolean) = settingsRepository.setAutoRefreshEnabled(enabled)
-    fun setImageQuality(quality: ImageQuality) = settingsRepository.setImageQuality(quality)
-    fun setLanguage(lang: String) = settingsRepository.setLanguage(lang)
-    fun setGamingModeEnabled(enabled: Boolean) = settingsRepository.setGamingModeEnabled(enabled)
-    fun setPerformanceModeEnabled(enabled: Boolean) =
+    fun setAutoRefreshEnabled(enabled: Boolean) {
+        settingsRepository.setAutoRefreshEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("auto_refresh_enabled", enabled)
+    }
+
+    fun setImageQuality(quality: ImageQuality) {
+        settingsRepository.setImageQuality(quality)
+        CrashlyticsHelper.setCustomKey("image_quality", quality.name)
+    }
+
+    fun setLanguage(lang: String) {
+        settingsRepository.setLanguage(lang)
+        CrashlyticsHelper.setCustomKey("app_language", lang)
+    }
+
+    fun setGamingModeEnabled(enabled: Boolean) {
+        settingsRepository.setGamingModeEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("gaming_mode_enabled", enabled)
+    }
+
+    fun setPerformanceModeEnabled(enabled: Boolean) {
         settingsRepository.setPerformanceModeEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("performance_mode_enabled", enabled)
+    }
 
-    fun setShareGamesEnabled(enabled: Boolean) = settingsRepository.setShareGamesEnabled(enabled)
-    fun setDarkModeEnabled(enabled: Boolean) = settingsRepository.setDarkModeEnabled(enabled)
+    fun setShareGamesEnabled(enabled: Boolean) {
+        settingsRepository.setShareGamesEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("share_games_enabled", enabled)
+    }
+
+    fun setDarkModeEnabled(enabled: Boolean) {
+        settingsRepository.setDarkModeEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("dark_mode_enabled", enabled)
+    }
 
     // clearDatabase entfernt – Context-Logik gehört in die UI-Schicht
 }

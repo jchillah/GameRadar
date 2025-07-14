@@ -1,8 +1,8 @@
 package de.syntax_institut.androidabschlussprojekt.data
 
 /**
- * Zentrale Konstanten für Datenbanknamen, Tabellennamen, API-Parameter, Paging-Keys usw.
- * Alle Magic Strings werden hier ausgelagert und im Code referenziert.
+ * Zentrale Konstanten für Datenbanknamen, Tabellennamen, API-Parameter, Paging-Keys usw. Alle Magic
+ * Strings werden hier ausgelagert und im Code referenziert.
  */
 object Constants {
 
@@ -17,6 +17,9 @@ object Constants {
 
     // Table-Name für Favoriten-Entity (für Room)
     const val FAVORITE_GAME_TABLE = "favorite_games"
+
+    // Table-Name für Wishlist-Entity (für Room)
+    const val WISHLIST_GAME_TABLE = "wishlist_games"
 
     // API-Parameter
     const val API_KEY_PARAM = "key"
@@ -38,7 +41,6 @@ object Constants {
 
     // Intervall für Cache-Überwachung (ms)
     const val CACHE_MONITORING_INTERVAL = 60000L
-
 
     // SharedPreferences Keys
     const val PREFS_NAME = "gameradar_settings"

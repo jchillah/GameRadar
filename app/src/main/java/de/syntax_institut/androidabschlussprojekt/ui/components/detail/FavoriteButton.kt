@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.R
 import kotlinx.coroutines.*
 
-
 @Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,
@@ -25,13 +24,15 @@ fun FavoriteButton(
 ) {
     var isPressed by remember { mutableStateOf(false) }
 
-    val scale by animateFloatAsState(
+    val scale by
+    animateFloatAsState(
         targetValue = if (isPressed) 0.8f else 1f,
         animationSpec = tween(100),
         label = "scale"
     )
 
-    val rotation by animateFloatAsState(
+    val rotation by
+    animateFloatAsState(
         targetValue = if (isFavorite && showAnimation) 360f else 0f,
         animationSpec = tween(500, easing = EaseOutBack),
         label = "rotation"
@@ -48,37 +49,41 @@ fun FavoriteButton(
                 }
             }
         },
-        modifier = modifier
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-                rotationZ = rotation
-            }
-            .semantics {
-                // contentDescription wird im Icon gesetzt, nicht hier
-            },
+        modifier =
+            modifier
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                    rotationZ = rotation
+                }
+                .semantics {
+                    // contentDescription wird im Icon gesetzt, nicht hier
+                },
         enabled = enabled
     ) {
         AnimatedContent(
             targetState = isFavorite,
             transitionSpec = {
-                (scaleIn(
-                    initialScale = 0.5f,
-                    animationSpec = tween(200)
-                ) + fadeIn(animationSpec = tween(200))).togetherWith(
-                    scaleOut(
-                        targetScale = 0.5f,
-                        animationSpec = tween(200)
-                    ) + fadeOut(animationSpec = tween(200))
-                )
+                (scaleIn(initialScale = 0.5f, animationSpec = tween(200)) +
+                        fadeIn(animationSpec = tween(200)))
+                    .togetherWith(
+                        scaleOut(
+                            targetScale = 0.5f,
+                            animationSpec = tween(200)
+                        ) + fadeOut(animationSpec = tween(200))
+                    )
             }
         ) { favorite ->
             Icon(
-                imageVector = if (favorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                contentDescription = if (favorite) stringResource(R.string.favorite_remove) else stringResource(
-                    R.string.favorite_add
-                ),
-                tint = if (favorite) Color.Red else MaterialTheme.colorScheme.onSurface
+                imageVector =
+                    if (favorite) Icons.Filled.Favorite
+                    else Icons.Filled.FavoriteBorder,
+                contentDescription =
+                    if (favorite) stringResource(R.string.favorite_remove)
+                    else stringResource(R.string.favorite_add),
+                tint =
+                    if (favorite) Color.Red
+                    else MaterialTheme.colorScheme.onSurface
             )
         }
     }

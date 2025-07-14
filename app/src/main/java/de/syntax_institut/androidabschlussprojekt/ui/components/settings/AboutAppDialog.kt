@@ -20,9 +20,7 @@ fun AboutAppDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = null,
@@ -37,11 +35,12 @@ fun AboutAppDialog(
             }
         },
         text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = stringResource(R.string.app_name) + " " + stringResource(R.string.app_version),
+                    text =
+                        stringResource(R.string.app_name) +
+                                " " +
+                                stringResource(R.string.app_version),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -57,9 +56,7 @@ fun AboutAppDialog(
                     fontWeight = FontWeight.SemiBold
                 )
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     FeatureItem(stringResource(R.string.about_app_feature_search))
                     FeatureItem(stringResource(R.string.about_app_feature_favorites))
                     FeatureItem(stringResource(R.string.about_app_feature_offline))
@@ -78,28 +75,21 @@ fun AboutAppDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.action_close))
-            }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) }
         }
     )
 }
 
 @Composable
 private fun FeatureItem(text: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = "•",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Text(text = text, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -107,4 +97,4 @@ private fun FeatureItem(text: String) {
 @Composable
 fun AboutAppDialogPreview() {
     AboutAppDialog(onDismiss = {})
-} 
+}

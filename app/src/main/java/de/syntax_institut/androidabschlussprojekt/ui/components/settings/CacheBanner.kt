@@ -13,6 +13,8 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 import kotlinx.coroutines.*
+import androidx.compose.ui.res.stringResource
+import de.syntax_institut.androidabschlussprojekt.R
 
 @ExperimentalMaterial3Api
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +48,11 @@ fun CacheBanner(
     }
     val label = when {
         isCacheFull -> stringResource(R.string.cache_performance_critical)
+<<<<<<< Updated upstream
         isCacheWarning -> stringResource(R.string.cache_performance_warning)
+=======
+        isCacheWarning -> stringResource(R.string.cache_performance_limited)
+>>>>>>> Stashed changes
         else -> stringResource(R.string.cache_performance_optimal)
     }
     val tooltipState = rememberTooltipState()
@@ -66,14 +72,22 @@ fun CacheBanner(
             ) {
                 Icon(
                     imageVector = Icons.Default.Storage,
+<<<<<<< Updated upstream
                     contentDescription = stringResource(R.string.cache_content_description),
+=======
+                    contentDescription = stringResource(R.string.cache),
+>>>>>>> Stashed changes
                     tint = progressColor,
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
+<<<<<<< Updated upstream
                         text = stringResource(R.string.cache_label, cacheSize, displayMax),
+=======
+                        text = stringResource(R.string.cache_status, cacheSize, displayMax),
+>>>>>>> Stashed changes
                         style = MaterialTheme.typography.bodySmall,
                         color = textColor
                     )
@@ -125,7 +139,11 @@ fun CacheBanner(
                     }) {
                         Icon(
                             imageVector = Icons.Default.Info,
+<<<<<<< Updated upstream
                             contentDescription = stringResource(R.string.cache_info_content_description),
+=======
+                            contentDescription = stringResource(R.string.cache_info_title),
+>>>>>>> Stashed changes
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
                         )

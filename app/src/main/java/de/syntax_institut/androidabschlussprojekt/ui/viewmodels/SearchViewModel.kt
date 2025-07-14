@@ -35,6 +35,10 @@ class SearchViewModel(
     private val _cacheSize = MutableStateFlow(0)
 
     init {
+        // Setze Custom Keys für Crashlytics-Tracking
+        CrashlyticsHelper.setCustomKey("current_screen", "SearchScreen")
+        CrashlyticsHelper.setCustomKey("search_initialized", true)
+
         // Verzögerte Initialisierung um Binder-Transaktionsfehler zu vermeiden
         viewModelScope.launch {
             delay(100) // Kurze Verzögerung für stabilen App-Start
@@ -45,6 +49,8 @@ class SearchViewModel(
     private fun initializeCacheMonitoring() {
         viewModelScope.launch {
             try {
+                CrashlyticsHelper.setCustomKey("cache_monitoring_started", true)
+
                 // Initiale Cache-Größe abrufen mit Verzögerung
                 delay(Constants.CACHE_MONITORING_DELAY) // Längere Verzögerung für stabilen Start
                 _cacheSize.value = getCacheSizeUseCase()
@@ -59,11 +65,13 @@ class SearchViewModel(
                         _cacheSize.value = getCacheSizeUseCase()
                         _uiState.update { it.copy(lastSyncTime = System.currentTimeMillis()) }
                     } catch (_: Exception) {
+                        CrashlyticsHelper.setCustomKey("cache_monitoring_error", true)
                         AppLogger.e("SearchViewModel", "Fehler beim Abrufen der Cache-Größe")
                         // Bei Fehlern nicht abbrechen, sondern weiter versuchen
                     }
                 }
             } catch (_: Exception) {
+                CrashlyticsHelper.setCustomKey("cache_monitoring_critical_error", true)
                 AppLogger.e("SearchViewModel", "Kritischer Fehler im Cache-Monitoring")
                 // Bei kritischen Fehlern das Monitoring stoppen
             }
@@ -72,10 +80,17 @@ class SearchViewModel(
 
     fun loadPlatforms() {
         viewModelScope.launch {
+            CrashlyticsHelper.setCustomKey("platforms_loading_started", true)
             _uiState.update { it.copy(isLoadingPlatforms = true, platformsError = null) }
             try {
                 val platformResponse = getPlatformsUseCase()
                 if (platformResponse is Resource.Success) {
+                    CrashlyticsHelper.setCustomKey("platforms_loading_success", true)
+                    CrashlyticsHelper.setCustomKey(
+                        "platforms_count",
+                        platformResponse.data?.size ?: 0
+                    )
+
                     _uiState.update {
                         it.copy(
                             platforms = platformResponse.data ?: emptyList(),
@@ -84,12 +99,27 @@ class SearchViewModel(
                         )
                     }
                 } else {
+                    CrashlyticsHelper.setCustomKey("platforms_loading_error", true)
+                    CrashlyticsHelper.setCustomKey(
+                        "platforms_error_message",
+                        platformResponse.message ?: ""
+                    )
+
                     val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_unknown
                     _uiState.update {
                         it.copy(platformsErrorId = errorId, isLoadingPlatforms = false)
                     }
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                CrashlyticsHelper.setCustomKey(
+                    "platforms_loading_exception",
+                    e.javaClass.simpleName
+                )
+                CrashlyticsHelper.setCustomKey(
+                    "platforms_exception_message",
+                    e.message ?: "Unknown"
+                )
+
                 val errorId =
                     de.syntax_institut.androidabschlussprojekt.R.string.error_load_platforms
                 _uiState.update { it.copy(platformsErrorId = errorId, isLoadingPlatforms = false) }
@@ -99,10 +129,14 @@ class SearchViewModel(
 
     fun loadGenres() {
         viewModelScope.launch {
+            CrashlyticsHelper.setCustomKey("genres_loading_started", true)
             _uiState.update { it.copy(isLoadingGenres = true, genresError = null) }
             try {
                 val genreResponse = getGenresUseCase()
                 if (genreResponse is Resource.Success) {
+                    CrashlyticsHelper.setCustomKey("genres_loading_success", true)
+                    CrashlyticsHelper.setCustomKey("genres_count", genreResponse.data?.size ?: 0)
+
                     _uiState.update {
                         it.copy(
                             genres = genreResponse.data ?: emptyList(),
@@ -111,10 +145,19 @@ class SearchViewModel(
                         )
                     }
                 } else {
+                    CrashlyticsHelper.setCustomKey("genres_loading_error", true)
+                    CrashlyticsHelper.setCustomKey(
+                        "genres_error_message",
+                        genreResponse.message ?: ""
+                    )
+
                     val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_unknown
                     _uiState.update { it.copy(genresErrorId = errorId, isLoadingGenres = false) }
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                CrashlyticsHelper.setCustomKey("genres_loading_exception", e.javaClass.simpleName)
+                CrashlyticsHelper.setCustomKey("genres_exception_message", e.message ?: "Unknown")
+
                 val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_load_genres
                 _uiState.update { it.copy(genresErrorId = errorId, isLoadingGenres = false) }
             }
@@ -122,6 +165,10 @@ class SearchViewModel(
     }
 
     fun search(query: String) {
+        CrashlyticsHelper.setCustomKey("search_attempted", true)
+        CrashlyticsHelper.setCustomKey("search_query", query)
+        CrashlyticsHelper.setCustomKey("search_query_length", query.length)
+
         AppLogger.d("SearchViewModel", "Paging-Search gestartet mit Query: $query")
         currentSearchQuery = query
         val state = _uiState.value
@@ -129,6 +176,13 @@ class SearchViewModel(
         val genreIds = state.selectedGenres.joinToString(",")
         val ordering = state.ordering
         val rating = if (state.rating > 0f) state.rating else null
+
+        // Setze Custom Keys für Suchparameter
+        CrashlyticsHelper.setCustomKey("search_platforms_count", state.selectedPlatforms.size)
+        CrashlyticsHelper.setCustomKey("search_genres_count", state.selectedGenres.size)
+        CrashlyticsHelper.setCustomKey("search_has_ordering", ordering.isNotEmpty())
+        CrashlyticsHelper.setCustomKey("search_has_rating", rating != null)
+
         _uiState.update { it.copy(hasSearched = true) }
         _searchParams.value =
             SearchParams(
@@ -151,17 +205,26 @@ class SearchViewModel(
     }
 
     fun updateFilters(platforms: List<String>, genres: List<String>, rating: Float) {
+        CrashlyticsHelper.setCustomKey("filters_updated", true)
+        CrashlyticsHelper.setCustomKey("filters_platforms_count", platforms.size)
+        CrashlyticsHelper.setCustomKey("filters_genres_count", genres.size)
+        CrashlyticsHelper.setCustomKey("filters_rating", rating.toInt())
+
         _uiState.update {
             it.copy(selectedPlatforms = platforms, selectedGenres = genres, rating = rating)
         }
     }
 
     fun updateOrdering(ordering: String) {
+        CrashlyticsHelper.setCustomKey("ordering_updated", true)
+        CrashlyticsHelper.setCustomKey("ordering_value", ordering)
+
         _uiState.update { it.copy(ordering = ordering) }
         // KEINE automatische Suche mehr hier!
     }
 
     fun resetSearch() {
+        CrashlyticsHelper.setCustomKey("search_reset", true)
         _uiState.update { it.copy(hasSearched = false) }
         _pagingFlow.value = PagingData.empty()
         currentSearchQuery = ""
@@ -171,10 +234,14 @@ class SearchViewModel(
     fun clearCache() {
         viewModelScope.launch {
             try {
+                CrashlyticsHelper.setCustomKey("cache_clear_attempted", true)
                 clearCacheUseCase()
                 _cacheSize.value = 0
+                CrashlyticsHelper.setCustomKey("cache_clear_success", true)
                 AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                CrashlyticsHelper.setCustomKey("cache_clear_error", true)
+                CrashlyticsHelper.setCustomKey("cache_clear_exception", e.javaClass.simpleName)
                 AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches")
             }
         }

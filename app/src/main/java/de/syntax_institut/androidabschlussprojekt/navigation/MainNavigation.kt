@@ -23,8 +23,6 @@ fun MainNavigation(
             BottomNavBar(currentRoute, navController)
         }
     ) { innerPadding ->
-        // NavGraph ohne modifier, damit die Screens den gesamten Platz ausfüllen
-        // Das Padding wird von den einzelnen Screens selbst gehandhabt
         NavGraph(
             modifier = Modifier.padding(innerPadding),
             navController = navController
