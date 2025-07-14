@@ -9,10 +9,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-<<<<<<< Updated upstream
-=======
-import androidx.compose.ui.res.stringResource
->>>>>>> Stashed changes
 import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
@@ -41,13 +37,10 @@ fun IntelligentCacheIndicator(
             ) {
                 Icon(
                     imageVector = if (isOffline) Icons.Default.WifiOff else Icons.Default.CloudSync,
-<<<<<<< Updated upstream
-                    contentDescription = if (isOffline) stringResource(R.string.offline_mode) else stringResource(
-                        R.string.online_mode
-                    ),
-=======
-                    contentDescription = if (isOffline) stringResource(R.string.offline) else stringResource(R.string.online),
->>>>>>> Stashed changes
+                    contentDescription = if (isOffline)
+                        stringResource(R.string.offline_mode)
+                    else
+                        stringResource(R.string.online_mode),
                     tint = if (isOffline)
                         MaterialTheme.colorScheme.onErrorContainer
                     else
@@ -55,13 +48,10 @@ fun IntelligentCacheIndicator(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-<<<<<<< Updated upstream
-                    text = if (isOffline) stringResource(R.string.offline_mode) else stringResource(
-                        R.string.online_mode
-                    ),
-=======
-                    text = if (isOffline) stringResource(R.string.offline_mode) else stringResource(R.string.online_mode),
->>>>>>> Stashed changes
+                    text = if (isOffline)
+                        stringResource(R.string.offline_mode)
+                    else
+                        stringResource(R.string.online_mode),
                     style = MaterialTheme.typography.titleSmall,
                     color = if (isOffline)
                         MaterialTheme.colorScheme.onErrorContainer
@@ -74,15 +64,9 @@ fun IntelligentCacheIndicator(
 
             Text(
                 text = if (isOffline) {
-<<<<<<< Updated upstream
                     stringResource(R.string.cache_offline_data, cacheSize)
                 } else {
                     stringResource(R.string.cache_sync_auto)
-=======
-                    stringResource(R.string.using_cached_data, cacheSize)
-                } else {
-                    stringResource(R.string.data_auto_sync)
->>>>>>> Stashed changes
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = if (isOffline)
@@ -126,4 +110,4 @@ fun IntelligentCacheIndicatorPreview() {
         cacheSize = 120,
         lastSyncTime = System.currentTimeMillis()
     )
-} 
+}

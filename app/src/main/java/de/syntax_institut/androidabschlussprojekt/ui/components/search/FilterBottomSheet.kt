@@ -25,20 +25,20 @@ fun FilterBottomSheet(
     ordering: String,
     isLoadingPlatforms: Boolean = false,
     isLoadingGenres: Boolean = false,
-    platformsError: String? = null,
-    genresError: String? = null,
+    platformsErrorId: Int? = null,
+    genresErrorId: Int? = null,
     isOffline: Boolean = false,
     onOrderingChange: (String) -> Unit = {},
     onFilterChange: (List<String>, List<String>, Float) -> Unit,
     onRetryPlatforms: () -> Unit = {},
     onRetryGenres: () -> Unit = {},
-    onClearCache: () -> Unit = {}
+    onClearCache: () -> Unit = {},
 ) {
     var selectedPlatformState by remember { mutableStateOf(selectedPlatforms.toSet()) }
     var selectedGenreState by remember { mutableStateOf(selectedGenres.toSet()) }
     var ratingState by remember { mutableFloatStateOf(rating) }
     var orderingState by remember { mutableStateOf(ordering) }
-    
+
     // Dropdown-Zustände
     var platformsExpanded by remember { mutableStateOf(false) }
     var genresExpanded by remember { mutableStateOf(false) }
@@ -47,37 +47,30 @@ fun FilterBottomSheet(
     Column(modifier = Modifier.padding(16.dp)) {
         // Offline-Banner
         OfflineBanner(isOffline = isOffline)
-        
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Plattformen Dropdown
         Text(stringResource(R.string.game_platforms), style = MaterialTheme.typography.titleMedium)
-        
+
         if (isLoadingPlatforms) {
             Loading(modifier = Modifier.padding(16.dp))
-        } else if (platformsError != null) {
+        } else if (platformsErrorId != null) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = stringResource(R.string.error_load_platforms),
+                        text = stringResource(platformsErrorId),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
-                    Text(
-                        text = platformsError,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onErrorContainer
-                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = onRetryPlatforms,
-                        enabled = !isOffline
-                    ) {
+                    Button(onClick = onRetryPlatforms, enabled = !isOffline) {
                         Text(stringResource(R.string.action_retry))
                     }
                 }
@@ -90,11 +83,13 @@ fun FilterBottomSheet(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        if (selectedPlatformState.isEmpty()) stringResource(R.string.filter_select_platforms)
-                        else stringResource(
-                            R.string.filter_selected_platforms,
-                            selectedPlatformState.size
-                        )
+                        if (selectedPlatformState.isEmpty())
+                            stringResource(R.string.filter_select_platforms)
+                        else
+                            stringResource(
+                                R.string.filter_selected_platforms,
+                                selectedPlatformState.size
+                            )
                     )
                 }
                 DropdownMenu(
@@ -105,22 +100,20 @@ fun FilterBottomSheet(
                     platforms.forEach { platform ->
                         val isSelected = selectedPlatformState.contains(platform.id.toString())
                         DropdownMenuItem(
-                            text = { 
+                            text = {
                                 Row {
-                                    Checkbox(
-                                        checked = isSelected,
-                                        onCheckedChange = null
-                                    )
+                                    Checkbox(checked = isSelected, onCheckedChange = null)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(platform.name)
                                 }
                             },
                             onClick = {
-                                selectedPlatformState = if (isSelected) {
-                                    selectedPlatformState - platform.id.toString()
-                                } else {
-                                    selectedPlatformState + platform.id.toString()
-                                }
+                                selectedPlatformState =
+                                    if (isSelected) {
+                                        selectedPlatformState - platform.id.toString()
+                                    } else {
+                                        selectedPlatformState + platform.id.toString()
+                                    }
                             }
                         )
                     }
@@ -132,32 +125,25 @@ fun FilterBottomSheet(
 
         // Genres Dropdown
         Text(stringResource(R.string.game_genres), style = MaterialTheme.typography.titleMedium)
-        
+
         if (isLoadingGenres) {
             Loading(modifier = Modifier.padding(16.dp))
-        } else if (genresError != null) {
+        } else if (genresErrorId != null) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer
-                )
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = stringResource(R.string.error_load_genres),
+                        text = stringResource(genresErrorId),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
-                    Text(
-                        text = genresError,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onErrorContainer
-                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = onRetryGenres,
-                        enabled = !isOffline
-                    ) {
+                    Button(onClick = onRetryGenres, enabled = !isOffline) {
                         Text(stringResource(R.string.action_retry))
                     }
                 }
@@ -170,11 +156,13 @@ fun FilterBottomSheet(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        if (selectedGenreState.isEmpty()) stringResource(R.string.filter_select_genres)
-                        else stringResource(
-                            R.string.filter_selected_genres,
-                            selectedGenreState.size
-                        )
+                        if (selectedGenreState.isEmpty())
+                            stringResource(R.string.filter_select_genres)
+                        else
+                            stringResource(
+                                R.string.filter_selected_genres,
+                                selectedGenreState.size
+                            )
                     )
                 }
                 DropdownMenu(
@@ -185,22 +173,20 @@ fun FilterBottomSheet(
                     genres.forEach { genre ->
                         val isSelected = selectedGenreState.contains(genre.id.toString())
                         DropdownMenuItem(
-                            text = { 
+                            text = {
                                 Row {
-                                    Checkbox(
-                                        checked = isSelected,
-                                        onCheckedChange = null
-                                    )
+                                    Checkbox(checked = isSelected, onCheckedChange = null)
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(genre.name)
                                 }
                             },
                             onClick = {
-                                selectedGenreState = if (isSelected) {
-                                    selectedGenreState - genre.id.toString()
-                                } else {
-                                    selectedGenreState + genre.id.toString()
-                                }
+                                selectedGenreState =
+                                    if (isSelected) {
+                                        selectedGenreState - genre.id.toString()
+                                    } else {
+                                        selectedGenreState + genre.id.toString()
+                                    }
                             }
                         )
                     }
@@ -227,14 +213,15 @@ fun FilterBottomSheet(
 
         // Sortierung Dropdown
         Text(stringResource(R.string.filter_sorting), style = MaterialTheme.typography.titleMedium)
-        val orderings = listOf(
-            "-rating" to stringResource(R.string.filter_ordering_rating_desc),
-            "rating" to stringResource(R.string.filter_ordering_rating_asc),
-            "-released" to stringResource(R.string.filter_ordering_release_desc),
-            "released" to stringResource(R.string.filter_ordering_release_asc),
-            "name" to stringResource(R.string.filter_ordering_name_asc),
-            "-name" to stringResource(R.string.filter_ordering_name_desc)
-        )
+        val orderings =
+            listOf(
+                "-rating" to stringResource(R.string.filter_ordering_rating_desc),
+                "rating" to stringResource(R.string.filter_ordering_rating_asc),
+                "-released" to stringResource(R.string.filter_ordering_release_desc),
+                "released" to stringResource(R.string.filter_ordering_release_asc),
+                "name" to stringResource(R.string.filter_ordering_name_asc),
+                "-name" to stringResource(R.string.filter_ordering_name_desc)
+            )
         Box {
             OutlinedButton(
                 onClick = { orderingExpanded = true },
@@ -258,19 +245,22 @@ fun FilterBottomSheet(
                             Text(
                                 text = label,
                                 style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = if (value == orderingState) FontWeight.SemiBold else FontWeight.Normal
+                                fontWeight =
+                                    if (value == orderingState) FontWeight.SemiBold
+                                    else FontWeight.Normal
                             )
                         },
-                        leadingIcon = if (value == orderingState) {
-                            {
-                                Icon(
-                                    imageVector = Icons.Default.Check,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                        } else null,
+                        leadingIcon =
+                            if (value == orderingState) {
+                                {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            } else null,
                         onClick = {
                             orderingState = value
                             onOrderingChange(value)
@@ -287,9 +277,10 @@ fun FilterBottomSheet(
         if (isOffline) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
@@ -305,12 +296,11 @@ fun FilterBottomSheet(
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
                         onClick = onClearCache,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Text(stringResource(R.string.clear_cache))
-                    }
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error
+                            )
+                    ) { Text(stringResource(R.string.clear_cache)) }
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -327,8 +317,6 @@ fun FilterBottomSheet(
             },
             enabled = !isOffline || (platforms.isNotEmpty() && genres.isNotEmpty()),
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.filter_apply))
-        }
+        ) { Text(stringResource(R.string.filter_apply)) }
     }
 }

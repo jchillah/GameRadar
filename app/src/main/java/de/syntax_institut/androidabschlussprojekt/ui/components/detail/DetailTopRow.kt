@@ -22,6 +22,8 @@ internal fun DetailTopRow(
     onRefresh: () -> Unit,
     onToggleFavorite: () -> Unit,
     shareGamesEnabled: Boolean,
+    isInWishlist: Boolean,
+    onToggleWishlist: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -58,10 +60,17 @@ internal fun DetailTopRow(
                     modifier = Modifier
                 )
             }
-            FavoriteButton(
-                isFavorite = isFavorite,
-                onFavoriteChanged = { _ -> onToggleFavorite() }
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                FavoriteButton(
+                    isFavorite = isFavorite,
+                    onFavoriteChanged = { _ -> onToggleFavorite() }
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                WishlistButton(
+                    isInWishlist = isInWishlist,
+                    onWishlistChanged = { _ -> onToggleWishlist() }
+                )
+            }
         }
     }
 }

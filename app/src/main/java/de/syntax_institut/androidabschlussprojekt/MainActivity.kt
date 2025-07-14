@@ -18,6 +18,8 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import org.koin.android.ext.android.*
 
+// import de.syntax_institut.androidabschlussprojekt.data.local.GameDatabase
+
 /**
  * MainActivity
  * Einstiegspunkt der App.

@@ -29,6 +29,10 @@
     <string name="favorites_empty_message">Du hast noch keine Favoriten gespeichert.</string>
     <string name="favorites_empty_offline">Du bist offline. Deine Favoriten werden angezeigt, sobald du wieder online bist.</string>
     <string name="discover_games">Spiele entdecken</string>
+    <string name="favorites_export_import">Favoriten-Export/-Import</string>
+    <string name="favorites_export">Favoriten exportieren</string>
+    <string name="favorites_import">Favoriten importieren</string>
+    <string name="export_import_preview_unavailable">Export/Import nicht im Preview verfügbar</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Einstellungen</string>
@@ -108,7 +112,6 @@
     <!-- About Section -->
     <string name="about_section">Über die App</string>
     <string name="about_app">Über GameRadar</string>
-<<<<<<< Updated upstream
     <string name="about_app_description">Deine ultimative Gaming-Datenbank mit über 350.000 Spielen aus der RAWG-API.</string>
     <string name="about_app_features">Features:</string>
     <string name="about_app_feature_search">🔍 Erweiterte Spielsuche</string>
@@ -117,74 +120,18 @@
     <string name="about_app_feature_gaming">🎮 Gaming-Features</string>
     <string name="about_app_feature_darkmode">🌙 Dark Mode</string>
     <string name="about_app_community">Entwickelt mit ❤️ für die Gaming-Community</string>
-=======
-    <string name="about_app_section">Über die App</string>
->>>>>>> Stashed changes
     <string name="app_version">Version 1.0.0</string>
-    <string name="about_app_description">Deine ultimative Gaming-Datenbank mit über 350.000 Spielen aus der RAWG-API.</string>
-    <string name="about_app_features">Features:</string>
-    <string name="about_app_footer">Entwickelt mit ❤️ für die Gaming-Community</string>
-    <string name="feature_search">🔍 Erweiterte Spielsuche</string>
-    <string name="feature_favorites">⭐ Favoriten-Verwaltung</string>
-    <string name="feature_offline_cache">📱 Offline-Cache</string>
-    <string name="feature_gaming">🎮 Gaming-Features</string>
-    <string name="feature_dark_mode">🌙 Dark Mode</string>
-    <string name="action_close">Schließen</string>
-    <string name="privacy_policy">Datenschutzerklärung</string>
+    <string name="privacy_policy">Datenschutz</string>
     <string name="privacy_policy_description">Datenschutzerklärung lesen</string>
-    <string name="privacy_policy_title">GameRadar Datenschutzerklärung</string>
-    <string name="privacy_policy_date">Stand: %1$s</string>
-    <string name="privacy_section1_title">1. Datenerhebung</string>
-    <string name="privacy_section1_content">GameRadar sammelt nur die Daten, die für die Funktionalität der App notwendig sind. Dazu gehören deine Suchanfragen, Favoriten und App-Einstellungen, die lokal auf deinem Gerät gespeichert werden.</string>
-    <string name="privacy_section2_title">2. Externe Dienste</string>
-    <string name="privacy_section2_content">Die App nutzt die RAWG-API für Spieldaten. Diese API sammelt keine persönlichen Daten von dir. Alle API-Anfragen erfolgen anonym ohne persönliche Identifikation.</string>
-    <string name="privacy_section3_title">3. Lokale Speicherung</string>
-    <string name="privacy_section3_content">Deine Favoriten, Suchverlauf und Einstellungen werden ausschließlich lokal auf deinem Gerät gespeichert. Diese Daten werden nicht an externe Server übertragen.</string>
-    <string name="privacy_section4_title">4. Cache-Daten</string>
-    <string name="privacy_section4_content">Die App speichert Spieldaten im lokalen Cache, um die Performance zu verbessern. Diese Daten können jederzeit über die Einstellungen gelöscht werden.</string>
-    <string name="privacy_section5_title">5. Analytics</string>
-    <string name="privacy_section5_content">GameRadar sammelt anonyme Nutzungsdaten zur Verbesserung der App. Diese Daten enthalten keine persönlichen Informationen und werden nur für interne Zwecke verwendet.</string>
-    <string name="privacy_section6_title">6. Deine Rechte</string>
-    <string name="privacy_section6_content">Du hast das Recht, alle deine Daten zu löschen, indem du die App-Einstellungen verwendest. Alle Daten werden lokal gespeichert und können vollständig entfernt werden.</string>
-    <string name="privacy_policy_contact">Bei Fragen zum Datenschutz kontaktiere uns unter: %1$s</string>
-    <string name="action_understood">Verstanden</string>
     <string name="contact_support">Support kontaktieren</string>
-<<<<<<< Updated upstream
     <string name="contact_support_description">E-Mail an Support senden</string>
     <string name="contact_support_subject">Support GameRadar</string>
-=======
-    <string name="contact_support_description">E-Mail an den Support senden</string>
-    <string name="cache_performance_critical">Performance kritisch</string>
-    <string name="cache_performance_limited">Performance eingeschränkt</string>
-    <string name="cache_performance_optimal">Performance optimal</string>
-    <string name="cache">Cache</string>
-    <string name="cache_status">Cache: %1$d/%2$s Spiele</string>
-    <string name="cache_info_title">Cache-Info</string>
-    <string name="cache_info_text" formatted="false">Der Cache speichert Spiele für Offline-Nutzung und schnellere Ladezeiten.
-
-Farben:
-• Grün: Performance optimal (bis 70%)
-• Gelb: Performance eingeschränkt (ab 70%)
-• Rot: Performance kritisch (ab 90%)
-
-Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur durch den Gerätespeicher begrenzt wird.</string>
-    <string name="offline">Offline</string>
-    <string name="online">Online</string>
-    <string name="offline_mode">Offline-Modus</string>
-    <string name="online_mode">Online-Modus</string>
-    <string name="using_cached_data">Verwende gecachte Daten (%1$d Spiele verfügbar)</string>
-    <string name="data_auto_sync">Daten werden automatisch synchronisiert</string>
-    <string name="last_sync_time">Letzte Synchronisation: %1$s</string>
-    <string name="data_sync_section">Data &amp; Synchronization</string>
-    <string name="gaming_features_section">Gaming-Features</string>
-    <string name="design_section">Design</string>
-    <string name="database_management_section">Datenbank-Management</string>
->>>>>>> Stashed changes
+    <string name="action_understood">Verstanden</string>
 
     <!-- Database Management -->
     <string name="database_section">Datenbank-Management</string>
     <string name="reset_database">Datenbank zurücksetzen</string>
-    <string name="reset_database_description">Alle Favoriten und Cache-Daten löschen</string>
+    <string name="reset_database_description">Löscht alle Favoriten und Cache-Daten</string>
     <string name="reset_database_dialog_title">Datenbank zurücksetzen</string>
     <string name="reset_database_dialog_text">Möchten Sie wirklich alle Favoriten und Cache-Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
     <!-- Hinweis nach Datenbank-Reset, dass ein Neustart empfohlen wird -->
@@ -206,6 +153,7 @@ Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur
     <string name="error_load_data">Fehler beim Laden der Daten</string>
     <string name="error_save_data">Fehler beim Speichern der Daten</string>
     <string name="error_card_default_title">Fehler aufgetreten</string>
+    <string name="error_game_load_failed">Fehler beim Laden der Spieldaten</string>
 
     <!-- Game Details -->
     <string name="game_rating_game_details">Bewertung: %1$.1f</string>
@@ -214,29 +162,31 @@ Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur
     <string name="game_release_date_search_gameitem">Release: %1$s</string>
     <string name="game_platforms">Plattformen</string>
     <string name="game_genres">Genres</string>
-    <string name="game_playtime">Spielzeit</string>
-    <string name="game_website">Website</string>
-    <string name="game_metacritic">Metacritic</string>
-    <string name="game_esrb_rating">ESRB Rating</string>
-    <string name="no_rating">Keine Bewertung</string>
     <string name="game_developers">Entwickler</string>
     <string name="game_publishers">Publisher</string>
     <string name="game_tags">Tags</string>
     <string name="game_stores">Stores</string>
     <string name="game_metacritic_playtime">Metacritic &amp; Spielzeit</string>
     <string name="game_metacritic_value">Metacritic: %1$d</string>
-    <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Std.</string>
+    <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Stunden</string>
     <string name="game_screenshots">Screenshots</string>
     <string name="game_trailers">Trailer</string>
     <string name="game_no_website">Keine Website verfügbar</string>
+    <string name="game_playtime">Spielzeit</string>
+    <string name="game_website">Website</string>
+    <string name="game_metacritic">Metacritic</string>
+    <string name="game_esrb_rating">ESRB Rating</string>
+    <string name="no_rating">Keine Bewertung</string>
 
     <!-- Loading States -->
     <string name="loading">Lädt…</string>
     <string name="loading_games">Spiele werden geladen…</string>
     <string name="loading_details">Details werden geladen…</string>
+    <string name="empty_state">Leerer Zustand</string>
     <string name="loading_state_default">Lade Daten…</string>
 
     <!-- Offline States -->
+    <string name="offline_mode">Offline-Modus</string>
     <string name="offline_no_data">Keine Daten verfügbar</string>
     <string name="offline_no_favorites">Keine Favoriten verfügbar</string>
 
@@ -355,9 +305,6 @@ Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur
     <string name="detail_previous_image">Vorheriges Bild</string>
     <string name="detail_trailer_default">Trailer</string>
     <string name="detail_no_description">Keine Beschreibung verfügbar.</string>
-    <string name="detail_back">Zurück</string>
-    <string name="detail_title_default">Spieldetails</string>
-    <string name="detail_refresh">Neu laden</string>
     <string name="detail_no_trailers">Für dieses Spiel wurden keine Trailer gefunden.</string>
     <string name="detail_trailer_play">Abspielen</string>
     <string name="detail_screenshot_hint">Tippen Sie auf ein Bild für Vollbildansicht</string>
@@ -419,7 +366,9 @@ Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur
     <string name="activity_extra_video_title">video_title</string>
     <string name="activity_extra_video_url">video_url</string>
     <string name="activity_scale">scale</string>
-
+    <string name="detail_back">Zurück</string>
+    <string name="detail_title_default">Spieldetails</string>
+    <string name="detail_refresh">Neu laden</string>
     <string name="rating_dialog_title">Spiel bewerten</string>
     <string name="rating_dialog_question">Wie bewertest du dieses Spiel?</string>
     <string name="rating_dialog_star_content_description">%1$d Sterne</string>
@@ -447,4 +396,27 @@ Das Unendlich-Zeichen (∞) bedeutet, dass der Cache nicht limitiert ist und nur
     <string name="preview_settings_dropdown_title">Sprache</string>
     <string name="preview_settings_dropdown_subtitle">App-Sprache wählen</string>
     <string name="preview_settings_dropdown_selected">Deutsch</string>
+    <string name="wishlist_tab">Wunschliste</string>
+    <string name="wishlist_empty_title">Keine Wunschspiele</string>
+    <string name="wishlist_empty_message">Du hast noch keine Spiele auf deiner Wunschliste.</string>
+    <string name="wishlist_add">Zur Wunschliste hinzufügen</string>
+    <string name="wishlist_remove">Von Wunschliste entfernen</string>
+    <string name="wishlist_marked">Auf der Wunschliste</string>
+    <string name="wishlist_not_marked">Nicht auf der Wunschliste</string>
+    <string name="wishlist_export">Wunschliste exportieren</string>
+    <string name="wishlist_import">Wunschliste importieren</string>
+    <string name="wishlist_export_import">Wunschliste Export/Import</string>
+    <string name="wishlist_export_success">Wunschliste erfolgreich exportiert!</string>
+    <string name="wishlist_import_success">Wunschliste erfolgreich importiert!</string>
+    <string name="wishlist_export_error">Fehler beim Exportieren der Wunschliste</string>
+    <string name="wishlist_import_error">Fehler beim Importieren der Wunschliste</string>
+    <string name="wishlist_count">Wunschlistenzähler: %1$d</string>
+    <string name="wishlist_clear_all">Wunschliste leeren</string>
+    <string name="wishlist_game_id_for_details">Spiel-ID für Details</string>
+    <string name="wishlist_show_details">Details anzeigen</string>
+    <string name="wishlist_full_details">Vollständige Details</string>
+
+    <string name="analytics_section">Analytics</string>
+    <string name="analytics_enabled">Analytics aktivieren</string>
+    <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
 </resources>

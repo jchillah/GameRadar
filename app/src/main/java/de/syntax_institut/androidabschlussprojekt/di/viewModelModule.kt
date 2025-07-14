@@ -1,41 +1,59 @@
 package de.syntax_institut.androidabschlussprojekt.di
 
+import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.viewmodel.dsl.*
 import org.koin.dsl.*
 
-/**
- * Modul für ViewModels.
- */
+/** Modul für ViewModels. */
 val viewModelModule = module {
     viewModel {
         SearchViewModel(
-            get(), // LoadGamesUseCase
-            get(), // GetPlatformsUseCase
-            get(), // GetGenresUseCase
-            get(), // ClearCacheUseCase
-            get()  // GetCacheSizeUseCase
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
-    viewModel {
+    viewModel { (savedStateHandle: SavedStateHandle) ->
         DetailViewModel(
-            get(), // GetGameDetailUseCase
-            get(), // ToggleFavoriteUseCase
-            get(), // IsFavoriteUseCase
-            get()  // GetFavoriteByIdUseCase
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            savedStateHandle,
+            get()
         )
     }
     viewModel {
         FavoritesViewModel(
-            get(), // GetAllFavoritesUseCase
-            get(), // ClearAllFavoritesUseCase
-            get(), // RemoveFavoriteUseCase
-            get(), // SyncFavoritesWithApiUseCase
-            get()  // RawgApi
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
+        )
+    }
+    viewModel {
+        WishlistViewModel(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get()
         )
     }
     viewModel { SettingsViewModel(get()) }
     viewModel { ScreenshotGalleryViewModel() }
     viewModel { TrailerPlayerViewModel() }
 }
-

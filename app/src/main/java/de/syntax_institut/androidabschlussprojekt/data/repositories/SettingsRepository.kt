@@ -33,6 +33,9 @@ class SettingsRepository(context: Context) {
     private val _darkModeEnabled = MutableStateFlow(false)
     val darkModeEnabled: StateFlow<Boolean> = _darkModeEnabled.asStateFlow()
 
+    private val _analyticsEnabled = MutableStateFlow(false)
+    val analyticsEnabled: StateFlow<Boolean> = _analyticsEnabled.asStateFlow()
+
     init {
         loadSettings()
     }
@@ -77,6 +80,11 @@ class SettingsRepository(context: Context) {
         saveSettings()
     }
 
+    fun setAnalyticsEnabled(enabled: Boolean) {
+        _analyticsEnabled.value = enabled
+        saveSettings()
+    }
+
     private fun saveSettings() {
         sharedPreferences.edit().apply {
             putBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, _notificationsEnabled.value)
@@ -87,6 +95,7 @@ class SettingsRepository(context: Context) {
             putBoolean(Constants.PREF_PERFORMANCE_MODE_ENABLED, _performanceModeEnabled.value)
             putBoolean(Constants.PREF_SHARE_GAMES_ENABLED, _shareGamesEnabled.value)
             putBoolean(Constants.PREF_DARK_MODE_ENABLED, _darkModeEnabled.value)
+            putBoolean("analytics_enabled", _analyticsEnabled.value)
             apply()
         }
     }
@@ -96,12 +105,15 @@ class SettingsRepository(context: Context) {
             sharedPreferences.getBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, true)
         _autoRefreshEnabled.value =
             sharedPreferences.getBoolean(Constants.PREF_AUTO_REFRESH_ENABLED, true)
-        _imageQuality.value = ImageQuality.valueOf(
-            sharedPreferences.getString(Constants.PREF_IMAGE_QUALITY, ImageQuality.HIGH.name)
-                ?: ImageQuality.HIGH.name
-        )
-        _language.value =
-            sharedPreferences.getString(Constants.PREF_LANGUAGE, "system") ?: "system"
+        _imageQuality.value =
+            ImageQuality.valueOf(
+                sharedPreferences.getString(
+                    Constants.PREF_IMAGE_QUALITY,
+                    ImageQuality.HIGH.name
+                )
+                    ?: ImageQuality.HIGH.name
+            )
+        _language.value = sharedPreferences.getString(Constants.PREF_LANGUAGE, "system") ?: "system"
         _gamingModeEnabled.value =
             sharedPreferences.getBoolean(Constants.PREF_GAMING_MODE_ENABLED, false)
         _performanceModeEnabled.value =
@@ -110,5 +122,6 @@ class SettingsRepository(context: Context) {
             sharedPreferences.getBoolean(Constants.PREF_SHARE_GAMES_ENABLED, true)
         _darkModeEnabled.value =
             sharedPreferences.getBoolean(Constants.PREF_DARK_MODE_ENABLED, false)
+        _analyticsEnabled.value = sharedPreferences.getBoolean("analytics_enabled", false)
     }
-} 
+}

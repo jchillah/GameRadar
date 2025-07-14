@@ -1,5 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import android.content.*
+import android.net.*
 import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
@@ -8,19 +10,25 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-/**
- * ViewModel für die Favoriten-Liste.
- */
+/** ViewModel für die Favoriten-Liste. */
 class FavoritesViewModel(
     private val getAllFavoritesUseCase: GetAllFavoritesUseCase,
     private val clearAllFavoritesUseCase: ClearAllFavoritesUseCase,
     private val removeFavoriteUseCase: RemoveFavoriteUseCase,
     private val syncFavoritesWithApiUseCase: SyncFavoritesWithApiUseCase,
     private val rawgApi: RawgApi,
+    private val favoritesRepository:
+    de.syntax_institut.androidabschlussprojekt.data.repositories.FavoritesRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState: StateFlow<FavoritesUiState> = _uiState
+
+    private val _exportResult = MutableStateFlow<Result<Unit>?>(null)
+    val exportResult: StateFlow<Result<Unit>?> = _exportResult
+
+    private val _importResult = MutableStateFlow<Result<Unit>?>(null)
+    val importResult: StateFlow<Result<Unit>?> = _importResult
 
     init {
         loadFavorites()
@@ -50,10 +58,10 @@ class FavoritesViewModel(
         }
     }
 
-    fun clearAllFavorites() {
+    fun clearAllFavorites(context: Context) {
         AppLogger.d("FavoritesViewModel", "Lösche alle Favoriten")
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = clearAllFavoritesUseCase()) {
+            when (val result = clearAllFavoritesUseCase(context)) {
                 is Resource.Success -> {
                     AppLogger.d("FavoritesViewModel", "Alle Favoriten gelöscht")
                     loadFavorites()
@@ -67,10 +75,10 @@ class FavoritesViewModel(
         }
     }
 
-    fun removeFavorite(gameId: Int) {
+    fun removeFavorite(context: Context, gameId: Int) {
         AppLogger.d("FavoritesViewModel", "Entferne Favorit: $gameId")
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = removeFavoriteUseCase(gameId)) {
+            when (val result = removeFavoriteUseCase(context, gameId)) {
                 is Resource.Success -> {
                     AppLogger.d("FavoritesViewModel", "Favorit entfernt: $gameId")
                     loadFavorites()
@@ -94,4 +102,15 @@ class FavoritesViewModel(
             }
         }
     }
-} 
+
+    fun exportFavoritesToUri(context: Context, uri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _exportResult.value = favoritesRepository.exportFavoritesToUri(context, uri)
+        }
+
+    fun importFavoritesFromUri(context: Context, uri: Uri) =
+        viewModelScope.launch(Dispatchers.IO) {
+            _importResult.value = favoritesRepository.importFavoritesFromUri(context, uri)
+            loadFavorites()
+        }
+}

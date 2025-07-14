@@ -20,4 +20,17 @@ val useCaseModule = module {
     single { GetGenresUseCase(get()) }
     single { ClearCacheUseCase(get()) }
     single { GetCacheSizeUseCase(get()) }
-} 
+
+    // Wishlist UseCases
+    single { AddWishlistGameUseCase(get()) }
+    single { RemoveWishlistGameUseCase(get()) }
+    single { ToggleWishlistGameUseCase(get()) }
+    single { GetAllWishlistGamesUseCase(get()) }
+    single { ClearAllWishlistGamesUseCase(get()) }
+    single { IsInWishlistUseCase(get()) }
+    single { GetWishlistGameByIdUseCase(get()) }
+    single { SearchWishlistGamesUseCase(get()) }
+    single { GetWishlistCountUseCase(get()) }
+    single { ExportWishlistToUriUseCase(get()) }
+    single { ImportWishlistFromUriUseCase(get()) }
+}
