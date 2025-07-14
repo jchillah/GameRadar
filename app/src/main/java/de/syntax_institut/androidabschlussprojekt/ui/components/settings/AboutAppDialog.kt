@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.res.stringResource
 import de.syntax_institut.androidabschlussprojekt.R
 
 @Composable
@@ -42,6 +43,7 @@ fun AboutAppDialog(
             ) {
                 Text(
                     text = stringResource(R.string.app_name) + " " + stringResource(R.string.app_version),
+
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -71,6 +73,7 @@ fun AboutAppDialog(
 
                 Text(
                     text = stringResource(R.string.about_app_community),
+
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
