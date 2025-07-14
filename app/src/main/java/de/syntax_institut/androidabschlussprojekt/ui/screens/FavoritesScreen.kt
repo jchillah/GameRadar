@@ -49,6 +49,11 @@ fun FavoritesScreen(
             hasFavorites = state.favorites.isNotEmpty(),
             onDeleteAllClick = { showDeleteConfirmation = true }
         )
+        // Statistiken nur anzeigen, wenn Favoriten vorhanden
+        if (state.favorites.isNotEmpty()) {
+            val genreCounts = state.favorites.flatMap { it.genres }.groupingBy { it }.eachCount()
+            GameStatsChart(genreCounts = genreCounts, modifier = Modifier.fillMaxWidth())
+        }
         Box(modifier = Modifier.weight(1f)) {
             when {
                 state.isLoading -> {
