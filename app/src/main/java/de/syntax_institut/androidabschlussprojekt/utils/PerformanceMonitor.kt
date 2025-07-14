@@ -50,22 +50,6 @@ object PerformanceMonitor {
         AppAnalytics.trackPerformanceMetric("memory_usage_$context", usedMemoryMB, "MB")
     }
 
-    /** Erhöht einen Event-Counter und sendet ihn an Firebase Analytics. */
-    fun incrementEventCounter(eventName: String) {
-        val counter = eventCounters.getOrPut(eventName) { AtomicLong(0) }
-        val newValue = counter.incrementAndGet()
-
-        AppLogger.d("Performance", "Event Counter erhöht: $eventName = $newValue")
-
-        // Alle 10 Events an Firebase senden
-        if (newValue % 10 == 0L) {
-            AppAnalytics.trackEvent(
-                "event_counter",
-                mapOf("event_name" to eventName, "count" to newValue)
-            )
-        }
-    }
-
     /** Berechnet und sendet Durchschnitts-Performance-Metriken. */
     fun calculateAndSendAverageMetrics() {
         performanceMetrics.forEach { (metricName, values) ->
@@ -93,34 +77,14 @@ object PerformanceMonitor {
         }
     }
 
-    /** Trackt API-Aufrufe und deren Performance. */
-    fun trackApiCall(endpoint: String, duration: Long, success: Boolean, responseSize: Int = 0) {
+    /** Trackt App-Start-Performance. */
+    fun trackAppStart(duration: Long, coldStart: Boolean) {
         AppAnalytics.trackEvent(
-            "api_call",
-            mapOf(
-                "endpoint" to endpoint,
-                "duration_ms" to duration,
-                "success" to success,
-                "response_size_bytes" to responseSize
-            )
+            "app_start",
+            mapOf("duration_ms" to duration, "cold_start" to coldStart)
         )
 
-        AppLogger.d("Performance", "API Call: $endpoint, Dauer: ${duration}ms, Erfolg: $success")
-    }
-
-    /** Trackt Bildlade-Performance. */
-    fun trackImageLoad(imageUrl: String, duration: Long, success: Boolean, imageSize: Int = 0) {
-        AppAnalytics.trackEvent(
-            "image_load",
-            mapOf(
-                "image_url" to imageUrl,
-                "duration_ms" to duration,
-                "success" to success,
-                "image_size_bytes" to imageSize
-            )
-        )
-
-        AppLogger.d("Performance", "Image Load: $imageUrl, Dauer: ${duration}ms, Erfolg: $success")
+        AppLogger.d("Performance", "App Start: ${duration}ms, Cold Start: $coldStart")
     }
 
     /** Trackt Datenbank-Operationen. */
@@ -151,136 +115,5 @@ object PerformanceMonitor {
                 "Database Operation: $operation on $table, Dauer: n/a, Erfolg: $success"
             )
         }
-    }
-
-    /** Trackt UI-Rendering-Performance. */
-    fun trackUiRendering(screenName: String, duration: Long) {
-        AppAnalytics.trackEvent(
-            "ui_rendering",
-            mapOf("screen_name" to screenName, "duration_ms" to duration)
-        )
-
-        AppLogger.d("Performance", "UI Rendering: $screenName, Dauer: ${duration}ms")
-    }
-
-    /** Trackt App-Start-Performance. */
-    fun trackAppStart(duration: Long, coldStart: Boolean) {
-        AppAnalytics.trackEvent(
-            "app_start",
-            mapOf("duration_ms" to duration, "cold_start" to coldStart)
-        )
-
-        AppLogger.d("Performance", "App Start: ${duration}ms, Cold Start: $coldStart")
-    }
-
-    /** Trackt Navigation-Performance. */
-    fun trackNavigation(fromScreen: String, toScreen: String, duration: Long) {
-        AppAnalytics.trackEvent(
-            "navigation",
-            mapOf(
-                "from_screen" to fromScreen,
-                "to_screen" to toScreen,
-                "duration_ms" to duration
-            )
-        )
-
-        AppLogger.d("Performance", "Navigation: $fromScreen -> $toScreen, Dauer: ${duration}ms")
-    }
-
-    /** Trackt Cache-Performance. */
-    fun trackCachePerformance(operation: String, cacheSize: Int, hitRate: Float, duration: Long) {
-        AppAnalytics.trackEvent(
-            "cache_performance",
-            mapOf(
-                "operation" to operation,
-                "cache_size" to cacheSize,
-                "hit_rate" to hitRate,
-                "duration_ms" to duration
-            )
-        )
-
-        AppLogger.d(
-            "Performance",
-            "Cache: $operation, Größe: $cacheSize, Hit Rate: $hitRate, Dauer: ${duration}ms"
-        )
-    }
-
-    /** Trackt Netzwerk-Performance. */
-    fun trackNetworkPerformance(
-        requestType: String,
-        duration: Long,
-        bytesTransferred: Long,
-        success: Boolean,
-    ) {
-        AppAnalytics.trackEvent(
-            "network_performance",
-            mapOf(
-                "request_type" to requestType,
-                "duration_ms" to duration,
-                "bytes_transferred" to bytesTransferred,
-                "success" to success
-            )
-        )
-
-        AppLogger.d(
-            "Performance",
-            "Network: $requestType, Dauer: ${duration}ms, Bytes: $bytesTransferred, Erfolg: $success"
-        )
-    }
-
-    /** Bereinigt alte Metriken und sendet Zusammenfassung. */
-    fun cleanupAndSendSummary() {
-        // Durchschnittsmetriken senden
-        calculateAndSendAverageMetrics()
-
-        // Event-Counter senden
-        eventCounters.forEach { (eventName, counter) ->
-            AppAnalytics.trackEvent(
-                "event_summary",
-                mapOf("event_name" to eventName, "total_count" to counter.get())
-            )
-        }
-
-        // Speichernutzung senden
-        memoryUsage.forEach { (context, usage) ->
-            AppAnalytics.trackPerformanceMetric("final_memory_usage_$context", usage, "MB")
-        }
-
-        // Daten bereinigen
-        performanceMetrics.clear()
-        eventCounters.clear()
-        memoryUsage.clear()
-
-        AppLogger.d(
-            "Performance",
-            "Performance-Monitoring-Daten bereinigt und Zusammenfassung gesendet"
-        )
-    }
-
-    /** Gibt aktuelle Performance-Statistiken zurück. */
-    fun getPerformanceStats(): Map<String, Any> {
-        val stats = mutableMapOf<String, Any>()
-
-        // Timer-Statistiken
-        stats["active_timers"] = timers.size
-
-        // Memory-Statistiken
-        stats["memory_usage"] = memoryUsage.toMap()
-
-        // Event-Counter-Statistiken
-        stats["event_counters"] = eventCounters.mapValues { it.value.get() }
-
-        // Performance-Metriken-Statistiken
-        stats["performance_metrics"] =
-            performanceMetrics.mapValues { (_, values) ->
-                mapOf(
-                    "count" to values.size,
-                    "average" to values.average(),
-                    "min" to values.minOrNull(),
-                    "max" to values.maxOrNull()
-                )
-            }
-
-        return stats
     }
 }
