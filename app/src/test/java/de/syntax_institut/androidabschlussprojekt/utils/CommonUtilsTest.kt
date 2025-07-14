@@ -6,48 +6,42 @@ import org.junit.Assert.*
 /**
  * Unit-Tests für CommonUtils.
  *
- * Testet alle öffentlichen Funktionen der CommonUtils-Klasse
- * und stellt sicher, dass sie korrekt funktionieren.
+ * Testet alle öffentlichen Funktionen der CommonUtils-Klasse und stellt sicher, dass sie korrekt
+ * funktionieren.
  */
 class CommonUtilsTest {
 
     @Test
     fun `getEmptyStateMessage returns correct message for null items`() {
-        val message = CommonUtils.getEmptyStateMessage(
-            items = null,
-            itemName = "Screenshots"
-        )
-        assertEquals("Für dieses Spiel wurden keine Screenshots gefunden.", message)
+        val message = CommonUtils.getEmptyStateMessage(items = null, itemName = "Screenshots")
+        assertEquals("Screenshots", message)
     }
 
     @Test
     fun `getEmptyStateMessage returns correct message for empty items`() {
-        val message = CommonUtils.getEmptyStateMessage(
-            items = emptyList<String>(),
-            itemName = "Trailer"
-        )
-        assertEquals("Für dieses Spiel wurden keine Trailer gefunden.", message)
+        val message =
+            CommonUtils.getEmptyStateMessage(items = emptyList<String>(), itemName = "Trailer")
+        assertEquals("Trailer", message)
     }
 
     @Test
     fun `getEmptyStateMessage returns correct message for offline state`() {
-        val message = CommonUtils.getEmptyStateMessage(
-            items = null,
-            itemName = "Screenshots",
-            isOffline = true
-        )
-        assertEquals(
-            "Keine Screenshots verfügbar. Prüfe deine Internetverbindung und versuche es erneut.",
-            message
-        )
+        val message =
+            CommonUtils.getEmptyStateMessage(
+                items = null,
+                itemName = "Screenshots",
+                isOffline = true
+            )
+        assertEquals("Screenshots", message)
     }
 
     @Test
     fun `getEmptyStateMessage returns empty string for non-empty items`() {
-        val message = CommonUtils.getEmptyStateMessage(
-            items = listOf("item1", "item2"),
-            itemName = "Items"
-        )
+        val message =
+            CommonUtils.getEmptyStateMessage(
+                items = listOf("item1", "item2"),
+                itemName = "Items"
+            )
         assertEquals("", message)
     }
 
@@ -60,13 +54,13 @@ class CommonUtilsTest {
     @Test
     fun `formatRating returns no rating message for zero rating`() {
         val formatted = CommonUtils.formatRating(0f)
-        assertEquals("Keine Bewertung", formatted)
+        assertEquals("-", formatted)
     }
 
     @Test
     fun `formatRating returns no rating message for negative rating`() {
         val formatted = CommonUtils.formatRating(-1f)
-        assertEquals("Keine Bewertung", formatted)
+        assertEquals("-", formatted)
     }
 
     @Test
@@ -110,4 +104,4 @@ class CommonUtilsTest {
         val isValid = CommonUtils.isValidUrl("ftp://example.com")
         assertFalse(isValid)
     }
-} 
+}

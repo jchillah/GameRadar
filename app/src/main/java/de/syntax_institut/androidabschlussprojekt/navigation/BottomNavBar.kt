@@ -10,12 +10,11 @@ import androidx.compose.ui.res.*
 import androidx.navigation.*
 import androidx.paging.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.navigation.Routes.WISHLIST
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.compose.*
 
-/**
- * Die untere Navigationsleiste mit Badges für Ergebnisse und Favoriten
- */
+/** Die untere Navigationsleiste mit Badges für Ergebnisse und Favoriten */
 @Composable
 fun BottomNavBar(
     currentRoute: String?,
@@ -40,19 +39,18 @@ fun BottomNavBar(
                         contentDescription = stringResource(R.string.nav_search)
                     )
                     if (searchResultsCount > 0) {
-                        Badge(
-                            modifier = Modifier.align(Alignment.TopEnd)
-                        ) {
-                            Text(if (searchResultsCount > 99) "99+" else searchResultsCount.toString())
+                        Badge(modifier = Modifier.align(Alignment.TopEnd)) {
+                            Text(
+                                if (searchResultsCount > 99) "99+"
+                                else searchResultsCount.toString()
+                            )
                         }
                     }
                 }
             },
             label = { Text(stringResource(R.string.nav_search)) },
             selected = currentRoute == Routes.SEARCH,
-            onClick = {
-                navController.navigateToTab(Routes.SEARCH)
-            }
+            onClick = { navController.navigateToTab(Routes.SEARCH) }
         )
 
         NavigationBarItem(
@@ -71,9 +69,20 @@ fun BottomNavBar(
             },
             label = { Text(stringResource(R.string.nav_favorites)) },
             selected = currentRoute == Routes.FAVORITES,
-            onClick = {
-                navController.navigateToTab(Routes.FAVORITES)
-            }
+            onClick = { navController.navigateToTab(Routes.FAVORITES) }
+        )
+
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Filled.Star,
+                    contentDescription = stringResource(R.string.wishlist_tab)
+                )
+            },
+            label = { Text(stringResource(R.string.wishlist_tab)) },
+            selected = currentRoute == WISHLIST,
+            onClick = { navController.navigate(WISHLIST) },
+            alwaysShowLabel = true
         )
 
         NavigationBarItem(
@@ -85,9 +94,7 @@ fun BottomNavBar(
             },
             label = { Text(stringResource(R.string.nav_settings)) },
             selected = currentRoute == Routes.SETTINGS,
-            onClick = {
-                navController.navigateToTab(Routes.SETTINGS)
-            }
+            onClick = { navController.navigateToTab(Routes.SETTINGS) }
         )
     }
 }

@@ -393,4 +393,18 @@
     <string name="preview_settings_dropdown_subtitle">Choose app language</string>
     <string name="preview_settings_dropdown_selected">German</string>
     <string name="action_understood">Got it</string>
+    <string name="wishlist_tab">Wishlist</string>
+    <string name="wishlist_empty_title">No wishlist games</string>
+    <string name="wishlist_empty_message">You haven\'t added any games to your wishlist yet.</string>
+    <string name="wishlist_add">Add to wishlist</string>
+    <string name="wishlist_remove">Remove from wishlist</string>
+    <string name="wishlist_marked">On wishlist</string>
+    <string name="wishlist_not_marked">Not on wishlist</string>
+    <string name="wishlist_export">Export wishlist</string>
+    <string name="wishlist_import">Import wishlist</string>
+    <string name="wishlist_export_import">Wishlist Export/Import</string>
+    <string name="wishlist_export_success">Wishlist exported successfully!</string>
+    <string name="wishlist_import_success">Wishlist imported successfully!</string>
+    <string name="wishlist_export_error">Error exporting wishlist</string>
+    <string name="wishlist_import_error">Error importing wishlist</string>
 </resources> 

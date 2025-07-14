@@ -6,18 +6,17 @@ import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import org.koin.dsl.*
 
-/**
- * Modul für Repositories und Datenbank.
- */
+/** Modul für Repositories und Datenbank. */
 val repositoryModule = module {
     // Room Database
     single { GameDatabase.getDatabase(get<Context>()) }
-    
+
     // DAOs
     single<FavoriteGameDao> { get<GameDatabase>().favoriteGameDao() }
     single<GameCacheDao> { get<GameDatabase>().gameCacheDao() }
     single<GameDetailCacheDao> { get<GameDatabase>().gameDetailCacheDao() }
-    
+    single<WishlistGameDao> { get<GameDatabase>().wishlistGameDao() }
+
     // Repositories
     single {
         GameRepository(
@@ -29,5 +28,6 @@ val repositoryModule = module {
         )
     }
     single { FavoritesRepository(get(), get()) }
+    single { WishlistRepository(get()) }
     single { SettingsRepository(get<Context>()) }
 }

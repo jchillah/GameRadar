@@ -1,12 +1,11 @@
 package de.syntax_institut.androidabschlussprojekt.di
 
+import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.viewmodel.dsl.*
 import org.koin.dsl.*
 
-/**
- * Modul für ViewModels.
- */
+/** Modul für ViewModels. */
 val viewModelModule = module {
     viewModel {
         SearchViewModel(
@@ -14,15 +13,17 @@ val viewModelModule = module {
             get(), // GetPlatformsUseCase
             get(), // GetGenresUseCase
             get(), // ClearCacheUseCase
-            get()  // GetCacheSizeUseCase
+            get() // GetCacheSizeUseCase
         )
     }
-    viewModel {
+    viewModel { (savedStateHandle: SavedStateHandle) ->
         DetailViewModel(
-            get(), // GetGameDetailUseCase
-            get(), // ToggleFavoriteUseCase
-            get(), // IsFavoriteUseCase
-            get()  // GetFavoriteByIdUseCase
+            getGameDetailUseCase = get(),
+            toggleFavoriteUseCase = get(),
+            isFavoriteUseCase = get(),
+            toggleWishlistGameUseCase = get(),
+            isInWishlistUseCase = get(),
+            savedStateHandle = savedStateHandle
         )
     }
     viewModel {
@@ -31,12 +32,26 @@ val viewModelModule = module {
             get(), // ClearAllFavoritesUseCase
             get(), // RemoveFavoriteUseCase
             get(), // SyncFavoritesWithApiUseCase
-            get(),  // RawgApi
-            get()   // AppDatabase
+            get(), // RawgApi
+            get() // AppDatabase
+        )
+    }
+    viewModel {
+        WishlistViewModel(
+            addWishlistGameUseCase = get(),
+            removeWishlistGameUseCase = get(),
+            toggleWishlistGameUseCase = get(),
+            getAllWishlistGamesUseCase = get(),
+            clearAllWishlistGamesUseCase = get(),
+            isInWishlistUseCase = get(),
+            getWishlistGameByIdUseCase = get(),
+            getWishlistCountUseCase = get(),
+            searchWishlistGamesUseCase = get(),
+            exportWishlistToUriUseCase = get(),
+            importWishlistFromUriUseCase = get()
         )
     }
     viewModel { SettingsViewModel(get()) }
     viewModel { ScreenshotGalleryViewModel() }
     viewModel { TrailerPlayerViewModel() }
 }
-

@@ -9,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
-import androidx.compose.ui.semantics.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
@@ -18,6 +17,7 @@ import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
+import de.syntax_institut.androidabschlussprojekt.ui.components.favorites.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
@@ -35,79 +35,41 @@ fun FavoritesScreen(
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val isOnline by NetworkUtils.observeNetworkStatus(context)
+    val isOnline by
+    NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
 
     // Fix: stringResource im Composable-Kontext holen
     val deleteAllContentDescription = stringResource(R.string.dialog_delete_all_favorites_title)
 
-    LaunchedEffect(Unit) {
-        viewModel.loadFavorites()
-    }
+    LaunchedEffect(Unit) { viewModel.loadFavorites() }
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.favorites_title),
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            if (state.favorites.isNotEmpty()) {
-                Button(
-                    onClick = { showDeleteConfirmation = true },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    ),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    modifier = Modifier.semantics {
-                        contentDescription = deleteAllContentDescription
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.dialog_delete_all_favorites_confirm))
-                }
-            }
-        }
-        HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.surfaceVariant)
+    Column(modifier = modifier.fillMaxWidth()) {
+        FavoritesHeader(
+            hasFavorites = state.favorites.isNotEmpty(),
+            onDeleteAllClick = { showDeleteConfirmation = true }
+        )
         Box(modifier = Modifier.weight(1f)) {
             when {
                 state.isLoading -> {
                     Loading(modifier = Modifier.fillMaxSize())
                 }
-
                 state.error != null -> {
                     ErrorCard(
                         modifier = Modifier.fillMaxSize(),
                         error = state.error ?: Constants.ERROR_UNKNOWN,
                     )
                 }
-
                 state.favorites.isEmpty() -> {
                     EmptyState(
                         title = stringResource(R.string.favorites_empty_title),
-                        message = if (!isOnline) stringResource(R.string.favorites_empty_offline) else stringResource(
-                            R.string.favorites_empty_message
-                        ),
+                        message =
+                            if (!isOnline) stringResource(R.string.favorites_empty_offline)
+                            else stringResource(R.string.favorites_empty_message),
                         icon = Icons.Default.FavoriteBorder,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -118,15 +80,13 @@ fun FavoritesScreen(
                             GameItem(
                                 game = game,
                                 onClick = {
-                                    android.util.Log.d(
+                                    AppLogger.d(
                                         "Navigation",
                                         "Navigiere zu DetailScreen mit gameId=${game.id}"
                                     )
                                     navController.navigateSingleTopTo(Routes.detail(game.id))
                                 },
-                                onDelete = {
-                                    viewModel.removeFavorite(game.id)
-                                },
+                                onDelete = { viewModel.removeFavorite(game.id) },
                                 imageQuality = imageQuality,
                                 showFavoriteIcon = false
                             )
@@ -138,41 +98,12 @@ fun FavoritesScreen(
     }
 
     if (showDeleteConfirmation) {
-        AlertDialog(
-            onDismissRequest = { showDeleteConfirmation = false },
-            title = {
-                Text(stringResource(R.string.dialog_delete_all_favorites_title))
+        DeleteFavoritesDialog(
+            onConfirm = {
+                viewModel.clearAllFavorites()
+                showDeleteConfirmation = false
             },
-            text = {
-                Text(stringResource(R.string.dialog_delete_all_favorites_text))
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.clearAllFavorites()
-                        showDeleteConfirmation = false
-                    },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    )
-                ) {
-                    Text(stringResource(R.string.dialog_delete_all_favorites_confirm))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showDeleteConfirmation = false }
-                ) {
-                    Text(stringResource(R.string.dialog_delete_all_favorites_cancel))
-                }
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.error
-                )
-            }
+            onDismiss = { showDeleteConfirmation = false }
         )
     }
 }
@@ -180,7 +111,5 @@ fun FavoritesScreen(
 @Preview(showBackground = true)
 @Composable
 fun FavoritesScreenPreview() {
-    FavoritesScreen(
-        navController = rememberNavController()
-    )
+    FavoritesScreen(navController = rememberNavController())
 }

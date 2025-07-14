@@ -3,9 +3,11 @@ import java.util.*
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
+
 if (localPropertiesFile.exists()) {
     localProperties.load(FileInputStream(localPropertiesFile))
 }
+
 val apiKey = localProperties.getProperty("API_KEY") ?: ""
 
 plugins {
@@ -58,9 +60,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "API_KEY", "\"$apiKey\"")
-        }
+        debug { buildConfigField("String", "API_KEY", "\"$apiKey\"") }
         release {
             isMinifyEnabled = false
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
@@ -75,17 +75,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+    kotlinOptions { jvmTarget = "11" }
     buildFeatures {
         buildConfig = true
         compose = true
     }
-    @Suppress("UnstableApiUsage")
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
+    @Suppress("UnstableApiUsage") composeOptions { kotlinCompilerExtensionVersion = "1.5.15" }
 }
 
 dependencies {
@@ -101,7 +96,7 @@ dependencies {
 
     // Material 3)
     implementation(libs.material3)
-    
+
     // Compose
     implementation(libs.accompanist.navigation.animation)
     implementation(platform(libs.androidx.compose.bom))
@@ -114,10 +109,10 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
-    
+
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    
+
     // Material3 Adaptive
     implementation(libs.material)
     implementation(libs.androidx.material3.window.size)
@@ -127,48 +122,50 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.compose.shimmer)
     implementation(libs.accompanist.flowlayout)
-    
+
     // Data Storage
     implementation(libs.androidx.datastore.preferences)
-    
+
     // Room Database
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.navigation.testing.android)
     ksp(libs.androidx.room.compiler)
-    
+
     // Paging
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime)
-    
+
     // Networking
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
-    
+
     // JSON Serialization
     implementation(libs.moshi)
+    ksp(libs.moshi.kotlin.codegen)
+    implementation(libs.moshi)
     implementation(libs.kotlinx.serialization)
-    
+
     // Image Loading
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
-    
+
     // Dependency Injection
     implementation(libs.insert.koin.koin.android)
     implementation(libs.insert.koin.koin.androidx.compose)
     implementation(libs.insert.koin.koin.core)
     implementation(platform(libs.koin.bom))
-    
+
     // Google Services
     implementation(libs.firebase.components)
     implementation(libs.play.services.games)
-    
+
     // Utilities
     implementation(libs.guava)
     api(libs.juneau.marshall)
-    
+
     // Testing Dependencies
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -179,7 +176,7 @@ dependencies {
     testImplementation(libs.retrofit)
     testImplementation(libs.insert.koin.koin.test)
     testImplementation(libs.insert.koin.koin.test.junit4)
-    
+
     // Android Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -189,7 +186,7 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     androidTestImplementation(libs.insert.koin.koin.test)
     androidTestImplementation(libs.insert.koin.koin.test.junit4)
-    
+
     // Compose Testing
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
@@ -197,5 +194,4 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.media3.ui)
-
 }

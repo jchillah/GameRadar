@@ -29,6 +29,17 @@
     <string name="favorites_empty_message">You haven\'t saved any favorites yet.</string>
     <string name="favorites_empty_offline">You are offline. Your favorites will be displayed once you\'re back online.</string>
     <string name="discover_games">Discover games</string>
+    <string name="favorites_export_import">Favorites Export/Import</string>
+    <string name="favorites_export">Export favorites</string>
+    <string name="favorites_import">Import favorites</string>
+    <string name="export_import_preview_unavailable">Export/Import not available in preview</string>
+    <string name="wishlist_export_import">Wishlist Export/Import</string>
+    <string name="wishlist_export">Export wishlist</string>
+    <string name="wishlist_import">Import wishlist</string>
+    <string name="wishlist_export_success">Wishlist exported successfully!</string>
+    <string name="wishlist_import_success">Wishlist imported successfully!</string>
+    <string name="wishlist_export_error">Error exporting wishlist</string>
+    <string name="wishlist_import_error">Error importing wishlist</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>

@@ -85,6 +85,13 @@ fun SettingsScreen(
         }
     }
 
+    // Crashlytics-Einstellung überwachen und anwenden
+    LaunchedEffect(Unit) {
+        // Setze initiale Crashlytics-Einstellung basierend auf Analytics-Opt-In
+        val analyticsEnabled = viewModel.analyticsEnabled.value
+        CrashlyticsHelper.setCrashlyticsEnabled(analyticsEnabled)
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -194,25 +201,14 @@ fun SettingsScreen(
             SectionDatabase()
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.favorites_export_import),
+                text = stringResource(R.string.wishlist_export_import),
                 style = MaterialTheme.typography.titleMedium
             )
-            if (canUseLauncher) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { exportLauncher?.launch("favoriten_export.json") }) {
-                        Text(stringResource(R.string.favorites_export))
-                    }
-                    Button(onClick = { importLauncher?.launch(arrayOf("application/json")) }) {
-                        Text(stringResource(R.string.favorites_import))
-                    }
-                }
-            } else {
-                // Hinweis für Preview
-                Text(
-                    stringResource(R.string.export_import_preview_unavailable),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            WishlistExportImportBar(
+                canUseLauncher = canUseLauncher,
+                onExport = { exportLauncher?.launch("wunschliste_export.json") },
+                onImport = { importLauncher?.launch(arrayOf("application/json")) }
+            )
         }
         // Snackbar für Export/Import-Feedback
         LaunchedEffect(exportResult) {
