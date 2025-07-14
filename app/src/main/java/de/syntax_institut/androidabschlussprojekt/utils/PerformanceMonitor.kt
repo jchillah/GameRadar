@@ -2,7 +2,6 @@ package de.syntax_institut.androidabschlussprojekt.utils
 
 import android.os.*
 import java.util.concurrent.*
-import java.util.concurrent.atomic.*
 
 /**
  * Performance Monitor für detaillierte Performance-Tracking mit Firebase Analytics. Folgt Clean
@@ -11,7 +10,6 @@ import java.util.concurrent.atomic.*
 object PerformanceMonitor {
     private val timers = ConcurrentHashMap<String, Long>()
     private val memoryUsage = ConcurrentHashMap<String, Long>()
-    private val eventCounters = ConcurrentHashMap<String, AtomicLong>()
     private val performanceMetrics = ConcurrentHashMap<String, MutableList<Long>>()
 
     /** Startet einen Timer für Performance-Messung. */
@@ -48,33 +46,6 @@ object PerformanceMonitor {
 
         // Firebase Analytics Event senden
         AppAnalytics.trackPerformanceMetric("memory_usage_$context", usedMemoryMB, "MB")
-    }
-
-    /** Berechnet und sendet Durchschnitts-Performance-Metriken. */
-    fun calculateAndSendAverageMetrics() {
-        performanceMetrics.forEach { (metricName, values) ->
-            if (values.isNotEmpty()) {
-                val average = values.average().toLong()
-                val min = values.minOrNull() ?: 0L
-                val max = values.maxOrNull() ?: 0L
-
-                AppAnalytics.trackEvent(
-                    "performance_average",
-                    mapOf(
-                        "metric_name" to metricName,
-                        "average_ms" to average,
-                        "min_ms" to min,
-                        "max_ms" to max,
-                        "sample_count" to values.size
-                    )
-                )
-
-                AppLogger.d(
-                    "Performance",
-                    "Durchschnitt für $metricName: ${average}ms (Min: ${min}ms, Max: ${max}ms, Samples: ${values.size})"
-                )
-            }
-        }
     }
 
     /** Trackt App-Start-Performance. */
