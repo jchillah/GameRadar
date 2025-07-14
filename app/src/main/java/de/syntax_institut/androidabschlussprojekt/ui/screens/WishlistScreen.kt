@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
-import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
@@ -31,7 +30,6 @@ import org.koin.androidx.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WishlistScreen(
-    modifier: Modifier = Modifier,
     viewModel: WishlistViewModel = koinViewModel(),
     navController: NavHostController,
 ) {
@@ -64,143 +62,56 @@ fun WishlistScreen(
             }
         } else null
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    // Korrektur: listToShow deklarieren (hier einfach die Wishlist, ggf. mit Suche kombinieren)
+    val listToShow = wishlist
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        WishlistHeader()
-        WishlistExportImportBar(
-            canUseLauncher = canUseLauncher,
-            onExport = { exportLauncher?.launch("wishlist_export.json") },
-            onImport = { importLauncher?.launch(arrayOf("application/json")) }
-        )
-        // --- NEU: Suchfeld für Wishlist ---
-        var searchText by remember { mutableStateOf("") }
-        var searchResults by remember { mutableStateOf<List<Game>>(emptyList()) }
-        // StateFlow für Suchergebnisse
-        val searchResultFlow =
-            remember(searchText) {
-                if (searchText.isNotBlank()) viewModel.searchWishlist(searchText) else null
-            }
-        LaunchedEffect(searchResultFlow) { searchResultFlow?.collect { searchResults = it } }
-        OutlinedTextField(
-            value = searchText,
-            onValueChange = {
-                searchText = it
-                // Korrektur: Prüfe, ob searchResults.size wirklich ein Int ist (ist korrekt)
-                AppAnalytics.trackSearchQuery(it, searchResults.size)
-            },
-            label = { Text(stringResource(R.string.search_placeholder)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true // Korrektur: enabled-Parameter ergänzt
-        )
-        var wishlistCount by remember { mutableIntStateOf(0) }
-        Button(
-            onClick = {
-                // Hole die Anzahl der Wishlist-Einträge
-                AppAnalytics.trackAppFeatureUsage("wishlist_count_button", enabled = true)
-                coroutineScope.launch { wishlistCount = viewModel.getWishlistCount() }
-            },
-            enabled = true
-        ) { Text(text = stringResource(R.string.wishlist_count, wishlistCount)) }
-        Button(
-            onClick = {
-                AppAnalytics.trackAppFeatureUsage("wishlist_clear_all", enabled = true)
-                viewModel.clearAllWishlist()
-            },
-            colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error
-                ),
-            enabled = true
-        ) {
-            Icon(
-                Icons.Default.Delete,
-                contentDescription = stringResource(R.string.wishlist_remove)
+        item {
+            // Korrektur: WishlistHeader nur mit erlaubten Parametern aufrufen
+            WishlistHeader()
+            Spacer(modifier = Modifier.height(8.dp))
+            // Export/Import-Bar korrekt einbauen
+            WishlistExportImportBar(
+                canUseLauncher = canUseLauncher,
+                onExport = { exportLauncher?.launch("wishlist_export.json") },
+                onImport = { importLauncher?.launch(arrayOf("application/json")) }
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.wishlist_clear_all))
+            Spacer(modifier = Modifier.height(8.dp))
         }
-        var detailIdText by remember { mutableStateOf("") }
-        OutlinedTextField(
-            value = detailIdText,
-            onValueChange = { detailIdText = it },
-            label = { Text(stringResource(R.string.wishlist_game_id_for_details)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = true
-        )
-        Button(
-            onClick = {
-                    val id = detailIdText.toIntOrNull()
-                    if (id != null) {
-                        viewModel.loadWishlistGameById(id)
-                    }
-            },
-            enabled = true
-        ) { Text(stringResource(R.string.wishlist_show_details)) }
-        val currentBackStackEntry = navController.currentBackStackEntryAsState().value
-        LaunchedEffect(currentBackStackEntry) {
-            // Wenn der Screen verlassen wird, Detail-Game zurücksetzen
-            if (currentBackStackEntry?.destination?.route != Routes.WISHLIST) {
-                viewModel.clearDetailGame()
-            }
-        }
-        val listToShow = if (searchText.isNotBlank()) searchResults else wishlist
-        when {
-            isLoading -> {
-                LoadingState()
-            }
-            error != null -> {
-                ErrorCard(error = error ?: "")
-            }
-            listToShow.isEmpty() -> {
+        if (isLoading) {
+            item { LoadingState() }
+        } else if (error != null) {
+            item { ErrorCard(error = error ?: "") }
+        } else if (listToShow.isEmpty()) {
+            item {
                 EmptyState(
                     title = stringResource(R.string.wishlist_empty_title),
                     message = stringResource(R.string.wishlist_empty_message),
                     icon = Icons.Default.FavoriteBorder
                 )
             }
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(listToShow.sortedBy { it.title.lowercase() }) { game ->
-                        GameItem(
-                            game = game,
-                            onClick = {
-                                navController.navigateSingleTopTo(Routes.detail(game.id))
-                            },
-                            onDelete = {
-                                AppAnalytics.trackGameInteraction(
-                                    game.id.toString(),
-                                    "wishlist_remove"
-                                )
-                                viewModel.removeFromWishlist(game.id)
-                            },
-                            imageQuality =
-                                ImageQuality
-                                    .HIGH, // Optional: oder aus SettingsViewModel holen
-                            showFavoriteIcon = false,
-                            isInWishlist = wishlist.any { it.id == game.id },
-                            onWishlistChanged = { checked ->
-                                AppAnalytics.trackGameInteraction(
-                                    game.id.toString(),
-                                    "wishlist_toggle"
-                                )
-                                viewModel.toggleWishlist(game)
-                            },
-                            showWishlistButton = true
-                        )
-                    }
-                }
+        } else {
+            items(listToShow.sortedBy { it.title.lowercase() }) { game ->
+                GameItem(
+                    game = game,
+                    onClick = { navController.navigateSingleTopTo(Routes.detail(game.id)) },
+                    onDelete = {
+                        AppAnalytics.trackGameInteraction(game.id.toString(), "wishlist_remove")
+                        viewModel.removeFromWishlist(game.id)
+                    },
+                    isInWishlist = true,
+                    showWishlistButton = true,
+                    onWishlistChanged = { checked -> viewModel.toggleWishlist(game) }
+                )
             }
         }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
     }
+
     // Snackbar für Export/Import-Feedback
     val exportSuccessMsg = stringResource(R.string.wishlist_export_success)
     val exportErrorMsg = stringResource(R.string.wishlist_export_error)
