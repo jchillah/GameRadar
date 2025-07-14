@@ -2,6 +2,7 @@ package de.syntax_institut.androidabschlussprojekt
 
 import android.app.*
 import android.content.*
+import androidx.core.content.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.di.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
@@ -74,13 +75,13 @@ class GameRadarApp : Application() {
      * App-Installation konstant.
      */
     private fun generateAnonymousUserId(): String {
-        val prefs = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         val userIdKey = "anonymous_user_id"
 
         var userId = prefs.getString(userIdKey, null)
         if (userId == null) {
             userId = "user_${System.currentTimeMillis()}_${(0..9999).random()}"
-            prefs.edit().putString(userIdKey, userId).apply()
+            prefs.edit { putString(userIdKey, userId) }
         }
 
         return userId

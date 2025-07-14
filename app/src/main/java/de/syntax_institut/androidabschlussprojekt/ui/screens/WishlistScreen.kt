@@ -98,7 +98,7 @@ fun WishlistScreen(
                         onRemove = { viewModel.removeFromWishlist(game.id) },
                         onClick = {
                             navController.navigateSingleTopTo(
-                                de.syntax_institut.androidabschlussprojekt.navigation.Routes
+                                Routes
                                     .detail(game.id)
                             )
                         }
