@@ -206,7 +206,6 @@ constructor(
                                                 )
                                                 detailedGame
                                         }
-
                                         else -> {
                                                 AppLogger.w(
                                                         "FavoritesRepository",
@@ -225,10 +224,8 @@ constructor(
                                                 when {
                                                         fullGame.screenshots.isNotEmpty() ->
                                                                 fullGame.screenshots
-
                                                         game.screenshots.isNotEmpty() ->
                                                                 game.screenshots
-
                                                         existingGame?.screenshots?.isNotEmpty() ==
                                                                 true -> {
                                                                 AppLogger.d(
@@ -237,14 +234,12 @@ constructor(
                                                                 )
                                                                 existingGame.screenshots
                                                         }
-
                                                         else -> emptyList()
                                                 },
                                         movies =
                                                 when {
                                                         fullGame.movies.isNotEmpty() ->
                                                                 fullGame.movies
-
                                                         game.movies.isNotEmpty() -> game.movies
                                                         existingGame?.movies?.isNotEmpty() ==
                                                                 true -> {
@@ -254,7 +249,6 @@ constructor(
                                                                 )
                                                                 existingGame.movies
                                                         }
-
                                                         else -> emptyList()
                                                 }
                                 )
@@ -288,8 +282,7 @@ constructor(
                         PerformanceMonitor.trackDatabaseOperation(
                                 "insert",
                                 Constants.FAVORITE_GAME_TABLE,
-                                0,
-                                Resource.Success(Unit) == Resource.Success(Unit)
+                                success = Resource.Success(Unit) == Resource.Success(Unit)
                         )
                 }
         }
@@ -321,8 +314,7 @@ constructor(
                         PerformanceMonitor.trackDatabaseOperation(
                                 "delete",
                                 Constants.FAVORITE_GAME_TABLE,
-                                0,
-                                Resource.Success(Unit) == Resource.Success(Unit)
+                                success = Resource.Success(Unit) == Resource.Success(Unit)
                         )
                 }
         }
@@ -363,7 +355,6 @@ constructor(
                                                         )
                                                         detailedGame
                                                 }
-
                                                 else -> {
                                                         AppLogger.w(
                                                                 "FavoritesRepository",
@@ -382,10 +373,8 @@ constructor(
                                                         when {
                                                                 fullGame.screenshots.isNotEmpty() ->
                                                                         fullGame.screenshots
-
                                                                 game.screenshots.isNotEmpty() ->
                                                                         game.screenshots
-
                                                                 existingGame?.screenshots
                                                                         ?.isNotEmpty() == true -> {
                                                                         AppLogger.d(
@@ -394,17 +383,14 @@ constructor(
                                                                         )
                                                                         existingGame.screenshots
                                                                 }
-
                                                                 else -> emptyList()
                                                         },
                                                 movies =
                                                         when {
                                                                 fullGame.movies.isNotEmpty() ->
                                                                         fullGame.movies
-
                                                                 game.movies.isNotEmpty() ->
                                                                         game.movies
-
                                                                 existingGame?.movies
                                                                         ?.isNotEmpty() == true -> {
                                                                         AppLogger.d(
@@ -413,7 +399,6 @@ constructor(
                                                                         )
                                                                         existingGame.movies
                                                                 }
-
                                                                 else -> emptyList()
                                                         }
                                         )
@@ -448,8 +433,7 @@ constructor(
                         PerformanceMonitor.trackDatabaseOperation(
                                 "toggle",
                                 Constants.FAVORITE_GAME_TABLE,
-                                0,
-                                Resource.Success(true) == Resource.Success(true)
+                                success = Resource.Success(true) == Resource.Success(true)
                         )
                 }
         }

@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 class SettingsViewModel(private val settingsRepository: SettingsRepository) : ViewModel() {
@@ -73,69 +72,49 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
         )
 
     fun setAnalyticsEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setAnalyticsEnabled(enabled)
-            // Crashlytics basierend auf Analytics-Einstellung steuern
-            CrashlyticsHelper.setCrashlyticsEnabled(enabled)
-            // Custom Key für besseres Tracking
-            CrashlyticsHelper.setCustomKey("analytics_enabled", enabled)
-        }
+        settingsRepository.setAnalyticsEnabled(enabled)
+        CrashlyticsHelper.setCrashlyticsEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("analytics_enabled", enabled)
     }
 
     fun setNotificationsEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setNotificationsEnabled(enabled)
-            CrashlyticsHelper.setCustomKey("notifications_enabled", enabled)
-        }
+        settingsRepository.setNotificationsEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("notifications_enabled", enabled)
     }
 
     fun setAutoRefreshEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setAutoRefreshEnabled(enabled)
-            CrashlyticsHelper.setCustomKey("auto_refresh_enabled", enabled)
-        }
+        settingsRepository.setAutoRefreshEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("auto_refresh_enabled", enabled)
     }
 
     fun setImageQuality(quality: ImageQuality) {
-        viewModelScope.launch {
-            settingsRepository.setImageQuality(quality)
-            CrashlyticsHelper.setCustomKey("image_quality", quality.name)
-        }
+        settingsRepository.setImageQuality(quality)
+        CrashlyticsHelper.setCustomKey("image_quality", quality.name)
     }
 
     fun setLanguage(lang: String) {
-        viewModelScope.launch {
-            settingsRepository.setLanguage(lang)
-            CrashlyticsHelper.setCustomKey("app_language", lang)
-        }
+        settingsRepository.setLanguage(lang)
+        CrashlyticsHelper.setCustomKey("app_language", lang)
     }
 
     fun setGamingModeEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setGamingModeEnabled(enabled)
-            CrashlyticsHelper.setCustomKey("gaming_mode_enabled", enabled)
-        }
+        settingsRepository.setGamingModeEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("gaming_mode_enabled", enabled)
     }
 
     fun setPerformanceModeEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setPerformanceModeEnabled(enabled)
-            CrashlyticsHelper.setCustomKey("performance_mode_enabled", enabled)
-        }
+        settingsRepository.setPerformanceModeEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("performance_mode_enabled", enabled)
     }
 
     fun setShareGamesEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setShareGamesEnabled(enabled)
-            CrashlyticsHelper.setCustomKey("share_games_enabled", enabled)
-        }
+        settingsRepository.setShareGamesEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("share_games_enabled", enabled)
     }
 
     fun setDarkModeEnabled(enabled: Boolean) {
-        viewModelScope.launch {
-            settingsRepository.setDarkModeEnabled(enabled)
-            CrashlyticsHelper.setCustomKey("dark_mode_enabled", enabled)
-        }
+        settingsRepository.setDarkModeEnabled(enabled)
+        CrashlyticsHelper.setCustomKey("dark_mode_enabled", enabled)
     }
 
     // clearDatabase entfernt – Context-Logik gehört in die UI-Schicht

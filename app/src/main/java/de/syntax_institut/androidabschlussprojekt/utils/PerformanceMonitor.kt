@@ -124,21 +124,33 @@ object PerformanceMonitor {
     }
 
     /** Trackt Datenbank-Operationen. */
-    fun trackDatabaseOperation(operation: String, table: String, duration: Long, success: Boolean) {
-        AppAnalytics.trackEvent(
-            "database_operation",
-            mapOf(
+    fun trackDatabaseOperation(
+        operation: String,
+        table: String,
+        duration: Long? = null,
+        success: Boolean,
+    ) {
+        val eventData =
+            mutableMapOf<String, Any>(
                 "operation" to operation,
                 "table" to table,
-                "duration_ms" to duration,
                 "success" to success
             )
-        )
+        duration?.let { eventData["duration_ms"] = it }
 
-        AppLogger.d(
-            "Performance",
-            "DB Operation: $operation auf $table, Dauer: ${duration}ms, Erfolg: $success"
-        )
+        AppAnalytics.trackEvent("database_operation", eventData)
+
+        if (duration != null) {
+            AppLogger.d(
+                "Performance",
+                "Database Operation: $operation on $table, Dauer: ${duration}ms, Erfolg: $success"
+            )
+        } else {
+            AppLogger.d(
+                "Performance",
+                "Database Operation: $operation on $table, Dauer: n/a, Erfolg: $success"
+            )
+        }
     }
 
     /** Trackt UI-Rendering-Performance. */

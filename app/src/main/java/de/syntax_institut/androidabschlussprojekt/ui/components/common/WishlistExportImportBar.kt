@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.settings
+package de.syntax_institut.androidabschlussprojekt.ui.components.common
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
