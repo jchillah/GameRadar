@@ -106,12 +106,10 @@ fun GameStatsChart(genreCounts: Map<String, Int>, modifier: Modifier = Modifier)
                                     topLeft = Offset.Zero,
                                     size = size,
                                     cornerRadius =
-                                        androidx.compose.ui
-                                            .geometry
-                                            .CornerRadius(
-                                                8f,
-                                                8f
-                                            )
+                                        CornerRadius(
+                                            8f,
+                                            8f
+                                        )
                                 )
                             }
                         }

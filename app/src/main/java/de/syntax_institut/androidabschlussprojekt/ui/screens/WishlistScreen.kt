@@ -4,7 +4,6 @@ import android.net.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.activity.result.contract.*
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
@@ -149,49 +148,14 @@ fun WishlistScreen(
     val detailGame by viewModel.detailGame.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     if (detailGame != null) {
-        ModalBottomSheet(
-            onDismissRequest = { viewModel.clearDetailGame() },
+        WishlistDetailModal(
+            game = detailGame!!,
+            onClose = { viewModel.clearDetailGame() },
+            onShowDetails = {
+                navController.navigateSingleTopTo(Routes.detail(detailGame!!.id))
+            },
             sheetState = sheetState
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(text = detailGame!!.title, style = MaterialTheme.typography.titleLarge)
-                if (!detailGame!!.imageUrl.isNullOrBlank()) {
-                    // Bild anzeigen (z.B. mit Coil)
-                    Image(
-                        painter =
-                            coil3.compose.rememberAsyncImagePainter(detailGame!!.imageUrl),
-                        contentDescription = detailGame!!.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
-                    )
-                }
-                Text(
-                    text = detailGame!!.description
-                        ?: stringResource(R.string.detail_no_description),
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 6,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        onClick = {
-                            viewModel.clearDetailGame()
-                            navController.navigateSingleTopTo(Routes.detail(detailGame!!.id))
-                        }
-                    ) { Text(stringResource(R.string.wishlist_full_details)) }
-                    OutlinedButton(onClick = { viewModel.clearDetailGame() }) {
-                        Text(stringResource(R.string.action_close))
-                    }
-                }
-            }
-        }
+        )
     }
 }
 
