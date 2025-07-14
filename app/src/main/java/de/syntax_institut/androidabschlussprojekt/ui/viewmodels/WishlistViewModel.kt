@@ -38,6 +38,20 @@ class WishlistViewModel(
     private val _importResult = MutableStateFlow<Resource<Unit>?>(null)
     val importResult: StateFlow<Resource<Unit>?> = _importResult.asStateFlow()
 
+    // --- NEU: State für das aktuell angezeigte Detailspiel ---
+    private val _detailGame = MutableStateFlow<Game?>(null)
+    val detailGame: StateFlow<Game?> = _detailGame.asStateFlow()
+
+    // Methode zum Setzen des Detailspiels (z.B. nach getWishlistGameById)
+    fun setDetailGame(game: Game?) {
+        _detailGame.value = game
+    }
+
+    // Methode zum Zurücksetzen des Detailspiels (z.B. beim Tab-Wechsel)
+    fun clearDetailGame() {
+        _detailGame.value = null
+    }
+
     init {
         loadWishlist()
     }
@@ -117,4 +131,12 @@ class WishlistViewModel(
     }
 
     suspend fun getWishlistGameById(gameId: Int): Game? = getWishlistGameByIdUseCase(gameId)
+
+    // Passe getWishlistGameById an, damit das Ergebnis im State landet
+    fun loadWishlistGameById(gameId: Int) {
+        viewModelScope.launch {
+            val game = getWishlistGameByIdUseCase(gameId)
+            setDetailGame(game)
+        }
+    }
 }

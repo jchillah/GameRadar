@@ -101,10 +101,7 @@ fun WishlistScreen(
         Button(
             onClick = {
                 // Hole die Anzahl der Wishlist-Einträge
-                AppAnalytics.trackAppFeatureUsage(
-                    "wishlist_count_button",
-                    enabled = true
-                )
+                AppAnalytics.trackAppFeatureUsage("wishlist_count_button", enabled = true)
                 coroutineScope.launch { wishlistCount = viewModel.getWishlistCount() }
             },
             enabled = true
@@ -112,10 +109,7 @@ fun WishlistScreen(
         // --- NEU: Button für alle löschen ---
         Button(
             onClick = {
-                AppAnalytics.trackAppFeatureUsage(
-                    "wishlist_clear_all",
-                    enabled = true
-                )
+                AppAnalytics.trackAppFeatureUsage("wishlist_clear_all", enabled = true)
                 viewModel.clearAllWishlist()
             },
             colors =
@@ -141,18 +135,24 @@ fun WishlistScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = true // Korrektur: enabled-Parameter ergänzt
         )
+        // --- NEU: Detail-Button setzt jetzt den State im ViewModel ---
         Button(
             onClick = {
-                coroutineScope.launch {
                     val id = detailIdText.toIntOrNull()
                     if (id != null) {
-                        detailGame = viewModel.getWishlistGameById(id)
+                        viewModel.loadWishlistGameById(id)
                     }
-                }
             },
             enabled = true
         ) { Text("Details anzeigen") }
-        detailGame?.let { game -> Text("Gefunden: ${game.title}") }
+        // --- NEU: Detail-Game State beim Verlassen des Screens zurücksetzen ---
+        val currentBackStackEntry = navController.currentBackStackEntryAsState().value
+        LaunchedEffect(currentBackStackEntry) {
+            // Wenn der Screen verlassen wird, Detail-Game zurücksetzen
+            if (currentBackStackEntry?.destination?.route != Routes.WISHLIST) {
+                viewModel.clearDetailGame()
+            }
+        }
         // --- Anzeige: Entweder Suchergebnisse oder normale Wishlist ---
         val listToShow = if (searchText.isNotBlank()) searchResults else wishlist
         when {
@@ -174,12 +174,18 @@ fun WishlistScreen(
                     WishlistGameItem(
                         game = game,
                         onRemove = {
-                            AppAnalytics.trackGameInteraction(game.id.toString(), "wishlist_remove")
+                            AppAnalytics.trackGameInteraction(
+                                game.id.toString(),
+                                "wishlist_remove"
+                            )
                             viewModel.removeFromWishlist(game.id)
                         },
                         onClick = { navController.navigateSingleTopTo(Routes.detail(game.id)) },
                         onToggleWishlist = {
-                            AppAnalytics.trackGameInteraction(game.id.toString(), "wishlist_toggle")
+                            AppAnalytics.trackGameInteraction(
+                                game.id.toString(),
+                                "wishlist_toggle"
+                            )
                             viewModel.toggleWishlist(game)
                         },
                         isInWishlist = wishlist.any { it.id == game.id }
@@ -203,9 +209,7 @@ fun WishlistScreen(
                 it is Resource.Success
             )
             snackbarHostState.showSnackbar(
-                if (it is Resource.Success)
-                    exportSuccessMsg
-                else exportErrorMsg
+                if (it is Resource.Success) exportSuccessMsg else exportErrorMsg
             )
         }
     }
@@ -218,9 +222,7 @@ fun WishlistScreen(
                 it is Resource.Success
             )
             snackbarHostState.showSnackbar(
-                if (it is Resource.Success)
-                    importSuccessMsg
-                else importErrorMsg
+                if (it is Resource.Success) importSuccessMsg else importErrorMsg
             )
         }
     }
