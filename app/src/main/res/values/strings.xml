@@ -410,4 +410,13 @@
     <string name="wishlist_import_success">Wunschliste erfolgreich importiert!</string>
     <string name="wishlist_export_error">Fehler beim Exportieren der Wunschliste</string>
     <string name="wishlist_import_error">Fehler beim Importieren der Wunschliste</string>
+    <string name="wishlist_count">Wunschlistenzähler: %1$d</string>
+    <string name="wishlist_clear_all">Wunschliste leeren</string>
+    <string name="wishlist_game_id_for_details">Spiel-ID für Details</string>
+    <string name="wishlist_show_details">Details anzeigen</string>
+    <string name="wishlist_full_details">Vollständige Details</string>
+
+    <string name="analytics_section">Analytics</string>
+    <string name="analytics_enabled">Analytics aktivieren</string>
+    <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
 </resources>

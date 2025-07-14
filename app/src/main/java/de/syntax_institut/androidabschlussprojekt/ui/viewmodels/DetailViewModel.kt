@@ -1,5 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import android.app.*
 import androidx.lifecycle.*
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import de.syntax_institut.androidabschlussprojekt.ui.states.*
@@ -15,7 +16,8 @@ class DetailViewModel(
     private val toggleWishlistGameUseCase: ToggleWishlistGameUseCase,
     private val isInWishlistUseCase: IsInWishlistUseCase,
     savedStateHandle: SavedStateHandle,
-) : ViewModel() {
+    application: Application,
+) : AndroidViewModel(application) {
 
     private val gameId: Int = checkNotNull(savedStateHandle["gameId"])
 
@@ -61,7 +63,6 @@ class DetailViewModel(
                                 isInWishlist = isInWishlist
                             )
                     }
-
                     is Resource.Error -> {
                         CrashlyticsHelper.setCustomKey("detail_loading_error", true)
                         CrashlyticsHelper.setCustomKey("detail_error_message", result.message ?: "")
@@ -69,7 +70,6 @@ class DetailViewModel(
                         _uiState.value =
                             _uiState.value.copy(isLoading = false, error = result.message)
                     }
-
                     is Resource.Loading -> {
                         _uiState.value = _uiState.value.copy(isLoading = true)
                     }
@@ -96,7 +96,11 @@ class DetailViewModel(
 
                 val game = _uiState.value.game
                 if (game != null) {
-                    val result = toggleFavoriteUseCase(game)
+                    val result =
+                        toggleFavoriteUseCase(
+                            getApplication<Application>().applicationContext,
+                            game
+                        )
                     if (result is Resource.Success) {
                         val newFavoriteState = result.data ?: false
                         CrashlyticsHelper.setCustomKey("favorite_toggle_success", true)
@@ -125,7 +129,11 @@ class DetailViewModel(
 
                 val game = _uiState.value.game
                 if (game != null) {
-                    val result = toggleWishlistGameUseCase(game)
+                    val result =
+                        toggleWishlistGameUseCase(
+                            getApplication<Application>().applicationContext,
+                            game
+                        )
                     if (result is Resource.Success) {
                         val newWishlistState = result.data ?: false
                         CrashlyticsHelper.setCustomKey("wishlist_toggle_success", true)

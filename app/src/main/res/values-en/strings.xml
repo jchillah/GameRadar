@@ -407,4 +407,14 @@
     <string name="wishlist_import_success">Wishlist imported successfully!</string>
     <string name="wishlist_export_error">Error exporting wishlist</string>
     <string name="wishlist_import_error">Error importing wishlist</string>
+    <string name="wishlist_count">Wishlist count: %1$d</string>
+    <string name="wishlist_clear_all">Clear wishlist</string>
+    <string name="wishlist_game_id_for_details">Game ID for details</string>
+    <string name="wishlist_show_details">Show details</string>
+    <string name="wishlist_full_details">Full details</string>
+
+    <!-- Analytics Section -->
+    <string name="analytics_section">Analytics</string>
+    <string name="analytics_enabled">Enable analytics</string>
+    <string name="analytics_enabled_description">Allow anonymous usage analytics to improve the app.</string>
 </resources> 

@@ -1,5 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.viewmodels
 
+import android.app.*
 import android.content.*
 import android.net.*
 import androidx.lifecycle.*
@@ -21,7 +22,8 @@ class WishlistViewModel(
     private val searchWishlistGamesUseCase: SearchWishlistGamesUseCase,
     private val exportWishlistToUriUseCase: ExportWishlistToUriUseCase,
     private val importWishlistFromUriUseCase: ImportWishlistFromUriUseCase,
-) : ViewModel() {
+    application: Application,
+) : AndroidViewModel(application) {
 
     private val _wishlistGames = MutableStateFlow<List<Game>>(emptyList())
     val wishlistGames: StateFlow<List<Game>> = _wishlistGames.asStateFlow()
@@ -65,7 +67,12 @@ class WishlistViewModel(
     fun addToWishlist(game: Game) {
         viewModelScope.launch {
             _isLoading.value = true
-            when (val result = addWishlistGameUseCase(game)) {
+            when (val result =
+                addWishlistGameUseCase(
+                    getApplication<Application>().applicationContext,
+                    game
+                )
+            ) {
                 is Resource.Success -> _error.value = null
                 is Resource.Error -> _error.value = result.message
                 else -> {}
@@ -77,7 +84,12 @@ class WishlistViewModel(
     fun removeFromWishlist(gameId: Int) {
         viewModelScope.launch {
             _isLoading.value = true
-            when (val result = removeWishlistGameUseCase(gameId)) {
+            when (val result =
+                removeWishlistGameUseCase(
+                    getApplication<Application>().applicationContext,
+                    gameId
+                )
+            ) {
                 is Resource.Success -> _error.value = null
                 is Resource.Error -> _error.value = result.message
                 else -> {}
@@ -89,7 +101,12 @@ class WishlistViewModel(
     fun toggleWishlist(game: Game) {
         viewModelScope.launch {
             _isLoading.value = true
-            when (val result = toggleWishlistGameUseCase(game)) {
+            when (val result =
+                toggleWishlistGameUseCase(
+                    getApplication<Application>().applicationContext,
+                    game
+                )
+            ) {
                 is Resource.Success -> _error.value = null
                 is Resource.Error -> _error.value = result.message
                 else -> {}
@@ -101,7 +118,11 @@ class WishlistViewModel(
     fun clearAllWishlist() {
         viewModelScope.launch {
             _isLoading.value = true
-            when (val result = clearAllWishlistGamesUseCase()) {
+            when (val result =
+                clearAllWishlistGamesUseCase(
+                    getApplication<Application>().applicationContext
+                )
+            ) {
                 is Resource.Success -> _error.value = null
                 is Resource.Error -> _error.value = result.message
                 else -> {}
@@ -130,8 +151,7 @@ class WishlistViewModel(
         viewModelScope.launch { _importResult.value = importWishlistFromUriUseCase(context, uri) }
     }
 
-    suspend fun getWishlistGameById(gameId: Int): Game? = getWishlistGameByIdUseCase(gameId)
-
+    // Entferne die ungenutzte Funktion getWishlistGameById
     // Passe getWishlistGameById an, damit das Ergebnis im State landet
     fun loadWishlistGameById(gameId: Int) {
         viewModelScope.launch {

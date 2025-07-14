@@ -86,7 +86,7 @@ fun FavoritesScreen(
                                     )
                                     navController.navigateSingleTopTo(Routes.detail(game.id))
                                 },
-                                onDelete = { viewModel.removeFavorite(game.id) },
+                                onDelete = { viewModel.removeFavorite(context, game.id) },
                                 imageQuality = imageQuality,
                                 showFavoriteIcon = false
                             )
@@ -100,7 +100,7 @@ fun FavoritesScreen(
     if (showDeleteConfirmation) {
         DeleteFavoritesDialog(
             onConfirm = {
-                viewModel.clearAllFavorites()
+                viewModel.clearAllFavorites(context)
                 showDeleteConfirmation = false
             },
             onDismiss = { showDeleteConfirmation = false }

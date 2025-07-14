@@ -105,7 +105,7 @@ fun WishlistScreen(
                 coroutineScope.launch { wishlistCount = viewModel.getWishlistCount() }
             },
             enabled = true
-        ) { Text(text = "Wishlist Count: $wishlistCount") }
+        ) { Text(text = stringResource(R.string.wishlist_count, wishlistCount)) }
         // --- NEU: Button für alle löschen ---
         Button(
             onClick = {
@@ -123,7 +123,7 @@ fun WishlistScreen(
                 contentDescription = stringResource(R.string.wishlist_remove)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.wishlist_export_import))
+            Text(stringResource(R.string.wishlist_clear_all))
         }
         // --- NEU: Optional: Button für getWishlistGameById ---
         var detailIdText by remember { mutableStateOf("") }
@@ -131,11 +131,10 @@ fun WishlistScreen(
         OutlinedTextField(
             value = detailIdText,
             onValueChange = { detailIdText = it },
-            label = { Text("Game ID für Details") },
+            label = { Text(stringResource(R.string.wishlist_game_id_for_details)) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = true // Korrektur: enabled-Parameter ergänzt
+            enabled = true
         )
-        // --- NEU: Detail-Button setzt jetzt den State im ViewModel ---
         Button(
             onClick = {
                     val id = detailIdText.toIntOrNull()
@@ -144,8 +143,7 @@ fun WishlistScreen(
                     }
             },
             enabled = true
-        ) { Text("Details anzeigen") }
-        // --- NEU: Detail-Game State beim Verlassen des Screens zurücksetzen ---
+        ) { Text(stringResource(R.string.wishlist_show_details)) }
         val currentBackStackEntry = navController.currentBackStackEntryAsState().value
         LaunchedEffect(currentBackStackEntry) {
             // Wenn der Screen verlassen wird, Detail-Game zurücksetzen
@@ -153,7 +151,6 @@ fun WishlistScreen(
                 viewModel.clearDetailGame()
             }
         }
-        // --- Anzeige: Entweder Suchergebnisse oder normale Wishlist ---
         val listToShow = if (searchText.isNotBlank()) searchResults else wishlist
         when {
             isLoading -> {
@@ -226,51 +223,51 @@ fun WishlistScreen(
             )
         }
     }
-}
 
-// Passe WishlistGameItem an, um einen Toggle-Button zu unterstützen
-@Composable
-fun WishlistGameItem(
-    game: Game,
-    onRemove: () -> Unit,
-    onClick: () -> Unit,
-    onToggleWishlist: (Boolean) -> Unit = {},
-    isInWishlist: Boolean = true,
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-    ) {
-        Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = game.title,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(onClick = onRemove, enabled = true) { // Korrektur: enabled ergänzt
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(R.string.wishlist_remove)
-                )
-            }
-            // Toggle-Button für Wishlist
-            IconToggleButton(
-                checked = isInWishlist,
-                onCheckedChange = onToggleWishlist,
-                enabled = true // Korrektur: enabled ergänzt
+    val detailGame by viewModel.detailGame.collectAsState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    if (detailGame != null) {
+        ModalBottomSheet(
+            onDismissRequest = { viewModel.clearDetailGame() },
+            sheetState = sheetState
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Icon(
-                    imageVector =
-                        if (isInWishlist) Icons.Default.Star else Icons.Default.StarBorder,
-                    contentDescription =
-                        if (isInWishlist) stringResource(R.string.wishlist_marked)
-                        else stringResource(R.string.wishlist_not_marked)
+                Text(text = detailGame!!.title, style = MaterialTheme.typography.titleLarge)
+                if (!detailGame!!.imageUrl.isNullOrBlank()) {
+                    // Bild anzeigen (z.B. mit Coil)
+                    Image(
+                        painter =
+                            coil3.compose.rememberAsyncImagePainter(detailGame!!.imageUrl),
+                        contentDescription = detailGame!!.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                    )
+                }
+                Text(
+                    text = detailGame!!.description
+                        ?: stringResource(R.string.detail_no_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 6,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(
+                        onClick = {
+                            viewModel.clearDetailGame()
+                            navController.navigateSingleTopTo(Routes.detail(detailGame!!.id))
+                        }
+                    ) { Text(stringResource(R.string.wishlist_full_details)) }
+                    OutlinedButton(onClick = { viewModel.clearDetailGame() }) {
+                        Text(stringResource(R.string.action_close))
+                    }
+                }
             }
         }
     }

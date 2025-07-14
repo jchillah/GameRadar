@@ -6,6 +6,8 @@ import androidx.activity.compose.*
 import androidx.activity.result.contract.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.*
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -53,6 +55,7 @@ fun SettingsScreen(
     val gameRepository: GameRepository = koinInject()
     var cacheStats by remember { mutableStateOf<CacheStats?>(null) }
     var lastSyncTime by remember { mutableStateOf<Long?>(null) }
+    val analyticsEnabled by viewModel.analyticsEnabled.collectAsState()
 
     // SAF-Launcher für Export und Import nur, wenn möglich
     val exportLauncher =
@@ -194,6 +197,49 @@ fun SettingsScreen(
                 onShowAboutDialog = { showAboutDialog = true },
                 onShowPrivacyDialog = { showPrivacyDialog = true }
             )
+        }
+
+        // Analytics-Sektion
+        SettingsSection(title = stringResource(R.string.analytics_section)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.BarChart,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.analytics_enabled),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = stringResource(R.string.analytics_enabled_description),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Switch(
+                    checked = analyticsEnabled,
+                    onCheckedChange = { viewModel.setAnalyticsEnabled(it) },
+                    colors =
+                        SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor =
+                                MaterialTheme.colorScheme.primaryContainer,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                            uncheckedTrackColor =
+                                MaterialTheme.colorScheme.surfaceVariant
+                        )
+                )
+            }
         }
 
         // Datenbank-Management und Dialoge werden immer angezeigt (oder nach Wunsch)

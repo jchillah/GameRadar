@@ -23,7 +23,8 @@ val viewModelModule = module {
             isFavoriteUseCase = get(),
             toggleWishlistGameUseCase = get(),
             isInWishlistUseCase = get(),
-            savedStateHandle = savedStateHandle
+            savedStateHandle = savedStateHandle,
+            application = get()
         )
     }
     viewModel {
@@ -48,7 +49,8 @@ val viewModelModule = module {
             getWishlistCountUseCase = get(),
             searchWishlistGamesUseCase = get(),
             exportWishlistToUriUseCase = get(),
-            importWishlistFromUriUseCase = get()
+            importWishlistFromUriUseCase = get(),
+            application = get()
         )
     }
     viewModel { SettingsViewModel(get()) }

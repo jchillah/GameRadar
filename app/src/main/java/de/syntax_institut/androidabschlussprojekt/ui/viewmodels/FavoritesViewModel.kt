@@ -58,10 +58,10 @@ class FavoritesViewModel(
         }
     }
 
-    fun clearAllFavorites() {
+    fun clearAllFavorites(context: Context) {
         AppLogger.d("FavoritesViewModel", "Lösche alle Favoriten")
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = clearAllFavoritesUseCase()) {
+            when (val result = clearAllFavoritesUseCase(context)) {
                 is Resource.Success -> {
                     AppLogger.d("FavoritesViewModel", "Alle Favoriten gelöscht")
                     loadFavorites()
@@ -75,10 +75,10 @@ class FavoritesViewModel(
         }
     }
 
-    fun removeFavorite(gameId: Int) {
+    fun removeFavorite(context: Context, gameId: Int) {
         AppLogger.d("FavoritesViewModel", "Entferne Favorit: $gameId")
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = removeFavoriteUseCase(gameId)) {
+            when (val result = removeFavoriteUseCase(context, gameId)) {
                 is Resource.Success -> {
                     AppLogger.d("FavoritesViewModel", "Favorit entfernt: $gameId")
                     loadFavorites()
