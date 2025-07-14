@@ -81,7 +81,7 @@ fun BottomNavBar(
             },
             label = { Text(stringResource(R.string.wishlist_tab)) },
             selected = currentRoute == WISHLIST,
-            onClick = { navController.navigate(WISHLIST) },
+            onClick = { navController.navigateToTab(WISHLIST) },
             alwaysShowLabel = true
         )
 
