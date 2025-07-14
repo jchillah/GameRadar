@@ -33,7 +33,7 @@ fun ShareButton(
         }
     ) {
         Icon(Icons.Default.Share, contentDescription = null)
-        // überlagert UI etwas
+        // ENTFERNT: überlagert UI etwas, icon beschreibt ausreichend die funktionalität
         // Spacer(modifier = Modifier.width(8.dp)
         // Text(text = chooserTitle)
     }
