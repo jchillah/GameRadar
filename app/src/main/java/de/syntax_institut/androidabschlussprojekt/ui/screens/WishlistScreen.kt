@@ -105,6 +105,7 @@ fun WishlistScreen(
                     },
                     isInWishlist = true,
                     showWishlistButton = true,
+                    showFavoriteIcon = false,
                     onWishlistChanged = { checked -> viewModel.toggleWishlist(game) }
                 )
             }
