@@ -34,7 +34,7 @@ fun DetailScreen(
     gameId: Int,
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    vm: DetailViewModel = koinViewModel(),
+    vm: DetailViewModel = koinViewModel(key = "detail_$gameId"),
 ) {
     val state by vm.uiState.collectAsState()
     val context = LocalContext.current
