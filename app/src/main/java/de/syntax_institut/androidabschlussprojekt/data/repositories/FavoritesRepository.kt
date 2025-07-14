@@ -52,6 +52,7 @@ constructor(
                     AppLogger.d("FavoritesRepository", "Game Movies: ${game.movies.size}")
                     game
                 } catch (e: Exception) {
+                    CrashlyticsHelper.recordException(e)
                     AppLogger.e(
                         "FavoritesRepository",
                         "${Constants.ERROR} beim Konvertieren von Entity: ${e.message}"
@@ -129,6 +130,11 @@ constructor(
         return try {
             favoriteGameDao.getFavoriteById(gameId)?.toGame()
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "get",
+                Constants.FAVORITE_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "FavoritesRepository",
                 "${Constants.ERROR} beim Laden des Favoriten: ${e.message}"
@@ -139,6 +145,7 @@ constructor(
 
     /** Spiel zu Favoriten hinzufügen. */
     suspend fun addFavorite(game: Game): Resource<Unit> {
+        PerformanceMonitor.startTimer("db_addFavorite")
         return try {
             AppLogger.d("FavoritesRepository", "Füge Favorit hinzu: ${game.title}")
             AppLogger.d(
@@ -214,26 +221,54 @@ constructor(
             AppLogger.d("FavoritesRepository", "Favorit erfolgreich gespeichert")
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "insert",
+                Constants.FAVORITE_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "FavoritesRepository",
                 "${Constants.ERROR} beim Hinzufügen des Favoriten: ${e.message}"
             )
             Resource.Error("Fehler beim Hinzufügen zu Favoriten: " + e.localizedMessage)
+        } finally {
+            PerformanceMonitor.endTimer("db_addFavorite")
+            PerformanceMonitor.trackDatabaseOperation(
+                "insert",
+                Constants.FAVORITE_GAME_TABLE,
+                0,
+                Resource.Success(Unit) == Resource.Success(Unit)
+            )
         }
     }
 
     /** Spiel aus Favoriten entfernen. */
     suspend fun removeFavorite(gameId: Int): Resource<Unit> {
+        PerformanceMonitor.startTimer("db_removeFavorite")
         return try {
             favoriteGameDao.removeFavorite(gameId)
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "delete",
+                Constants.FAVORITE_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             Resource.Error("Fehler beim Entfernen aus Favoriten: " + e.localizedMessage)
+        } finally {
+            PerformanceMonitor.endTimer("db_removeFavorite")
+            PerformanceMonitor.trackDatabaseOperation(
+                "delete",
+                Constants.FAVORITE_GAME_TABLE,
+                0,
+                Resource.Success(Unit) == Resource.Success(Unit)
+            )
         }
     }
 
     /** Favorit umschalten (hinzufügen wenn nicht vorhanden, entfernen wenn vorhanden). */
     suspend fun toggleFavorite(game: Game): Resource<Boolean> {
+        PerformanceMonitor.startTimer("db_toggleFavorite")
         return try {
             val isCurrentlyFavorite = favoriteGameDao.isFavorite(game.id)
             if (isCurrentlyFavorite) {
@@ -320,11 +355,24 @@ constructor(
                 Resource.Success(true)
             }
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "toggle",
+                Constants.FAVORITE_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "FavoritesRepository",
                 "${Constants.ERROR} beim Umschalten des Favoriten: ${e.message}"
             )
             Resource.Error("Fehler beim Umschalten des Favoriten: " + e.localizedMessage)
+        } finally {
+            PerformanceMonitor.endTimer("db_toggleFavorite")
+            PerformanceMonitor.trackDatabaseOperation(
+                "toggle",
+                Constants.FAVORITE_GAME_TABLE,
+                0,
+                Resource.Success(true) == Resource.Success(true)
+            )
         }
     }
 
@@ -334,6 +382,11 @@ constructor(
             favoriteGameDao.clearAllFavorites()
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "deleteAll",
+                Constants.FAVORITE_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             Resource.Error("Fehler beim Löschen aller Favoriten: " + e.localizedMessage)
         }
     }
@@ -350,6 +403,7 @@ constructor(
                 try {
                     entity.toGame()
                 } catch (e: Exception) {
+                    CrashlyticsHelper.recordException(e)
                     AppLogger.e(
                         "FavoritesRepository",
                         "${Constants.ERROR} beim Konvertieren von Entity in Suche: ${e.message}"
@@ -417,6 +471,7 @@ constructor(
                 ?: throw Exception("Konnte OutputStream nicht öffnen")
             Result.success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordException(e)
             AppLogger.e(
                 "FavoritesRepository",
                 "Fehler beim Export (Uri): ${e.localizedMessage}",
@@ -438,6 +493,7 @@ constructor(
             games.forEach { addFavorite(it) }
             Result.success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordException(e)
             AppLogger.e(
                 "FavoritesRepository",
                 "Fehler beim Import (Uri): ${e.localizedMessage}",

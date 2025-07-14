@@ -36,7 +36,8 @@ fun ShareButton(
     ) {
         Icon(Icons.Default.Share, contentDescription = null)
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = chooserTitle)
+        // überlagert UI etwas
+        // Text(text = chooserTitle)
     }
 }
 

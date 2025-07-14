@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
 import android.net.*
+import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.activity.result.contract.*
 import androidx.compose.foundation.*
@@ -22,6 +23,7 @@ import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 
@@ -40,7 +42,7 @@ fun WishlistScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val canUseLauncher = context is androidx.activity.ComponentActivity
+    val canUseLauncher = context is ComponentActivity
 
     val exportLauncher =
         if (canUseLauncher) {
@@ -74,34 +76,113 @@ fun WishlistScreen(
             onExport = { exportLauncher?.launch("wishlist_export.json") },
             onImport = { importLauncher?.launch(arrayOf("application/json")) }
         )
+        // --- NEU: Suchfeld für Wishlist ---
+        var searchText by remember { mutableStateOf("") }
+        var searchResults by remember { mutableStateOf<List<Game>>(emptyList()) }
+        // StateFlow für Suchergebnisse
+        val searchResultFlow =
+            remember(searchText) {
+                if (searchText.isNotBlank()) viewModel.searchWishlist(searchText) else null
+            }
+        LaunchedEffect(searchResultFlow) { searchResultFlow?.collect { searchResults = it } }
+        OutlinedTextField(
+            value = searchText,
+            onValueChange = {
+                searchText = it
+                // Korrektur: Prüfe, ob searchResults.size wirklich ein Int ist (ist korrekt)
+                AppAnalytics.trackSearchQuery(it, searchResults.size)
+            },
+            label = { Text(stringResource(R.string.search_placeholder)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = true // Korrektur: enabled-Parameter ergänzt
+        )
+        // --- NEU: Button für Wishlist-Count ---
+        var wishlistCount by remember { mutableIntStateOf(0) }
+        Button(
+            onClick = {
+                // Hole die Anzahl der Wishlist-Einträge
+                AppAnalytics.trackAppFeatureUsage(
+                    "wishlist_count_button",
+                    enabled = true
+                )
+                coroutineScope.launch { wishlistCount = viewModel.getWishlistCount() }
+            },
+            enabled = true
+        ) { Text(text = "Wishlist Count: $wishlistCount") }
+        // --- NEU: Button für alle löschen ---
+        Button(
+            onClick = {
+                AppAnalytics.trackAppFeatureUsage(
+                    "wishlist_clear_all",
+                    enabled = true
+                )
+                viewModel.clearAllWishlist()
+            },
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                ),
+            enabled = true
+        ) {
+            Icon(
+                Icons.Default.Delete,
+                contentDescription = stringResource(R.string.wishlist_remove)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(stringResource(R.string.wishlist_export_import))
+        }
+        // --- NEU: Optional: Button für getWishlistGameById ---
+        var detailIdText by remember { mutableStateOf("") }
+        var detailGame by remember { mutableStateOf<Game?>(null) }
+        OutlinedTextField(
+            value = detailIdText,
+            onValueChange = { detailIdText = it },
+            label = { Text("Game ID für Details") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = true // Korrektur: enabled-Parameter ergänzt
+        )
+        Button(
+            onClick = {
+                coroutineScope.launch {
+                    val id = detailIdText.toIntOrNull()
+                    if (id != null) {
+                        detailGame = viewModel.getWishlistGameById(id)
+                    }
+                }
+            },
+            enabled = true
+        ) { Text("Details anzeigen") }
+        detailGame?.let { game -> Text("Gefunden: ${game.title}") }
+        // --- Anzeige: Entweder Suchergebnisse oder normale Wishlist ---
+        val listToShow = if (searchText.isNotBlank()) searchResults else wishlist
         when {
             isLoading -> {
                 LoadingState()
             }
-
             error != null -> {
                 ErrorCard(error = error ?: "")
             }
-
-            wishlist.isEmpty() -> {
+            listToShow.isEmpty() -> {
                 EmptyState(
                     title = stringResource(R.string.wishlist_empty_title),
                     message = stringResource(R.string.wishlist_empty_message),
                     icon = Icons.Default.FavoriteBorder
                 )
             }
-
             else -> {
-                wishlist.sortedBy { it.title.lowercase() }.forEach { game ->
+                listToShow.sortedBy { it.title.lowercase() }.forEach { game ->
                     WishlistGameItem(
                         game = game,
-                        onRemove = { viewModel.removeFromWishlist(game.id) },
-                        onClick = {
-                            navController.navigateSingleTopTo(
-                                Routes
-                                    .detail(game.id)
-                            )
-                        }
+                        onRemove = {
+                            AppAnalytics.trackGameInteraction(game.id.toString(), "wishlist_remove")
+                            viewModel.removeFromWishlist(game.id)
+                        },
+                        onClick = { navController.navigateSingleTopTo(Routes.detail(game.id)) },
+                        onToggleWishlist = {
+                            AppAnalytics.trackGameInteraction(game.id.toString(), "wishlist_toggle")
+                            viewModel.toggleWishlist(game)
+                        },
+                        isInWishlist = wishlist.any { it.id == game.id }
                     )
                 }
             }
@@ -115,8 +196,14 @@ fun WishlistScreen(
 
     LaunchedEffect(exportResult) {
         exportResult?.let {
+            // Korrektur: trackCacheOperation erwartet (String, Int, Boolean)
+            AppAnalytics.trackCacheOperation(
+                "wishlist_export",
+                wishlist.size,
+                it is Resource.Success
+            )
             snackbarHostState.showSnackbar(
-                if (it is de.syntax_institut.androidabschlussprojekt.utils.Resource.Success)
+                if (it is Resource.Success)
                     exportSuccessMsg
                 else exportErrorMsg
             )
@@ -124,8 +211,14 @@ fun WishlistScreen(
     }
     LaunchedEffect(importResult) {
         importResult?.let {
+            // Korrektur: trackCacheOperation erwartet (String, Int, Boolean)
+            AppAnalytics.trackCacheOperation(
+                "wishlist_import",
+                wishlist.size,
+                it is Resource.Success
+            )
             snackbarHostState.showSnackbar(
-                if (it is de.syntax_institut.androidabschlussprojekt.utils.Resource.Success)
+                if (it is Resource.Success)
                     importSuccessMsg
                 else importErrorMsg
             )
@@ -133,8 +226,15 @@ fun WishlistScreen(
     }
 }
 
+// Passe WishlistGameItem an, um einen Toggle-Button zu unterstützen
 @Composable
-fun WishlistGameItem(game: Game, onRemove: () -> Unit, onClick: () -> Unit) {
+fun WishlistGameItem(
+    game: Game,
+    onRemove: () -> Unit,
+    onClick: () -> Unit,
+    onToggleWishlist: (Boolean) -> Unit = {},
+    isInWishlist: Boolean = true,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,10 +250,24 @@ fun WishlistGameItem(game: Game, onRemove: () -> Unit, onClick: () -> Unit) {
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
-            IconButton(onClick = onRemove) {
+            IconButton(onClick = onRemove, enabled = true) { // Korrektur: enabled ergänzt
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = stringResource(R.string.wishlist_remove)
+                )
+            }
+            // Toggle-Button für Wishlist
+            IconToggleButton(
+                checked = isInWishlist,
+                onCheckedChange = onToggleWishlist,
+                enabled = true // Korrektur: enabled ergänzt
+            ) {
+                Icon(
+                    imageVector =
+                        if (isInWishlist) Icons.Default.Star else Icons.Default.StarBorder,
+                    contentDescription =
+                        if (isInWishlist) stringResource(R.string.wishlist_marked)
+                        else stringResource(R.string.wishlist_not_marked)
                 )
             }
         }

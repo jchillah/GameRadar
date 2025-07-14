@@ -75,12 +75,10 @@ fun DetailScreen(
                 onToggleWishlist = { vm.toggleWishlist() }
             )
         }
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 64.dp)
-                .verticalScroll(scrollState)
-        ) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 64.dp)
+            .verticalScroll(scrollState)) {
             when {
                 state.isLoading -> {
                     LoadingState(
@@ -88,7 +86,6 @@ fun DetailScreen(
                         message = "Lade Spieledetails..."
                     )
                 }
-
                 state.error != null -> {
                     val errorText = state.error ?: Constants.ERROR_UNKNOWN
                     Column(
@@ -118,7 +115,6 @@ fun DetailScreen(
                         }
                     }
                 }
-
                 state.game == null -> {
                     val errorText = stringResource(R.string.error_game_load_failed)
                     Column(
@@ -148,7 +144,6 @@ fun DetailScreen(
                         }
                     }
                 }
-
                 else -> {
                     val game = state.game!!
                     Spacer(modifier = Modifier.height(16.dp))
@@ -206,7 +201,8 @@ fun DetailScreen(
                                         TrailerPlayerActivity.start(context, it, movie.name)
                                     }
                                 },
-                                showEmptyState = true
+                            showEmptyState = true,
+                            gameHeaderImageUrl = game.imageUrl // Fallback für Thumbnails
                         )
                     }
                     SectionCard(stringResource(R.string.game_website)) {

@@ -109,7 +109,7 @@ object AppAnalytics {
     }
 
     // Neue erweiterte Tracking-Funktionen
-    fun trackGameInteraction(action: String, gameId: Int, gameTitle: String? = null) {
+    fun trackGameInteraction(action: String, gameId: String, gameTitle: String? = null) {
         val params = mutableMapOf<String, Any>("game_id" to gameId, "action_type" to action)
         gameTitle?.let { params["game_title"] = it }
         trackEvent("game_interaction", params)

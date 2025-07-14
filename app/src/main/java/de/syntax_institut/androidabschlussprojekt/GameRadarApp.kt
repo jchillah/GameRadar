@@ -2,6 +2,7 @@ package de.syntax_institut.androidabschlussprojekt
 
 import android.app.*
 import android.content.*
+import android.os.*
 import androidx.core.content.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.di.*
@@ -51,6 +52,7 @@ class GameRadarApp : Application() {
 
         // Performance-Monitoring beenden
         PerformanceMonitor.endTimer("app_startup")
+        PerformanceMonitor.trackAppStart(SystemClock.elapsedRealtime(), true)
 
         AppLogger.d("GameRadarApp", "App erfolgreich initialisiert")
     }

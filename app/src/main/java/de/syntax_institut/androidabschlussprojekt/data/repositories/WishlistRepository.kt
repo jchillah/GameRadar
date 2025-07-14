@@ -30,6 +30,12 @@ class WishlistRepository(private val wishlistGameDao: WishlistGameDao) {
             wishlistGameDao.insertWishlistGame(game.toWishlistEntity())
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "insert",
+                de.syntax_institut.androidabschlussprojekt.data.Constants
+                    .WISHLIST_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "WishlistRepository",
                 "Fehler beim Hinzufügen zur Wunschliste: ${e.message}"
@@ -43,6 +49,12 @@ class WishlistRepository(private val wishlistGameDao: WishlistGameDao) {
             wishlistGameDao.removeWishlistGame(gameId)
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "delete",
+                de.syntax_institut.androidabschlussprojekt.data.Constants
+                    .WISHLIST_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "WishlistRepository",
                 "Fehler beim Entfernen aus Wunschliste: ${e.message}"
@@ -62,6 +74,12 @@ class WishlistRepository(private val wishlistGameDao: WishlistGameDao) {
                 Resource.Success(true)
             }
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "toggle",
+                de.syntax_institut.androidabschlussprojekt.data.Constants
+                    .WISHLIST_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "WishlistRepository",
                 "Fehler beim Umschalten der Wunschliste: ${e.message}"
@@ -75,6 +93,12 @@ class WishlistRepository(private val wishlistGameDao: WishlistGameDao) {
             wishlistGameDao.clearAllWishlistGames()
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "deleteAll",
+                de.syntax_institut.androidabschlussprojekt.data.Constants
+                    .WISHLIST_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "WishlistRepository",
                 "Fehler beim Leeren der Wunschliste: ${e.message}"
@@ -98,6 +122,12 @@ class WishlistRepository(private val wishlistGameDao: WishlistGameDao) {
                 ?: throw Exception("Konnte OutputStream nicht öffnen")
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "export",
+                de.syntax_institut.androidabschlussprojekt.data.Constants
+                    .WISHLIST_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "WishlistRepository",
                 "Fehler beim Export (Uri): ${e.localizedMessage}",
@@ -118,6 +148,12 @@ class WishlistRepository(private val wishlistGameDao: WishlistGameDao) {
             games.forEach { addToWishlist(it) }
             Resource.Success(Unit)
         } catch (e: Exception) {
+            CrashlyticsHelper.recordDatabaseError(
+                "import",
+                de.syntax_institut.androidabschlussprojekt.data.Constants
+                    .WISHLIST_GAME_TABLE,
+                e.localizedMessage ?: e.toString()
+            )
             AppLogger.e(
                 "WishlistRepository",
                 "Fehler beim Import (Uri): ${e.localizedMessage}",

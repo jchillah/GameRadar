@@ -115,4 +115,6 @@ class WishlistViewModel(
     fun importWishlistFromUri(context: Context, uri: Uri) {
         viewModelScope.launch { _importResult.value = importWishlistFromUriUseCase(context, uri) }
     }
+
+    suspend fun getWishlistGameById(gameId: Int): Game? = getWishlistGameByIdUseCase(gameId)
 }
