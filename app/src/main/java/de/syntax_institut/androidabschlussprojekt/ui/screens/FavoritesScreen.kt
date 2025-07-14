@@ -47,7 +47,8 @@ fun FavoritesScreen(
     Column(modifier = modifier.fillMaxWidth()) {
         FavoritesHeader(
             hasFavorites = state.favorites.isNotEmpty(),
-            onDeleteAllClick = { showDeleteConfirmation = true }
+            onDeleteAllClick = { showDeleteConfirmation = true },
+            deleteAllContentDescription = deleteAllContentDescription
         )
         // Statistiken nur anzeigen, wenn Favoriten vorhanden
         if (state.favorites.isNotEmpty()) {

@@ -16,8 +16,11 @@ fun FavoritesHeader(
     modifier: Modifier = Modifier,
     hasFavorites: Boolean,
     onDeleteAllClick: () -> Unit,
+    deleteAllContentDescription: String? = null,
 ) {
-    val deleteAllContentDescription = stringResource(R.string.dialog_delete_all_favorites_title)
+    val deleteAllContentDescriptionFinal =
+        deleteAllContentDescription
+            ?: stringResource(R.string.dialog_delete_all_favorites_title)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -40,7 +43,9 @@ fun FavoritesHeader(
                     ),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 modifier =
-                    Modifier.semantics { contentDescription = deleteAllContentDescription }
+                    Modifier.semantics {
+                        contentDescription = deleteAllContentDescriptionFinal
+                    }
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
