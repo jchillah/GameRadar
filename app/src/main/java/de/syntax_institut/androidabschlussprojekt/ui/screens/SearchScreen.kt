@@ -40,6 +40,8 @@ fun SearchScreen(
     val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
     var selectedTab by remember { mutableIntStateOf(0) }
     val settingsViewModel: SettingsViewModel = koinViewModel()
+    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
+    val analyticsEnabled by settingsViewModel.analyticsEnabled.collectAsState()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     val favoritesViewModel: FavoritesViewModel = koinViewModel()
     val favoritesState by favoritesViewModel.uiState.collectAsState()
@@ -196,6 +198,19 @@ fun SearchScreen(
                     }
                 }
             }
+            // Banner am unteren Rand für große Bildschirme
+            if (adsEnabled) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+                    BannerAdView(
+                        adUnitId = "ca-app-pub-3940256099942544/6300978111",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .padding(bottom = 8.dp),
+                        analyticsEnabled = analyticsEnabled
+                    )
+                }
+            }
         } else {
             // Bisheriges Layout für kleine Bildschirme
             Column(
@@ -284,6 +299,17 @@ fun SearchScreen(
                         )
                     }
                 }
+            }
+            // Banner am unteren Rand für kleine Bildschirme
+            if (adsEnabled) {
+                BannerAdView(
+                    adUnitId = "ca-app-pub-3940256099942544/6300978111",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(bottom = 8.dp),
+                    analyticsEnabled = analyticsEnabled
+                )
             }
             if (showFilters) {
                 ModalBottomSheet(onDismissRequest = { showFilters = false }) {
