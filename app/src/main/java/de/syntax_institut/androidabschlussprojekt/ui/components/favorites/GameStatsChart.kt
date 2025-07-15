@@ -12,6 +12,12 @@ import androidx.compose.ui.geometry.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 
+/**
+ * Zeigt ein horizontales Balkendiagramm der Top-Genres an.
+ *
+ * @param genreCounts Map mit Genre-Namen als Schlüssel und deren Anzahl als Wert
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun GameStatsChart(genreCounts: Map<String, Int>, modifier: Modifier = Modifier) {
     val sorted = genreCounts.entries.sortedByDescending { it.value }.take(5)
@@ -63,16 +69,9 @@ fun GameStatsChart(genreCounts: Map<String, Int>, modifier: Modifier = Modifier)
                     val percent = (value * 100f / total).toInt()
                     val barColor = barColors[idx % barColors.size]
                     val animatedPercent by
-                    animateFloatAsState(
-                        targetValue = percent / 100f,
-                        label = "barAnim$idx"
-                    )
+                    animateFloatAsState(targetValue = percent / 100f, label = "barAnim$idx")
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = label,
-                            fontSize = 14.sp,
-                            modifier = Modifier.width(100.dp)
-                        )
+                        Text(text = label, fontSize = 14.sp, modifier = Modifier.width(100.dp))
                         Box(
                             modifier =
                                 Modifier
@@ -80,36 +79,24 @@ fun GameStatsChart(genreCounts: Map<String, Int>, modifier: Modifier = Modifier)
                                     .weight(1f)
                                     .background(
                                         color =
-                                            MaterialTheme
-                                                .colorScheme
-                                                .onSurfaceVariant
-                                                .copy(
-                                                    alpha =
-                                                        0.08f
+                                            MaterialTheme.colorScheme
+                                                .onSurfaceVariant.copy(
+                                                    alpha = 0.08f
                                                 ),
-                                        shape =
-                                            MaterialTheme
-                                                .shapes
-                                                .small
+                                        shape = MaterialTheme.shapes.small
                                     )
                         ) {
                             Canvas(
                                 modifier =
                                     Modifier
                                         .fillMaxHeight()
-                                        .fillMaxWidth(
-                                            animatedPercent
-                                        )
+                                        .fillMaxWidth(animatedPercent)
                             ) {
                                 drawRoundRect(
                                     color = barColor,
                                     topLeft = Offset.Zero,
                                     size = size,
-                                    cornerRadius =
-                                        CornerRadius(
-                                            8f,
-                                            8f
-                                        )
+                                    cornerRadius = CornerRadius(8f, 8f)
                                 )
                             }
                         }

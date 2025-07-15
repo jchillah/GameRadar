@@ -23,6 +23,13 @@ import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
 
+/**
+ * Zeigt die Favoritenliste mit Statistiken und Löschen-Dialog an.
+ *
+ * @param modifier Modifier für das Layout
+ * @param navController Navigation Controller
+ * @param viewModel ViewModel für Favoriten
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -39,7 +46,6 @@ fun FavoritesScreen(
     NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
 
-    // Fix: stringResource im Composable-Kontext holen
     val deleteAllContentDescription = stringResource(R.string.dialog_delete_all_favorites_title)
 
     LaunchedEffect(Unit) { viewModel.loadFavorites() }
@@ -50,10 +56,17 @@ fun FavoritesScreen(
             onDeleteAllClick = { showDeleteConfirmation = true },
             deleteAllContentDescription = deleteAllContentDescription
         )
-        // Statistiken nur anzeigen, wenn Favoriten vorhanden
         if (state.favorites.isNotEmpty()) {
-            val genreCounts = state.favorites.flatMap { it.genres }.groupingBy { it }.eachCount()
-            GameStatsChart(genreCounts = genreCounts, modifier = Modifier.fillMaxWidth())
+            Button(
+                onClick = { navController.navigateSingleTopTo(Routes.STATS) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Icon(Icons.Default.BarChart, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Statistiken anzeigen")
+            }
         }
         Box(modifier = Modifier.weight(1f)) {
             when {

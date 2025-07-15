@@ -1,5 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
+// Kein expliziter R-Import nötig, stringResource(R.string.action_close) reicht
 import android.content.*
 import android.os.*
 import androidx.activity.*
@@ -23,8 +24,11 @@ import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 
 /**
- * Fullscreen Activity für den Trailer-Player.
- * Verwendet modernes Edge-to-Edge-API für echtes Fullscreen.
+ * Vollbild-Activity für das Abspielen von Trailern mit ExoPlayer.
+ *
+ * Diese Activity zeigt einen Trailer im Fullscreen-Modus an und blendet Systemleisten aus.
+ *
+ * @constructor Erstellt eine neue TrailerPlayerActivity.
  */
 class TrailerPlayerActivity : ComponentActivity() {
 
@@ -34,27 +38,30 @@ class TrailerPlayerActivity : ComponentActivity() {
         private const val EXTRA_VIDEO_URL = "video_url"
         private const val EXTRA_VIDEO_TITLE = "video_title"
 
+        /**
+         * Startet die TrailerPlayerActivity mit der angegebenen Video-URL und optionalem Titel.
+         *
+         * @param context Context zum Starten der Activity
+         * @param videoUrl Die URL des abzuspielenden Videos
+         * @param videoTitle Der Titel des Videos (optional)
+         */
         fun start(context: Context, videoUrl: String, videoTitle: String = "Trailer") {
-            val intent = Intent(context, TrailerPlayerActivity::class.java).apply {
-                putExtra(EXTRA_VIDEO_URL, videoUrl)
-                putExtra(EXTRA_VIDEO_TITLE, videoTitle)
-            }
+            val intent =
+                Intent(context, TrailerPlayerActivity::class.java).apply {
+                    putExtra(EXTRA_VIDEO_URL, videoUrl)
+                    putExtra(EXTRA_VIDEO_TITLE, videoTitle)
+                }
             context.startActivity(intent)
         }
     }
 
+    /** Initialisiert die Activity und setzt das Fullscreen-Layout. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Edge-to-Edge aktivieren
         enableEdgeToEdge()
-
-        // Systemleisten ausblenden für echtes Fullscreen
         hideSystemUi()
-
         val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL) ?: ""
         val videoTitle = intent.getStringExtra(EXTRA_VIDEO_TITLE) ?: "Trailer"
-
         setContent {
             MyAppTheme {
                 TrailerPlayerScreen(
@@ -90,6 +97,7 @@ class TrailerPlayerActivity : ComponentActivity() {
         releasePlayer()
     }
 
+    /** Blendet die Systemleisten für echtes Fullscreen aus. */
     private fun hideSystemUi() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).let { controller ->
@@ -99,6 +107,7 @@ class TrailerPlayerActivity : ComponentActivity() {
         }
     }
 
+    /** Gibt den ExoPlayer frei und räumt Ressourcen auf. */
     private fun releasePlayer() {
         player?.let { exoPlayer ->
             try {
@@ -106,51 +115,56 @@ class TrailerPlayerActivity : ComponentActivity() {
                 exoPlayer.clearMediaItems()
                 exoPlayer.release()
             } catch (_: Exception) {
-                // Ignoriere Fehler beim Release
+                // Fehler beim Release ignorieren
             }
         }
         player = null
     }
 
+    /**
+     * Zeigt den Trailer-Player im Fullscreen an.
+     *
+     * @param videoUrl Die URL des Videos
+     * @param videoTitle Der Titel des Videos
+     * @param onClose Callback zum Schließen des Players
+     */
     @Composable
     private fun TrailerPlayerScreen(
         videoUrl: String,
         videoTitle: String,
         onClose: () -> Unit,
     ) {
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
             // ExoPlayer View
             AndroidView(
                 factory = { ctx ->
                     PlayerView(ctx).apply {
-                        player = ExoPlayer.Builder(ctx).build().also { exoPlayer ->
-                            player = exoPlayer
-                            val mediaItem = MediaItem.fromUri(videoUrl)
-                            exoPlayer.setMediaItem(mediaItem)
-                            exoPlayer.prepare()
-                            exoPlayer.playWhenReady = true
-
-                            // Player Event Listener für bessere Kontrolle
-                            exoPlayer.addListener(object : Player.Listener {
-                                override fun onPlaybackStateChanged(playbackState: Int) {
-                                    super.onPlaybackStateChanged(playbackState)
-                                    if (playbackState == Player.STATE_ENDED) {
-                                        // Video beendet - Activity schließen
-                                        finish()
+                        player =
+                            ExoPlayer.Builder(ctx).build().also { exoPlayer ->
+                                player = exoPlayer
+                                val mediaItem = MediaItem.fromUri(videoUrl)
+                                exoPlayer.setMediaItem(mediaItem)
+                                exoPlayer.prepare()
+                                exoPlayer.playWhenReady = true
+                                exoPlayer.addListener(
+                                    object : Player.Listener {
+                                        override fun onPlaybackStateChanged(
+                                            playbackState: Int,
+                                        ) {
+                                            super.onPlaybackStateChanged(playbackState)
+                                            if (playbackState == Player.STATE_ENDED) {
+                                                finish()
+                                            }
+                                        }
                                     }
-                                }
-                            })
-                        }
+                                )
+                            }
                     }
                 },
                 modifier = Modifier.fillMaxSize()
             )
-
             // Schließen Button
             IconButton(
                 onClick = {
@@ -168,7 +182,6 @@ class TrailerPlayerActivity : ComponentActivity() {
                     modifier = Modifier.size(32.dp)
                 )
             }
-
             // Titel (optional)
             if (videoTitle.isNotBlank()) {
                 Text(
@@ -182,4 +195,4 @@ class TrailerPlayerActivity : ComponentActivity() {
             }
         }
     }
-} 
+}

@@ -13,6 +13,14 @@ import coil3.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
+/**
+ * Zeigt ein Modal mit den wichtigsten Details eines Spiels aus der Wunschliste an.
+ *
+ * @param game Das anzuzeigende Spiel
+ * @param onClose Callback zum Schließen des Modals
+ * @param onShowDetails Callback zum Anzeigen der vollständigen Spieldetails
+ * @param sheetState State des BottomSheets
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WishlistDetailModal(
