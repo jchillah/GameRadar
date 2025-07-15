@@ -1,5 +1,8 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
+import androidx.activity.*
+import androidx.activity.compose.*
+import androidx.activity.result.contract.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
@@ -21,6 +24,7 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.favorites.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 
 /**
@@ -56,6 +60,39 @@ fun FavoritesScreen(
             onDeleteAllClick = { showDeleteConfirmation = true },
             deleteAllContentDescription = deleteAllContentDescription
         )
+        // Favoriten Export/Import-Bar
+        val canUseLauncher = context is ComponentActivity
+        val coroutineScope = rememberCoroutineScope()
+        val exportLauncher =
+            if (canUseLauncher) {
+                rememberLauncherForActivityResult(
+                    ActivityResultContracts.CreateDocument("application/json")
+                ) { uri: android.net.Uri? ->
+                    uri?.let {
+                        coroutineScope.launch { viewModel.exportFavoritesToUri(context, it) }
+                    }
+                }
+            } else null
+        val importLauncher =
+            if (canUseLauncher) {
+                rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: android.net.Uri? ->
+                    uri?.let {
+                        coroutineScope.launch { viewModel.importFavoritesFromUri(context, it) }
+                    }
+                }
+            } else null
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = stringResource(R.string.favorites_export_import),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        WishlistExportImportBar(
+            canUseLauncher = canUseLauncher,
+            onExport = { exportLauncher?.launch("favoritenliste_export.json") },
+            onImport = { importLauncher?.launch(arrayOf("application/json")) }
+        )
+        Spacer(modifier = Modifier.height(8.dp))
         if (state.favorites.isNotEmpty()) {
             Button(
                 onClick = { navController.navigateSingleTopTo(Routes.STATS) },

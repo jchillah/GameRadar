@@ -30,8 +30,8 @@
     <string name="favorites_empty_offline">You are offline. Your favorites will be displayed once you\'re back online.</string>
     <string name="discover_games">Discover games</string>
     <string name="favorites_export_import">Favorites Export/Import</string>
-    <string name="favorites_export">Export favorites</string>
-    <string name="favorites_import">Import favorites</string>
+    <string name="favorites_export">Export favorites list</string>
+    <string name="favorites_import">Import favorites list</string>
     <string name="export_import_preview_unavailable">Export/Import not available in preview</string>
 
     <!-- Settings Screen -->

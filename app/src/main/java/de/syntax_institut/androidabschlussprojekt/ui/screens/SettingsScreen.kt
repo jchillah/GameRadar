@@ -247,6 +247,18 @@ fun SettingsScreen(
         SettingsSection(title = stringResource(R.string.database_management_section)) {
             SectionDatabase()
             Spacer(modifier = Modifier.height(8.dp))
+            // Favoriten Export/Import
+            Text(
+                text = stringResource(R.string.favorites_export_import),
+                style = MaterialTheme.typography.titleMedium
+            )
+            WishlistExportImportBar(
+                canUseLauncher = canUseLauncher,
+                onExport = { exportLauncher?.launch("favoritenliste_export.json") },
+                onImport = { importLauncher?.launch(arrayOf("application/json")) }
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            // Wunschliste Export/Import
             Text(
                 text = stringResource(R.string.wishlist_export_import),
                 style = MaterialTheme.typography.titleMedium
