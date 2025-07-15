@@ -242,7 +242,48 @@ fun SettingsScreen(
                 )
             }
         }
-
+        // Werbung/AdMob-Opt-In Sektion
+        SettingsSection(title = stringResource(R.string.ads_section)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AttachMoney,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.ads_enabled),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = stringResource(R.string.ads_enabled_description),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Switch(
+                    checked = viewModel.adsEnabled.collectAsState().value,
+                    onCheckedChange = { viewModel.setAdsEnabled(it) },
+                    colors =
+                        SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor =
+                                MaterialTheme.colorScheme.primaryContainer,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                            uncheckedTrackColor =
+                                MaterialTheme.colorScheme.surfaceVariant
+                        )
+                )
+            }
+        }
         // Datenbank-Management und Dialoge werden immer angezeigt (oder nach Wunsch)
         SettingsSection(title = stringResource(R.string.database_management_section)) {
             SectionDatabase()
@@ -294,6 +335,16 @@ fun SettingsScreen(
         if (showPrivacyDialog) {
             PrivacyPolicyDialog(onDismiss = { showPrivacyDialog = false })
         }
+    }
+    // AdMob Banner am unteren Rand NUR wenn Opt-In
+    if (viewModel.adsEnabled.collectAsState().value) {
+        BannerAdView(
+            adUnitId = "ca-app-pub-3940256099942544/6300978111", // Test-Banner-ID
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            analyticsEnabled = analyticsEnabled // <- Analytics-Opt-In wird übergeben
+        )
     }
 }
 

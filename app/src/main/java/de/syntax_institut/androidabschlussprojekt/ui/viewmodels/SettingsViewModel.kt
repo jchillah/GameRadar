@@ -71,6 +71,19 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
             false
         )
 
+    /** Gibt an, ob Werbung (AdMob) angezeigt werden darf (Opt-In). */
+    val adsEnabled =
+        settingsRepository.adsEnabled.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            false
+        )
+
+    /** Setzt, ob Werbung (AdMob) angezeigt werden darf (Opt-In). */
+    fun setAdsEnabled(enabled: Boolean) {
+        settingsRepository.setAdsEnabled(enabled)
+    }
+
     fun setAnalyticsEnabled(enabled: Boolean) {
         settingsRepository.setAnalyticsEnabled(enabled)
         CrashlyticsHelper.setCrashlyticsEnabled(enabled)

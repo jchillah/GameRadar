@@ -1,6 +1,7 @@
 package de.syntax_institut.androidabschlussprojekt.utils
 
 import android.content.*
+import android.os.*
 import com.google.firebase.analytics.*
 import de.syntax_institut.androidabschlussprojekt.*
 
@@ -37,7 +38,7 @@ object AppAnalytics {
         firebaseAnalytics?.let { fa ->
             try {
                 val bundle =
-                    android.os.Bundle().apply {
+                    Bundle().apply {
                         parameters.forEach { (key, value) ->
                             when (value) {
                                 is String -> putString(key, value)
@@ -65,7 +66,7 @@ object AppAnalytics {
         firebaseAnalytics?.let { fa ->
             try {
                 val bundle =
-                    android.os.Bundle().apply {
+                    Bundle().apply {
                         putString(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
                         putString(FirebaseAnalytics.Param.SCREEN_CLASS, "ComposeScreen")
                     }
@@ -84,7 +85,7 @@ object AppAnalytics {
         firebaseAnalytics?.let { fa ->
             try {
                 val bundle =
-                    android.os.Bundle().apply {
+                    Bundle().apply {
                         putString("error_message", error)
                         putString("error_context", context)
                     }
@@ -177,5 +178,16 @@ object AppAnalytics {
 
     fun trackCrashlyticsEnabled(enabled: Boolean) {
         trackEvent("crashlytics_status", mapOf("crashlytics_enabled" to enabled))
+    }
+
+    /** Hilfsfunktionen für Analytics-Tracking von Werbeinteraktionen. */
+    fun trackAdEvent(context: Context, adType: String, event: String) {
+        val analytics = FirebaseAnalytics.getInstance(context)
+        val bundle =
+            Bundle().apply {
+                putString("ad_type", adType)
+                putString("ad_event", event)
+            }
+        analytics.logEvent("ad_interaction", bundle)
     }
 }

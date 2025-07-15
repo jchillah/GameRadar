@@ -21,6 +21,7 @@ lifecycleViewmodelCompose = "2.9.1"
 datastorePreferences = "1.1.7"
 pagingCompose = "3.3.6"
 pagingRuntime = "3.3.6"
+playServicesAds = "23.0.0"
 room = "2.7.2"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
@@ -103,6 +104,7 @@ insert-koin-koin-test = { module = "io.insert-koin:koin-test", version.ref = "ko
 material = { module = "com.google.android.material:material", version.ref = "material" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3Ui" }
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }

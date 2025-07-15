@@ -416,7 +416,11 @@
     <string name="wishlist_show_details">Details anzeigen</string>
     <string name="wishlist_full_details">Vollständige Details</string>
 
+    <!-- Analytics Section -->
     <string name="analytics_section">Analytics</string>
     <string name="analytics_enabled">Analytics aktivieren</string>
     <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
+    <string name="ads_section">Werbung</string>
+    <string name="ads_enabled">Werbung anzeigen</string>
+    <string name="ads_enabled_description">Erlaube das Anzeigen von Banner-Werbung (AdMob). Unterstützt die Weiterentwicklung der App. Es werden keine personalisierten Daten verwendet.</string>
 </resources>

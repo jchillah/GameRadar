@@ -417,4 +417,7 @@
     <string name="analytics_section">Analytics</string>
     <string name="analytics_enabled">Enable analytics</string>
     <string name="analytics_enabled_description">Allow anonymous usage analytics to improve the app.</string>
+    <string name="ads_section">Ads</string>
+    <string name="ads_enabled">Show ads</string>
+    <string name="ads_enabled_description">Allow the display of banner ads (AdMob). Supports further development of the app. No personalized data is used.</string>
 </resources> 
