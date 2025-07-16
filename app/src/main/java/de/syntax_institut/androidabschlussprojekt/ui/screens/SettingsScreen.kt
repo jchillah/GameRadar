@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
@@ -57,6 +58,8 @@ fun SettingsScreen(
     var cacheStats by remember { mutableStateOf<CacheStats?>(null) }
     var lastSyncTime by remember { mutableStateOf<Long?>(null) }
     val analyticsEnabled by viewModel.analyticsEnabled.collectAsState()
+    val isProUser by viewModel.proStatus.collectAsState()
+    val adsEnabled by viewModel.adsEnabled.collectAsState()
 
     // SAF-Launcher für Export und Import nur, wenn möglich
     val exportLauncher =
@@ -76,7 +79,10 @@ fun SettingsScreen(
             rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
                 uri?.let {
                     coroutineScope.launch {
-                        favoritesViewModel.importFavoritesFromUri(context, it)
+                        favoritesViewModel.importFavoritesFromUri(
+                            context,
+                            it
+                        )
                     }
                 }
             }
@@ -102,12 +108,22 @@ fun SettingsScreen(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Pro-Status-Banner ganz oben
+        ProStatusBanner(
+            isProUser = isProUser,
+            onUpgradeClick = { /* Hier Billing-Dialog für Pro-Upgrade öffnen */ },
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        )
         SettingsHeader()
 
-        val recommendedMaxCacheSize = remember { CacheUtils.calculateRecommendedMaxCacheSize() }
+        val recommendedMaxCacheSize = remember {
+            CacheUtils.calculateRecommendedMaxCacheSize()
+        }
 
-        // Debug-Elemente können hier entfernt oder dauerhaft angezeigt werden, falls gewünscht
-        // Beispiel: CacheBanner, IntelligentCacheIndicator, NetworkErrorHandler werden immer
+        // Debug-Elemente können hier entfernt oder dauerhaft angezeigt werden, falls
+        // gewünscht
+        // Beispiel: CacheBanner, IntelligentCacheIndicator, NetworkErrorHandler werden
+        // immer
         // angezeigt
         CacheBanner(
             modifier = Modifier.fillMaxWidth(),
@@ -115,7 +131,10 @@ fun SettingsScreen(
             maxCacheSize = recommendedMaxCacheSize,
         )
 
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {}
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {}
 
         IntelligentCacheIndicator(
             modifier = Modifier.fillMaxWidth(),
@@ -169,7 +188,10 @@ fun SettingsScreen(
 
         // Sprachsektion ausgelagert
         SettingsSection(title = stringResource(R.string.language_section)) {
-            SectionLanguage(language = language, onLanguageChange = viewModel::setLanguage)
+            SectionLanguage(
+                language = language,
+                onLanguageChange = viewModel::setLanguage
+            )
         }
 
         // Gaming-Features-Sektion ausgelagert
@@ -200,7 +222,7 @@ fun SettingsScreen(
             )
         }
 
-        // Analytics-Sektion
+        // Werbung & Analytics Sektion
         SettingsSection(title = stringResource(R.string.analytics_section)) {
             Row(
                 modifier = Modifier
@@ -211,78 +233,111 @@ fun SettingsScreen(
                 Icon(
                     imageVector = Icons.Default.BarChart,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.analytics_enabled),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = stringResource(R.string.analytics_enabled_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.analytics_enabled),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = analyticsEnabled,
                     onCheckedChange = { viewModel.setAnalyticsEnabled(it) },
                     colors =
                         SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedThumbColor =
+                                MaterialTheme.colorScheme.primary,
                             checkedTrackColor =
-                                MaterialTheme.colorScheme.primaryContainer,
-                            uncheckedThumbColor = MaterialTheme.colorScheme.outline,
+                                MaterialTheme.colorScheme
+                                    .primaryContainer,
+                            uncheckedThumbColor =
+                                MaterialTheme.colorScheme.outline,
                             uncheckedTrackColor =
-                                MaterialTheme.colorScheme.surfaceVariant
+                                MaterialTheme.colorScheme
+                                    .surfaceVariant
                         )
                 )
             }
-        }
-        // Werbung/AdMob-Opt-In Sektion
-        SettingsSection(title = stringResource(R.string.ads_section)) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AttachMoney,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.ads_enabled),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
+            Text(
+                text = stringResource(R.string.analytics_enabled_description),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier =
+                    Modifier.padding(start = 48.dp, end = 16.dp, bottom = 8.dp)
+            )
+            if (isProUser || BuildConfig.DEBUG) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = stringResource(R.string.ads_enabled_description),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text =
+                            stringResource(
+                                R.string.pro_ads_switch_label
+                            ),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = adsEnabled,
+                        onCheckedChange = { viewModel.setAdsEnabled(it) },
+                        colors =
+                            SwitchDefaults.colors(
+                                checkedThumbColor =
+                                    MaterialTheme.colorScheme
+                                        .primary,
+                                checkedTrackColor =
+                                    MaterialTheme.colorScheme
+                                        .primaryContainer,
+                                uncheckedThumbColor =
+                                    MaterialTheme.colorScheme
+                                        .outline,
+                                uncheckedTrackColor =
+                                    MaterialTheme.colorScheme
+                                        .surfaceVariant
+                            )
                     )
                 }
-                Switch(
-                    checked = viewModel.adsEnabled.collectAsState().value,
-                    onCheckedChange = { viewModel.setAdsEnabled(it) },
-                    colors =
-                        SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.primary,
-                            checkedTrackColor =
-                                MaterialTheme.colorScheme.primaryContainer,
-                            uncheckedThumbColor = MaterialTheme.colorScheme.outline,
-                            uncheckedTrackColor =
-                                MaterialTheme.colorScheme.surfaceVariant
+                Text(
+                    text = stringResource(R.string.pro_ads_switch_desc),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier =
+                        Modifier.padding(
+                            start = 48.dp,
+                            end = 16.dp,
+                            bottom = 8.dp
                         )
                 )
             }
+            if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
+                RewardedAdButton(
+                    adUnitId = "ca-app-pub-3940256099942544/5224354917",
+                    adsEnabled = adsEnabled,
+                    isProUser = isProUser,
+                    rewardText =
+                        stringResource(R.string.rewarded_ad_reward_text),
+                    onReward = { viewModel.setProStatus(true) }
+                )
+            }
+            BannerAdView(
+                adUnitId = "ca-app-pub-7269049262039376/9765911397",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                analyticsEnabled = analyticsEnabled
+            )
         }
         // Datenbank-Management und Dialoge werden immer angezeigt (oder nach Wunsch)
         SettingsSection(title = stringResource(R.string.database_management_section)) {
@@ -336,16 +391,7 @@ fun SettingsScreen(
             PrivacyPolicyDialog(onDismiss = { showPrivacyDialog = false })
         }
     }
-    // AdMob Banner am unteren Rand NUR wenn Opt-In
-    if (viewModel.adsEnabled.collectAsState().value) {
-        BannerAdView(
-            adUnitId = "ca-app-pub-3940256099942544/6300978111", // Test-Banner-ID
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            analyticsEnabled = analyticsEnabled // <- Analytics-Opt-In wird übergeben
-        )
-    }
+    // Entferne die Anzeige von BannerAdView am Dateiende (mit viewModel.adsEnabled)
 }
 
 @Preview(showBackground = true, showSystemUi = true)

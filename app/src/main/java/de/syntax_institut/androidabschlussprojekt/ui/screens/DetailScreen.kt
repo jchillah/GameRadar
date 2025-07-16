@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -43,6 +44,8 @@ fun DetailScreen(
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
+    val isProUser by settingsViewModel.proStatus.collectAsState()
+    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
 
     LaunchedEffect(gameId) {
         AppAnalytics.trackScreenView("DetailScreen")
@@ -207,6 +210,18 @@ fun DetailScreen(
                     }
                     SectionCard(stringResource(R.string.game_website)) {
                         WebsiteSection(game.website, game.id)
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
+                        RewardedAdButton(
+                            adUnitId = "ca-app-pub-3940256099942544/5224354917",
+                            adsEnabled = adsEnabled,
+                            isProUser = isProUser,
+                            rewardText =
+                                stringResource(R.string.rewarded_ad_detail_reward_text),
+                            onReward = { /* TODO: Exklusive Statistiken freischalten oder Snackbar anzeigen */
+                            }
+                        )
                     }
                     Spacer(modifier = Modifier.height(80.dp))
                 }

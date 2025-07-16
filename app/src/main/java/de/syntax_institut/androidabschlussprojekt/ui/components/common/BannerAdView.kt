@@ -20,7 +20,7 @@ fun BannerAdView(
     modifier: Modifier = Modifier,
     analyticsEnabled: Boolean = false,
 ) {
-    val context = LocalContext.current
+    LocalContext.current
     AndroidView(
         modifier = modifier,
         factory = { ctx ->

@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -63,6 +64,8 @@ fun WishlistScreen(
 
     // Korrektur: listToShow deklarieren (hier einfach die Wishlist, ggf. mit Suche kombinieren)
     val listToShow = wishlist
+    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val imageQuality by settingsViewModel.imageQuality.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -70,10 +73,21 @@ fun WishlistScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            // Korrektur: WishlistHeader nur mit erlaubten Parametern aufrufen
             WishlistHeader()
             Spacer(modifier = Modifier.height(8.dp))
-            // Export/Import-Bar korrekt einbauen
+            val settingsViewModel: SettingsViewModel = koinViewModel()
+            val isProUser by settingsViewModel.proStatus.collectAsState()
+            val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
+            // imageQuality entfernt, da nicht verwendet
+            if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
+                RewardedAdButton(
+                    adUnitId = "ca-app-pub-3940256099942544/5224354917",
+                    adsEnabled = adsEnabled,
+                    isProUser = isProUser,
+                    rewardText = stringResource(R.string.rewarded_ad_wishlist_reward_text),
+                    onReward = { /* TODO: Export freischalten oder Snackbar anzeigen */ }
+                )
+            }
             WishlistExportImportBar(
                 canUseLauncher = canUseLauncher,
                 onExport = { exportLauncher?.launch("wishlist_export.json") },
@@ -105,7 +119,8 @@ fun WishlistScreen(
                     isInWishlist = true,
                     showWishlistButton = true,
                     showFavoriteIcon = false,
-                    onWishlistChanged = { checked -> viewModel.toggleWishlist(game) }
+                    onWishlistChanged = { checked -> viewModel.toggleWishlist(game) },
+                    imageQuality = imageQuality
                 )
             }
         }

@@ -196,5 +196,6 @@ dependencies {
     implementation(libs.media3.ui)
 
     implementation(libs.play.services.ads)
+    implementation(libs.androidx.lifecycle.process)
 }
 

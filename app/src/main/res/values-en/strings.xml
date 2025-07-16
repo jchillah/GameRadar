@@ -420,4 +420,9 @@
     <string name="ads_section">Ads</string>
     <string name="ads_enabled">Show ads</string>
     <string name="ads_enabled_description">Allow the display of banner ads (AdMob). Supports further development of the app. No personalized data is used.</string>
+    <string name="pro_status_active">Pro version active – ad-free</string>
+    <string name="pro_status_active_sub">Thank you for supporting further development. No ads are shown.</string>
+    <string name="pro_status_inactive">Pro version not active</string>
+    <string name="pro_status_inactive_sub">Ads are shown. Enjoy GameRadar ad-free with the Pro version.</string>
+    <string name="pro_status_upgrade">Upgrade</string>
 </resources> 

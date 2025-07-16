@@ -55,6 +55,14 @@ class GameRadarApp : Application() {
         PerformanceMonitor.trackAppStart(SystemClock.elapsedRealtime(), true)
 
         AppLogger.d("GameRadarApp", "App erfolgreich initialisiert")
+
+        AppOpenAdManager.init(
+            app = this,
+            adUnitId = "ca-app-pub-7269049262039376/9765911397",
+            adsEnabled = true,
+            isProUser = false,
+            analyticsEnabled = true
+        )
     }
 
     private fun createNewGamesNotificationChannel(context: Context) {

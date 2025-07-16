@@ -6,6 +6,7 @@ import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.flow.*
 
+/** ViewModel für die Einstellungen. Stellt alle Settings-States als StateFlow bereit. */
 class SettingsViewModel(private val settingsRepository: SettingsRepository) : ViewModel() {
 
     val analyticsEnabled =
@@ -71,12 +72,25 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
             false
         )
 
+    /**
+     * Gibt an, ob der Nutzer Pro-Status (zahlender, werbefreier User) ist. Sollte aus den
+     * Einstellungen oder einer Billing-Logik kommen. Hier als Platzhalter: Immer false (kein Pro),
+     * kann später dynamisch gesetzt werden.
+     */
+    private val _proStatus = MutableStateFlow(false)
+    val proStatus: StateFlow<Boolean> = _proStatus.asStateFlow()
+
+    /** Setzt den Pro-Status (z.B. nach Kauf oder Restore). */
+    fun setProStatus(isPro: Boolean) {
+        _proStatus.value = isPro
+    }
+
     /** Gibt an, ob Werbung (AdMob) angezeigt werden darf (Opt-In). */
     val adsEnabled =
         settingsRepository.adsEnabled.stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            false
+            SharingStarted.WhileSubscribed(5000),
+            settingsRepository.adsEnabled.value
         )
 
     /** Setzt, ob Werbung (AdMob) angezeigt werden darf (Opt-In). */
