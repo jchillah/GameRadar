@@ -100,6 +100,7 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
 
     fun setAnalyticsEnabled(enabled: Boolean) {
         settingsRepository.setAnalyticsEnabled(enabled)
+        AppAnalytics.setAnalyticsEnabled(enabled)
         CrashlyticsHelper.setCrashlyticsEnabled(enabled)
         CrashlyticsHelper.setCustomKey("analytics_enabled", enabled)
     }
@@ -143,6 +144,4 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
         settingsRepository.setDarkModeEnabled(enabled)
         CrashlyticsHelper.setCustomKey("dark_mode_enabled", enabled)
     }
-
-    // clearDatabase entfernt – Context-Logik gehört in die UI-Schicht
 }

@@ -444,5 +444,11 @@
     <string name="export_unlocked">Export unlocked for this session!</string>
     <string name="export_wishlist">Export wishlist</string>
 
+    <string name="show_stats">Show statistics</string>
+    <string name="show_exclusive_stats">Show exclusive statistics</string>
+    <string name="rewarded_ad_stats_reward_text">Statistics unlocked for this session!</string>
+    <string name="rewarded_ad_exclusive_stats_reward_text">Exclusive statistics unlocked for this session!</string>
+    <string name="exclusive_stats_title">Exclusive Statistics</string>
+    <string name="exclusive_stats_placeholder">Exclusive statistics will appear here after unlocking via ad or Pro status.</string>
 
 </resources> 

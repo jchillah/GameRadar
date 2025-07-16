@@ -437,6 +437,12 @@
     <string name="rewarded_ad_wishlist_reward_text">Export der Wunschliste für diese Sitzung freigeschaltet!</string>
     <string name="rewarded_ad_detail_reward_text">Exklusive Statistiken freischalten</string>
     <string name="rewarded_ad_cache_reward_text">Cache-Optimierung für diese Sitzung freigeschaltet!</string>
+    <string name="show_stats">Statistiken anzeigen</string>
+    <string name="show_exclusive_stats">Exklusive Statistiken anzeigen</string>
+    <string name="rewarded_ad_stats_reward_text">Statistiken für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_exclusive_stats_reward_text">Exklusive Statistiken für diese Sitzung freigeschaltet!</string>
+    <string name="exclusive_stats_title">Exklusive Statistiken</string>
+    <string name="exclusive_stats_placeholder">Hier erscheinen exklusive Statistiken nach Freischaltung durch Werbung oder Pro-Status.</string>
 
     <!-- Pro-Status -->
     <string name="pro_status_title">Pro-Status</string>
