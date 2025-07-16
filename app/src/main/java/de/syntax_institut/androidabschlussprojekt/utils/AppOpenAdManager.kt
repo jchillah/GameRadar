@@ -66,14 +66,16 @@ object AppOpenAdManager : DefaultLifecycleObserver {
                 override fun onAdLoaded(ad: AppOpenAd) {
                     appOpenAd = ad
                     isLoading = false
-                    if (analyticsEnabled) AppAnalytics.trackAdEvent(context, "app_open", "loaded")
+                    if (analyticsEnabled)
+                        AppAnalytics.trackAdEvent(context, "app_open", "loaded")
                 }
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
                     appOpenAd = null
                     isLoading = false
                     _error.value = error.message
-                    if (analyticsEnabled) AppAnalytics.trackAdEvent(context, "app_open", "error")
+                    if (analyticsEnabled)
+                        AppAnalytics.trackAdEvent(context, "app_open", "error")
                 }
             }
         )
@@ -88,29 +90,35 @@ object AppOpenAdManager : DefaultLifecycleObserver {
             return
         }
         isShowing = true
-        appOpenAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-            override fun onAdShowedFullScreenContent() {
-                if (analyticsEnabled) AppAnalytics.trackAdEvent(activity, "app_open", "impression")
-            }
+        appOpenAd?.fullScreenContentCallback =
+            object : FullScreenContentCallback() {
+                override fun onAdShowedFullScreenContent() {
+                    if (analyticsEnabled)
+                        AppAnalytics.trackAdEvent(activity, "app_open", "impression")
+                }
 
-            override fun onAdDismissedFullScreenContent() {
-                isShowing = false
-                appOpenAd = null
-                loadAd(activity)
-            }
+                override fun onAdDismissedFullScreenContent() {
+                    isShowing = false
+                    appOpenAd = null
+                    loadAd(activity)
+                }
 
-            override fun onAdFailedToShowFullScreenContent(error: com.google.android.gms.ads.AdError) {
-                isShowing = false
-                appOpenAd = null
-                _error.value = error.message
-                loadAd(activity)
-                if (analyticsEnabled) AppAnalytics.trackAdEvent(activity, "app_open", "error")
-            }
+                override fun onAdFailedToShowFullScreenContent(
+                    error: com.google.android.gms.ads.AdError,
+                ) {
+                    isShowing = false
+                    appOpenAd = null
+                    _error.value = error.message
+                    loadAd(activity)
+                    if (analyticsEnabled)
+                        AppAnalytics.trackAdEvent(activity, "app_open", "error")
+                }
 
-            override fun onAdClicked() {
-                if (analyticsEnabled) AppAnalytics.trackAdEvent(activity, "app_open", "click")
+                override fun onAdClicked() {
+                    if (analyticsEnabled)
+                        AppAnalytics.trackAdEvent(activity, "app_open", "click")
+                }
             }
-        }
         appOpenAd?.show(activity)
     }
 
@@ -126,32 +134,31 @@ object AppOpenAdManager : DefaultLifecycleObserver {
         // Workaround: Handler postDelayed, um Activity zu bekommen
         // In echten Projekten ggf. ActivityLifecycleCallbacks nutzen
         var activity: Activity? = null
-        Handler(Looper.getMainLooper()).post {
-            activity = application.currentActivity
-        }
+        Handler(Looper.getMainLooper()).post { activity = application.currentActivity }
         return activity ?: application.currentActivity
     }
 }
 
 /**
- * Extension-Property für Application, um die aktuelle Activity zu bekommen.
- * In echten Projekten sollte ein ActivityLifecycleCallbacks-Tracker verwendet werden.
+ * Extension-Property für Application, um die aktuelle Activity zu bekommen. In echten Projekten
+ * sollte ein ActivityLifecycleCallbacks-Tracker verwendet werden.
  */
 val Application.currentActivity: Activity?
-    get() = try {
-        val field = Application::class.java.getDeclaredField("mLoadedApk")
-        field.isAccessible = true
-        val loadedApk = field.get(this)
-        val activityThreadField = loadedApk.javaClass.getDeclaredField("mActivityThread")
-        activityThreadField.isAccessible = true
-        val activityThread = activityThreadField.get(loadedApk)
-        val activitiesField = activityThread.javaClass.getDeclaredField("mActivities")
-        activitiesField.isAccessible = true
-        val activities = activitiesField.get(activityThread) as? Map<*, *>
-        val activityRecord = activities?.values?.firstOrNull()
-        val activityField = activityRecord?.javaClass?.getDeclaredField("activity")
-        activityField?.isAccessible = true
-        activityField?.get(activityRecord) as? Activity
-    } catch (_: Exception) {
-        null
-    } 
+    get() =
+        try {
+            val field = Application::class.java.getDeclaredField("mLoadedApk")
+            field.isAccessible = true
+            val loadedApk = field.get(this)
+            val activityThreadField = loadedApk.javaClass.getDeclaredField("mActivityThread")
+            activityThreadField.isAccessible = true
+            val activityThread = activityThreadField.get(loadedApk)
+            val activitiesField = activityThread.javaClass.getDeclaredField("mActivities")
+            activitiesField.isAccessible = true
+            val activities = activitiesField.get(activityThread) as? Map<*, *>
+            val activityRecord = activities?.values?.firstOrNull()
+            val activityField = activityRecord?.javaClass?.getDeclaredField("activity")
+            activityField?.isAccessible = true
+            activityField?.get(activityRecord) as? Activity
+        } catch (_: Exception) {
+            null
+        }

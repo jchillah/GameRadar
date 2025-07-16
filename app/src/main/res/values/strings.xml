@@ -428,13 +428,28 @@
     <string name="pro_status_inactive">Pro-Version nicht aktiv</string>
     <string name="pro_status_inactive_sub">Werbung wird angezeigt. Mit Pro-Version genießt du GameRadar werbefrei.</string>
     <string name="pro_status_upgrade">Upgrade</string>
-    <string name="pro_ads_switch_label">Ads anzeigen</string>
-    <string name="pro_ads_switch_desc">Erlaube Werbung, um die App zu unterstützen (freiwillig, auch als Pro-User).</string>
+    <string name="pro_ads_switch_label">Werbung für Pro-User</string>
+    <string name="pro_ads_switch_desc">Pro-User können Werbung freiwillig aktivieren, um das Projekt zu unterstützen.</string>
 
     <!-- Rewarded Ad Belohnungstexte -->
     <string name="rewarded_ad_reward_text">1 Tag werbefrei als Belohnung!</string>
-    <string name="rewarded_ad_favorites_reward_text">Favoriten-Export freischalten</string>
-    <string name="rewarded_ad_wishlist_reward_text">Wunschlisten-Export freischalten</string>
+    <string name="rewarded_ad_favorites_reward_text">Export der Favoriten für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_wishlist_reward_text">Export der Wunschliste für diese Sitzung freigeschaltet!</string>
     <string name="rewarded_ad_detail_reward_text">Exklusive Statistiken freischalten</string>
-    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung freischalten</string>
+    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung für diese Sitzung freigeschaltet!</string>
+
+    <!-- Pro-Status -->
+    <string name="pro_status_title">Pro-Status</string>
+    <string name="pro_status_tooltip">Informationen zum Pro-Status</string>
+
+    <!-- Werbung -->
+    <string name="ads_section_tooltip">Hier kannst du Werbung aktivieren oder deaktivieren.</string>
+
+    <!-- Export/Import Sektion -->
+    <string name="export_section">Export/Import</string>
+    <string name="export_section_tooltip">Exportiere oder importiere deine Favoriten und Wunschliste.</string>
+    <string name="export_favorites">Favoriten exportieren</string>
+    <string name="export_wishlist">Wunschliste exportieren</string>
+    <string name="export">Exportieren</string>
+    <string name="export_unlocked">Freigeschaltet</string>
 </resources>

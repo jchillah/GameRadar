@@ -10,6 +10,7 @@ import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
@@ -38,10 +39,13 @@ fun WishlistScreen(
     val error by viewModel.error.collectAsState()
     val exportResult by viewModel.exportResult.collectAsState()
     val importResult by viewModel.importResult.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val canUseLauncher = context is ComponentActivity
+
+    var isExportUnlocked by rememberSaveable { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val rewardedAdWishlistRewardText = stringResource(R.string.rewarded_ad_wishlist_reward_text)
 
     val exportLauncher =
         if (canUseLauncher) {
@@ -65,6 +69,8 @@ fun WishlistScreen(
     // Korrektur: listToShow deklarieren (hier einfach die Wishlist, ggf. mit Suche kombinieren)
     val listToShow = wishlist
     val settingsViewModel: SettingsViewModel = koinViewModel()
+    val isProUser by settingsViewModel.proStatus.collectAsState()
+    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
 
     LazyColumn(
@@ -75,24 +81,30 @@ fun WishlistScreen(
         item {
             WishlistHeader()
             Spacer(modifier = Modifier.height(8.dp))
-            val settingsViewModel: SettingsViewModel = koinViewModel()
-            val isProUser by settingsViewModel.proStatus.collectAsState()
-            val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
-            // imageQuality entfernt, da nicht verwendet
             if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
                 RewardedAdButton(
                     adUnitId = "ca-app-pub-3940256099942544/5224354917",
                     adsEnabled = adsEnabled,
                     isProUser = isProUser,
-                    rewardText = stringResource(R.string.rewarded_ad_wishlist_reward_text),
-                    onReward = { /* TODO: Export freischalten oder Snackbar anzeigen */ }
+                    rewardText = rewardedAdWishlistRewardText,
+                    onReward = { isExportUnlocked = true }
                 )
             }
             WishlistExportImportBar(
                 canUseLauncher = canUseLauncher,
-                onExport = { exportLauncher?.launch("wishlist_export.json") },
+                onExport = {
+                    if (isProUser || isExportUnlocked) {
+                        exportLauncher?.launch("wishlist_export.json")
+                    } else {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(rewardedAdWishlistRewardText)
+                        }
+                    }
+                },
                 onImport = { importLauncher?.launch(arrayOf("application/json")) }
             )
+            // SnackbarHost für Feedback
+            Box(modifier = Modifier.fillMaxWidth()) { SnackbarHost(hostState = snackbarHostState) }
             Spacer(modifier = Modifier.height(8.dp))
         }
         if (isLoading) {

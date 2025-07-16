@@ -5,6 +5,7 @@ import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
@@ -14,6 +15,7 @@ import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 
 @Composable
@@ -29,6 +31,11 @@ fun CacheManagementCard(
         val settingsViewModel: SettingsViewModel = koinViewModel()
         val isProUser by settingsViewModel.proStatus.collectAsState()
         val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
+
+        var isCacheOptimizeUnlocked by rememberSaveable { mutableStateOf(isProUser) }
+        val snackbarHostState = remember { SnackbarHostState() }
+        val coroutineScope = rememberCoroutineScope()
+        val rewardedAdCacheRewardText = stringResource(R.string.rewarded_ad_cache_reward_text)
 
         Card(
                 modifier = modifier.fillMaxWidth(),
@@ -120,7 +127,18 @@ fun CacheManagementCard(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                                 OutlinedButton(
-                                        onClick = onOptimizeCache,
+                                        onClick = {
+                                                if (isProUser || isCacheOptimizeUnlocked) {
+                                                        onOptimizeCache()
+                                                } else {
+                                                        coroutineScope.launch {
+                                                                snackbarHostState.showSnackbar(
+                                                                        rewardedAdCacheRewardText
+                                                                )
+                                                        }
+                                                }
+                                        },
+                                        enabled = isProUser || isCacheOptimizeUnlocked,
                                         modifier = Modifier.weight(1f),
                                         colors =
                                                 ButtonDefaults.outlinedButtonColors(
@@ -168,9 +186,10 @@ fun CacheManagementCard(
                                                 stringResource(
                                                         R.string.rewarded_ad_cache_reward_text
                                                 ),
-                                        onReward = onOptimizeCache
+                                        onReward = { isCacheOptimizeUnlocked = true }
                                 )
                         }
+                        SnackbarHost(hostState = snackbarHostState)
                 }
         }
 }

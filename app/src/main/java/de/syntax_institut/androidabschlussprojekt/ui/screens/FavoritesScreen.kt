@@ -42,12 +42,14 @@ fun FavoritesScreen(
     navController: NavHostController,
     viewModel: FavoritesViewModel = koinViewModel(),
 ) {
+    val rewardedAdFavoritesRewardText = stringResource(R.string.rewarded_ad_favorites_reward_text)
     val state by viewModel.uiState.collectAsState()
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     val isProUser by settingsViewModel.proStatus.collectAsState()
     val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val isOnline by
     NetworkUtils.observeNetworkStatus(context)
@@ -63,6 +65,11 @@ fun FavoritesScreen(
             onDeleteAllClick = { showDeleteConfirmation = true },
             deleteAllContentDescription = deleteAllContentDescription
         )
+        // Statistiken nur anzeigen, wenn Favoriten vorhanden
+        if (state.favorites.isNotEmpty()) {
+            val genreCounts = state.favorites.flatMap { it.genres }.groupingBy { it }.eachCount()
+            GameStatsChart(genreCounts = genreCounts, modifier = Modifier.fillMaxWidth())
+        }
         // Favoriten Export/Import-Bar
         val canUseLauncher = context is ComponentActivity
         val coroutineScope = rememberCoroutineScope()
@@ -96,14 +103,27 @@ fun FavoritesScreen(
                 adsEnabled = adsEnabled,
                 isProUser = isProUser,
                 rewardText = stringResource(R.string.rewarded_ad_favorites_reward_text),
-                onReward = { /* TODO: Export freischalten oder Snackbar anzeigen */ }
+                onReward = { /* isExportUnlocked = true */ }
             )
         }
         WishlistExportImportBar(
             canUseLauncher = canUseLauncher,
-            onExport = { exportLauncher?.launch("favoritenliste_export.json") },
+            onExport = {
+                if (isProUser) {
+                    exportLauncher?.launch("favoritenliste_export.json")
+                } else {
+                    // Snackbar anzeigen, wenn Export nicht freigeschaltet
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            rewardedAdFavoritesRewardText
+                        )
+                    }
+                }
+            },
             onImport = { importLauncher?.launch(arrayOf("application/json")) }
         )
+        // SnackbarHost für Feedback
+        Box(modifier = Modifier.fillMaxWidth()) { SnackbarHost(hostState = snackbarHostState) }
         Spacer(modifier = Modifier.height(8.dp))
         if (state.favorites.isNotEmpty()) {
             Button(

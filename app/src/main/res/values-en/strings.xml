@@ -425,4 +425,24 @@
     <string name="pro_status_inactive">Pro version not active</string>
     <string name="pro_status_inactive_sub">Ads are shown. Enjoy GameRadar ad-free with the Pro version.</string>
     <string name="pro_status_upgrade">Upgrade</string>
+    <string name="pro_ads_switch_label">Ads for Pro users</string>
+    <string name="pro_ads_switch_desc">Pro users can voluntarily enable ads to support the project.</string>
+    <string name="rewarded_ad_reward_text">1 day ad-free as a reward!</string>
+    <string name="rewarded_ad_favorites_reward_text">Favorites export unlocked for this session!</string>
+    <string name="rewarded_ad_wishlist_reward_text">Wishlist export unlocked for this session!</string>
+    <string name="rewarded_ad_detail_reward_text">Unlock exclusive statistics</string>
+    <string name="rewarded_ad_cache_reward_text">Cache optimization unlocked for this session!</string>
+
+    <!-- GameStatsChart -->
+    <string name="pro_status_title">Pro Status</string>
+    <string name="pro_status_tooltip">Pro users get exclusive benefits and no ads.</string>
+    <string name="ads_section_tooltip">Here you can voluntarily enable or disable ads.</string>
+    <string name="export_section">Export &amp; Import</string>
+    <string name="export_section_tooltip">Export or import your favorites and wishlist as a file.</string>
+    <string name="export_favorites">Export favorites</string>
+    <string name="export">Export</string>
+    <string name="export_unlocked">Export unlocked for this session!</string>
+    <string name="export_wishlist">Export wishlist</string>
+
+
 </resources> 

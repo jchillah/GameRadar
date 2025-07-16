@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.geometry.*
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 
@@ -22,14 +23,9 @@ import androidx.compose.ui.unit.*
 fun GameStatsChart(genreCounts: Map<String, Int>, modifier: Modifier = Modifier) {
     val sorted = genreCounts.entries.sortedByDescending { it.value }.take(5)
     val total = genreCounts.values.sum().coerceAtLeast(1)
-    val barColors =
-        listOf(
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.tertiary,
-            MaterialTheme.colorScheme.primaryContainer,
-            MaterialTheme.colorScheme.secondaryContainer
-        )
+    // Dynamische Bar-Farbe je nach Theme
+    val isDark = isSystemInDarkTheme()
+    val barColor = if (isDark) Color(0xFF00C853) else Color(0xFFFFD700)
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -67,7 +63,6 @@ fun GameStatsChart(genreCounts: Map<String, Int>, modifier: Modifier = Modifier)
             Column(modifier = Modifier.widthIn(min = 220.dp, max = 400.dp)) {
                 sorted.forEachIndexed { idx, (label, value) ->
                     val percent = (value * 100f / total).toInt()
-                    val barColor = barColors[idx % barColors.size]
                     val animatedPercent by
                     animateFloatAsState(targetValue = percent / 100f, label = "barAnim$idx")
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -96,7 +91,8 @@ fun GameStatsChart(genreCounts: Map<String, Int>, modifier: Modifier = Modifier)
                                     color = barColor,
                                     topLeft = Offset.Zero,
                                     size = size,
-                                    cornerRadius = CornerRadius(8f, 8f)
+                                    cornerRadius =
+                                        androidx.compose.ui.geometry.CornerRadius(8f, 8f)
                                 )
                             }
                         }
