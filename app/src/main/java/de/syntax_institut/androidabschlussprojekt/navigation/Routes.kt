@@ -7,6 +7,7 @@ object Routes {
     const val DETAIL = "detail/{gameId}"
     const val SETTINGS = "settings"
     const val WISHLIST = "wishlist"
+    const val STATS = "stats"
 
     /** Generiert eine Route für die Detailansicht mit einer konkreten Spiel-ID */
     fun detail(gameId: Int) = "detail/$gameId"

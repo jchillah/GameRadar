@@ -17,26 +17,25 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.compose.*
 import java.util.concurrent.*
 
-/**
- * App Composable
- * Hauptcontainer für die gesamte App mit Navigation und Theme.
- */
+/** AppRoot Composable Hauptcontainer für die gesamte App mit Navigation und Theme. */
 @Composable
-fun App() {
+fun AppRoot() {
     val settingsRepository: SettingsRepository = koinInject()
     val darkModeEnabled by settingsRepository.darkModeEnabled.collectAsState()
     var isLoaded by remember { mutableStateOf(true) }
     val context = LocalContext.current
-    val isOnline by NetworkUtils.observeNetworkStatus(context)
+    val isOnline by
+    NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
 
     LaunchedEffect(Unit) {
         AppAnalytics.trackScreenView("AppStart")
         AppAnalytics.trackEvent("app_started")
         val workManager = WorkManager.getInstance(context)
-        val workRequest = PeriodicWorkRequestBuilder<NewGameWorker>(6, TimeUnit.HOURS)
-            .addTag(Constants.NEW_GAME_WORKER_NAME)
-            .build()
+        val workRequest =
+            PeriodicWorkRequestBuilder<NewGameWorker>(6, TimeUnit.HOURS)
+                .addTag(Constants.NEW_GAME_WORKER_NAME)
+                .build()
         workManager.enqueueUniquePeriodicWork(
             Constants.NEW_GAME_WORKER_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
@@ -59,9 +58,13 @@ fun App() {
                         if (!isOnline) {
                             OfflineBanner(
                                 isOffline = true,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(WindowInsets.statusBars.asPaddingValues())
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            WindowInsets.statusBars
+                                                .asPaddingValues()
+                                        )
                             )
                         }
                         MainNavigation()

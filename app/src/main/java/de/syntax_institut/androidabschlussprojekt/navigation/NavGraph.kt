@@ -59,5 +59,6 @@ fun NavGraph(
         ) { SettingsScreen() }
 
         composable(WISHLIST) { WishlistScreen(navController = navController) }
+        composable("stats") { StatsScreen(navController = navController) }
     }
 }

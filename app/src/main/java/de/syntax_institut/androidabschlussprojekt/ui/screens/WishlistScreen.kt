@@ -4,13 +4,13 @@ import android.net.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.activity.result.contract.*
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -38,10 +39,13 @@ fun WishlistScreen(
     val error by viewModel.error.collectAsState()
     val exportResult by viewModel.exportResult.collectAsState()
     val importResult by viewModel.importResult.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val canUseLauncher = context is ComponentActivity
+
+    var isExportUnlocked by rememberSaveable { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val rewardedAdWishlistRewardText = stringResource(R.string.rewarded_ad_wishlist_reward_text)
 
     val exportLauncher =
         if (canUseLauncher) {
@@ -64,6 +68,10 @@ fun WishlistScreen(
 
     // Korrektur: listToShow deklarieren (hier einfach die Wishlist, ggf. mit Suche kombinieren)
     val listToShow = wishlist
+    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val isProUser by settingsViewModel.proStatus.collectAsState()
+    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
+    val imageQuality by settingsViewModel.imageQuality.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -71,15 +79,32 @@ fun WishlistScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            // Korrektur: WishlistHeader nur mit erlaubten Parametern aufrufen
             WishlistHeader()
             Spacer(modifier = Modifier.height(8.dp))
-            // Export/Import-Bar korrekt einbauen
+            if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
+                RewardedAdButton(
+                    adUnitId = "ca-app-pub-3940256099942544/5224354917",
+                    adsEnabled = adsEnabled,
+                    isProUser = isProUser,
+                    rewardText = rewardedAdWishlistRewardText,
+                    onReward = { isExportUnlocked = true }
+                )
+            }
             WishlistExportImportBar(
                 canUseLauncher = canUseLauncher,
-                onExport = { exportLauncher?.launch("wishlist_export.json") },
+                onExport = {
+                    if (isProUser || isExportUnlocked) {
+                        exportLauncher?.launch("wishlist_export.json")
+                    } else {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(rewardedAdWishlistRewardText)
+                        }
+                    }
+                },
                 onImport = { importLauncher?.launch(arrayOf("application/json")) }
             )
+            // SnackbarHost für Feedback
+            Box(modifier = Modifier.fillMaxWidth()) { SnackbarHost(hostState = snackbarHostState) }
             Spacer(modifier = Modifier.height(8.dp))
         }
         if (isLoading) {
@@ -105,7 +130,9 @@ fun WishlistScreen(
                     },
                     isInWishlist = true,
                     showWishlistButton = true,
-                    onWishlistChanged = { checked -> viewModel.toggleWishlist(game) }
+                    showFavoriteIcon = false,
+                    onWishlistChanged = { checked -> viewModel.toggleWishlist(game) },
+                    imageQuality = imageQuality
                 )
             }
         }
@@ -148,49 +175,14 @@ fun WishlistScreen(
     val detailGame by viewModel.detailGame.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     if (detailGame != null) {
-        ModalBottomSheet(
-            onDismissRequest = { viewModel.clearDetailGame() },
+        WishlistDetailModal(
+            game = detailGame!!,
+            onClose = { viewModel.clearDetailGame() },
+            onShowDetails = {
+                navController.navigateSingleTopTo(Routes.detail(detailGame!!.id))
+            },
             sheetState = sheetState
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(text = detailGame!!.title, style = MaterialTheme.typography.titleLarge)
-                if (!detailGame!!.imageUrl.isNullOrBlank()) {
-                    // Bild anzeigen (z.B. mit Coil)
-                    Image(
-                        painter =
-                            coil3.compose.rememberAsyncImagePainter(detailGame!!.imageUrl),
-                        contentDescription = detailGame!!.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
-                    )
-                }
-                Text(
-                    text = detailGame!!.description
-                        ?: stringResource(R.string.detail_no_description),
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 6,
-                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        onClick = {
-                            viewModel.clearDetailGame()
-                            navController.navigateSingleTopTo(Routes.detail(detailGame!!.id))
-                        }
-                    ) { Text(stringResource(R.string.wishlist_full_details)) }
-                    OutlinedButton(onClick = { viewModel.clearDetailGame() }) {
-                        Text(stringResource(R.string.action_close))
-                    }
-                }
-            }
-        }
+        )
     }
 }
 

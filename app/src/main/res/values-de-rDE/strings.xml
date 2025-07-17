@@ -410,4 +410,46 @@
     <string name="wishlist_import_success">Wunschliste erfolgreich importiert!</string>
     <string name="wishlist_export_error">Fehler beim Exportieren der Wunschliste</string>
     <string name="wishlist_import_error">Fehler beim Importieren der Wunschliste</string>
+    <string name="wishlist_count">Wunschlistenzähler: %1$d</string>
+    <string name="wishlist_clear_all">Wunschliste leeren</string>
+    <string name="wishlist_game_id_for_details">Spiel-ID für Details</string>
+    <string name="wishlist_show_details">Details anzeigen</string>
+    <string name="wishlist_full_details">Vollständige Details</string>
+
+    <!-- Analytics Section -->
+    <string name="analytics_section">Analytics</string>
+    <string name="analytics_enabled">Analytics aktivieren</string>
+    <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
+    <string name="ads_section">Werbung</string>
+    <string name="ads_enabled">Werbung anzeigen</string>
+    <string name="ads_enabled_description">Erlaube das Anzeigen von Banner-Werbung (AdMob). Unterstützt die Weiterentwicklung der App. Es werden keine personalisierten Daten verwendet.</string>
+    <string name="pro_status_active">Pro-Version aktiv – werbefrei</string>
+    <string name="pro_status_active_sub">Du unterstützt die Weiterentwicklung und siehst keine Werbung.</string>
+    <string name="pro_status_inactive">Pro-Version nicht aktiv</string>
+    <string name="pro_status_inactive_sub">Werbung wird angezeigt. Mit Pro-Version genießt du GameRadar werbefrei.</string>
+    <string name="pro_status_upgrade">Upgrade</string>
+    <string name="pro_ads_switch_label">Werbung anzeigen</string>
+    <string name="pro_ads_switch_desc">Erlaube freiwillig Werbung, um die App zu unterstützen (auch als Pro-Nutzer).</string>
+
+    <!-- Rewarded Ad Belohnungstexte -->
+    <string name="rewarded_ad_reward_text">1 Tag werbefrei als Belohnung!</string>
+    <string name="rewarded_ad_favorites_reward_text">Favoriten-Export freischalten</string>
+    <string name="rewarded_ad_wishlist_reward_text">Wunschlisten-Export freischalten</string>
+    <string name="rewarded_ad_detail_reward_text">Exklusive Statistiken freischalten</string>
+    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung freischalten</string>
+
+    <!-- Pro-Status -->
+    <string name="pro_status_title">Pro-Status</string>
+    <string name="pro_status_tooltip">Informationen zum Pro-Status</string>
+
+    <!-- Werbung -->
+    <string name="ads_section_tooltip">Hier kannst du Werbung aktivieren oder deaktivieren.</string>
+
+    <!-- Export/Import Sektion -->
+    <string name="export_section">Export/Import</string>
+    <string name="export_section_tooltip">Exportiere oder importiere deine Favoriten und Wunschliste.</string>
+    <string name="export_favorites">Favoriten exportieren</string>
+    <string name="export_wishlist">Wunschliste exportieren</string>
+    <string name="export">Exportieren</string>
+    <string name="export_unlocked">Freigeschaltet</string>
 </resources>

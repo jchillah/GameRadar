@@ -1,153 +1,57 @@
-# GameFinder 🎮
+# GameRadar
 
-**Entdecke deine nächste Gaming-Leidenschaft – modern, schnell, fehlerrobust.**
-
-GameFinder ist eine moderne Android-App, um neue Spiele zu entdecken, zu filtern, zu bewerten und
-Favoriten zu speichern. Entwickelt mit **Jetpack Compose**, **MVVM**, **Room** und der **RAWG-API
-** – für ein konsistentes, performantes und fehlerfreies Nutzererlebnis.
-
----
-
-## Highlights
-
-- **Edge-to-Edge-Design:** Inhalte beginnen direkt unter der Statusleiste, keine doppelten AppBars,
-  keine verschachtelten Scaffold-Strukturen.
-- **Konsistente UI:** Einheitliche Titelzeile mit Actions (Teilen, Favorit, Refresh) auf allen
-  Hauptscreens.
-- **Dark-/Light-Mode-Umschaltung:** Nutzer können das Design jederzeit in den Einstellungen
-  wechseln.
-- **Settings-Screen:** Alle App-Einstellungen (Design, Sprache, Bildqualität, Benachrichtigungen,
-  etc.) zentral und MVVM-konform.
-- **Fehlerbehandlung pro Feld:** Fehler wie „Keine Website verfügbar“ oder „Keine Screenshots
-  verfügbar“ werden gezielt im jeweiligen Bereich angezeigt.
-- **Null-Safety & Logging:** Alle Datenzugriffe sind null-sicher, Navigation und Datenübergaben
-  werden geloggt.
-- **Navigation nur mit primitiven Typen:** Es werden ausschließlich IDs oder Strings übergeben,
-  keine komplexen Objekte.
-- **Offline-First:** Favoriten und Detaildaten werden lokal mit Room gecacht.
-- **Moderne Compose-Architektur:** Klare Trennung von UI, State und Logik, State-Hoisting, keine
-  UI-Logik im ViewModel.
-
----
-
-## Screenshots
-
-Hier ein Überblick über die wichtigsten App-Bereiche im Entwickler Modus:
-
-| Startscreen               | Suche                     | Detailansicht              |
-|---------------------------|---------------------------|----------------------------|
-| ![Start](img/screen1.png) | ![Suche](img/screen2.png) | ![Detail](img/screen3.png) |
-
-| Favoriten                     | Einstellungen                     | Dark Mode                     | Fehlerfall                 |
-|-------------------------------|-----------------------------------|-------------------------------|----------------------------|
-| ![Favoriten](img/screen4.png) | ![Einstellungen](img/screen5.png) | ![Dark Mode](img/screen6.png) | ![Fehler](img/screen7.png) |
-
----
+GameRadar ist eine moderne Android-App zur Suche, Verwaltung und Analyse von Videospielen. Die App
+nutzt die RAWG-API und bietet Favoriten, Wunschliste, Filter, Statistiken und viele
+Einstellungsmöglichkeiten.
 
 ## Features
 
-- 🔍 **Spielsuche** nach Titel, Plattform, Genre, Bewertung
-- 🏷️ **Filter & Sortierung** (Plattform, Genre, Bewertung, Erscheinungsjahr)
-- ⭐ **Favoriten speichern** (Offline mit Room)
-- 📝 **Detailseite** mit Beschreibung, Galerie, Entwickler, Plattformen, Metacritic, Spielzeit
-- 🆕 **Listenansicht** für Neuerscheinungen & Top-rated
-- 📤 **Spiele teilen** via Link
-- ⚡ **Offline-Cache** für schnelle Anzeige & Fehlervermeidung
-- 🎨 **Jetpack Compose UI** – modern, performant, flexibel
-- 🏗️ **MVVM-Architektur** mit sauberem Repository-Pattern
-- ⏳ **Ladeindikator & Error-UI** mit Retry-Funktion (zentralisierte Loading-Komponente)
-- 🛡️ **Fehlerhinweise direkt im Feld** (z. B. „Keine Screenshots verfügbar“)
-- 📝 **Logging** für Navigation und Datenübergabe
-- 🌓 **Dark-/Light-Mode** per Schalter im SettingsScreen
-- ⚙️ **SettingsScreen**: Sprache, Bildqualität, Benachrichtigungen, Design, u.v.m.
+- Spiele-Suche mit Filter (Plattform, Genre, Bewertung)
+- Favoritenverwaltung (mit Export/Import)
+- Wunschliste (mit Export/Import)
+- Spielstatistiken (Genres, Plattformverteilung, Favoritenanzahl)
+- Responsive UI für Tablets, Foldables und Landscape
+- Material3-Design
+- App-Einstellungen: Analytics-Opt-In, Bildqualität, Theme-Wahl
+- Offline-Cache
+- Mehrsprachigkeit (Deutsch, Englisch)
 
----
+## Ordnerstruktur
 
-## Technischer Aufbau
-
-### Projektstruktur (MVVM + Compose)
-
-```bash
-de.syntax_institut.androidabschlussprojekt
-├── data
-│   ├── local         # Room: Entities, DAOs, DB, Models
-│   ├── remote        # Retrofit DTOs + API-Service
-│   └── repositories  # Kommunikation zwischen Datenquellen & Settings
-├── domain           # Geschäftslogik, Domain-Modelle (z. B. Genre, Platform)
-├── di               # Dependency Injection (Koin)
-├── navigation       # Jetpack Navigation Komponenten
-├── ui
-│   ├── components   # Wiederverwendbare Composables (common, detail, search, settings)
-│   ├── screens      # Hauptscreens (Search, Detail, Favorites, Settings)
-│   ├── states       # UI-State-Modelle
-│   ├── theme        # Farben, Typographie, Shapes
-│   └── viewmodels   # ViewModel-Logik & UI-State
-├── utils            # Hilfsklassen (z. B. Resource.kt, NetworkUtils)
-└── services         # z. B. Background-Tasks
+```
+app/
+  src/
+    main/
+      java/de/syntax_institut/androidabschlussprojekt/
+        data/           # Datenhaltung, lokale/remote Quellen, Repositories
+        domain/         # Domain-Modelle und UseCases
+        di/             # Dependency Injection
+        navigation/     # Navigation und Routen
+        services/       # Hintergrunddienste
+        ui/             # UI-Komponenten, Screens, ViewModels, States, Theme
+        utils/          # Hilfsfunktionen, Logger, Analytics
+      res/
+        drawable/       # Icons und Bilder
+        values/         # Strings, Farben, Themes
+        xml/            # Backup/Restore-Regeln
+    test/               # Unit- und UI-Tests
+  img/                  # Screenshots
 ```
 
-### Datenhaltung & API
+## Screenshots
 
-- **Favoriten & Detail-Cache:** Offline verfügbar mit Room
-- **RAWG Video Games API:**
-  - Base URL: `https://api.rawg.io/api/`
-  - Endpoints: `/games?search=...`, `/games/{id}`
-  - Filter: Plattform, Genre, Bewertung, Datum
-  - API-Key in `local.properties` eintragen
-    ```bash
-    API_KEY=YOUR_API_KEY
-    ```
+| Suche                           | Favoriten                     | Wunschliste                       | Einstellungen                     |
+|---------------------------------|-------------------------------|-----------------------------------|-----------------------------------|
+| ![Suche](img/screen1.png)       | ![Favoriten](img/screen2.png) | ![Wunschliste](img/screen3.png)   | ![Einstellungen](img/screen4.png) |
+| ![Statistiken](img/screen5.png) | ![Detail](img/screen6.png)    | ![Tablet-Layout](img/screen7.png) | ![Export/Import](img/screen8.png) |
 
-### Frameworks & Libraries
+## Installation
 
-- **Retrofit** + **Moshi** für API
-- **Room** für lokale Datenhaltung
-- **Jetpack Compose** (UI) + Navigation
-- **Coil** für Bild-Loading
-- **Accompanist** für Paging & SwipeRefresh
-- **Koin** für Dependency Injection
-- Optional: **Firebase Crashlytics & Analytics**
-
----
-
-## Fehlerbehandlung & UX
-
-- **Fehler pro Feld:**  Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich Echte
-  API-/Netzwerkfehler? → Globale ErrorCard mit Retry
-- **Null-Safety:**  Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
-- **Logging:**  Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
-- **Keine komplexen Objekte in Navigation:**  Es werden nur primitive Typen (Int, String) übergeben
-
----
-
-## Setup
-
-1. **API Key** erstellen: [RAWG API Docs](https://rawg.io/apidocs)
-2. Key in `local.properties` eintragen: `RAWG_API_KEY=dein_key`
-3. Projekt in Android Studio öffnen und ausführen
-
----
-
-## Ausblick
-
-- [x] Push-Notifikationen zu neuen Top-Spielen
-- [x] Dark Mode (umschaltbar)
-- [x] Vollbild-Screenshot-Galerie in Detailseite
-- [x] Fehlerbehandlung pro Feld (statt global)
-- [x] Logging für Navigation und Fehler
-- [x] Erweiterte Paging-Unterstützung
-- [x] SettingsScreen mit allen wichtigen App-Optionen
-- [ ] Firebase-Integration für Sync & Analytics
-
----
+- Android Studio Hedgehog oder neuer
+- RAWG-API-Key in `local.properties` eintragen: `RAWG_API_KEY=...any key...`
+- Projekt öffnen und auf ein Gerät/Emulator ausführen
 
 ## Lizenz
 
-MIT License – Siehe [LICENSE](LICENSE) für weitere Informationen.
-
----
-
-**Tipp:**  
-Das Projekt ist ein modernes Compose-Vorzeigeprojekt – ideal als Lern- und Referenzbasis für saubere
-Android-Architektur!
+MIT License
 

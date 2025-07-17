@@ -3,9 +3,10 @@ package de.syntax_institut.androidabschlussprojekt.data.local.mapper
 import com.squareup.moshi.*
 import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 
 object WishlistGameMapper {
-    private val moshi = Moshi.Builder().build()
+    private val moshi = MoshiProvider.moshi
     private val stringListAdapter =
         moshi.adapter<List<String>>(
             Types.newParameterizedType(List::class.java, String::class.java)

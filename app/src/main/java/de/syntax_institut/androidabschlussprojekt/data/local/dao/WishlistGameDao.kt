@@ -24,6 +24,8 @@ interface WishlistGameDao {
     @Query("DELETE FROM wishlist_games")
     suspend fun clearAllWishlistGames()
 
-    @Query("SELECT * FROM wishlist_games WHERE title LIKE '%' || :query || '%' ORDER BY title ASC")
+    @Query(
+        "SELECT * FROM wishlist_games WHERE title LIKE '%' || :query || '%' COLLATE NOCASE ORDER BY title ASC"
+    )
     fun searchWishlistGames(query: String): Flow<List<WishlistGameEntity>>
 }

@@ -36,6 +36,9 @@ class SettingsRepository(context: Context) {
     private val _analyticsEnabled = MutableStateFlow(false)
     val analyticsEnabled: StateFlow<Boolean> = _analyticsEnabled.asStateFlow()
 
+    private val _adsEnabled = MutableStateFlow(false)
+    val adsEnabled: StateFlow<Boolean> = _adsEnabled.asStateFlow()
+
     init {
         loadSettings()
     }
@@ -85,6 +88,11 @@ class SettingsRepository(context: Context) {
         saveSettings()
     }
 
+    fun setAdsEnabled(enabled: Boolean) {
+        _adsEnabled.value = enabled
+        saveSettings()
+    }
+
     private fun saveSettings() {
         sharedPreferences.edit().apply {
             putBoolean(Constants.PREF_NOTIFICATIONS_ENABLED, _notificationsEnabled.value)
@@ -96,6 +104,7 @@ class SettingsRepository(context: Context) {
             putBoolean(Constants.PREF_SHARE_GAMES_ENABLED, _shareGamesEnabled.value)
             putBoolean(Constants.PREF_DARK_MODE_ENABLED, _darkModeEnabled.value)
             putBoolean("analytics_enabled", _analyticsEnabled.value)
+            putBoolean("ads_enabled", _adsEnabled.value)
             apply()
         }
     }
@@ -123,5 +132,6 @@ class SettingsRepository(context: Context) {
         _darkModeEnabled.value =
             sharedPreferences.getBoolean(Constants.PREF_DARK_MODE_ENABLED, false)
         _analyticsEnabled.value = sharedPreferences.getBoolean("analytics_enabled", false)
+        _adsEnabled.value = sharedPreferences.getBoolean("ads_enabled", false)
     }
 }
