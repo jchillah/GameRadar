@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.*
+import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.viewinterop.*
 import androidx.core.view.*
@@ -134,37 +135,100 @@ class TrailerPlayerActivity : ComponentActivity() {
         videoTitle: String,
         onClose: () -> Unit,
     ) {
+        var playbackError by remember { mutableStateOf<String?>(null) }
+        var retryKey by remember { mutableIntStateOf(0) }
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)) {
-            // ExoPlayer View
-            AndroidView(
-                factory = { ctx ->
-                    PlayerView(ctx).apply {
-                        player =
-                            ExoPlayer.Builder(ctx).build().also { exoPlayer ->
-                                player = exoPlayer
-                                val mediaItem = MediaItem.fromUri(videoUrl)
-                                exoPlayer.setMediaItem(mediaItem)
-                                exoPlayer.prepare()
-                                exoPlayer.playWhenReady = true
-                                exoPlayer.addListener(
-                                    object : Player.Listener {
-                                        override fun onPlaybackStateChanged(
-                                            playbackState: Int,
-                                        ) {
-                                            super.onPlaybackStateChanged(playbackState)
-                                            if (playbackState == Player.STATE_ENDED) {
-                                                finish()
+            if (playbackError == null) {
+                AndroidView(
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            player =
+                                ExoPlayer.Builder(ctx).build().also { exoPlayer ->
+                                    player = exoPlayer
+                                    val mediaItem = MediaItem.fromUri(videoUrl)
+                                    exoPlayer.setMediaItem(mediaItem)
+                                    exoPlayer.prepare()
+                                    exoPlayer.playWhenReady = true
+                                    exoPlayer.addListener(
+                                        object : Player.Listener {
+                                            override fun onPlaybackStateChanged(
+                                                playbackState: Int,
+                                            ) {
+                                                super.onPlaybackStateChanged(
+                                                    playbackState
+                                                )
+                                                if (playbackState == Player.STATE_ENDED
+                                                ) {
+                                                    finish()
+                                                }
+                                            }
+
+                                            override fun onPlayerError(
+                                                error: PlaybackException,
+                                            ) {
+                                                // Prüfe auf Netzwerkfehler
+                                                if (error.errorCode ==
+                                                    PlaybackException
+                                                        .ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
+                                                    error.cause is
+                                                            java.net.UnknownHostException ||
+                                                    error.cause?.message
+                                                        ?.contains(
+                                                            "Unable to resolve host"
+                                                        ) == true
+                                                ) {
+                                                    playbackError =
+                                                        "Trailer kann nicht geladen werden. Bitte überprüfe deine Internetverbindung."
+                                                } else {
+                                                    playbackError =
+                                                        "Fehler beim Abspielen des Trailers: ${error.localizedMessage ?: "Unbekannter Fehler"}"
+                                                }
                                             }
                                         }
-                                    }
-                                )
-                            }
+                                    )
+                                }
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                // Fehleranzeige mit Retry
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(64.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = playbackError ?: "Fehler beim Abspielen des Trailers.",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(horizontal = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Button(
+                        onClick = {
+                            playbackError = null
+                            retryKey++
+                        }
+                    ) {
+                        Icon(Icons.Default.Refresh, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Erneut versuchen")
                     }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+                }
+            }
             // Schließen Button
             IconButton(
                 onClick = {

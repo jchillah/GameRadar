@@ -83,7 +83,7 @@ fun FavoritesScreen(
                 Button(
                     onClick = {
                         if (isProUser || isStatsUnlocked) {
-                            // Nichts tun, Chart wird angezeigt
+                            navController.navigateSingleTopTo(Routes.STATS)
                         } else {
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(statsRewardText)
@@ -171,22 +171,6 @@ fun FavoritesScreen(
             // SnackbarHost für Feedback
             Box(modifier = Modifier.fillMaxWidth()) { SnackbarHost(hostState = snackbarHostState) }
             Spacer(modifier = Modifier.height(8.dp))
-        }
-        // Statistiken-Button für Navigation (optional)
-        if (state.favorites.isNotEmpty()) {
-            item {
-                Button(
-                    onClick = { navController.navigateSingleTopTo(Routes.STATS) },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Icon(Icons.Default.BarChart, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Statistiken anzeigen")
-                }
-            }
         }
         // Favoritenliste
         if (state.isLoading) {
