@@ -6,23 +6,19 @@ import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
-import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
-import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
-import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 
 /**
@@ -47,8 +43,6 @@ fun DetailScreen(
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
     val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
-    val isProUser by settingsViewModel.proStatus.collectAsState()
-    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
 
     LaunchedEffect(gameId) {
         AppAnalytics.trackScreenView("DetailScreen")
@@ -208,76 +202,12 @@ fun DetailScreen(
                                     }
                                 },
                             showEmptyState = true,
-                            gameHeaderImageUrl = game.imageUrl // Fallback für Thumbnails
+                            gameHeaderImageUrl = game.imageUrl
                         )
                     }
                     SectionCard(stringResource(R.string.game_website)) {
                         WebsiteSection(game.website, game.id)
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    var isExclusiveStatsUnlocked by rememberSaveable { mutableStateOf(isProUser) }
-                    val snackbarHostState = remember { SnackbarHostState() }
-                    val coroutineScope = rememberCoroutineScope()
-                    val exclusiveStatsRewardText =
-                        stringResource(R.string.rewarded_ad_exclusive_stats_reward_text)
-                    // RewardedAdButton für exklusive Statistiken
-                    if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
-                        RewardedAdButton(
-                            adUnitId = "ca-app-pub-3940256099942544/5224354917",
-                            adsEnabled = adsEnabled,
-                            isProUser = isProUser,
-                            rewardText =
-                                stringResource(
-                                    R.string.rewarded_ad_exclusive_stats_reward_text
-                                ),
-                            onReward = { isExclusiveStatsUnlocked = true }
-                        )
-                    }
-                    // Button für exklusive Statistiken
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Button(
-                            onClick = {
-                                if (isProUser || isExclusiveStatsUnlocked) {
-                                    // Nichts tun, Bereich wird angezeigt
-                                } else {
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(exclusiveStatsRewardText)
-                                    }
-                                }
-                            },
-                            enabled = isProUser || isExclusiveStatsUnlocked,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        ) {
-                            Icon(Icons.Default.BarChart, contentDescription = null)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(stringResource(R.string.show_exclusive_stats))
-                        }
-                    }
-                    // Exklusive Statistiken nur anzeigen, wenn freigeschaltet
-                    if (isProUser || isExclusiveStatsUnlocked) {
-                        // Platzhalter für exklusive Statistiken
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            elevation = CardDefaults.cardElevation(4.dp)
-                        ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = stringResource(R.string.exclusive_stats_title),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(stringResource(R.string.exclusive_stats_placeholder))
-                            }
-                        }
-                    }
-                    SnackbarHost(hostState = snackbarHostState)
-                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
         }

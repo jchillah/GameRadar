@@ -3,6 +3,7 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 import android.net.*
 import androidx.activity.*
 import androidx.activity.compose.*
+import androidx.activity.result.*
 import androidx.activity.result.contract.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -28,6 +29,12 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 
+/**
+ * Zeigt die Wunschliste des Nutzers mit Export/Import und RewardedAd-Integration.
+ *
+ * @param viewModel Das zugehörige ViewModel für die Wunschliste
+ * @param navController Der NavController für Navigation
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WishlistScreen(
@@ -43,11 +50,24 @@ fun WishlistScreen(
     val coroutineScope = rememberCoroutineScope()
     val canUseLauncher = context is ComponentActivity
 
-    var isExportUnlocked by rememberSaveable { mutableStateOf(false) }
+    // SettingsViewModel-Variablen vor ihrer Verwendung deklarieren
+    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val isProUser by settingsViewModel.proStatus.collectAsState()
+    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
+    val imageQuality by settingsViewModel.imageQuality.collectAsState()
+
+    var isExportUnlocked by rememberSaveable { mutableStateOf(isProUser) }
     val snackbarHostState = remember { SnackbarHostState() }
     val rewardedAdWishlistRewardText = stringResource(R.string.rewarded_ad_wishlist_reward_text)
 
-    val exportLauncher =
+    // Update isExportUnlocked basierend auf Pro-Status
+    LaunchedEffect(isProUser) {
+        if (isProUser) {
+            isExportUnlocked = true
+        }
+    }
+
+    val exportLauncher: ActivityResultLauncher<String>? =
         if (canUseLauncher) {
             rememberLauncherForActivityResult(
                 ActivityResultContracts.CreateDocument("application/json")
@@ -57,7 +77,7 @@ fun WishlistScreen(
                 }
             }
         } else null
-    val importLauncher =
+    val importLauncher: ActivityResultLauncher<Array<String>>? =
         if (canUseLauncher) {
             rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
                 uri?.let {
@@ -68,10 +88,6 @@ fun WishlistScreen(
 
     // Korrektur: listToShow deklarieren (hier einfach die Wishlist, ggf. mit Suche kombinieren)
     val listToShow = wishlist
-    val settingsViewModel: SettingsViewModel = koinViewModel()
-    val isProUser by settingsViewModel.proStatus.collectAsState()
-    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
-    val imageQuality by settingsViewModel.imageQuality.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -83,11 +99,12 @@ fun WishlistScreen(
             Spacer(modifier = Modifier.height(8.dp))
             if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
                 RewardedAdButton(
+                    modifier = Modifier.fillMaxWidth(),
                     adUnitId = "ca-app-pub-3940256099942544/5224354917",
                     adsEnabled = adsEnabled,
                     isProUser = isProUser,
                     rewardText = rewardedAdWishlistRewardText,
-                    onReward = { isExportUnlocked = true }
+                    onReward = { isExportUnlocked = true },
                 )
             }
             WishlistExportImportBar(

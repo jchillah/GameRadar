@@ -30,8 +30,8 @@
     <string name="favorites_empty_offline">Du bist offline. Deine Favoriten werden angezeigt, sobald du wieder online bist.</string>
     <string name="discover_games">Spiele entdecken</string>
     <string name="favorites_export_import">Favoriten-Export/-Import</string>
-    <string name="favorites_export">Favoriten exportieren</string>
-    <string name="favorites_import">Favoriten importieren</string>
+    <string name="favorites_export">Favoritenliste exportieren</string>
+    <string name="favorites_import">Favoritenliste importieren</string>
     <string name="export_import_preview_unavailable">Export/Import nicht im Preview verfügbar</string>
 
     <!-- Settings Screen -->
@@ -428,15 +428,21 @@
     <string name="pro_status_inactive">Pro-Version nicht aktiv</string>
     <string name="pro_status_inactive_sub">Werbung wird angezeigt. Mit Pro-Version genießt du GameRadar werbefrei.</string>
     <string name="pro_status_upgrade">Upgrade</string>
-    <string name="pro_ads_switch_label">Werbung anzeigen</string>
-    <string name="pro_ads_switch_desc">Erlaube freiwillig Werbung, um die App zu unterstützen (auch als Pro-Nutzer).</string>
+    <string name="pro_ads_switch_label">Werbung für Pro-User</string>
+    <string name="pro_ads_switch_desc">Pro-User können Werbung freiwillig aktivieren, um das Projekt zu unterstützen.</string>
 
     <!-- Rewarded Ad Belohnungstexte -->
     <string name="rewarded_ad_reward_text">1 Tag werbefrei als Belohnung!</string>
-    <string name="rewarded_ad_favorites_reward_text">Favoriten-Export freischalten</string>
-    <string name="rewarded_ad_wishlist_reward_text">Wunschlisten-Export freischalten</string>
+    <string name="rewarded_ad_favorites_reward_text">Export der Favoriten für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_wishlist_reward_text">Export der Wunschliste für diese Sitzung freigeschaltet!</string>
     <string name="rewarded_ad_detail_reward_text">Exklusive Statistiken freischalten</string>
-    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung freischalten</string>
+    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung für diese Sitzung freigeschaltet!</string>
+    <string name="show_stats">Statistiken anzeigen</string>
+    <string name="show_exclusive_stats">Exklusive Statistiken anzeigen</string>
+    <string name="rewarded_ad_stats_reward_text">Statistiken für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_exclusive_stats_reward_text">Exklusive Statistiken für diese Sitzung freigeschaltet!</string>
+    <string name="exclusive_stats_title">Exklusive Statistiken</string>
+    <string name="exclusive_stats_placeholder">Hier erscheinen exklusive Statistiken nach Freischaltung durch Werbung oder Pro-Status.</string>
 
     <!-- Pro-Status -->
     <string name="pro_status_title">Pro-Status</string>
@@ -452,4 +458,5 @@
     <string name="export_wishlist">Wunschliste exportieren</string>
     <string name="export">Exportieren</string>
     <string name="export_unlocked">Freigeschaltet</string>
+    <string name="trailer_playback_error">Fehler beim Abspielen des Trailers.</string>
 </resources>

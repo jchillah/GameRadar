@@ -10,6 +10,27 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
+/**
+ * ViewModel für die Wunschliste. Verwaltet alle UI-States, Datenoperationen und Export/Import-Logik
+ * für die Wishlist.
+ *
+ * - Kapselt alle Interaktionen mit den UseCases für Wishlist-Funktionen.
+ * - Hält State für die UI (Laden, Fehler, Export/Import-Status, Detailspiel).
+ * - Keine Context-Logik in der UI, alles über UseCases und Repository.
+ *
+ * @param addWishlistGameUseCase UseCase zum Hinzufügen eines Spiels zur Wunschliste
+ * @param removeWishlistGameUseCase UseCase zum Entfernen eines Spiels aus der Wunschliste
+ * @param toggleWishlistGameUseCase UseCase zum Umschalten des Wishlist-Status
+ * @param getAllWishlistGamesUseCase UseCase zum Laden aller Wunschlistenspiele
+ * @param clearAllWishlistGamesUseCase UseCase zum Leeren der Wunschliste
+ * @param isInWishlistUseCase UseCase zur Prüfung, ob ein Spiel auf der Wunschliste ist
+ * @param getWishlistGameByIdUseCase UseCase zum Laden eines bestimmten Wunschlistenspiels
+ * @param getWishlistCountUseCase UseCase zum Zählen der Wunschlistenspiele
+ * @param searchWishlistGamesUseCase UseCase für die Suche in der Wunschliste
+ * @param exportWishlistToUriUseCase UseCase für den Export der Wunschliste
+ * @param importWishlistFromUriUseCase UseCase für den Import der Wunschliste
+ * @param application Anwendungskontext (für AndroidViewModel)
+ */
 class WishlistViewModel(
     private val addWishlistGameUseCase: AddWishlistGameUseCase,
     private val removeWishlistGameUseCase: RemoveWishlistGameUseCase,

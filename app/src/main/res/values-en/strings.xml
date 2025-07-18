@@ -451,4 +451,6 @@
     <string name="exclusive_stats_title">Exclusive Statistics</string>
     <string name="exclusive_stats_placeholder">Exclusive statistics will appear here after unlocking via ad or Pro status.</string>
 
+    <string name="trailer_playback_error">Error playing trailer.</string>
+
 </resources> 

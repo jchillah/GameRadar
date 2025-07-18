@@ -137,6 +137,10 @@ class TrailerPlayerActivity : ComponentActivity() {
     ) {
         var playbackError by remember { mutableStateOf<String?>(null) }
         var retryKey by remember { mutableIntStateOf(0) }
+
+        // releasePlayer immer im onDispose aufrufen
+        DisposableEffect(Unit) { onDispose { releasePlayer() } }
+
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)) {
@@ -145,50 +149,56 @@ class TrailerPlayerActivity : ComponentActivity() {
                     factory = { ctx ->
                         PlayerView(ctx).apply {
                             player =
-                                ExoPlayer.Builder(ctx).build().also { exoPlayer ->
-                                    player = exoPlayer
-                                    val mediaItem = MediaItem.fromUri(videoUrl)
-                                    exoPlayer.setMediaItem(mediaItem)
-                                    exoPlayer.prepare()
-                                    exoPlayer.playWhenReady = true
-                                    exoPlayer.addListener(
-                                        object : Player.Listener {
-                                            override fun onPlaybackStateChanged(
-                                                playbackState: Int,
-                                            ) {
-                                                super.onPlaybackStateChanged(
-                                                    playbackState
-                                                )
-                                                if (playbackState == Player.STATE_ENDED
+                                this@TrailerPlayerActivity.player
+                                    ?: ExoPlayer.Builder(ctx).build().also {
+                                            exoPlayer,
+                                        ->
+                                        this@TrailerPlayerActivity.player = exoPlayer
+                                        val mediaItem = MediaItem.fromUri(videoUrl)
+                                        exoPlayer.setMediaItem(mediaItem)
+                                        exoPlayer.prepare()
+                                        exoPlayer.playWhenReady = true
+                                        exoPlayer.addListener(
+                                            object : Player.Listener {
+                                                override fun onPlaybackStateChanged(
+                                                    playbackState: Int,
                                                 ) {
-                                                    finish()
+                                                    super.onPlaybackStateChanged(
+                                                        playbackState
+                                                    )
+                                                    if (playbackState ==
+                                                        Player.STATE_ENDED
+                                                    ) {
+                                                        releasePlayer()
+                                                        finish()
+                                                    }
                                                 }
-                                            }
 
-                                            override fun onPlayerError(
-                                                error: PlaybackException,
-                                            ) {
-                                                // Prüfe auf Netzwerkfehler
-                                                if (error.errorCode ==
-                                                    PlaybackException
-                                                        .ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
-                                                    error.cause is
-                                                            java.net.UnknownHostException ||
-                                                    error.cause?.message
-                                                        ?.contains(
-                                                            "Unable to resolve host"
-                                                        ) == true
+                                                override fun onPlayerError(
+                                                    error: PlaybackException,
                                                 ) {
-                                                    playbackError =
-                                                        "Trailer kann nicht geladen werden. Bitte überprüfe deine Internetverbindung."
-                                                } else {
-                                                    playbackError =
-                                                        "Fehler beim Abspielen des Trailers: ${error.localizedMessage ?: "Unbekannter Fehler"}"
+                                                    if (error.errorCode ==
+                                                        PlaybackException
+                                                            .ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
+                                                        error.cause is
+                                                                java.net.UnknownHostException ||
+                                                        error.cause
+                                                            ?.message
+                                                            ?.contains(
+                                                                "Unable to resolve host"
+                                                            ) ==
+                                                        true
+                                                    ) {
+                                                        playbackError =
+                                                            "Trailer kann nicht geladen werden. Bitte überprüfe deine Internetverbindung."
+                                                    } else {
+                                                        playbackError =
+                                                            "Fehler beim Abspielen des Trailers: ${error.localizedMessage ?: "Unbekannter Fehler"}"
+                                                    }
                                                 }
                                             }
-                                        }
-                                    )
-                                }
+                                        )
+                                    }
                         }
                     },
                     modifier = Modifier.fillMaxSize()
@@ -210,7 +220,7 @@ class TrailerPlayerActivity : ComponentActivity() {
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = playbackError ?: "Fehler beim Abspielen des Trailers.",
+                        text = stringResource(R.string.trailer_playback_error),
                         color = Color.White,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(horizontal = 32.dp),
@@ -225,7 +235,7 @@ class TrailerPlayerActivity : ComponentActivity() {
                     ) {
                         Icon(Icons.Default.Refresh, contentDescription = null)
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Erneut versuchen")
+                        Text(stringResource(R.string.action_retry))
                     }
                 }
             }

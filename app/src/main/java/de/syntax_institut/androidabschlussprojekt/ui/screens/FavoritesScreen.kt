@@ -43,7 +43,6 @@ fun FavoritesScreen(
     navController: NavHostController,
     viewModel: FavoritesViewModel = koinViewModel(),
 ) {
-    val rewardedAdFavoritesRewardText = stringResource(R.string.rewarded_ad_favorites_reward_text)
     val state by viewModel.uiState.collectAsState()
     val settingsViewModel: SettingsViewModel = koinViewModel()
     val imageQuality by settingsViewModel.imageQuality.collectAsState()
@@ -65,6 +64,15 @@ fun FavoritesScreen(
     // Unlock-Logik für Statistiken
     var isStatsUnlocked by rememberSaveable { mutableStateOf(isProUser) }
     val statsRewardText = stringResource(R.string.rewarded_ad_stats_reward_text)
+    val rewardedAdFavoritesRewardText = stringResource(R.string.rewarded_ad_favorites_reward_text)
+
+    // Update States, wenn Pro-Status sich ändert
+    LaunchedEffect(isProUser) {
+        if (isProUser) {
+            isExportUnlocked = true
+            isStatsUnlocked = true
+        }
+    }
 
     LaunchedEffect(Unit) { viewModel.loadFavorites() }
 
@@ -78,12 +86,11 @@ fun FavoritesScreen(
         }
         // Statistiken-Button und Chart
         item {
-            // Button für Statistiken
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                 Button(
                     onClick = {
                         if (isProUser || isStatsUnlocked) {
-                            navController.navigateSingleTopTo(Routes.STATS)
+                            // Chart wird angezeigt
                         } else {
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(statsRewardText)
