@@ -1,4 +1,4 @@
-# GameRadar 🎮
+# GameRadar  <img src="img/app_icon.png" width="750" />
 
 GameRadar ist eine moderne Android-App zur Suche, Verwaltung und Analyse von Videospielen. Die App
 nutzt die RAWG-API und bietet Favoriten, Wunschliste, Filter, Statistiken, Export/Import und viele
