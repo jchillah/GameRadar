@@ -173,7 +173,7 @@ de.syntax_institut.androidabschlussprojekt
 - [x] Logging für Navigation und Fehler
 - [x] Erweiterte Paging-Unterstützung
 - [x] SettingsScreen mit allen wichtigen App-Optionen
-- [ ] Firebase-Integration für Sync & Analytics
+- [x] Firebase-Integration für Sync & Analytics
 
 ---
 
