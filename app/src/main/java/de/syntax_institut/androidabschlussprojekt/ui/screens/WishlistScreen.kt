@@ -60,17 +60,18 @@ fun WishlistScreen(
     val listToShow = wishlist
 
     val exportLauncher =
-            rememberLauncherForActivityResult(
-                ActivityResultContracts.CreateDocument("application/json")
-            ) { uri: Uri? ->
-                uri?.let { coroutineScope.launch { viewModel.exportWishlistToUri(context, it) } }
-            }
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("application/json")
+        ) { uri: Uri? ->
+            uri?.let { coroutineScope.launch { viewModel.exportWishlistToUri(context, it) } }
+        }
     val importLauncher =
-            rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
-                uri?.let { coroutineScope.launch { viewModel.importWishlistFromUri(context, it) } }
-            }
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+            uri?.let { coroutineScope.launch { viewModel.importWishlistFromUri(context, it) } }
+        }
 
     var showDeleteConfirmation by remember { mutableStateOf(false) }
+    var showClearedSnackbar by remember { mutableStateOf(false) } // NEU
 
     LaunchedEffect(Unit) { AppAnalytics.trackScreenView("WishlistScreen") }
 
@@ -87,11 +88,11 @@ fun WishlistScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
             RewardedAdButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    adUnitId = "ca-app-pub-3940256099942544/5224354917",
+                modifier = Modifier.fillMaxWidth(),
+                adUnitId = "ca-app-pub-3940256099942544/5224354917",
                 adsEnabled = true,
-                    rewardText = rewardedAdWishlistRewardText,
-                    onReward = { isExportUnlocked = true },
+                rewardText = rewardedAdWishlistRewardText,
+                onReward = { isExportUnlocked = true },
             )
             WishlistExportImportBar(
                 canUseLauncher = canUseLauncher,
@@ -157,6 +158,7 @@ fun WishlistScreen(
                     onClick = {
                         viewModel.clearAllWishlist()
                         showDeleteConfirmation = false
+                        showClearedSnackbar = true // NUR hier setzen!
                     }
                 ) { Text(stringResource(R.string.action_confirm)) }
             },
@@ -202,11 +204,10 @@ fun WishlistScreen(
             )
         }
     }
-    // Snackbar für Leeren der Wunschliste
-    val isCleared = wishlist.isEmpty()
-    LaunchedEffect(isCleared) {
-        if (isCleared) {
+    LaunchedEffect(showClearedSnackbar) {
+        if (showClearedSnackbar) {
             snackbarHostState.showSnackbar(clearAllMsg)
+            showClearedSnackbar = false
         }
     }
 

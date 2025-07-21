@@ -25,14 +25,27 @@ fun WishlistExportImportBar(
     onExport: () -> Unit,
     onImport: () -> Unit,
     modifier: Modifier = Modifier,
+    isFavorites: Boolean = false // NEU: steuert, ob Favoriten-Strings verwendet werden
 ) {
     if (canUseLauncher) {
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Button(onClick = onExport) { Text(stringResource(R.string.wishlist_export)) }
-            Button(onClick = onImport) { Text(stringResource(R.string.wishlist_import)) }
+            Button(onClick = onExport) {
+                Text(
+                    stringResource(
+                        if (isFavorites) R.string.favorites_export else R.string.wishlist_export
+                    )
+                )
+            }
+            Button(onClick = onImport) {
+                Text(
+                    stringResource(
+                        if (isFavorites) R.string.favorites_import else R.string.wishlist_import
+                    )
+                )
+            }
         }
     } else {
         Text(

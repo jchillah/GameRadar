@@ -188,7 +188,8 @@ fun FavoritesScreen(
                     PerformanceMonitor.startTimer("favorites_import_operation")
                     PerformanceMonitor.incrementEventCounter("favorites_import_attempted")
                     importLauncher?.launch(arrayOf("application/json"))
-                }
+                },
+                isFavorites = true // NEU: Favoriten-Strings verwenden
             )
             Box(modifier = Modifier.fillMaxWidth()) { SnackbarHost(hostState = snackbarHostState) }
             Spacer(modifier = Modifier.height(8.dp))
