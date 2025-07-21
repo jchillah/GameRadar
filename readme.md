@@ -28,10 +28,17 @@ Einstellungsmöglichkeiten.
 
 ## Screenshots 🏞️
 
-| Suche                           | Favoriten                     | Wunschliste                       | Einstellungen                     |
-|---------------------------------|-------------------------------|-----------------------------------|-----------------------------------|
-| ![Suche](img/screen1.png)       | ![Favoriten](img/screen2.png) | ![Wunschliste](img/screen3.png)   | ![Einstellungen](img/screen4.png) |
-| ![Statistiken](img/screen5.png) | ![Detail](img/screen6.png)    | ![Tablet-Layout](img/screen7.png) | ![Export/Import](img/screen8.png) |
+<p align="center">
+  <img src="img/screen1.png" width="200" />
+  <img src="img/screen2.png" width="200" />
+  <img src="img/screen3.png" width="200" />
+  <img src="img/screen4.png" width="200" />
+  <br/>
+  <img src="img/screen5.png" width="200" />
+  <img src="img/screen6.png" width="200" />
+  <img src="img/screen8.png" width="200" />
+  <img src="img/screen7.png" />
+</p>
 
 ---
 
@@ -166,7 +173,7 @@ de.syntax_institut.androidabschlussprojekt
 - [x] Logging für Navigation und Fehler
 - [x] Erweiterte Paging-Unterstützung
 - [x] SettingsScreen mit allen wichtigen App-Optionen
-- [ ] Firebase-Integration für Sync & Analytics
+- [x] Firebase-Integration für Sync & Analytics
 
 ---
 
