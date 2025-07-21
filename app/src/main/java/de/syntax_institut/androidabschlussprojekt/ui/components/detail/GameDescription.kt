@@ -7,7 +7,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.R
+import de.syntax_institut.androidabschlussprojekt.*
 
 /**
  * Zeigt die Beschreibung eines Spiels mit Fallback-Text.
@@ -23,12 +23,16 @@ import de.syntax_institut.androidabschlussprojekt.R
  * @param modifier Modifier für das Layout
  */
 @Composable
-fun GameDescription(description: String?, modifier: Modifier = Modifier) {
+fun GameDescription(
+    modifier: Modifier = Modifier,
+    description: String?,
+) {
     Spacer(modifier = Modifier.height(16.dp))
     Text(
         description ?: stringResource(R.string.detail_no_description),
         style = MaterialTheme.typography.bodyLarge,
         modifier = modifier
+            .padding(horizontal = 8.dp)
     )
 }
 

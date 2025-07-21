@@ -6,7 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
-import de.syntax_institut.androidabschlussprojekt.R
+import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.*
 
 /**
  * Zeigt die wichtigsten Metadaten eines Spiels in einer strukturierten Ansicht.
@@ -26,12 +27,12 @@ import de.syntax_institut.androidabschlussprojekt.R
  */
 @Composable
 fun GameMetaInfo(
+    modifier: Modifier = Modifier,
     title: String,
     releaseDate: String,
     rating: Double,
-    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Text(title, style = MaterialTheme.typography.titleLarge)
         Text(
             stringResource(R.string.game_release_date_details, releaseDate),

@@ -1,7 +1,7 @@
 # GameRadar 🎮
 
 GameRadar ist eine moderne Android-App zur Suche, Verwaltung und Analyse von Videospielen. Die App
-nutzt die RAWG-API und bietet Favoriten, Wunschliste, Filter, Statistiken und viele
+nutzt die RAWG-API und bietet Favoriten, Wunschliste, Filter, Statistiken, Export/Import und viele
 Einstellungsmöglichkeiten.
 
 ## Highlights ✨
@@ -37,26 +37,39 @@ Einstellungsmöglichkeiten.
 
 ## Features ➳
 
-- 🔍 **Spielsuche** nach Titel, Plattform, Genre, Bewertung
-- 🏷️ **Filter & Sortierung** (Plattform, Genre, Bewertung, Erscheinungsjahr)
-- ⭐ **Favoriten speichern** (Offline mit Room)
-- 📝 **Detailseite** mit Beschreibung, Galerie, Entwickler, Plattformen, Metacritic, Spielzeit
-- 🆕 **Listenansicht** für Neuerscheinungen & Top-rated
-- 📤 **Spiele teilen** via Link
-- ⚡ **Offline-Cache** für schnelle Anzeige & Fehlervermeidung
-- 🎨 **Jetpack Compose UI** – modern, performant, flexibel
-- 🏗️ **MVVM-Architektur** mit sauberem Repository-Pattern
-- ⏳ **Ladeindikator & Error-UI** mit Retry-Funktion (zentralisierte Loading-Komponente)
-- 🛡️ **Fehlerhinweise direkt im Feld** (z. B. „Keine Screenshots verfügbar“)
-- 📝 **Logging** für Navigation und Datenübergabe
-- 🌓 **Dark-/Light-Mode** per Schalter im SettingsScreen
-- ⚙️ **SettingsScreen**: Sprache, Bildqualität, Benachrichtigungen, Design, u.v.m.
+- 🔍 **Spielsuche:** Suche nach über 350.000 Spielen aus der RAWG-API
+- 🏷️ **Filter & Sortierung:** Filter für Plattform, Genre, Bewertung und Release-Datum
+- ⭐ **Favoriten & Wunschliste:** Speichere und verwalte deine Lieblingsspiele (Herz) und
+  Wunschspiele (Stern). (Offline mit Room)
+- 📝 **Detailseite:** Beschreibung, Galerie, Entwickler, Plattformen, Metacritic, Spielzeit,
+  Screenshots und Trailer
+- 🆕 **Listenansicht:** Neuerscheinungen & Top-rated
+- 📤 **Spiele teilen:** via Link
+- ⚡ **Offline-Cache:** für schnelle Anzeige & Fehlervermeidung
+- 🎨 **Jetpack Compose UI:** modern, performant, flexibel
+- 🏗️ **MVVM/MVI Hybrid-Architektur:** sauberes Repository-Pattern, State-Management und
+  Intent-Handling
+- ⏳ **Ladeindikator & Error-UI:** mit Retry-Funktion (zentralisierte Loading-Komponente)
+- 🛡️ **Fehlerhinweise direkt im Feld:** (z. B. „Keine Screenshots verfügbar“)
+- 📝 **Logging:** für Navigation und Datenübergabe
+- 🌓 **Dark-/Light-Mode:** per Schalter im SettingsScreen
+- ⚙️ **SettingsScreen:** Sprache, Bildqualität, Benachrichtigungen, Design, u.v.m.
+- 🔄 **Export/Import:** Favoriten und Wunschliste als JSON exportieren/importieren (z. B. für Backup
+  oder Gerätewechsel)
+- 📊 **Statistiken & Charts:** Analyse deiner Spielvorlieben
 
 ---
 
 ## Technischer Aufbau 💻
 
-### Projektstruktur (MVVM + Compose)
+### Architektur: MVVM/MVI Hybrid
+
+- **MVVM:** Für klassische UI-Logik, State-Management und Datenbindung.
+- **MVI:** Für komplexe Interaktionen wie Suche, Filter, Undo/Redo, Export/Import.
+- **Repository-Pattern:** Klare Trennung von Datenquellen und UI.
+- **Jetpack Compose:** Modernes, deklaratives UI-Framework für Android.
+
+### Projektstruktur
 
 ```bash
 de.syntax_institut.androidabschlussprojekt
@@ -99,17 +112,18 @@ de.syntax_institut.androidabschlussprojekt
 - **Coil** für Bild-Loading
 - **Accompanist** für Paging & SwipeRefresh
 - **Koin** für Dependency Injection
-- Optional: **Firebase Crashlytics & Analytics**
+- **Firebase Crashlytics & Analytics** (optional)
+- **Google AdMob** für Banner- und Rewarded-Ads
 
 ---
 
 ## Fehlerbehandlung & UX
 
-- **Fehler pro Feld:**  Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich Echte
-  API-/Netzwerkfehler? → Globale ErrorCard mit Retry
-- **Null-Safety:**  Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
-- **Logging:**  Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
-- **Keine komplexen Objekte in Navigation:**  Es werden nur primitive Typen (Int, String, Boolean)
+- **Fehler pro Feld:** Website oder Screenshots fehlen? → ErrorCard nur im jeweiligen Bereich.  
+  Echte API-/Netzwerkfehler? → Globale ErrorCard mit Retry
+- **Null-Safety:** Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
+- **Logging:** Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
+- **Keine komplexen Objekte in Navigation:** Es werden nur primitive Typen (Int, String, Boolean)
   übergeben
 
 ---
@@ -124,6 +138,14 @@ de.syntax_institut.androidabschlussprojekt
   Nicht-Pro-Usern nach einer Rewarded Ad freigeschaltet.
 - Es werden ausschließlich Test-IDs für AdMob verwendet (keine Gefahr für das AdMob-Konto beim
   Testen).
+
+---
+
+## Export/Import
+
+- **Favoriten und Wunschliste können als JSON exportiert und importiert werden.**
+- Die Funktion ist über die jeweiligen Screens erreichbar.
+- Für den Export/Import kann eine Rewarded-Ad erforderlich sein (je nach Einstellung).
 
 ---
 
@@ -151,8 +173,8 @@ de.syntax_institut.androidabschlussprojekt
 ## Lizenz
 
 MIT License – Siehe [LICENSE](LICENSE) für weitere Informationen.
+
 - Android Studio Hedgehog oder neuer
 - Projekt klonen
 - API_KEY in `local.properties` eintragen: `API_KEY=...any key...`
 - Projekt öffnen und auf ein Gerät/Emulator ausführen
-
