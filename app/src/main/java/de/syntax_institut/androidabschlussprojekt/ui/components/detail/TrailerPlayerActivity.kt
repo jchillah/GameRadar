@@ -23,6 +23,7 @@ import androidx.media3.exoplayer.*
 import androidx.media3.ui.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 
 /**
  * Vollbild-Activity für das Abspielen von Trailern mit ExoPlayer.
@@ -51,6 +52,8 @@ class TrailerPlayerActivity : ComponentActivity() {
                 Intent(context, TrailerPlayerActivity::class.java).apply {
                     putExtra(EXTRA_VIDEO_URL, videoUrl)
                     putExtra(EXTRA_VIDEO_TITLE, videoTitle)
+                    // Füge FLAG_ACTIVITY_NEW_TASK hinzu, um den Crash zu verhindern
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
             context.startActivity(intent)
         }
@@ -59,16 +62,34 @@ class TrailerPlayerActivity : ComponentActivity() {
     /** Initialisiert die Activity und setzt das Fullscreen-Layout. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Performance-Monitoring für Trailer-Player
+        PerformanceMonitor.startTimer("trailer_player_startup")
+        PerformanceMonitor.incrementEventCounter("trailer_player_opened")
+
         enableEdgeToEdge()
         hideSystemUi()
         val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL) ?: ""
         val videoTitle = intent.getStringExtra(EXTRA_VIDEO_TITLE) ?: "Trailer"
+
+        // Analytics-Tracking für Trailer-Player
+        AppAnalytics.trackEvent(
+            "trailer_player_opened",
+            mapOf("video_title" to videoTitle, "video_url_length" to videoUrl.length)
+        )
+
         setContent {
             MyAppTheme {
                 TrailerPlayerScreen(
                     videoUrl = videoUrl,
                     videoTitle = videoTitle,
                     onClose = {
+                        val startupDuration =
+                            PerformanceMonitor.endTimer("trailer_player_startup")
+                        PerformanceMonitor.trackUiRendering(
+                            "TrailerPlayerActivity",
+                            startupDuration
+                        )
                         releasePlayer()
                         finish()
                     }
@@ -177,24 +198,76 @@ class TrailerPlayerActivity : ComponentActivity() {
                                                 override fun onPlayerError(
                                                     error: PlaybackException,
                                                 ) {
-                                                    if (error.errorCode ==
-                                                        PlaybackException
-                                                            .ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
-                                                        error.cause is
-                                                                java.net.UnknownHostException ||
-                                                        error.cause
-                                                            ?.message
-                                                            ?.contains(
-                                                                "Unable to resolve host"
-                                                            ) ==
-                                                        true
-                                                    ) {
-                                                        playbackError =
-                                                            "Trailer kann nicht geladen werden. Bitte überprüfe deine Internetverbindung."
-                                                    } else {
-                                                        playbackError =
-                                                            "Fehler beim Abspielen des Trailers: ${error.localizedMessage ?: "Unbekannter Fehler"}"
-                                                    }
+                                                    // Robuste Fehlerbehandlung für
+                                                    // Emulator-Probleme
+                                                    val errorMessage =
+                                                        when {
+                                                            error.errorCode ==
+                                                                    PlaybackException
+                                                                        .ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
+                                                                    error.cause is
+                                                                            java.net.UnknownHostException ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "Unable to resolve host"
+                                                                        ) ==
+                                                                    true -> {
+                                                                "Trailer kann nicht geladen werden. Bitte überprüfe deine Internetverbindung."
+                                                            }
+
+                                                            error.errorCode ==
+                                                                    PlaybackException
+                                                                        .ERROR_CODE_IO_BAD_HTTP_STATUS ||
+                                                                    error.errorCode ==
+                                                                    PlaybackException
+                                                                        .ERROR_CODE_IO_FILE_NOT_FOUND -> {
+                                                                "Trailer ist nicht verfügbar oder wurde entfernt."
+                                                            }
+
+                                                            error.cause?.message
+                                                                ?.contains(
+                                                                    "DRM"
+                                                                ) == true ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "Security level L1"
+                                                                        ) ==
+                                                                    true ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "GoldfishH264Helper"
+                                                                        ) ==
+                                                                    true ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "decodeHeader"
+                                                                        ) ==
+                                                                    true -> {
+                                                                "Trailer kann auf diesem Gerät nicht abgespielt werden (Emulator-Beschränkung)."
+                                                            }
+
+                                                            else -> {
+                                                                "Fehler beim Abspielen des Trailers: ${error.localizedMessage ?: "Unbekannter Fehler"}"
+                                                            }
+                                                        }
+                                                    playbackError = errorMessage
+
+                                                    // Logging für Debugging
+                                                    AppLogger.e(
+                                                        "TrailerPlayer",
+                                                        "Playback error: ${error.errorCode} - ${error.localizedMessage}"
+                                                    )
+
+                                                    // Crashlytics Error Recording
+                                                    CrashlyticsHelper.recordUiError(
+                                                        "TrailerPlayerActivity",
+                                                        "ExoPlayer",
+                                                        "Playback error: ${error.errorCode} - ${error.localizedMessage}"
+                                                    )
                                                 }
                                             }
                                         )

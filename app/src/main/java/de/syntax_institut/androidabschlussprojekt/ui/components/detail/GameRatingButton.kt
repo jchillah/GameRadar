@@ -11,6 +11,16 @@ import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 
+/**
+ * Button für die Benutzerbewertung eines Spiels mit Dialog-Integration.
+ *
+ * Zeigt ein Stern-Icon an, das bei Klick einen RatingDialog öffnet.
+ * Das Icon ist golden gefärbt, wenn eine Bewertung vorhanden ist.
+ *
+ * @param modifier Modifier für das Layout
+ * @param rating Aktuelle Benutzerbewertung (0.0 - 5.0)
+ * @param onRatingChanged Callback bei Bewertungsänderung
+ */
 @Composable
 fun GameRatingButton(
     modifier: Modifier = Modifier,

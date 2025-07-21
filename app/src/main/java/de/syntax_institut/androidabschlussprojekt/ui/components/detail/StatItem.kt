@@ -13,6 +13,16 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Zeigt eine Statistik-Kachel mit Icon, Wert und Label an.
+ *
+ * Wird für Metadaten wie Bewertung, Spielzeit, Metacritic etc. verwendet.
+ *
+ * @param icon Das anzuzeigende Icon
+ * @param label Beschriftung der Statistik
+ * @param value Wert der Statistik als String
+ * @param color Farbe für das Icon
+ */
 @Composable
 fun StatItem(
     icon: ImageVector,

@@ -10,6 +10,20 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Sektion-Container für Einstellungsgruppen.
+ *
+ * Features:
+ * - Sektionstitel in Primary-Farbe
+ * - Material3 Card-Container für Inhalte
+ * - Einheitliche Abstände zwischen Sektionen
+ * - Responsive Layout
+ * - Theme-adaptive Farben
+ * - Accessibility-Unterstützung
+ *
+ * @param title Titel der Einstellungssektion
+ * @param content Composable-Content für die Sektion
+ */
 @Composable
 internal fun SettingsSection(
     title: String,

@@ -16,6 +16,21 @@ import coil3.compose.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
+/**
+ * Galerie für Spielscreenshots mit horizontaler Scroll-Ansicht.
+ *
+ * Features:
+ * - Horizontale Scroll-Ansicht für Screenshots
+ * - Klickbare Screenshots öffnen Vollbild-Ansicht
+ * - Optimierte Bildladung mit Coil
+ * - Fallback-Platzhalter bei fehlenden Screenshots
+ * - Accessibility-Hinweise
+ *
+ * @param modifier Modifier für das Layout
+ * @param screenshots Liste der Screenshot-URLs
+ * @param imageQuality Qualitätseinstellung für die Bilder
+ * @param showEmptyState Gibt an, ob ein leerer Zustand angezeigt werden soll
+ */
 @Composable
 fun ScreenshotGallery(
     modifier: Modifier = Modifier,
@@ -35,9 +50,10 @@ fun ScreenshotGallery(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier = Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 screenshots.forEachIndexed { index, screenshotUrl ->
@@ -89,10 +105,11 @@ private fun OptimizedScreenshotItem(
     index: Int = 0,
 ) {
     Box(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.medium)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable { onClick() }
+        modifier =
+            modifier
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable { onClick() }
     ) {
         AsyncImage(
             model = imageUrl,
@@ -104,11 +121,8 @@ private fun OptimizedScreenshotItem(
             }
         )
         // Overlay für bessere UX
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.08f))
-        ) {}
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.08f))) {}
     }
 }
-

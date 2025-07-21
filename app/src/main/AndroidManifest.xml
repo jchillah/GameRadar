@@ -19,12 +19,8 @@
         android:theme="@style/Theme.AndroidAbschlussprojekt"
         tools:targetApi="33">
 
-        <!-- AdMob App-ID (Produktiv-ID, für Monetarisierung!) -->
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7269049262039376~5468693297" />
 
-        <activity
+    <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AndroidAbschlussprojekt">

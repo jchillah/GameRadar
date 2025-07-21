@@ -35,6 +35,9 @@ class NewGameWorker(
      */
     override suspend fun doWork(): Result {
         try {
+            PerformanceMonitor.startTimer("new_game_worker_execution")
+            PerformanceMonitor.incrementEventCounter("new_game_worker_runs")
+
             AppLogger.d(
                 Constants.NEW_GAME_WORKER_NAME,
                 "[DEBUG] ${Constants.NEW_GAME_WORKER_NAME} gestartet"
@@ -45,6 +48,7 @@ class NewGameWorker(
                     Constants.NEW_GAME_WORKER_NAME,
                     "[DEBUG] Notifications deaktiviert – Abbruch"
                 )
+                PerformanceMonitor.endTimer("new_game_worker_execution")
                 return Result.success()
             }
 
@@ -62,7 +66,16 @@ class NewGameWorker(
 
             if (newGames.isNotEmpty()) {
                 sendNewGamesNotification(applicationContext, newGames)
+                PerformanceMonitor.incrementEventCounter("new_games_notifications_sent")
             }
+
+            val executionDuration = PerformanceMonitor.endTimer("new_game_worker_execution")
+            PerformanceMonitor.trackApiCall(
+                "new_games_check",
+                executionDuration,
+                true,
+                newGames.size
+            )
 
             AppLogger.i(
                 Constants.NEW_GAME_WORKER_NAME,
@@ -75,6 +88,7 @@ class NewGameWorker(
                 "Fehler im ${Constants.NEW_GAME_WORKER_NAME}",
                 e
             )
+            PerformanceMonitor.trackApiCall("new_games_check", 0, false, 0)
             return Result.failure()
         }
     }
@@ -89,16 +103,24 @@ class NewGameWorker(
             Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
-        return PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+
+        return try {
+            PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        } catch (e: Exception) {
+            AppLogger.e(Constants.NEW_GAME_WORKER_NAME, "Error creating PendingIntent", e)
+            // Fallback ohne Flags
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        }
     }
 
     private fun sendNewGamesNotification(context: Context, newGames: List<Game>) {
         try {
+            // Prüfe Berechtigungen vor dem Senden
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
                     PackageManager.PERMISSION_GRANTED
@@ -110,14 +132,17 @@ class NewGameWorker(
                     return
                 }
             }
+
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val pendingIntent = buildPendingIntent(context)
+
             // Bündel-Notification für mehrere neue Spiele
             val inboxStyle = NotificationCompat.InboxStyle()
-            for (game in newGames) {
+            for (game in newGames.take(5)) { // Begrenze auf 5 Spiele
                 inboxStyle.addLine(game.title)
             }
+
             val notification =
                 NotificationCompat.Builder(
                     applicationContext,
@@ -137,6 +162,7 @@ class NewGameWorker(
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
 
             notificationManager.notify(Constants.NEW_GAME_NOTIFICATION_ID, notification.build())
             AppLogger.d(

@@ -15,6 +15,34 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import kotlin.math.*
 
+/**
+ * BottomSheet-Komponente für erweiterte Filteroptionen in der Spielesuche.
+ *
+ * Features:
+ * - Plattform- und Genre-Auswahl mit Multi-Select
+ * - Mindestbewertung per Slider
+ * - Sortierungsauswahl
+ * - Fehler- und Ladezustände für Plattformen/Genres
+ * - Offline-Unterstützung und Cache-Management
+ * - "Filter anwenden"-Button
+ *
+ * @param platforms Liste aller verfügbaren Plattformen
+ * @param genres Liste aller verfügbaren Genres
+ * @param selectedPlatforms IDs der ausgewählten Plattformen
+ * @param selectedGenres IDs der ausgewählten Genres
+ * @param rating Mindestbewertung (0-5)
+ * @param ordering Sortierreihenfolge
+ * @param isLoadingPlatforms Gibt an, ob Plattformen geladen werden
+ * @param isLoadingGenres Gibt an, ob Genres geladen werden
+ * @param platformsErrorId Fehler-String-Ressourcen-ID für Plattformen
+ * @param genresErrorId Fehler-String-Ressourcen-ID für Genres
+ * @param isOffline Gibt an, ob die App offline ist
+ * @param onOrderingChange Callback bei Änderung der Sortierung
+ * @param onFilterChange Callback beim Anwenden der Filter
+ * @param onRetryPlatforms Callback zum erneuten Laden der Plattformen
+ * @param onRetryGenres Callback zum erneuten Laden der Genres
+ * @param onClearCache Callback zum Leeren des Caches (nur offline)
+ */
 @Composable
 fun FilterBottomSheet(
     platforms: List<Platform>,

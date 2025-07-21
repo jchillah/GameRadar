@@ -5,7 +5,10 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 
-/** Mapper für die Konvertierung zwischen Game und GameCacheEntity. */
+/**
+ * Mapper für die Konvertierung zwischen Game und GameCacheEntity.
+ * Bietet Funktionen zum Umwandeln von Domain-Modelle in Datenbank-Entities und umgekehrt.
+ */
 object GameCacheMapper {
 
     private val moshi = MoshiProvider.moshi
@@ -16,7 +19,13 @@ object GameCacheMapper {
             Types.newParameterizedType(List::class.java, Movie::class.java)
         )
 
-    /** Game zu GameCacheEntity konvertieren. */
+    /**
+     * Wandelt ein Game-Domainmodell in eine GameCacheEntity um.
+     * @receiver Game Das Domainmodell
+     * @param searchQuery Optionaler Suchbegriff, zu dem das Spiel gecacht wurde
+     * @param filterHash Optionaler Hashwert der Filtereinstellungen
+     * @return Das entsprechende GameCacheEntity für die Datenbank
+     */
     fun Game.toCacheEntity(
         searchQuery: String? = null,
         filterHash: String? = null,
@@ -46,7 +55,11 @@ object GameCacheMapper {
         )
     }
 
-    /** GameCacheEntity zu Game konvertieren. */
+    /**
+     * Wandelt eine GameCacheEntity in ein Game-Domainmodell um.
+     * @receiver GameCacheEntity Das Entity-Objekt aus der Datenbank
+     * @return Das entsprechende Game-Domainmodell
+     */
     fun GameCacheEntity.toGame(): Game {
         return Game(
             id = id,

@@ -14,6 +14,22 @@ import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.R
 import kotlinx.coroutines.*
 
+/**
+ * Animierter Button zum Hinzufügen oder Entfernen eines Spiels aus der Wunschliste.
+ *
+ * Features:
+ * - Animierte Übergänge zwischen gefülltem und leerem Stern
+ * - Skalierungs- und Rotationsanimationen
+ * - Druck-Feedback mit Skalierung
+ * - Accessibility-Unterstützung
+ * - Anpassbare Animationen
+ *
+ * @param modifier Modifier für das Layout
+ * @param isInWishlist Aktueller Wunschlisten-Status
+ * @param onWishlistChanged Callback bei Statusänderung
+ * @param enabled Gibt an, ob der Button aktiv ist
+ * @param showAnimation Gibt an, ob Animationen angezeigt werden sollen
+ */
 @Composable
 fun WishlistButton(
     modifier: Modifier = Modifier,

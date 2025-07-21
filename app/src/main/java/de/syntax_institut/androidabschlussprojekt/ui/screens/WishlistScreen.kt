@@ -3,7 +3,6 @@ package de.syntax_institut.androidabschlussprojekt.ui.screens
 import android.net.*
 import androidx.activity.*
 import androidx.activity.compose.*
-import androidx.activity.result.*
 import androidx.activity.result.contract.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -15,11 +14,8 @@ import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
-import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
-import androidx.navigation.compose.*
-import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
@@ -30,10 +26,11 @@ import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 
 /**
- * Zeigt die Wunschliste des Nutzers mit Export/Import und RewardedAd-Integration.
+ * Zeigt die Wunschliste des Nutzers mit Export/Import, RewardedAd-Integration und Delete-Button in
+ * der AppBar.
  *
- * @param viewModel Das zugehörige ViewModel für die Wunschliste
- * @param navController Der NavController für Navigation
+ * Wird im Navigationsgraph als Ziel für die Wunschliste verwendet. Unterstützt Export/Import und
+ * RewardedAd-Logik analog zu Favoriten.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,44 +47,32 @@ fun WishlistScreen(
     val coroutineScope = rememberCoroutineScope()
     val canUseLauncher = context is ComponentActivity
 
-    // SettingsViewModel-Variablen vor ihrer Verwendung deklarieren
-    val settingsViewModel: SettingsViewModel = koinViewModel()
-    val isProUser by settingsViewModel.proStatus.collectAsState()
-    val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
-    val imageQuality by settingsViewModel.imageQuality.collectAsState()
-
-    var isExportUnlocked by rememberSaveable { mutableStateOf(isProUser) }
+    var isExportUnlocked by rememberSaveable { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val rewardedAdWishlistRewardText = stringResource(R.string.rewarded_ad_wishlist_reward_text)
+    val deleteAllContentDescription = stringResource(R.string.wishlist_clear_all)
 
-    // Update isExportUnlocked basierend auf Pro-Status
-    LaunchedEffect(isProUser) {
-        if (isProUser) {
-            isExportUnlocked = true
-        }
-    }
-
-    val exportLauncher: ActivityResultLauncher<String>? =
-        if (canUseLauncher) {
-            rememberLauncherForActivityResult(
-                ActivityResultContracts.CreateDocument("application/json")
-            ) { uri: Uri? ->
-                uri?.let {
-                    coroutineScope.launch { viewModel.exportWishlistToUri(context, it) }
-                }
-            }
-        } else null
-    val importLauncher: ActivityResultLauncher<Array<String>>? =
-        if (canUseLauncher) {
-            rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
-                uri?.let {
-                    coroutineScope.launch { viewModel.importWishlistFromUri(context, it) }
-                }
-            }
-        } else null
+    val settingsViewModel: SettingsViewModel = koinViewModel()
+    val settingsState by settingsViewModel.uiState.collectAsState()
+    val imageQuality = settingsState.imageQuality
 
     // Korrektur: listToShow deklarieren (hier einfach die Wishlist, ggf. mit Suche kombinieren)
     val listToShow = wishlist
+
+    val exportLauncher =
+            rememberLauncherForActivityResult(
+                ActivityResultContracts.CreateDocument("application/json")
+            ) { uri: Uri? ->
+                uri?.let { coroutineScope.launch { viewModel.exportWishlistToUri(context, it) } }
+            }
+    val importLauncher =
+            rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+                uri?.let { coroutineScope.launch { viewModel.importWishlistFromUri(context, it) } }
+            }
+
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) { AppAnalytics.trackScreenView("WishlistScreen") }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -95,37 +80,42 @@ fun WishlistScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            WishlistHeader()
+            WishlistHeader(
+                hasWishlist = wishlist.isNotEmpty(),
+                onDeleteAllClick = { showDeleteConfirmation = true },
+                deleteAllContentDescription = deleteAllContentDescription
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
-                RewardedAdButton(
+            RewardedAdButton(
                     modifier = Modifier.fillMaxWidth(),
                     adUnitId = "ca-app-pub-3940256099942544/5224354917",
-                    adsEnabled = adsEnabled,
-                    isProUser = isProUser,
+                adsEnabled = true,
                     rewardText = rewardedAdWishlistRewardText,
                     onReward = { isExportUnlocked = true },
-                )
-            }
+            )
             WishlistExportImportBar(
                 canUseLauncher = canUseLauncher,
                 onExport = {
-                    if (isProUser || isExportUnlocked) {
-                        exportLauncher?.launch("wishlist_export.json")
+                    if (isExportUnlocked) {
+                        if (canUseLauncher) exportLauncher.launch("wishlist_export.json")
                     } else {
                         coroutineScope.launch {
                             snackbarHostState.showSnackbar(rewardedAdWishlistRewardText)
                         }
                     }
                 },
-                onImport = { importLauncher?.launch(arrayOf("application/json")) }
+                onImport = {
+                    if (canUseLauncher) importLauncher.launch(arrayOf("application/json"))
+                }
             )
             // SnackbarHost für Feedback
             Box(modifier = Modifier.fillMaxWidth()) { SnackbarHost(hostState = snackbarHostState) }
             Spacer(modifier = Modifier.height(8.dp))
         }
         if (isLoading) {
-            item { LoadingState() }
+            item {
+                LoadingState(modifier = Modifier.fillMaxSize(), message = "Lade Wunschliste...")
+            }
         } else if (error != null) {
             item { ErrorCard(error = error ?: "") }
         } else if (listToShow.isEmpty()) {
@@ -140,31 +130,56 @@ fun WishlistScreen(
             items(listToShow.sortedBy { it.title.lowercase() }) { game ->
                 GameItem(
                     game = game,
-                    onClick = { navController.navigateSingleTopTo(Routes.detail(game.id)) },
+                    onClick = { navController.navigateToDetail(game.id) },
                     onDelete = {
                         AppAnalytics.trackGameInteraction(game.id.toString(), "wishlist_remove")
                         viewModel.removeFromWishlist(game.id)
                     },
+                    imageQuality = imageQuality,
                     isInWishlist = true,
                     showWishlistButton = true,
                     showFavoriteIcon = false,
                     onWishlistChanged = { checked -> viewModel.toggleWishlist(game) },
-                    imageQuality = imageQuality
                 )
             }
         }
         item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 
-    // Snackbar für Export/Import-Feedback
+    // Bestätigungsdialog für "Wunschliste leeren"
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirmation = false },
+            title = { Text(stringResource(R.string.wishlist_clear_all)) },
+            text = { Text(stringResource(R.string.dialog_delete_all_favorites_text)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.clearAllWishlist()
+                        showDeleteConfirmation = false
+                    }
+                ) { Text(stringResource(R.string.action_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirmation = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            }
+        )
+    }
+
+    // Snackbar für Export/Import-Feedback und Leeren
     val exportSuccessMsg = stringResource(R.string.wishlist_export_success)
     val exportErrorMsg = stringResource(R.string.wishlist_export_error)
     val importSuccessMsg = stringResource(R.string.wishlist_import_success)
     val importErrorMsg = stringResource(R.string.wishlist_import_error)
+    val clearAllMsg =
+        stringResource(R.string.wishlist_clear_all) +
+                " " +
+                stringResource(R.string.action_confirm)
 
     LaunchedEffect(exportResult) {
         exportResult?.let {
-            // Korrektur: trackCacheOperation erwartet (String, Int, Boolean)
             AppAnalytics.trackCacheOperation(
                 "wishlist_export",
                 wishlist.size,
@@ -177,7 +192,6 @@ fun WishlistScreen(
     }
     LaunchedEffect(importResult) {
         importResult?.let {
-            // Korrektur: trackCacheOperation erwartet (String, Int, Boolean)
             AppAnalytics.trackCacheOperation(
                 "wishlist_import",
                 wishlist.size,
@@ -188,6 +202,13 @@ fun WishlistScreen(
             )
         }
     }
+    // Snackbar für Leeren der Wunschliste
+    val isCleared = wishlist.isEmpty()
+    LaunchedEffect(isCleared) {
+        if (isCleared) {
+            snackbarHostState.showSnackbar(clearAllMsg)
+        }
+    }
 
     val detailGame by viewModel.detailGame.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -195,16 +216,8 @@ fun WishlistScreen(
         WishlistDetailModal(
             game = detailGame!!,
             onClose = { viewModel.clearDetailGame() },
-            onShowDetails = {
-                navController.navigateSingleTopTo(Routes.detail(detailGame!!.id))
-            },
+            onShowDetails = { navController.navigateToDetail(detailGame!!.id) },
             sheetState = sheetState
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun WishlistScreenPreview() {
-    WishlistScreen(navController = rememberNavController())
 }

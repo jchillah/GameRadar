@@ -10,6 +10,20 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * App-Bar für den Suchbildschirm mit Filter-Button.
+ *
+ * Features:
+ * - Material3 TopAppBar-Design
+ * - Suchtitel als Platzhalter
+ * - Filter-Button mit Icon
+ * - Accessibility-Unterstützung
+ * - Responsive Layout
+ * - Callback für Filter-Aktionen
+ *
+ * @param modifier Modifier für das Layout
+ * @param onFilterClick Callback für Filter-Button-Klicks
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBarRow(

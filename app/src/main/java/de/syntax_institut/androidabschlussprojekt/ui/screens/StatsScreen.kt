@@ -9,6 +9,7 @@ import androidx.compose.ui.*
 import androidx.navigation.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.favorites.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.androidx.compose.*
 
 /**
@@ -23,13 +24,18 @@ fun StatsScreen(navController: NavHostController, viewModel: FavoritesViewModel 
     val state by viewModel.uiState.collectAsState()
     val genreCounts = state.favorites.flatMap { it.genres }.groupingBy { it }.eachCount()
 
+    LaunchedEffect(Unit) { AppAnalytics.trackScreenView("StatsScreen") }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Statistiken") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Zurück")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Zurück"
+                        )
                     }
                 }
             )

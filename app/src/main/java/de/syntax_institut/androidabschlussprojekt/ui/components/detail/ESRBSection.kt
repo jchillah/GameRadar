@@ -10,6 +10,15 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Zeigt die ESRB-Bewertung eines Spiels an.
+ *
+ * Zeigt entweder die ESRB-Bewertung als Chip an oder einen
+ * Platzhalter mit Hilfe-Icon, wenn keine Bewertung verfügbar ist.
+ *
+ * @param esrbRating ESRB-Bewertung (z.B. "E", "T", "M") oder null
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun ESRBSection(esrbRating: String?, modifier: Modifier = Modifier) {
     if (esrbRating.isNullOrBlank()) {

@@ -14,7 +14,26 @@ import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
 /**
- * Zeigt die wichtigsten Statistiken eines Spiels (Spielzeit, Metacritic, User-Rating).
+ * Zeigt die wichtigsten Statistiken eines Spiels in einer Card-Ansicht.
+ *
+ * Features:
+ * - Spielzeit-Anzeige mit Timer-Icon
+ * - Metacritic-Bewertung mit farbcodierter Darstellung
+ * - Benutzerbewertung mit interaktivem Rating-Button
+ * - Material3 Card-Design mit SecondaryContainer-Farbe
+ * - Responsive Layout mit SpaceEvenly-Verteilung
+ * - Null-Safety für optionale Statistiken
+ *
+ * Metacritic-Farbkodierung:
+ * - Grün (≥80): Ausgezeichnet
+ * - Orange (≥60): Gut
+ * - Rot (<60): Schlecht
+ *
+ * @param modifier Modifier für das Layout
+ * @param playtime Spielzeit in Stunden (optional)
+ * @param metacritic Metacritic-Bewertung 0-100 (optional)
+ * @param userRating Benutzerbewertung 0.0-5.0
+ * @param onRatingChanged Callback bei Bewertungsänderung
  */
 @Composable
 fun GameStatsCard(

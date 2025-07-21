@@ -33,6 +33,7 @@
     <string name="favorites_export">Favoritenliste exportieren</string>
     <string name="favorites_import">Favoritenliste importieren</string>
     <string name="export_import_preview_unavailable">Export/Import nicht im Preview verfügbar</string>
+    <string name="favorites_export_filename">favoritenliste_export.json</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Einstellungen</string>
@@ -76,14 +77,18 @@
     <string name="share_games_description">Spiele mit Freunden teilen</string>
 
     <!-- Cache Management -->
-    <string name="cache_section">Cache-Management</string>
-    <string name="cache_size">Cache-Größe</string>
+    <string name="cache_section">Cache-Verwaltung</string>
+    <string name="cache_section_tooltip">Verwalte den lokalen Spiele-Cache</string>
+    <string name="cache_full_warning">Cache ist fast voll! Bitte leere den Cache oder optimiere ihn.</string>
     <string name="clear_cache">Cache leeren</string>
-    <string name="clear_cache_description">Löscht alle zwischengespeicherten Daten</string>
-    <string name="sync_favorites">Synchronisieren</string>
-    <string name="sync_favorites_description">Favoriten mit API synchronisieren</string>
-    <string name="last_sync">Letzte Synchronisation</string>
-    <string name="cache_label">Cache: %1$d/%2$s Spiele</string>
+    <string name="cache_stat_saved_games">Gespeicherte Spiele</string>
+    <string name="cache_stat_storage">Speicherverbrauch</string>
+    <string name="cache_stat_last_sync">Letzte Synchronisation</string>
+    <string name="cache_stat_today">Heute</string>
+    <string name="cache_stat_never">Nie</string>
+    <string name="cache_stat_usage">Cache-Nutzung</string>
+
+    <!-- Cache Performance -->
     <string name="cache_unlimited">∞</string>
     <string name="cache_performance_critical">Performance kritisch</string>
     <string name="cache_performance_warning">Performance eingeschränkt</string>
@@ -92,22 +97,8 @@
     <string name="cache_info_title">Cache-Info</string>
     <string name="cache_info_text">%1$s</string>
     <string name="cache_info_content_description">Cache-Info</string>
-
-    <!-- CacheManagementCard: Tooltip und Statistiken -->
-    <!-- Tooltip-Text für die Cache-Verwaltung -->
-    <string name="cache_section_tooltip">Hier kannst du den Cache verwalten, optimieren und leeren.</string>
-    <!-- Label für gespeicherte Spiele im Cache -->
-    <string name="cache_stat_saved_games">Gespeicherte Spiele</string>
-    <!-- Label für Speicherplatz im Cache -->
-    <string name="cache_stat_storage">Speicherplatz</string>
-    <!-- Label für letzte Synchronisation -->
-    <string name="cache_stat_last_sync">Letzte Synchronisation</string>
-    <!-- Anzeige für "Heute" bei letzter Synchronisation -->
-    <string name="cache_stat_today">Heute</string>
-    <!-- Anzeige für "Nie" bei letzter Synchronisation -->
-    <string name="cache_stat_never">Nie</string>
-    <!-- Label für Cache-Auslastung -->
-    <string name="cache_stat_usage">Cache-Auslastung</string>
+    <string name="sync_favorites">Synchronisieren</string>
+    <string name="cache_label">Cache: %1$d/%2$s Spiele</string>
 
     <!-- About Section -->
     <string name="about_section">Über die App</string>
@@ -154,8 +145,12 @@
     <string name="error_save_data">Fehler beim Speichern der Daten</string>
     <string name="error_card_default_title">Fehler aufgetreten</string>
     <string name="error_game_load_failed">Fehler beim Laden der Spieldaten</string>
+    <string name="error_no_platform_data">Keine Plattformdaten verfügbar</string>
+    <string name="error_api">API-Fehler: </string>
+    <string name="error_no_genre_data">Keine Genre-Daten verfügbar</string>
 
     <!-- Game Details -->
+    <string name="game_header_image">Spiel-Header-Bild</string>
     <string name="game_rating_game_details">Bewertung: %1$.1f</string>
     <string name="game_rating_search_gameitem">User Score: %1$.1f</string>
     <string name="game_release_date_details">Veröffentlichungsdatum: %1$s</string>
@@ -169,7 +164,7 @@
     <string name="game_metacritic_playtime">Metacritic &amp; Spielzeit</string>
     <string name="game_metacritic_value">Metacritic: %1$d</string>
     <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Stunden</string>
-    <string name="game_screenshots">Screenshots</string>
+    <string name="game_screenshots">Bildschirmfotos</string>
     <string name="game_trailers">Trailer</string>
     <string name="game_no_website">Keine Website verfügbar</string>
     <string name="game_playtime">Spielzeit</string>
@@ -265,9 +260,6 @@
     <string name="error_no_connection_and_no_cache">Keine Verbindung und kein Cache verfügbar</string>
     <string name="error_server">Serverfehler: </string>
     <string name="error_network">Netzwerkfehler: </string>
-    <string name="error_no_platform_data">Keine Plattformdaten verfügbar</string>
-    <string name="error_api">API-Fehler: </string>
-    <string name="error_no_genre_data">Keine Genre-Daten verfügbar</string>
     <string name="email">michael.winkler.developer@gmail.com</string>
     <string name="notification_channel_name">Neue Spiele</string>
     <string name="notification_channel_desc">Benachrichtigungen über neue Spiele</string>
@@ -303,12 +295,12 @@
     <string name="detail_share_game">Spiel teilen</string>
     <string name="detail_play">Abspielen</string>
     <string name="detail_previous_image">Vorheriges Bild</string>
-    <string name="detail_trailer_default">Trailer</string>
+    <string name="detail_trailer_default">Video</string>
     <string name="detail_no_description">Keine Beschreibung verfügbar.</string>
-    <string name="detail_no_trailers">Für dieses Spiel wurden keine Trailer gefunden.</string>
+    <string name="detail_no_trailers">Für dieses Spiel wurden keine Videos gefunden.</string>
     <string name="detail_trailer_play">Abspielen</string>
-    <string name="detail_screenshot_hint">Tippen Sie auf ein Bild für Vollbildansicht</string>
-    <string name="detail_no_screenshots">Für dieses Spiel wurden keine Screenshots gefunden.</string>
+    <string name="detail_screenshot_hint">Tippen Sie auf ein Bildschirmfoto für Vollbildansicht</string>
+    <string name="detail_no_screenshots">Für dieses Spiel wurden keine Bildschirmfotos gefunden.</string>
     <string name="detail_share_text">Schau dir dieses Spiel an: %1$s</string>
     <string name="detail_share_link">Oder im Browser: %1$s</string>
 
@@ -388,7 +380,7 @@
     <string name="preview_tooltip_positioned_text">Tooltip mit Positionierung</string>
     <string name="preview_item_index">Item %1$d</string>
     <string name="preview_error_message">Ein Fehler ist aufgetreten</string>
-    <string name="preview_game_image_url">https://media.rawg.io/media/games/4fb/4fb548e4816c84d1d70f1a228fb167cc.jpg</string>
+    <string name="preview_game_image_url">https://example.com/game-image.jpg</string>
     <string name="preview_settings_section_title">Allgemein</string>
     <string name="preview_settings_section_content">Beispiel-Inhalt für eine SettingsSection.</string>
     <string name="preview_settings_button_title">Über die App</string>
@@ -420,6 +412,7 @@
     <string name="analytics_section">Analytics</string>
     <string name="analytics_enabled">Analytics aktivieren</string>
     <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
+    <string name="analytics_always_enabled_description">Analytics ist immer aktiviert, um die App kontinuierlich zu verbessern.</string>
     <string name="ads_section">Werbung</string>
     <string name="ads_enabled">Werbung anzeigen</string>
     <string name="ads_enabled_description">Erlaube das Anzeigen von Banner-Werbung (AdMob). Unterstützt die Weiterentwicklung der App. Es werden keine personalisierten Daten verwendet.</string>
@@ -437,6 +430,9 @@
     <string name="rewarded_ad_wishlist_reward_text">Export der Wunschliste für diese Sitzung freigeschaltet!</string>
     <string name="rewarded_ad_detail_reward_text">Exklusive Statistiken freischalten</string>
     <string name="rewarded_ad_cache_reward_text">Cache-Optimierung für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_sync_reward_text">Synchronisation für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_cache_unlocked_text">Cache-Optimierung bereits freigeschaltet!</string>
+    <string name="rewarded_ad_sync_unlocked_text">Synchronisation bereits freigeschaltet!</string>
     <string name="show_stats">Statistiken anzeigen</string>
     <string name="show_exclusive_stats">Exklusive Statistiken anzeigen</string>
     <string name="rewarded_ad_stats_reward_text">Statistiken für diese Sitzung freigeschaltet!</string>
@@ -459,4 +455,21 @@
     <string name="export">Exportieren</string>
     <string name="export_unlocked">Freigeschaltet</string>
     <string name="trailer_playback_error">Fehler beim Abspielen des Trailers.</string>
+    <string name="error_timeout">Zeitüberschreitung bei der Verbindung</string>
+    <string name="error_not_found">Daten nicht gefunden</string>
+    <string name="error_server_retry">Serverfehler - bitte versuchen Sie es später erneut</string>
+    <string name="error_service_unavailable">Service temporär nicht verfügbar</string>
+    <string name="error_server_code">Serverfehler (%1$d)</string>
+    <string name="error_network_check">Netzwerkfehler - überprüfen Sie Ihre Verbindung</string>
+    <string name="error_movies_load">Fehler beim Laden der Movies: %1$s</string>
+    <string name="error_empty_api_response">Leere Antwort von der API</string>
+    <string name="error_screenshots_server">Fehler beim Laden der Screenshots: Serverfehler %1$d</string>
+    <string name="error_screenshots_network">Fehler beim Laden der Screenshots: Netzwerkfehler %1$s</string>
+    <string name="error_platforms_no_data">Fehler beim Laden der Plattformen: Keine Plattformdaten verfügbar</string>
+    <string name="error_platforms_api">Fehler beim Laden der Plattformen: API-Fehler %1$d</string>
+    <string name="error_genres_no_data">Fehler beim Laden der Genres: Keine Genres verfügbar</string>
+    <string name="error_genres_api">Fehler beim Laden der Genres: API-Fehler %1$d</string>
+    <string name="error_games_no_network_cache">Fehler beim Laden der Spiele: Kein Netzwerk und kein Cache verfügbar</string>
+    <string name="error_output_stream">Konnte OutputStream nicht öffnen</string>
+    <string name="error_input_stream">Konnte InputStream nicht öffnen</string>
 </resources>

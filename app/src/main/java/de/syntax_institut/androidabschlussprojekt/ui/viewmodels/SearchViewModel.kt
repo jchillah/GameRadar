@@ -10,7 +10,25 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-/** ViewModel für die Suchfunktionalität. */
+/**
+ * ViewModel für die Suchfunktionalität mit erweiterten Filtern und Paging.
+ *
+ * Features:
+ * - Paging-basierte Spielesuche mit RAWG API
+ * - Erweiterte Filter: Plattformen, Genres, Bewertung, Sortierung
+ * - Cache-Management und Monitoring
+ * - Offline-Unterstützung
+ * - Analytics-Tracking und Crashlytics-Integration
+ * - Automatische Cache-Größenüberwachung
+ * - Performance-Monitoring für alle Operationen
+ * - Robuste Fehlerbehandlung mit Crashlytics
+ *
+ * @param loadGamesUseCase UseCase für das Laden von Spielen
+ * @param getPlatformsUseCase UseCase für das Abrufen von Plattformen
+ * @param getGenresUseCase UseCase für das Abrufen von Genres
+ * @param getCacheSizeUseCase UseCase für Cache-Größenabfrage
+ * @param clearCacheUseCase UseCase für Cache-Löschung
+ */
 class SearchViewModel(
     private val loadGamesUseCase: LoadGamesUseCase,
     private val getPlatformsUseCase: GetPlatformsUseCase,
@@ -20,7 +38,7 @@ class SearchViewModel(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
-    val uiState: StateFlow<SearchUiState> = _uiState
+    val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
     // Paging-Flow für die UI
     private val _pagingFlow = MutableStateFlow<PagingData<Game>>(PagingData.empty())
@@ -44,8 +62,15 @@ class SearchViewModel(
             delay(100) // Kurze Verzögerung für stabilen App-Start
             initializeCacheMonitoring()
         }
+
+        // Logging für State-Management
+        AppLogger.d("SearchViewModel", "SearchViewModel initialisiert")
     }
 
+    /**
+     * Initialisiert das Cache-Monitoring mit periodischen Updates. Überwacht die Cache-Größe und
+     * aktualisiert den UI-State entsprechend.
+     */
     private fun initializeCacheMonitoring() {
         viewModelScope.launch {
             try {
@@ -78,6 +103,10 @@ class SearchViewModel(
         }
     }
 
+    /**
+     * Lädt alle verfügbaren Plattformen von der API. Aktualisiert den UI-State mit Loading-Status
+     * und Fehlerbehandlung.
+     */
     fun loadPlatforms() {
         viewModelScope.launch {
             CrashlyticsHelper.setCustomKey("platforms_loading_started", true)
@@ -109,6 +138,13 @@ class SearchViewModel(
                     _uiState.update {
                         it.copy(platformsErrorId = errorId, isLoadingPlatforms = false)
                     }
+
+                    // Crashlytics Error Recording
+                    CrashlyticsHelper.recordApiError(
+                        "platforms",
+                        0,
+                        platformResponse.message ?: "Unknown error"
+                    )
                 }
             } catch (e: Exception) {
                 CrashlyticsHelper.setCustomKey(
@@ -123,10 +159,17 @@ class SearchViewModel(
                 val errorId =
                     de.syntax_institut.androidabschlussprojekt.R.string.error_load_platforms
                 _uiState.update { it.copy(platformsErrorId = errorId, isLoadingPlatforms = false) }
+
+                // Crashlytics Error Recording
+                CrashlyticsHelper.recordException(e)
             }
         }
     }
 
+    /**
+     * Lädt alle verfügbaren Genres von der API. Aktualisiert den UI-State mit Loading-Status und
+     * Fehlerbehandlung.
+     */
     fun loadGenres() {
         viewModelScope.launch {
             CrashlyticsHelper.setCustomKey("genres_loading_started", true)
@@ -153,6 +196,13 @@ class SearchViewModel(
 
                     val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_unknown
                     _uiState.update { it.copy(genresErrorId = errorId, isLoadingGenres = false) }
+
+                    // Crashlytics Error Recording
+                    CrashlyticsHelper.recordApiError(
+                        "genres",
+                        0,
+                        genreResponse.message ?: "Unknown error"
+                    )
                 }
             } catch (e: Exception) {
                 CrashlyticsHelper.setCustomKey("genres_loading_exception", e.javaClass.simpleName)
@@ -160,14 +210,27 @@ class SearchViewModel(
 
                 val errorId = de.syntax_institut.androidabschlussprojekt.R.string.error_load_genres
                 _uiState.update { it.copy(genresErrorId = errorId, isLoadingGenres = false) }
+
+                // Crashlytics Error Recording
+                CrashlyticsHelper.recordException(e)
             }
         }
     }
 
+    /**
+     * Führt eine Suche mit den aktuellen Filtern durch. Verwendet Paging für große Ergebnislisten
+     * und aktualisiert den UI-State.
+     *
+     * @param query Der Suchbegriff
+     */
     fun search(query: String) {
         CrashlyticsHelper.setCustomKey("search_attempted", true)
         CrashlyticsHelper.setCustomKey("search_query", query)
         CrashlyticsHelper.setCustomKey("search_query_length", query.length)
+
+        // Analytics-Tracking
+        AppAnalytics.trackUserAction("search", query.length)
+        AppAnalytics.trackPerformanceMetric("search_query_length", query.length, "characters")
 
         AppLogger.d("SearchViewModel", "Paging-Search gestartet mit Query: $query")
         currentSearchQuery = query
@@ -204,6 +267,13 @@ class SearchViewModel(
         }
     }
 
+    /**
+     * Aktualisiert die Filter-Einstellungen.
+     *
+     * @param platforms Liste der ausgewählten Plattform-IDs
+     * @param genres Liste der ausgewählten Genre-IDs
+     * @param rating Mindestbewertung (0-5)
+     */
     fun updateFilters(platforms: List<String>, genres: List<String>, rating: Float) {
         CrashlyticsHelper.setCustomKey("filters_updated", true)
         CrashlyticsHelper.setCustomKey("filters_platforms_count", platforms.size)
@@ -215,6 +285,11 @@ class SearchViewModel(
         }
     }
 
+    /**
+     * Aktualisiert die Sortierreihenfolge.
+     *
+     * @param ordering Die Sortierreihenfolge (z.B. "-rating", "name", etc.)
+     */
     fun updateOrdering(ordering: String) {
         CrashlyticsHelper.setCustomKey("ordering_updated", true)
         CrashlyticsHelper.setCustomKey("ordering_value", ordering)
@@ -223,6 +298,7 @@ class SearchViewModel(
         // KEINE automatische Suche mehr hier!
     }
 
+    /** Setzt die Suche zurück und leert die Ergebnisse. */
     fun resetSearch() {
         CrashlyticsHelper.setCustomKey("search_reset", true)
         _uiState.update { it.copy(hasSearched = false) }
@@ -230,7 +306,10 @@ class SearchViewModel(
         currentSearchQuery = ""
     }
 
-    /** Cache verwalten */
+    /**
+     * Leert den gesamten Cache und aktualisiert die Cache-Statistiken. Behandelt Fehler mit
+     * Crashlytics-Integration.
+     */
     fun clearCache() {
         viewModelScope.launch {
             try {
@@ -238,37 +317,66 @@ class SearchViewModel(
                 clearCacheUseCase()
                 _cacheSize.value = 0
                 CrashlyticsHelper.setCustomKey("cache_clear_success", true)
+
+                // Analytics-Tracking
+                AppAnalytics.trackCacheOperation("clear_cache", _cacheSize.value, true)
+                AppAnalytics.trackUserAction("cache_cleared")
+
                 AppLogger.d("SearchViewModel", "Cache erfolgreich geleert")
             } catch (e: Exception) {
                 CrashlyticsHelper.setCustomKey("cache_clear_error", true)
                 CrashlyticsHelper.setCustomKey("cache_clear_exception", e.javaClass.simpleName)
                 AppLogger.e("SearchViewModel", "Fehler beim Leeren des Caches")
+
+                // Analytics-Tracking für Fehler
+                AppAnalytics.trackCacheOperation("clear_cache", _cacheSize.value, false)
+                AppAnalytics.trackError("Cache clear failed: ${e.message}", "SearchViewModel")
+
+                // Crashlytics Error Recording
+                CrashlyticsHelper.recordCacheError(
+                    "clear_cache",
+                    _cacheSize.value,
+                    e.message ?: "Unknown error"
+                )
             }
         }
     }
 
+    /**
+     * Entfernt einen Plattform-Filter und führt die Suche erneut aus.
+     *
+     * @param platformId Die ID der zu entfernenden Plattform
+     */
     fun removePlatformFilter(platformId: String) {
         val newPlatforms = _uiState.value.selectedPlatforms.filterNot { it == platformId }
         _uiState.update { it.copy(selectedPlatforms = newPlatforms) }
         if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
     }
 
+    /**
+     * Entfernt einen Genre-Filter und führt die Suche erneut aus.
+     *
+     * @param genreId Die ID des zu entfernenden Genres
+     */
     fun removeGenreFilter(genreId: String) {
         val newGenres = _uiState.value.selectedGenres.filterNot { it == genreId }
         _uiState.update { it.copy(selectedGenres = newGenres) }
         if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
     }
 
+    /** Entfernt den Bewertungsfilter und führt die Suche erneut aus. */
     fun removeRatingFilter() {
         _uiState.update { it.copy(rating = 0f) }
         if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
     }
 
+    /** Entfernt den Sortierungsfilter und führt die Suche erneut aus. */
     fun removeOrderingFilter() {
         _uiState.update { it.copy(ordering = "") }
         if (currentSearchQuery.isNotBlank()) search(currentSearchQuery)
     }
 
+    /** Entfernt alle Filter und führt die Suche erneut aus. */
     fun clearAllFilters() {
         _uiState.update {
             it.copy(

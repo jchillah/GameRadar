@@ -31,8 +31,10 @@ import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import kotlin.math.*
 
 /**
- * Fullscreen Activity für die Screenshot-Galerie. Verwendet modernes Edge-to-Edge-API für echtes
- * Fullscreen.
+ * Activity für die Fullscreen-Screenshot-Galerie.
+ *
+ * Wird für die Anzeige von Screenshots im Vollbildmodus verwendet. Unterstützt Swipe, Zoom und
+ * Edge-to-Edge. Startbar über [ScreenshotGalleryActivity.start].
  */
 class ScreenshotGalleryActivity : ComponentActivity() {
 

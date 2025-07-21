@@ -1,25 +1,18 @@
 package de.syntax_institut.androidabschlussprojekt.ui.screens
 
-import android.net.*
-import androidx.activity.*
-import androidx.activity.compose.*
-import androidx.activity.result.contract.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
-import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
-import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
@@ -29,70 +22,104 @@ import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 import org.koin.compose.*
 
+/**
+ * Einstellungsbildschirm mit umfassenden App-Konfigurationsoptionen.
+ *
+ * Features:
+ * - Pro-Status und Werbungsverwaltung
+ * - Cache-Management mit Statistiken
+ * - Benachrichtigungseinstellungen
+ * - Daten-Synchronisation und Bildqualität
+ * - Sprachauswahl
+ * - Gaming-Features (Gaming-Modus, Performance-Modus)
+ * - Datenschutz und Analytics-Einstellungen
+ * - Dark Mode
+ * - App-Informationen und Datenschutzrichtlinien
+ *
+ * @param modifier Modifier für das Layout
+ * @param viewModel ViewModel für die Einstellungslogik
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
         modifier: Modifier = Modifier,
         viewModel: SettingsViewModel = koinViewModel(),
-        favoritesViewModel: FavoritesViewModel = koinViewModel(),
 ) {
-        val notificationsEnabled by viewModel.notificationsEnabled.collectAsState()
-        val autoRefreshEnabled by viewModel.autoRefreshEnabled.collectAsState()
-        val imageQuality by viewModel.imageQuality.collectAsState()
-        val language by viewModel.language.collectAsState()
-        val gamingModeEnabled by viewModel.gamingModeEnabled.collectAsState()
-        val performanceModeEnabled by viewModel.performanceModeEnabled.collectAsState()
-        val shareGamesEnabled by viewModel.shareGamesEnabled.collectAsState()
-        val darkModeEnabled by viewModel.darkModeEnabled.collectAsState()
+        val settingsState by viewModel.uiState.collectAsState()
         var showAboutDialog by remember { mutableStateOf(false) }
         var showPrivacyDialog by remember { mutableStateOf(false) }
-        val exportResult by favoritesViewModel.exportResult.collectAsState()
-        val importResult by favoritesViewModel.importResult.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }
-        val context = LocalContext.current
-        val canUseLauncher = context is ComponentActivity
         val coroutineScope = rememberCoroutineScope()
 
         val gameRepository: GameRepository = koinInject()
-        var cacheStats by remember { mutableStateOf<CacheStats?>(null) }
-        var lastSyncTime by remember { mutableStateOf<Long?>(null) }
-        val analyticsEnabled by viewModel.analyticsEnabled.collectAsState()
-        val isProUser by viewModel.proStatus.collectAsState()
-        val adsEnabled by viewModel.adsEnabled.collectAsState()
 
-        // Sessionbasierte Freischaltung für Favoriten- und Wishlist-Export
-        var isFavoritesExportUnlocked by rememberSaveable { mutableStateOf(isProUser) }
-        var isWishlistExportUnlocked by rememberSaveable { mutableStateOf(isProUser) }
-        val rewardedAdFavoritesRewardText =
-                stringResource(R.string.rewarded_ad_favorites_reward_text)
-        val rewardedAdWishlistRewardText = stringResource(R.string.rewarded_ad_wishlist_reward_text)
-
-        // SAF-Launcher für Export und Import nur, wenn möglich
-        val exportLauncher =
-                if (canUseLauncher) {
-                        rememberLauncherForActivityResult(
-                                ActivityResultContracts.CreateDocument("application/json")
-                        ) { uri: Uri? ->
-                                uri?.let {
-                                        coroutineScope.launch {
-                                                favoritesViewModel.exportFavoritesToUri(context, it)
-                                        }
-                                }
-                        }
-                } else null
+        // Überwache Sprachänderungen für sofortige UI-Aktualisierung
+        LaunchedEffect(settingsState.language) {
+                AppLogger.d("SettingsScreen", "Sprache geändert zu: ${settingsState.language}")
+        }
 
         LaunchedEffect(Unit) {
+                AppAnalytics.trackScreenView("SettingsScreen")
+                PerformanceMonitor.startTimer("settings_screen_load")
+                PerformanceMonitor.incrementEventCounter("settings_screen_opened")
+
+                // Verfügbare Sprachen abrufen
+                val availableLanguages = viewModel.getAvailableLanguages()
+                AppLogger.d("SettingsScreen", "Verfügbare Sprachen: ${availableLanguages.size}")
+
                 coroutineScope.launch {
-                        cacheStats = gameRepository.getCacheStats()
-                        lastSyncTime = gameRepository.getLastSyncTime()
+                        try {
+                                val cacheStats = gameRepository.getCacheStats()
+                                val lastSyncTime = gameRepository.getLastSyncTime()
+                                val recommendedMaxSize =
+                                        CacheUtils.calculateRecommendedMaxCacheSize()
+                                viewModel.updateCacheStats(
+                                        cacheSize = cacheStats.count,
+                                        maxCacheSize = recommendedMaxSize,
+                                        lastSyncTime = lastSyncTime
+                                )
+
+                                // Performance-Tracking für Cache-Operationen
+                                PerformanceMonitor.trackCachePerformance(
+                                        "cache_stats_retrieval",
+                                        cacheStats.count,
+                                        0.0f, // Default hit rate wenn nicht verfügbar
+                                        System.currentTimeMillis()
+                                )
+
+                                // Alle Einstellungen für Analytics abrufen
+                                val allSettings = viewModel.getAllSettings()
+                                AppLogger.d(
+                                        "SettingsScreen",
+                                        "Alle Einstellungen geladen: ${allSettings.size} Einträge"
+                                )
+                        } catch (e: Exception) {
+                                viewModel.setError(
+                                        "Fehler beim Laden der Cache-Statistiken: ${e.message}"
+                                )
+                                PerformanceMonitor.trackApiCall("cache_stats", 0, false)
+                        }
+                }
+        }
+
+        // Performance-Tracking beim Beenden des Screens
+        DisposableEffect(Unit) {
+                onDispose {
+                        PerformanceMonitor.endTimer("settings_screen_load")
+                        PerformanceMonitor.trackUiRendering(
+                                "SettingsScreen",
+                                System.currentTimeMillis()
+                        )
+
+                        // Performance-Statistiken abrufen und loggen
+                        val performanceStats = PerformanceMonitor.getPerformanceStats()
+                        AppLogger.d("SettingsScreen", "Performance Stats: $performanceStats")
                 }
         }
 
         // Crashlytics-Einstellung überwachen und anwenden
-        LaunchedEffect(Unit) {
-                // Setze initiale Crashlytics-Einstellung basierend auf Analytics-Opt-In
-                val analyticsEnabled = viewModel.analyticsEnabled.value
-                CrashlyticsHelper.setCrashlyticsEnabled(analyticsEnabled)
+        LaunchedEffect(settingsState.analyticsEnabled) {
+                CrashlyticsHelper.setCrashlyticsEnabled(settingsState.analyticsEnabled)
         }
 
         Column(
@@ -101,93 +128,167 @@ fun SettingsScreen(
                         .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-                // --- Pro-Status & Werbung ---
-                Card(
-                        modifier =
-                                Modifier
+                // Loading-Indikator wenn Einstellungen geladen werden
+                if (settingsState.isLoading) {
+                        Box(
+                                modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        colors =
-                                CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                ) {
-                        Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(16.dp)
+                                        .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                        ) { CircularProgressIndicator() }
+                }
+
+                // Error-Anzeige wenn Fehler aufgetreten sind
+                settingsState.error?.let { error ->
+                        Card(
+                                modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                colors =
+                                        CardDefaults.cardColors(
+                                                containerColor =
+                                                        MaterialTheme.colorScheme.errorContainer
+                                        )
                         ) {
-                                Icon(
-                                        Icons.Default.Star,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                        text = stringResource(R.string.pro_status_title),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
+                                        text = error,
+                                        color = MaterialTheme.colorScheme.onErrorContainer,
+                                        modifier = Modifier.padding(16.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Tooltip(text = stringResource(R.string.pro_status_tooltip))
                         }
-                        ProStatusBanner(
-                                isProUser = isProUser,
-                                onUpgradeClick = {}, // TODO: Upgrade-Dialog oder Billing-Flow
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                        )
-                        HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                thickness = DividerDefaults.Thickness,
-                                color = DividerDefaults.color
-                        )
-                        Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(16.dp)
+                }
+                // --- Werbung ---
+                if (BuildConfig.DEBUG) {
+                        Card(
+                                modifier =
+                                        Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                                elevation = CardDefaults.cardElevation(4.dp),
+                                colors =
+                                        CardDefaults.cardColors(
+                                                containerColor =
+                                                        MaterialTheme.colorScheme.surfaceVariant
+                                        )
                         ) {
-                                Icon(
-                                        Icons.Default.EmojiEvents,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
+                                Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(16.dp)
+                                ) {
+                                        Icon(
+                                                Icons.Default.EmojiEvents,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.primary
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                                text = stringResource(R.string.ads_section),
+                                                style = MaterialTheme.typography.titleMedium,
+                                                fontWeight = FontWeight.Bold
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Tooltip(text = stringResource(R.string.ads_section_tooltip))
+                                }
+                                SettingsSwitchItem(
+                                        icon = Icons.Default.EmojiEvents,
+                                        title = stringResource(R.string.ads_enabled),
+                                        subtitle = stringResource(R.string.ads_enabled_description),
+                                        checked = settingsState.adsEnabled,
+                                        onCheckedChange = { viewModel.setAdsEnabled(it) }
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                        text = stringResource(R.string.ads_section),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Tooltip(text = stringResource(R.string.ads_section_tooltip))
                         }
-                        SettingsSwitchItem(
-                                icon = Icons.Default.EmojiEvents,
-                                title = stringResource(R.string.ads_enabled),
-                                subtitle = stringResource(R.string.ads_enabled_description),
-                                checked = adsEnabled,
-                                onCheckedChange = { viewModel.setAdsEnabled(it) },
-                                // modifier = Modifier.padding(horizontal = 16.dp) // falls benötigt
-                        )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // --- Cache Management ---
                 CacheManagementCard(
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        cacheSize = cacheStats?.count ?: 0,
+                        cacheSize = settingsState.cacheSize,
                         maxCacheSize = remember { CacheUtils.calculateRecommendedMaxCacheSize() },
-                        lastSyncTime = lastSyncTime,
+                        lastSyncTime = settingsState.lastSyncTime,
                         onClearCache = {
                                 coroutineScope.launch {
-                                        gameRepository.clearCache()
-                                        cacheStats = gameRepository.getCacheStats()
-                                        lastSyncTime = gameRepository.getLastSyncTime()
+                                        try {
+                                                PerformanceMonitor.startTimer(
+                                                        "cache_clear_operation"
+                                                )
+                                                gameRepository.clearCache()
+                                                val clearDuration =
+                                                        PerformanceMonitor.endTimer(
+                                                                "cache_clear_operation"
+                                                        )
+
+                                                PerformanceMonitor.trackCachePerformance(
+                                                        "cache_clear",
+                                                        0,
+                                                        0f,
+                                                        clearDuration
+                                                )
+
+                                                val cacheStats = gameRepository.getCacheStats()
+                                                val lastSyncTime = gameRepository.getLastSyncTime()
+                                                val recommendedMaxSize =
+                                                        CacheUtils
+                                                                .calculateRecommendedMaxCacheSize()
+                                                viewModel.updateCacheStats(
+                                                        cacheSize = cacheStats.count,
+                                                        maxCacheSize = recommendedMaxSize,
+                                                        lastSyncTime = lastSyncTime
+                                                )
+                                        } catch (e: Exception) {
+                                                viewModel.setError(
+                                                        "Fehler beim Leeren des Caches: ${e.message}"
+                                                )
+                                                PerformanceMonitor.trackApiCall(
+                                                        "cache_clear",
+                                                        0,
+                                                        false
+                                                )
+                                        }
                                 }
                         },
                         onOptimizeCache = {
                                 coroutineScope.launch {
-                                        gameRepository.optimizeCache()
-                                        cacheStats = gameRepository.getCacheStats()
-                                        lastSyncTime = gameRepository.getLastSyncTime()
+                                        try {
+                                                PerformanceMonitor.startTimer(
+                                                        "cache_optimize_operation"
+                                                )
+                                                gameRepository.optimizeCache()
+                                                val optimizeDuration =
+                                                        PerformanceMonitor.endTimer(
+                                                                "cache_optimize_operation"
+                                                        )
+
+                                                PerformanceMonitor.trackCachePerformance(
+                                                        "cache_optimize",
+                                                        settingsState
+                                                                .cacheSize, // Use current cache
+                                                        // size for optimization
+                                                        0.8f, // Geschätzte Hit-Rate nach
+                                                        // Optimierung
+                                                        optimizeDuration
+                                                )
+
+                                                val cacheStats = gameRepository.getCacheStats()
+                                                val lastSyncTime = gameRepository.getLastSyncTime()
+                                                val recommendedMaxSize =
+                                                        CacheUtils
+                                                                .calculateRecommendedMaxCacheSize()
+                                                viewModel.updateCacheStats(
+                                                        cacheSize = cacheStats.count,
+                                                        maxCacheSize = recommendedMaxSize,
+                                                        lastSyncTime = lastSyncTime
+                                                )
+                                        } catch (e: Exception) {
+                                                viewModel.setError(
+                                                        "Fehler bei der Cache-Optimierung: ${e.message}"
+                                                )
+                                                PerformanceMonitor.trackApiCall(
+                                                        "cache_optimize",
+                                                        0,
+                                                        false
+                                                )
+                                        }
                                 }
                         }
                 )
@@ -196,7 +297,7 @@ fun SettingsScreen(
                 // --- Sprache, Design, Datenschutz etc. ---
                 SettingsSection(title = stringResource(R.string.notifications_section)) {
                         SectionNotifications(
-                                notificationsEnabled = notificationsEnabled,
+                                notificationsEnabled = settingsState.notificationsEnabled,
                                 onCheckedChange = viewModel::setNotificationsEnabled
                         )
                 }
@@ -204,8 +305,8 @@ fun SettingsScreen(
                 // Daten & Synchronisation-Sektion ausgelagert
                 SettingsSection(title = stringResource(R.string.data_sync_section)) {
                         SectionDataSync(
-                                autoRefreshEnabled = autoRefreshEnabled,
-                                imageQuality = imageQuality,
+                                autoRefreshEnabled = settingsState.autoRefreshEnabled,
+                                imageQuality = settingsState.imageQuality,
                                 onAutoRefreshChange = viewModel::setAutoRefreshEnabled,
                                 onImageQualityChange = viewModel::setImageQuality
                         )
@@ -214,7 +315,7 @@ fun SettingsScreen(
                 // Sprachsektion ausgelagert
                 SettingsSection(title = stringResource(R.string.language_section)) {
                         SectionLanguage(
-                                language = language,
+                                language = settingsState.language,
                                 onLanguageChange = viewModel::setLanguage
                         )
                 }
@@ -222,9 +323,9 @@ fun SettingsScreen(
                 // Gaming-Features-Sektion ausgelagert
                 SettingsSection(title = stringResource(R.string.gaming_features_section)) {
                         SectionGamingFeatures(
-                                gamingModeEnabled = gamingModeEnabled,
-                                performanceModeEnabled = performanceModeEnabled,
-                                shareGamesEnabled = shareGamesEnabled,
+                                gamingModeEnabled = settingsState.gamingModeEnabled,
+                                performanceModeEnabled = settingsState.performanceModeEnabled,
+                                shareGamesEnabled = settingsState.shareGamesEnabled,
                                 onGamingModeChange = viewModel::setGamingModeEnabled,
                                 onPerformanceModeChange = viewModel::setPerformanceModeEnabled,
                                 onShareGamesChange = viewModel::setShareGamesEnabled
@@ -234,7 +335,7 @@ fun SettingsScreen(
                 // Design-Sektion ausgelagert
                 SettingsSection(title = stringResource(R.string.design_section)) {
                         SectionDesign(
-                                darkModeEnabled = darkModeEnabled,
+                                darkModeEnabled = settingsState.darkModeEnabled,
                                 onDarkModeChange = viewModel::setDarkModeEnabled
                         )
                 }
@@ -247,326 +348,39 @@ fun SettingsScreen(
                         )
                 }
 
-                // Werbung & Analytics Sektion
-                SettingsSection(title = stringResource(R.string.analytics_section)) {
-                        Row(
-                                modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                        ) {
-                                Icon(
-                                        imageVector = Icons.Default.BarChart,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                        text = stringResource(R.string.analytics_enabled),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.onBackground
-                                )
-                                Spacer(modifier = Modifier.weight(1f))
-                                Switch(
-                                        checked = analyticsEnabled,
-                                        onCheckedChange = { viewModel.setAnalyticsEnabled(it) },
-                                        colors =
-                                                SwitchDefaults.colors(
-                                                        checkedThumbColor =
-                                                                MaterialTheme.colorScheme.primary,
-                                                        checkedTrackColor =
-                                                                MaterialTheme.colorScheme
-                                                                        .primaryContainer,
-                                                        uncheckedThumbColor =
-                                                                MaterialTheme.colorScheme.outline,
-                                                        uncheckedTrackColor =
-                                                                MaterialTheme.colorScheme
-                                                                        .surfaceVariant
-                                                )
-                                )
-                        }
-                        Text(
-                                text = stringResource(R.string.analytics_enabled_description),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier =
-                                        Modifier.padding(start = 48.dp, end = 16.dp, bottom = 8.dp)
-                        )
-                        if (isProUser || BuildConfig.DEBUG) {
-                                Row(
-                                        modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(16.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                        Icon(
-                                                imageVector = Icons.Default.Star,
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.primary
-                                        )
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(
-                                                text =
-                                                        stringResource(
-                                                                R.string.pro_ads_switch_label
-                                                        ),
-                                                style = MaterialTheme.typography.titleMedium,
-                                                color = MaterialTheme.colorScheme.onBackground
-                                        )
-                                        Spacer(modifier = Modifier.weight(1f))
-                                        Switch(
-                                                checked = adsEnabled,
-                                                onCheckedChange = { viewModel.setAdsEnabled(it) },
-                                                colors =
-                                                        SwitchDefaults.colors(
-                                                                checkedThumbColor =
-                                                                        MaterialTheme.colorScheme
-                                                                                .primary,
-                                                                checkedTrackColor =
-                                                                        MaterialTheme.colorScheme
-                                                                                .primaryContainer,
-                                                                uncheckedThumbColor =
-                                                                        MaterialTheme.colorScheme
-                                                                                .outline,
-                                                                uncheckedTrackColor =
-                                                                        MaterialTheme.colorScheme
-                                                                                .surfaceVariant
-                                                        )
-                                        )
-                                }
-                                Text(
-                                        text = stringResource(R.string.pro_ads_switch_desc),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier =
-                                                Modifier.padding(
-                                                        start = 48.dp,
-                                                        end = 16.dp,
-                                                        bottom = 8.dp
-                                                )
-                                )
-                        }
-                        BannerAdView(
-                                adUnitId = "ca-app-pub-7269049262039376/9765911397",
-                                modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(50.dp),
-                                analyticsEnabled = analyticsEnabled
-                        )
-                }
-                // Datenbank-Management und Dialoge werden immer angezeigt (oder nach Wunsch)
                 SettingsSection(title = stringResource(R.string.database_management_section)) {
                         SectionDatabase()
                         Spacer(modifier = Modifier.height(8.dp))
-                }
-                // TODO: unsicher ob ich diese Cards überhaupt nutzen werde
-                /*
-                // Favoriten-Export/Import Card
-                Card(
-                        modifier =
-                                Modifier.fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        colors =
-                                CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                ) {
-                        Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(16.dp)
+
+                        // Reset-Button für alle Einstellungen
+                        Button(
+                                onClick = {
+                                        viewModel.resetToDefaults()
+                                        coroutineScope.launch {
+                                                snackbarHostState.showSnackbar(
+                                                        "Alle Einstellungen wurden zurückgesetzt"
+                                                )
+                                        }
+                                },
+                                colors =
+                                        ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.error,
+                                                contentColor = MaterialTheme.colorScheme.onError
+                                        ),
+                                modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp)
                         ) {
                                 Icon(
-                                        Icons.Default.FileUpload,
+                                        imageVector = Icons.Default.Restore,
                                         contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
+                                        modifier = Modifier.size(18.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                        text = stringResource(R.string.export_favorites),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
-                                )
-                        }
-                        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Button(
-                                                onClick = {
-                                                        if (isProUser || isFavoritesExportUnlocked
-                                                        ) {
-                                                                exportLauncher?.launch(
-                                                                        "favoritenliste_export.json"
-                                                                )
-                                                        } else {
-                                                                coroutineScope.launch {
-                                                                        snackbarHostState
-                                                                                .showSnackbar(
-                                                                                        rewardedAdFavoritesRewardText
-                                                                                )
-                                                                }
-                                                        }
-                                                },
-                                                enabled = isProUser || isFavoritesExportUnlocked,
-                                                modifier = Modifier.weight(1f)
-                                        ) {
-                                                Icon(
-                                                        Icons.Default.FileUpload,
-                                                        contentDescription = null
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dp))
-                                                Text(stringResource(R.string.export))
-                                        }
-                                        if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
-                                                RewardedAdButton(
-                                                        adUnitId =
-                                                                "ca-app-pub-3940256099942544/5224354917",
-                                                        adsEnabled = adsEnabled,
-                                                        isProUser = isProUser,
-                                                        rewardText = rewardedAdFavoritesRewardText,
-                                                        onReward = {
-                                                                isFavoritesExportUnlocked = true
-                                                        }
-                                                )
-                                        }
-                                        if (isFavoritesExportUnlocked && !isProUser) {
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                                AssistChip(
-                                                        onClick = {},
-                                                        label = {
-                                                                Text(
-                                                                        stringResource(
-                                                                                R.string
-                                                                                        .export_unlocked
-                                                                        )
-                                                                )
-                                                        },
-                                                        leadingIcon = {
-                                                                Icon(
-                                                                        Icons.Default.Check,
-                                                                        contentDescription = null
-                                                                )
-                                                        }
-                                                )
-                                        }
-                                }
-                        }
-                }
-                 */
-
-                /*
-                // Wishlist-Export/Import Card
-                Card(
-                        modifier =
-                                Modifier.fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                        elevation = CardDefaults.cardElevation(4.dp),
-                        colors =
-                                CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                ) {
-                        Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(16.dp)
-                        ) {
-                                Icon(
-                                        Icons.Default.FileUpload,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                        text = stringResource(R.string.wishlist_export),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
-                                )
-                        }
-                        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Button(
-                                                onClick = {
-                                                        if (isProUser || isWishlistExportUnlocked) {
-                                                                exportLauncher?.launch(
-                                                                        "wunschliste_export.json"
-                                                                )
-                                                        } else {
-                                                                coroutineScope.launch {
-                                                                        snackbarHostState
-                                                                                .showSnackbar(
-                                                                                        rewardedAdWishlistRewardText
-                                                                                )
-                                                                }
-                                                        }
-                                                },
-                                                enabled = isProUser || isWishlistExportUnlocked,
-                                                modifier = Modifier.weight(1f)
-                                        ) {
-                                                Icon(
-                                                        Icons.Default.FileUpload,
-                                                        contentDescription = null
-                                                )
-                                                Spacer(modifier = Modifier.width(4.dp))
-                                                Text(stringResource(R.string.export))
-                                        }
-                                        if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
-                                                RewardedAdButton(
-                                                        adUnitId =
-                                                                "ca-app-pub-3940256099942544/5224354917",
-                                                        adsEnabled = adsEnabled,
-                                                        isProUser = isProUser,
-                                                        rewardText = rewardedAdWishlistRewardText,
-                                                        onReward = {
-                                                                isWishlistExportUnlocked = true
-                                                        }
-                                                )
-                                        }
-                                        if (isWishlistExportUnlocked && !isProUser) {
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                                AssistChip(
-                                                        onClick = {},
-                                                        label = {
-                                                                Text(
-                                                                        stringResource(
-                                                                                R.string
-                                                                                        .export_unlocked
-                                                                        )
-                                                                )
-                                                        },
-                                                        leadingIcon = {
-                                                                Icon(
-                                                                        Icons.Default.Check,
-                                                                        contentDescription = null
-                                                                )
-                                                        }
-                                                )
-                                        }
-                                }
-                        }
-                }
-                 */
-
-                /*
-                // Snackbar für Export/Import-Feedback und Dialoge
-                LaunchedEffect(exportResult) {
-                        exportResult?.let {
-                                snackbarHostState.showSnackbar(
-                                        if (it.isSuccess) "Favoriten erfolgreich exportiert!"
-                                        else
-                                                "Fehler beim Export: ${it.exceptionOrNull()?.localizedMessage ?: "Unbekannter Fehler"}"
-                                )
+                                Text("Alle Einstellungen zurücksetzen")
                         }
                 }
 
-                 */
-                LaunchedEffect(importResult) {
-                        importResult?.let {
-                                snackbarHostState.showSnackbar(
-                                        if (it.isSuccess) "Favoriten erfolgreich importiert!"
-                                        else
-                                                "Fehler beim Import: ${it.exceptionOrNull()?.localizedMessage ?: "Unbekannter Fehler"}"
-                                )
-                        }
-                }
                 if (showAboutDialog) {
                         AboutAppDialog(onDismiss = { showAboutDialog = false })
                 }
@@ -574,7 +388,6 @@ fun SettingsScreen(
                         PrivacyPolicyDialog(onDismiss = { showPrivacyDialog = false })
                 }
         }
-        // Entferne die Anzeige von BannerAdView am Dateiende (mit viewModel.adsEnabled)
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
                 SnackbarHost(hostState = snackbarHostState)
         }

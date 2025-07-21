@@ -13,6 +13,23 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Einstellungs-Item mit Switch für Boolean-Einstellungen.
+ *
+ * Features:
+ * - Icon, Titel und Untertitel
+ * - Material3 Switch-Komponente
+ * - Theme-adaptive Farben
+ * - Responsive Layout
+ * - Accessibility-Unterstützung
+ * - Callback für Statusänderungen
+ *
+ * @param icon Icon für die Einstellung
+ * @param title Titel der Einstellung
+ * @param subtitle Beschreibung der Einstellung
+ * @param checked Aktueller Status der Einstellung
+ * @param onCheckedChange Callback bei Statusänderung
+ */
 @Composable
 internal fun SettingsSwitchItem(
     icon: ImageVector,

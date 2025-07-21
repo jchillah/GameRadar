@@ -2,6 +2,7 @@
 accompanistNavigationAnimation = "0.36.0"
 
 agp = "8.9.3"
+androidxCoreKtx = "1.13.1"
 coreKtxVersion = "1.12.0"
 firebaseBom = "33.16.0"
 javaxInject = "1"
@@ -62,12 +63,14 @@ uiTooling = "1.8.3"
 navigationTestingAndroid = "2.9.1"
 uiToolingPreview = "1.6.0"
 workRuntimeKtx = "2.10.2"
+firebaseCrashlyticsKtx = "19.4.4"
 
 [libraries]
 # Core Android
 accompanist-navigation-animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanistNavigationAnimation" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-ktx-v1120 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
+androidx-core-ktx-v1131 = { module = "androidx.core:core-ktx", version.ref = "androidxCoreKtx" }
 androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleProcess" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -171,12 +174,13 @@ ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", v
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
 androidx-navigation-testing-android = { group = "androidx.navigation", name = "navigation-testing-android", version.ref = "navigationTestingAndroid" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
+firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-crashlytics-ktx", version.ref = "firebaseCrashlyticsKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version = "2.1.21-2.0.1" }
-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "2.9.9" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.4" }
 google-services = { id = "com.google.gms.google-services", version = "4.4.0" }
 

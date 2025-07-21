@@ -12,6 +12,18 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Header-Komponente für den Einstellungsbildschirm.
+ *
+ * Features:
+ * - Settings-Icon in großer Darstellung
+ * - Einstellungstitel in Headline-Typografie
+ * - Untertitel mit Beschreibung
+ * - Zentrierte Ausrichtung
+ * - Material3 Design-System
+ * - Theme-adaptive Farben
+ * - Accessibility-Unterstützung
+ */
 @Composable
 internal fun SettingsHeader() {
     Column(

@@ -3,342 +3,332 @@
     <string name="app_name">GameRadar</string>
 
     <!-- Navigation -->
-    <string name="nav_search">Search</string>
-    <string name="nav_favorites">Favorites</string>
-    <string name="nav_settings">Settings</string>
+    <string name="nav_search">Suche</string>
+    <string name="nav_favorites">Favoriten</string>
+    <string name="nav_settings">Einstellungen</string>
 
     <!-- Search Screen -->
-    <string name="search_placeholder">search for Games</string>
-    <string name="search_button">search</string>
-    <string name="filter_button">filter</string>
-    <string name="no_results">no results</string>
-    <string name="no_results_message">Try another search term or use filters.</string>
-    <string name="search_tab_all">all</string>
-    <string name="search_tab_new">new releases</string>
-    <string name="search_tab_top_rated">top rated</string>
-    <string name="search_title">Game search</string>
+    <string name="search_placeholder">Suche nach Spielen</string>
+    <string name="search_button">Suchen</string>
+    <string name="filter_button">Filter</string>
+    <string name="no_results">Keine Ergebnisse</string>
+    <string name="no_results_message">Versuche andere Suchbegriffe oder Filter zu verwenden.</string>
+    <string name="search_tab_all">Alle</string>
+    <string name="search_tab_new">Neuerscheinungen</string>
+    <string name="search_tab_top_rated">Top-Bewertungen</string>
+    <string name="search_title">Spielsuche</string>
     <!-- ContentDescription für Filter-Button in der Suchleiste -->
-    <string name="filter_button_content_description">show filters</string>
-    <string name="search_empty_title">search for games</string>
-    <string name="search_empty_message_offline">You are offline. Search is only available online.</string>
-    <string name="search_empty_message_online">Enter a search term to find games.</string>
+    <string name="filter_button_content_description">Filter anzeigen</string>
+    <string name="search_empty_title">Suche nach Spielen</string>
+    <string name="search_empty_message_offline">Du bist offline. Die Suche ist nur online möglich.</string>
+    <string name="search_empty_message_online">Gib einen Suchbegriff ein, um Spiele zu finden.</string>
 
     <!-- Favorites Screen -->
-    <string name="favorites_title">My Favorites</string>
-    <string name="favorites_empty_title">No Favorites</string>
-    <string name="favorites_empty_message">You haven\'t saved any favorites yet.</string>
-    <string name="favorites_empty_offline">You are offline. Your favorites will be displayed once you\'re back online.</string>
-    <string name="discover_games">Discover games</string>
-    <string name="favorites_export_import">Favorites Export/Import</string>
-    <string name="favorites_export">Export favorites</string>
-    <string name="favorites_import">Import favorites</string>
-    <string name="export_import_preview_unavailable">Export/Import not available in preview</string>
-    <string name="wishlist_export_import">Wishlist Export/Import</string>
-    <string name="wishlist_export">Export wishlist</string>
-    <string name="wishlist_import">Import wishlist</string>
-    <string name="wishlist_export_success">Wishlist exported successfully!</string>
-    <string name="wishlist_import_success">Wishlist imported successfully!</string>
-    <string name="wishlist_export_error">Error exporting wishlist</string>
-    <string name="wishlist_import_error">Error importing wishlist</string>
+    <string name="favorites_title">Meine Favoriten</string>
+    <string name="favorites_empty_title">Keine Favoriten</string>
+    <string name="favorites_empty_message">Du hast noch keine Favoriten gespeichert.</string>
+    <string name="favorites_empty_offline">Du bist offline. Deine Favoriten werden angezeigt, sobald du wieder online bist.</string>
+    <string name="discover_games">Spiele entdecken</string>
+    <string name="favorites_export_import">Favoriten-Export/-Import</string>
+    <string name="favorites_export">Favoritenliste exportieren</string>
+    <string name="favorites_import">Favoritenliste importieren</string>
+    <string name="export_import_preview_unavailable">Export/Import nicht im Preview verfügbar</string>
+    <string name="favorites_export_filename">favoritenliste_export.json</string>
 
     <!-- Settings Screen -->
-    <string name="settings_title">Settings</string>
-    <string name="settings_subtitle">Customize your app</string>
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_subtitle">Passe deine App an</string>
 
     <!-- Language Section -->
-    <string name="language_section">Language</string>
-    <string name="app_language">App Language</string>
-    <string name="app_language_description">Language of the user interface</string>
-    <string name="language_german">German</string>
+    <string name="language_section">Sprache</string>
+    <string name="app_language">App-Sprache</string>
+    <string name="app_language_description">Sprache der Benutzeroberfläche</string>
+    <string name="language_german">Deutsch</string>
     <string name="language_english">English</string>
-    <string name="system_language">System language</string>
+    <string name="system_language">Systemsprache</string>
 
     <!-- Notifications Section -->
-    <string name="notifications_section">Notifications</string>
-    <string name="push_notifications">Push Notifications</string>
-    <string name="new_games_updates">Receive new games and updates</string>
+    <string name="notifications_section">Benachrichtigungen</string>
+    <string name="push_notifications">Push-Benachrichtigungen</string>
+    <string name="new_games_updates">Neue Spiele und Updates erhalten</string>
 
     <!-- Performance Section -->
-    <string name="performance_section">Performance</string>
-    <string name="gaming_mode">Gaming Mode</string>
-    <string name="gaming_mode_description">Optimized display for gaming</string>
-    <string name="performance_mode">Performance Mode</string>
-    <string name="performance_mode_description">Faster loading times</string>
-    <string name="auto_refresh">Auto Refresh</string>
-    <string name="auto_refresh_description">Automatically refresh data</string>
+    <string name="performance_section">Leistung</string>
+    <string name="gaming_mode">Gaming-Modus</string>
+    <string name="gaming_mode_description">Optimierte Darstellung für Gaming</string>
+    <string name="performance_mode">Performance-Modus</string>
+    <string name="performance_mode_description">Schnellere Ladezeiten</string>
+    <string name="auto_refresh">Auto-Refresh</string>
+    <string name="auto_refresh_description">Automatische Aktualisierung der Daten</string>
 
     <!-- Display Section -->
-    <string name="display_section">Display</string>
-    <string name="dark_mode">Dark Mode</string>
-    <string name="dark_mode_description">Enable dark mode</string>
-    <string name="image_quality">Image Quality</string>
-    <string name="image_quality_high">High</string>
-    <string name="image_quality_medium">Medium</string>
-    <string name="image_quality_low">Low</string>
-    <string name="image_quality_description">Quality of game images</string>
+    <string name="display_section">Darstellung</string>
+    <string name="dark_mode">Dunkles Design</string>
+    <string name="dark_mode_description">Aktiviere den Dark Mode</string>
+    <string name="image_quality">Bildqualität</string>
+    <string name="image_quality_high">Hoch</string>
+    <string name="image_quality_medium">Mittel</string>
+    <string name="image_quality_low">Niedrig</string>
+    <string name="image_quality_description">Qualität der Spielbilder</string>
 
     <!-- Social Section -->
-    <string name="social_section">Social</string>
-    <string name="share_games">Share Games</string>
-    <string name="share_games_description">Share games with friends</string>
+    <string name="social_section">Sozial</string>
+    <string name="share_games">Spiele teilen</string>
+    <string name="share_games_description">Spiele mit Freunden teilen</string>
 
     <!-- Cache Management -->
-    <string name="cache_section">Cache Management</string>
-    <string name="cache_size">Cache Size</string>
-    <string name="clear_cache">Clear Cache</string>
-    <string name="clear_cache_description">Deletes all cached data</string>
-    <string name="sync_favorites">Sync</string>
-    <string name="sync_favorites_description">Sync favorites with API</string>
-    <string name="last_sync">Last Sync</string>
-    <string name="cache_label">Cache: %1$d/%2$s games</string>
-    <string name="cache_unlimited">∞</string>
-    <string name="cache_performance_critical">Performance Critical</string>
-    <string name="cache_performance_warning">Performance Limited</string>
-    <string name="cache_performance_optimal">Performance Optimal</string>
-    <string name="cache_content_description">Cache</string>
-    <string name="cache_info_title">Cache Info</string>
-    <string name="cache_info_text">%1$s</string>
-    <string name="cache_info_content_description">Cache Info</string>
+    <string name="cache_section">Cache-Verwaltung</string>
+    <string name="cache_section_tooltip">Verwalte den lokalen Spiele-Cache</string>
+    <string name="cache_full_warning">Cache ist fast voll! Bitte leere den Cache oder optimiere ihn.</string>
+    <string name="clear_cache">Cache leeren</string>
+    <string name="cache_stat_saved_games">Gespeicherte Spiele</string>
+    <string name="cache_stat_storage">Speicherverbrauch</string>
+    <string name="cache_stat_last_sync">Letzte Synchronisation</string>
+    <string name="cache_stat_today">Heute</string>
+    <string name="cache_stat_never">Nie</string>
+    <string name="cache_stat_usage">Cache-Nutzung</string>
 
-    <!-- CacheManagementCard: Tooltip and Stats -->
-    <string name="cache_section_tooltip">Manage, optimize, and clear the cache here.</string>
-    <string name="cache_stat_saved_games">Saved Games</string>
-    <string name="cache_stat_storage">Storage</string>
-    <string name="cache_stat_last_sync">Last Sync</string>
-    <string name="cache_stat_today">Today</string>
-    <string name="cache_stat_never">Never</string>
-    <string name="cache_stat_usage">Cache Usage</string>
+    <!-- Cache Performance -->
+    <string name="cache_unlimited">∞</string>
+    <string name="cache_performance_critical">Performance kritisch</string>
+    <string name="cache_performance_warning">Performance eingeschränkt</string>
+    <string name="cache_performance_optimal">Performance optimal</string>
+    <string name="cache_content_description">Cache</string>
+    <string name="cache_info_title">Cache-Info</string>
+    <string name="cache_info_text">%1$s</string>
+    <string name="cache_info_content_description">Cache-Info</string>
+    <string name="sync_favorites">Synchronisieren</string>
+    <string name="cache_label">Cache: %1$d/%2$s Spiele</string>
 
     <!-- About Section -->
-    <string name="about_section">About the App</string>
-    <string name="about_app">About GameRadar</string>
-    <string name="about_app_description">Your ultimate gaming database with over 350,000 games from the RAWG API.</string>
+    <string name="about_section">Über die App</string>
+    <string name="about_app">Über GameRadar</string>
+    <string name="about_app_description">Deine ultimative Gaming-Datenbank mit über 350.000 Spielen aus der RAWG-API.</string>
     <string name="about_app_features">Features:</string>
-    <string name="about_app_feature_search">🔍 Advanced Game Search</string>
-    <string name="about_app_feature_favorites">⭐ Favorites Management</string>
-    <string name="about_app_feature_offline">📱 Offline Cache</string>
-    <string name="about_app_feature_gaming">🎮 Gaming Features</string>
+    <string name="about_app_feature_search">🔍 Erweiterte Spielsuche</string>
+    <string name="about_app_feature_favorites">⭐ Favoriten-Verwaltung</string>
+    <string name="about_app_feature_offline">📱 Offline-Cache</string>
+    <string name="about_app_feature_gaming">🎮 Gaming-Features</string>
     <string name="about_app_feature_darkmode">🌙 Dark Mode</string>
-    <string name="about_app_community">Developed with ❤️ for the gaming community</string>
+    <string name="about_app_community">Entwickelt mit ❤️ für die Gaming-Community</string>
     <string name="app_version">Version 1.0.0</string>
-    <string name="privacy_policy">Privacy Policy</string>
-    <string name="privacy_policy_description">Read the privacy policy</string>
-    <string name="contact_support">Contact Support</string>
-    <string name="contact_support_description">Send email to support</string>
+    <string name="privacy_policy">Datenschutz</string>
+    <string name="privacy_policy_description">Datenschutzerklärung lesen</string>
+    <string name="contact_support">Support kontaktieren</string>
+    <string name="contact_support_description">E-Mail an Support senden</string>
     <string name="contact_support_subject">Support GameRadar</string>
+    <string name="action_understood">Verstanden</string>
 
     <!-- Database Management -->
-    <string name="database_section">Database Management</string>
-    <string name="reset_database">Reset Database</string>
-    <string name="reset_database_description">Deletes all favorites and cached data</string>
-    <string name="reset_database_dialog_title">Reset Database</string>
-    <string name="reset_database_dialog_text">Do you really want to delete all favorites and cache data? This action cannot be undone.</string>
-    <string name="reset_database_restart_hint">The app database has been reset. Please restart the app to avoid errors.</string>
+    <string name="database_section">Datenbank-Management</string>
+    <string name="reset_database">Datenbank zurücksetzen</string>
+    <string name="reset_database_description">Löscht alle Favoriten und Cache-Daten</string>
+    <string name="reset_database_dialog_title">Datenbank zurücksetzen</string>
+    <string name="reset_database_dialog_text">Möchten Sie wirklich alle Favoriten und Cache-Daten löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <!-- Hinweis nach Datenbank-Reset, dass ein Neustart empfohlen wird -->
+    <string name="reset_database_restart_hint">Die App-Datenbank wurde zurückgesetzt. Bitte starte die App neu, um Fehler zu vermeiden.</string>
 
     <!-- Common Actions -->
-    <string name="action_delete">Delete</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_confirm">Confirm</string>
+    <string name="action_delete">Löschen</string>
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_confirm">Bestätigen</string>
     <string name="action_ok">OK</string>
-    <string name="action_retry">Retry</string>
-    <string name="action_close">Close</string>
+    <string name="action_retry">Wiederholen</string>
+    <string name="action_close">Schließen</string>
 
     <!-- Error Messages -->
-    <string name="error_unknown">Unknown Error</string>
-    <string name="error_network_message">Network Error</string>
-    <string name="error_no_connection">No Internet Connection</string>
-    <string name="error_check_connection">Check your connection and try again</string>
-    <string name="error_load_data">Error loading data</string>
-    <string name="error_save_data">Error saving data</string>
-    <string name="error_card_default_title">An error occurred</string>
+    <string name="error_unknown">Unbekannter Fehler</string>
+    <string name="error_network_message">Netzwerkfehler</string>
+    <string name="error_no_connection">Keine Internetverbindung</string>
+    <string name="error_check_connection">Überprüfe deine Verbindung und versuche es erneut</string>
+    <string name="error_load_data">Fehler beim Laden der Daten</string>
+    <string name="error_save_data">Fehler beim Speichern der Daten</string>
+    <string name="error_card_default_title">Fehler aufgetreten</string>
+    <string name="error_game_load_failed">Fehler beim Laden der Spieldaten</string>
+    <string name="error_no_platform_data">Keine Plattformdaten verfügbar</string>
+    <string name="error_api">API-Fehler: </string>
+    <string name="error_no_genre_data">Keine Genre-Daten verfügbar</string>
 
     <!-- Game Details -->
-    <string name="game_rating_game_details">Rating: %1$.1f</string>
+    <string name="game_header_image">Spiel-Header-Bild</string>
+    <string name="game_rating_game_details">Bewertung: %1$.1f</string>
     <string name="game_rating_search_gameitem">User Score: %1$.1f</string>
-    <string name="game_release_date_details">Release Date: %1$s</string>
+    <string name="game_release_date_details">Veröffentlichungsdatum: %1$s</string>
     <string name="game_release_date_search_gameitem">Release: %1$s</string>
-    <string name="game_platforms">Platforms</string>
+    <string name="game_platforms">Plattformen</string>
     <string name="game_genres">Genres</string>
-    <string name="game_developers">Developers</string>
-    <string name="game_publishers">Publishers</string>
+    <string name="game_developers">Entwickler</string>
+    <string name="game_publishers">Publisher</string>
     <string name="game_tags">Tags</string>
     <string name="game_stores">Stores</string>
-    <string name="game_metacritic_playtime">Metacritic &amp; Playtime</string>
+    <string name="game_metacritic_playtime">Metacritic &amp; Spielzeit</string>
     <string name="game_metacritic_value">Metacritic: %1$d</string>
-    <string name="game_playtime_value">Average Playtime: %1$d hours</string>
+    <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Stunden</string>
     <string name="game_screenshots">Screenshots</string>
-    <string name="game_trailers">Trailers</string>
-    <string name="game_no_website">No website available</string>
-    <string name="game_playtime">Playtime</string>
+    <string name="game_trailers">Trailer</string>
+    <string name="game_no_website">Keine Website verfügbar</string>
+    <string name="game_playtime">Spielzeit</string>
     <string name="game_website">Website</string>
     <string name="game_metacritic">Metacritic</string>
     <string name="game_esrb_rating">ESRB Rating</string>
-    <string name="no_rating">No rating</string>
+    <string name="no_rating">Keine Bewertung</string>
 
     <!-- Loading States -->
-    <string name="loading">Loading…</string>
-    <string name="loading_games">Loading games…</string>
-    <string name="loading_details">Loading details…</string>
-    <string name="empty_state">Empty state</string>
-    <string name="loading_state_default">Loading data…</string>
+    <string name="loading">Lädt…</string>
+    <string name="loading_games">Spiele werden geladen…</string>
+    <string name="loading_details">Details werden geladen…</string>
+    <string name="empty_state">Leerer Zustand</string>
+    <string name="loading_state_default">Lade Daten…</string>
 
     <!-- Offline States -->
-    <string name="offline_mode">Offline Mode</string>
-    <string name="offline_no_data">No data available</string>
-    <string name="offline_no_favorites">No favorites available</string>
+    <string name="offline_mode">Offline-Modus</string>
+    <string name="offline_no_data">Keine Daten verfügbar</string>
+    <string name="offline_no_favorites">Keine Favoriten verfügbar</string>
 
     <!-- Time Formatting -->
-    <string name="time_just_now">Just now</string>
-    <string name="time_minutes_ago">%1$d minutes ago</string>
-    <string name="time_hours_ago">%1$d hours ago</string>
-    <string name="time_days_ago">%1$d days ago</string>
+    <string name="time_just_now">Gerade eben</string>
+    <string name="time_minutes_ago">%1$d Minuten</string>
+    <string name="time_hours_ago">%1$d Stunden</string>
+    <string name="time_days_ago">%1$d Tage</string>
 
-    <!-- Notifications -->
-    <string name="notification_new_games_title">New games available!</string>
-    <string name="notification_new_games_text">%1$d new games found.</string>
-    <string name="gaming_features_section">Gaming Features</string>
+    <string name="notification_new_games_title">Neue Spiele verfügbar!</string>
+    <string name="notification_new_games_text">%1$d neue Spiele wurden gefunden.</string>
+    <string name="gaming_features_section">Gaming-Features</string>
     <string name="design_section">Design</string>
-    <string name="about_app_section">About the App</string>
-    <string name="database_management_section">Database Management</string>
-    <string name="online_mode">Online Mode</string>
-    <string name="cache_offline_data">Using cached data (%1$d games available)</string>
-    <string name="cache_sync_auto">Data syncs automatically</string>
-    <string name="last_sync_time">Last sync: %1$s</string>
-
-    <!-- Privacy Policy -->
-    <string name="privacy_policy_title">GameRadar Privacy Policy</string>
-    <string name="privacy_policy_date">Effective: %1$s</string>
-    <string name="privacy_section_1_title">1. Data Collection</string>
-    <string name="privacy_section_1_content">GameRadar only collects the data necessary for the app\'s functionality. This includes your search queries, favorites, and app settings stored locally on your device.</string>
-    <string name="privacy_section_2_title">2. External Services</string>
-    <string name="privacy_section_2_content">The app uses the RAWG API for game data. This API does not collect any personal data from you. All API requests are made anonymously without personal identification.</string>
-    <string name="privacy_section_3_title">3. Local Storage</string>
-    <string name="privacy_section_3_content">Your favorites, search history, and settings are stored exclusively on your device. This data is not transferred to any external servers.</string>
-    <string name="privacy_section_4_title">4. Cache Data</string>
-    <string name="privacy_section_4_content">The app stores game data in a local cache to improve performance. This data can be deleted anytime via the settings.</string>
+    <string name="about_app_section">Über die App</string>
+    <string name="database_management_section">Datenbank-Management</string>
+    <string name="online_mode">Online-Modus</string>
+    <string name="cache_offline_data">Verwende gecachte Daten (%1$d Spiele verfügbar)</string>
+    <string name="cache_sync_auto">Daten werden automatisch synchronisiert</string>
+    <string name="last_sync_time">Letzte Synchronisation: %1$s</string>
+    <string name="privacy_policy_title">GameRadar Datenschutzerklärung</string>
+    <string name="privacy_policy_date">Stand: %1$s</string>
+    <string name="privacy_section_1_title">1. Datenerhebung</string>
+    <string name="privacy_section_1_content">GameRadar sammelt nur die Daten, die für die Funktionalität der App notwendig sind. Dazu gehören deine Suchanfragen, Favoriten und App-Einstellungen, die lokal auf deinem Gerät gespeichert werden.</string>
+    <string name="privacy_section_2_title">2. Externe Dienste</string>
+    <string name="privacy_section_2_content">Die App nutzt die RAWG-API für Spieldaten. Diese API sammelt keine persönlichen Daten von dir. Alle API-Anfragen erfolgen anonym ohne persönliche Identifikation.</string>
+    <string name="privacy_section_3_title">3. Lokale Speicherung</string>
+    <string name="privacy_section_3_content">Deine Favoriten, Suchverlauf und Einstellungen werden ausschließlich lokal auf deinem Gerät gespeichert. Diese Daten werden nicht an externe Server übertragen.</string>
+    <string name="privacy_section_4_title">4. Cache-Daten</string>
+    <string name="privacy_section_4_content">Die App speichert Spieldaten im lokalen Cache, um die Performance zu verbessern. Diese Daten können jederzeit über die Einstellungen gelöscht werden.</string>
     <string name="privacy_section_5_title">5. Analytics</string>
-    <string name="privacy_section_5_content">GameRadar collects anonymous usage data to improve the app. This data does not include any personal information and is used solely for internal purposes.</string>
-    <string name="privacy_section_6_title">6. Your Rights</string>
-    <string name="privacy_section_6_content">You have the right to delete all your data by using the app settings. All data is stored locally and can be fully removed.</string>
-    <string name="privacy_policy_contact">For privacy-related inquiries, contact us at: %1$s</string>
+    <string name="privacy_section_5_content">GameRadar sammelt anonyme Nutzungsdaten zur Verbesserung der App. Diese Daten enthalten keine persönlichen Informationen und werden nur für interne Zwecke verwendet.</string>
+    <string name="privacy_section_6_title">6. Deine Rechte</string>
+    <string name="privacy_section_6_content">Du hast das Recht, alle deine Daten zu löschen, indem du die App-Einstellungen verwendest. Alle Daten werden lokal gespeichert und können vollständig entfernt werden.</string>
+    <string name="privacy_policy_contact">Bei Fragen zum Datenschutz kontaktiere uns unter: %1$s</string>
 
-    <!-- Filters -->
-    <string name="filter_remove_platform">Remove platform filter</string>
-    <string name="filter_remove_genre">Remove genre filter</string>
-    <string name="filter_remove_rating">Remove rating filter</string>
-    <string name="filter_remove_ordering">Remove sorting</string>
-    <string name="filter_remove_all">Remove all filters</string>
-    <string name="filter_rating_label">Min rating: %1$d★</string>
-    <string name="filter_ordering_rating_desc">Rating (descending)</string>
-    <string name="filter_ordering_rating_asc">Rating (ascending)</string>
-    <string name="filter_ordering_release_desc">Newest first</string>
-    <string name="filter_ordering_release_asc">Oldest first</string>
+    <!-- Filter/ActiveFiltersRow -->
+    <string name="filter_remove_platform">Plattform-Filter entfernen</string>
+    <string name="filter_remove_genre">Genre-Filter entfernen</string>
+    <string name="filter_remove_rating">Bewertungs-Filter entfernen</string>
+    <string name="filter_remove_ordering">Sortierung entfernen</string>
+    <string name="filter_remove_all">Alle Filter entfernen</string>
+    <string name="filter_rating_label">Ab Bewertung: %1$d★</string>
+    <string name="filter_ordering_rating_desc">Bewertung (absteigend)</string>
+    <string name="filter_ordering_rating_asc">Bewertung (aufsteigend)</string>
+    <string name="filter_ordering_release_desc">Neueste zuerst</string>
+    <string name="filter_ordering_release_asc">Älteste zuerst</string>
     <string name="filter_ordering_name_asc">Name (A-Z)</string>
     <string name="filter_ordering_name_desc">Name (Z-A)</string>
-    <string name="filter_reset_all">Reset all filters</string>
+    <string name="filter_reset_all">Alle Filter zurücksetzen</string>
 
-    <!-- Filter Bottom Sheet -->
-    <string name="filter_select_platforms">Select platforms</string>
-    <string name="filter_selected_platforms">%1$d platform(s) selected</string>
-    <string name="filter_select_genres">Select genres</string>
-    <string name="filter_selected_genres">%1$d genre(s) selected</string>
-    <string name="filter_min_rating">Minimum rating: %1$d★</string>
-    <string name="filter_sorting">Sorting</string>
-    <string name="filter_select_sorting">Choose sorting</string>
-    <string name="filter_apply">Apply filter</string>
-    <string name="error_load_platforms">Error loading platforms</string>
-    <string name="error_load_genres">Error loading genres</string>
+    <!-- Filter/FilterBottomSheet -->
+    <string name="filter_select_platforms">Plattformen wählen</string>
+    <string name="filter_selected_platforms">%1$d Plattform(en) gewählt</string>
+    <string name="filter_select_genres">Genres wählen</string>
+    <string name="filter_selected_genres">%1$d Genre(s) gewählt</string>
+    <string name="filter_min_rating">Mindestbewertung: %1$d★</string>
+    <string name="filter_sorting">Sortierung</string>
+    <string name="filter_select_sorting">Sortierung wählen</string>
+    <string name="filter_apply">Filter anwenden</string>
+    <string name="error_load_platforms">Fehler beim Laden der Plattformen</string>
+    <string name="error_load_genres">Fehler beim Laden der Genres</string>
 
-    <!-- Search GameItem -->
-    <string name="favorite_marked">Marked as favorite</string>
-    <string name="favorite_not_marked">Not marked as favorite</string>
-    <string name="favorite_delete">Remove favorite</string>
-    <string name="favorite_add">Add to favorites</string>
-    <string name="favorite_remove">Remove favorite</string>
+    <!-- Search/GameItem -->
+    <string name="favorite_marked">Als Favorit markiert</string>
+    <string name="favorite_not_marked">Nicht als Favorit markiert</string>
+    <string name="favorite_delete">Favorit entfernen</string>
+    <string name="favorite_add">Zu Favoriten hinzufügen</string>
+    <string name="favorite_remove">Favorit entfernen</string>
 
-    <!-- Error & UI Text from Constants.kt -->
-    <string name="error_unknown_default">An unknown error occurred</string>
-    <string name="error_add_favorite">Error adding favorite</string>
-    <string name="error_remove_favorite">Error removing favorite</string>
-    <string name="error_toggle_favorite">Error toggling favorite</string>
-    <string name="error_clear_favorites">Error clearing favorites</string>
-    <string name="error_no_connection_and_no_cache">No connection and no cache available</string>
-    <string name="error_server">Server error: </string>
-    <string name="error_network">Network error: </string>
-    <string name="error_no_platform_data">No platform data available</string>
-    <string name="error_api">API error: </string>
-    <string name="error_no_genre_data">No genre data available</string>
-
-    <!-- Others -->
+    <!-- Fehlertexte & UI-Texte aus Constants.kt -->
+    <string name="error_unknown_default">Ein unbekannter Fehler ist aufgetreten</string>
+    <string name="error_add_favorite">Fehler beim Hinzufügen des Favoriten</string>
+    <string name="error_remove_favorite">Fehler beim Entfernen des Favoriten</string>
+    <string name="error_toggle_favorite">Fehler beim Umschalten des Favoriten</string>
+    <string name="error_clear_favorites">Fehler beim Leeren der Favoriten</string>
+    <string name="error_no_connection_and_no_cache">Keine Verbindung und kein Cache verfügbar</string>
+    <string name="error_server">Serverfehler: </string>
+    <string name="error_network">Netzwerkfehler: </string>
     <string name="email">michael.winkler.developer@gmail.com</string>
-    <string name="notification_channel_name">New Games</string>
-    <string name="notification_channel_desc">Notifications about new games</string>
-    <string name="ui_dark_mode">Dark Mode</string>
-    <string name="ui_dark_mode_desc">Enable dark mode for the app interface.</string>
+    <string name="notification_channel_name">Neue Spiele</string>
+    <string name="notification_channel_desc">Benachrichtigungen über neue Spiele</string>
+    <string name="ui_dark_mode">Dunkler Modus</string>
+    <string name="ui_dark_mode_desc">Aktiviere den dunklen Modus für die App-Oberfläche.</string>
 
-    <!-- Test Notification (Debug Only) -->
-    <string name="notification_title_test">Test Notification</string>
-    <string name="notification_text_test">This is a test notification.</string>
-    <string name="test_new_game_notification">Send test notification</string>
-    <string name="dialog_delete_all_favorites_title">Delete all favorites?</string>
-    <string name="dialog_delete_all_favorites_text">Do you really want to permanently delete all favorites?</string>
-    <string name="dialog_delete_all_favorites_confirm">Delete</string>
-    <string name="dialog_delete_all_favorites_cancel">Cancel</string>
-    <string name="data_sync_section">Data &amp; Synchronization</string>
+    <!-- Test-Benachrichtigung (nur Debug) -->
+    <string name="notification_title_test">Test-Benachrichtigung</string>
+    <string name="notification_text_test">Dies ist eine Test-Benachrichtigung.</string>
+    <string name="test_new_game_notification">Test-Benachrichtigung senden</string>
+    <string name="dialog_delete_all_favorites_title">Alle Favoriten löschen?</string>
+    <string name="dialog_delete_all_favorites_text">Möchtest du wirklich alle Favoriten unwiderruflich löschen?</string>
+    <string name="dialog_delete_all_favorites_confirm">Löschen</string>
+    <string name="dialog_delete_all_favorites_cancel">Abbrechen</string>
+    <string name="data_sync_section">Daten &amp; Synchronisation</string>
 
     <!-- Detail Screen Sections -->
-    <string name="detail_section_platforms">Platforms</string>
+    <string name="detail_section_platforms">Plattformen</string>
     <string name="detail_section_genres">Genres</string>
-    <string name="detail_section_developers">Developers</string>
-    <string name="detail_section_publishers">Publishers</string>
+    <string name="detail_section_developers">Entwickler</string>
+    <string name="detail_section_publishers">Publisher</string>
     <string name="detail_section_tags">Tags</string>
     <string name="detail_section_stores">Stores</string>
     <string name="detail_section_screenshots">Screenshots</string>
     <string name="detail_section_trailer">Trailer</string>
 
     <!-- Detail Components -->
-    <string name="detail_no_data">No data available</string>
-    <string name="detail_rating">Rating</string>
-    <string name="detail_game_stats">Game Statistics</string>
-    <string name="detail_playtime">Playtime</string>
+    <string name="detail_no_data">Keine Daten vorhanden</string>
+    <string name="detail_rating">Bewertung</string>
+    <string name="detail_game_stats">Spielstatistiken</string>
+    <string name="detail_playtime">Spielzeit</string>
     <string name="detail_metacritic">Metacritic</string>
-    <string name="detail_share_game">Share Game</string>
-    <string name="detail_play">Play</string>
-    <string name="detail_previous_image">Previous image</string>
+    <string name="detail_share_game">Spiel teilen</string>
+    <string name="detail_play">Abspielen</string>
+    <string name="detail_previous_image">Vorheriges Bild</string>
     <string name="detail_trailer_default">Trailer</string>
-    <string name="detail_no_description">No description available.</string>
-    <string name="detail_no_trailers">No trailers found for this game.</string>
-    <string name="detail_trailer_play">Play</string>
-    <string name="detail_screenshot_hint">Tap an image for full screen</string>
-    <string name="detail_no_screenshots">No screenshots found for this game.</string>
-    <string name="detail_share_text">Check out this game: %1$s</string>
-    <string name="detail_share_link">Or in the browser: %1$s</string>
+    <string name="detail_no_description">Keine Beschreibung verfügbar.</string>
+    <string name="detail_no_trailers">Für dieses Spiel wurden keine Trailer gefunden.</string>
+    <string name="detail_trailer_play">Abspielen</string>
+    <string name="detail_screenshot_hint">Tippen Sie auf ein Bild für Vollbildansicht</string>
+    <string name="detail_no_screenshots">Für dieses Spiel wurden keine Screenshots gefunden.</string>
+    <string name="detail_share_text">Schau dir dieses Spiel an: %1$s</string>
+    <string name="detail_share_link">Oder im Browser: %1$s</string>
 
     <!-- Common UI Elements -->
-    <string name="ui_empty_state">Empty state</string>
-    <string name="ui_info_show">Show info</string>
-    <string name="ui_help_show">Show help</string>
-    <string name="ui_tooltip_positioning">Tooltip with positioning</string>
-    <string name="ui_retry">Retry</string>
-    <string name="ui_error_occurred">An error occurred</string>
-    <string name="empty_state_icon_content_description">Empty state icon</string>
+    <string name="ui_empty_state">Leerer Zustand</string>
+    <string name="ui_info_show">Info anzeigen</string>
+    <string name="ui_help_show">Hilfe anzeigen</string>
+    <string name="ui_tooltip_positioning">Tooltip mit Positionierung</string>
+    <string name="ui_retry">Erneut versuchen</string>
+    <string name="ui_error_occurred">Ein Fehler ist aufgetreten</string>
+    <string name="empty_state_icon_content_description">Leerer Zustand Icon</string>
 
     <!-- Preview/Test Data -->
-    <string name="preview_language">Language</string>
-    <string name="preview_german">German</string>
-    <string name="preview_english">English</string>
-    <string name="preview_french">French</string>
-    <string name="preview_general">General</string>
-    <string name="preview_notifications">Notifications</string>
-    <string name="preview_description">Description</string>
-    <string name="preview_example_game">Example Game</string>
-    <string name="preview_example_dev">Example Dev</string>
-    <string name="preview_example_pub">Example Pub</string>
+    <string name="preview_language">Sprache</string>
+    <string name="preview_german">Deutsch</string>
+    <string name="preview_english">Englisch</string>
+    <string name="preview_french">Französisch</string>
+    <string name="preview_general">Allgemein</string>
+    <string name="preview_notifications">Benachrichtigungen</string>
+    <string name="preview_description">Beschreibung</string>
+    <string name="preview_example_game">Beispielspiel</string>
+    <string name="preview_example_dev">Beispiel Dev</string>
+    <string name="preview_example_pub">Beispiel Pub</string>
     <string name="preview_sample_game">Sample Game</string>
     <string name="preview_sample_dev">Sample Dev</string>
     <string name="preview_sample_pub">Sample Pub</string>
     <string name="preview_sample_description">This is a sample game description.</string>
-    <string name="preview_sectioncard_content">This is sample content for a SectionCard.</string>
+    <string name="preview_sectioncard_content">Dies ist ein Beispielinhalt für eine SectionCard.</string>
     <string name="preview_genre_action">Action</string>
     <string name="preview_genre_adventure">Adventure</string>
     <string name="preview_genre_rpg">RPG</string>
@@ -368,35 +358,118 @@
     <string name="activity_extra_video_title">video_title</string>
     <string name="activity_extra_video_url">video_url</string>
     <string name="activity_scale">scale</string>
-    <string name="detail_back">Back</string>
-    <string name="detail_title_default">Game Details</string>
-    <string name="detail_refresh">Reload</string>
-    <string name="rating_dialog_title">Rate Game</string>
-    <string name="rating_dialog_question">How do you rate this game?</string>
-    <string name="rating_dialog_star_content_description">%1$d stars</string>
-    <string name="rating_dialog_rating_of_five">%1$d out of 5 stars</string>
-    <string name="rating_dialog_confirm">Rate</string>
-    <string name="rating_dialog_cancel">Cancel</string>
-    <string name="ui_error_icon_content_description">Error icon</string>
-    <string name="error_retry">Retry</string>
-    <string name="game_headerimage_no_image">No image available</string>
-    <string name="game_rating_change">Change rating</string>
-    <string name="dropdown_placeholder">Select</string>
-    <string name="dropdown_open">Open dropdown</string>
-    <string name="dropdown_selected">Selected</string>
-    <string name="tooltip_info_content_description">Show info</string>
-    <string name="tooltip_help_content_description">Show help</string>
-    <string name="preview_tooltip_text">This is a helpful tooltip with additional information.</string>
-    <string name="preview_tooltip_positioned_text">Tooltip with positioning</string>
+    <string name="detail_back">Zurück</string>
+    <string name="detail_title_default">Spieldetails</string>
+    <string name="detail_refresh">Neu laden</string>
+    <string name="rating_dialog_title">Spiel bewerten</string>
+    <string name="rating_dialog_question">Wie bewertest du dieses Spiel?</string>
+    <string name="rating_dialog_star_content_description">%1$d Sterne</string>
+    <string name="rating_dialog_rating_of_five">%1$d von 5 Sternen</string>
+    <string name="rating_dialog_confirm">Bewerten</string>
+    <string name="rating_dialog_cancel">Abbrechen</string>
+    <string name="ui_error_icon_content_description">Fehler-Icon</string>
+    <string name="error_retry">Erneut versuchen</string>
+    <string name="game_headerimage_no_image">Kein Bild verfügbar</string>
+    <string name="game_rating_change">Bewertung ändern</string>
+    <string name="dropdown_placeholder">Auswählen</string>
+    <string name="dropdown_open">Dropdown öffnen</string>
+    <string name="dropdown_selected">Ausgewählt</string>
+    <string name="tooltip_info_content_description">Info anzeigen</string>
+    <string name="tooltip_help_content_description">Hilfe anzeigen</string>
+    <string name="preview_tooltip_text">Dies ist ein hilfreicher Tooltip mit zusätzlichen Informationen.</string>
+    <string name="preview_tooltip_positioned_text">Tooltip mit Positionierung</string>
     <string name="preview_item_index">Item %1$d</string>
-    <string name="preview_error_message">An error occurred</string>
-    <string name="preview_game_image_url">https://media.rawg.io/media/games/4fb/4fb548e4816c84d1d70f1a228fb167cc.jpg</string>
-    <string name="preview_settings_section_title">General</string>
-    <string name="preview_settings_section_content">Sample content for a SettingsSection.</string>
-    <string name="preview_settings_button_title">About the App</string>
+    <string name="preview_error_message">Ein Fehler ist aufgetreten</string>
+    <string name="preview_game_image_url">https://example.com/game-image.jpg</string>
+    <string name="preview_settings_section_title">Allgemein</string>
+    <string name="preview_settings_section_content">Beispiel-Inhalt für eine SettingsSection.</string>
+    <string name="preview_settings_button_title">Über die App</string>
     <string name="preview_settings_button_subtitle">Version 1.0.0</string>
-    <string name="preview_settings_dropdown_title">Language</string>
-    <string name="preview_settings_dropdown_subtitle">Choose app language</string>
-    <string name="preview_settings_dropdown_selected">German</string>
-    <string name="action_understood">alright</string>
+    <string name="preview_settings_dropdown_title">Sprache</string>
+    <string name="preview_settings_dropdown_subtitle">App-Sprache wählen</string>
+    <string name="preview_settings_dropdown_selected">Deutsch</string>
+    <string name="wishlist_tab">Wunschliste</string>
+    <string name="wishlist_empty_title">Keine Wunschspiele</string>
+    <string name="wishlist_empty_message">Du hast noch keine Spiele auf deiner Wunschliste.</string>
+    <string name="wishlist_add">Zur Wunschliste hinzufügen</string>
+    <string name="wishlist_remove">Von Wunschliste entfernen</string>
+    <string name="wishlist_marked">Auf der Wunschliste</string>
+    <string name="wishlist_not_marked">Nicht auf der Wunschliste</string>
+    <string name="wishlist_export">Wunschliste exportieren</string>
+    <string name="wishlist_import">Wunschliste importieren</string>
+    <string name="wishlist_export_import">Wunschliste Export/Import</string>
+    <string name="wishlist_export_success">Wunschliste erfolgreich exportiert!</string>
+    <string name="wishlist_import_success">Wunschliste erfolgreich importiert!</string>
+    <string name="wishlist_export_error">Fehler beim Exportieren der Wunschliste</string>
+    <string name="wishlist_import_error">Fehler beim Importieren der Wunschliste</string>
+    <string name="wishlist_count">Wunschlistenzähler: %1$d</string>
+    <string name="wishlist_clear_all">Wunschliste leeren</string>
+    <string name="wishlist_game_id_for_details">Spiel-ID für Details</string>
+    <string name="wishlist_show_details">Details anzeigen</string>
+    <string name="wishlist_full_details">Vollständige Details</string>
+
+    <!-- Analytics Section -->
+    <string name="analytics_section">Analytics</string>
+    <string name="analytics_enabled">Analytics aktivieren</string>
+    <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
+    <string name="analytics_always_enabled_description">Analytics ist immer aktiviert, um die App kontinuierlich zu verbessern.</string>
+    <string name="ads_section">Werbung</string>
+    <string name="ads_enabled">Werbung anzeigen</string>
+    <string name="ads_enabled_description">Erlaube das Anzeigen von Banner-Werbung (AdMob). Unterstützt die Weiterentwicklung der App. Es werden keine personalisierten Daten verwendet.</string>
+    <string name="pro_status_active">Pro-Version aktiv – werbefrei</string>
+    <string name="pro_status_active_sub">Du unterstützt die Weiterentwicklung und siehst keine Werbung.</string>
+    <string name="pro_status_inactive">Pro-Version nicht aktiv</string>
+    <string name="pro_status_inactive_sub">Werbung wird angezeigt. Mit Pro-Version genießt du GameRadar werbefrei.</string>
+    <string name="pro_status_upgrade">Upgrade</string>
+    <string name="pro_ads_switch_label">Werbung für Pro-User</string>
+    <string name="pro_ads_switch_desc">Pro-User können Werbung freiwillig aktivieren, um das Projekt zu unterstützen.</string>
+
+    <!-- Rewarded Ad Belohnungstexte -->
+    <string name="rewarded_ad_reward_text">1 Tag werbefrei als Belohnung!</string>
+    <string name="rewarded_ad_favorites_reward_text">Export der Favoriten für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_wishlist_reward_text">Export der Wunschliste für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_detail_reward_text">Exklusive Statistiken freischalten</string>
+    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_sync_reward_text">Synchronisation für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_cache_unlocked_text">Cache-Optimierung bereits freigeschaltet!</string>
+    <string name="rewarded_ad_sync_unlocked_text">Synchronisation bereits freigeschaltet!</string>
+    <string name="show_stats">Statistiken anzeigen</string>
+    <string name="show_exclusive_stats">Exklusive Statistiken anzeigen</string>
+    <string name="rewarded_ad_stats_reward_text">Statistiken für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_exclusive_stats_reward_text">Exklusive Statistiken für diese Sitzung freigeschaltet!</string>
+    <string name="exclusive_stats_title">Exklusive Statistiken</string>
+    <string name="exclusive_stats_placeholder">Hier erscheinen exklusive Statistiken nach Freischaltung durch Werbung oder Pro-Status.</string>
+
+    <!-- Pro-Status -->
+    <string name="pro_status_title">Pro-Status</string>
+    <string name="pro_status_tooltip">Informationen zum Pro-Status</string>
+
+    <!-- Werbung -->
+    <string name="ads_section_tooltip">Hier kannst du Werbung aktivieren oder deaktivieren.</string>
+
+    <!-- Export/Import Sektion -->
+    <string name="export_section">Export/Import</string>
+    <string name="export_section_tooltip">Exportiere oder importiere deine Favoriten und Wunschliste.</string>
+    <string name="export_favorites">Favoriten exportieren</string>
+    <string name="export_wishlist">Wunschliste exportieren</string>
+    <string name="export">Exportieren</string>
+    <string name="export_unlocked">Freigeschaltet</string>
+    <string name="trailer_playback_error">Fehler beim Abspielen des Trailers.</string>
+    <string name="error_timeout">Zeitüberschreitung bei der Verbindung</string>
+    <string name="error_not_found">Daten nicht gefunden</string>
+    <string name="error_server_retry">Serverfehler - bitte versuchen Sie es später erneut</string>
+    <string name="error_service_unavailable">Service temporär nicht verfügbar</string>
+    <string name="error_server_code">Serverfehler (%1$d)</string>
+    <string name="error_network_check">Netzwerkfehler - überprüfen Sie Ihre Verbindung</string>
+    <string name="error_movies_load">Fehler beim Laden der Movies: %1$s</string>
+    <string name="error_empty_api_response">Leere Antwort von der API</string>
+    <string name="error_screenshots_server">Fehler beim Laden der Screenshots: Serverfehler %1$d</string>
+    <string name="error_screenshots_network">Fehler beim Laden der Screenshots: Netzwerkfehler %1$s</string>
+    <string name="error_platforms_no_data">Fehler beim Laden der Plattformen: Keine Plattformdaten verfügbar</string>
+    <string name="error_platforms_api">Fehler beim Laden der Plattformen: API-Fehler %1$d</string>
+    <string name="error_genres_no_data">Fehler beim Laden der Genres: Keine Genres verfügbar</string>
+    <string name="error_genres_api">Fehler beim Laden der Genres: API-Fehler %1$d</string>
+    <string name="error_games_no_network_cache">Fehler beim Laden der Spiele: Kein Netzwerk und kein Cache verfügbar</string>
+    <string name="error_output_stream">Konnte OutputStream nicht öffnen</string>
+    <string name="error_input_stream">Konnte InputStream nicht öffnen</string>
 </resources>

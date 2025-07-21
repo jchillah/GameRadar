@@ -17,7 +17,14 @@ import kotlinx.coroutines.flow.*
 import java.io.*
 import javax.inject.*
 
-/** Repository für Favoriten-Operationen. */
+/**
+ * Repository zur Verwaltung der Favoriten.
+ * Kapselt alle Datenbankoperationen und Import/Export-Funktionen für Favoriten.
+ *
+ * @constructor Initialisiert das Repository mit dem zugehörigen DAO und GameRepository
+ * @param favoriteGameDao DAO für die Favoriten-Tabelle
+ * @param repo GameRepository für Detaildaten
+ */
 class FavoritesRepository
 @Inject
 constructor(
@@ -178,7 +185,12 @@ constructor(
                 }
         }
 
-        /** Spiel zu Favoriten hinzufügen. */
+    /**
+     * Fügt ein Spiel zu den Favoriten hinzu.
+     * @param context Anwendungskontext (für Fehlermeldungen)
+     * @param game Das hinzuzufügende Spiel
+     * @return Resource mit Erfolg oder Fehler
+     */
         suspend fun addFavorite(context: Context, game: Game): Resource<Unit> {
                 PerformanceMonitor.startTimer("db_addFavorite")
                 return try {

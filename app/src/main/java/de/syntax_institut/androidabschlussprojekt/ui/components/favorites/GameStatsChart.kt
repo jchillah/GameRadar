@@ -14,7 +14,22 @@ import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
 
 /**
- * Zeigt ein horizontales Balkendiagramm der Top-Genres an.
+ * Zeigt ein animiertes horizontales Balkendiagramm der Top-Genres aus den Favoriten.
+ *
+ * Features:
+ * - Top 5 Genres basierend auf Häufigkeit
+ * - Animierte Balken mit Prozentanzeige
+ * - Theme-adaptive Farben (hell/dunkel)
+ * - Horizontales Scrollen bei vielen Genres
+ * - Material3 Card-Design
+ * - Responsive Layout mit Mindest-/Maximalbreite
+ * - Prozentuale Verteilung der Genres
+ *
+ * Design:
+ * - Balken mit abgerundeten Ecken
+ * - Icon und Titel für bessere UX
+ * - Farbkodierung je nach Theme
+ * - Kompakte Darstellung mit Werten
  *
  * @param genreCounts Map mit Genre-Namen als Schlüssel und deren Anzahl als Wert
  * @param modifier Modifier für das Layout

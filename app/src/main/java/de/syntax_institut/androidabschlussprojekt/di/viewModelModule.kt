@@ -5,8 +5,15 @@ import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import org.koin.androidx.viewmodel.dsl.*
 import org.koin.dsl.*
 
-/** Modul für ViewModels. */
+/**
+ * DI-Modul für alle ViewModels der App.
+ *
+ * Stellt alle ViewModels für die verschiedenen UI-Screens bereit.
+ */
 val viewModelModule = module {
+    /**
+     * ViewModel für die Suche nach Spielen.
+     */
     viewModel {
         SearchViewModel(
             get(),
@@ -16,6 +23,9 @@ val viewModelModule = module {
             get()
         )
     }
+    /**
+     * ViewModel für Spieldetails.
+     */
     viewModel { (savedStateHandle: SavedStateHandle) ->
         DetailViewModel(
             get(),
@@ -27,6 +37,9 @@ val viewModelModule = module {
             get()
         )
     }
+    /**
+     * ViewModel für Favoriten.
+     */
     viewModel {
         FavoritesViewModel(
             get(),
@@ -37,6 +50,9 @@ val viewModelModule = module {
             get()
         )
     }
+    /**
+     * ViewModel für die Wunschliste.
+     */
     viewModel {
         WishlistViewModel(
             get(),
@@ -53,7 +69,12 @@ val viewModelModule = module {
             get()
         )
     }
+    /**
+     * ViewModel für Einstellungen.
+     */
     viewModel { SettingsViewModel(get()) }
+    /**
+     * ViewModel für Screenshot-Galerie.
+     */
     viewModel { ScreenshotGalleryViewModel() }
-    viewModel { TrailerPlayerViewModel() }
 }

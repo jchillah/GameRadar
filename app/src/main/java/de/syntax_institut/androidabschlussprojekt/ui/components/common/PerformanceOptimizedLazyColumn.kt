@@ -11,6 +11,17 @@ import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.search.*
 
+/**
+ * Optimierte LazyColumn für bessere Performance bei großen Listen.
+ *
+ * Bietet eine einheitliche Basis für alle LazyColumn-Implementierungen
+ * in der App mit konsistenten Standardeinstellungen.
+ *
+ * @param modifier Modifier für das Layout
+ * @param contentPadding Padding für den Inhalt
+ * @param verticalArrangement Vertikale Anordnung der Elemente
+ * @param content Lambda für den Listeninhalt
+ */
 @Composable
 fun PerformanceOptimizedLazyColumn(
     modifier: Modifier = Modifier,
@@ -26,6 +37,19 @@ fun PerformanceOptimizedLazyColumn(
     )
 }
 
+/**
+ * LazyColumn mit Shimmer-Platzhaltern während des Ladens.
+ *
+ * Zeigt animierte Platzhalter an, während Daten geladen werden,
+ * um eine bessere Benutzererfahrung zu bieten.
+ *
+ * @param modifier Modifier für das Layout
+ * @param contentPadding Padding für den Inhalt
+ * @param verticalArrangement Vertikale Anordnung der Elemente
+ * @param isLoading Gibt an, ob Daten geladen werden
+ * @param placeholderCount Anzahl der anzuzeigenden Platzhalter
+ * @param content Lambda für den Listeninhalt
+ */
 @Composable
 fun PerformanceOptimizedLazyColumnWithPlaceholders(
     modifier: Modifier = Modifier,
@@ -109,6 +133,19 @@ fun PerformanceOptimizedLazyColumnWithErrorPreview() {
     }
 }
 
+/**
+ * LazyColumn mit Fehlerbehandlung und Loading-States.
+ *
+ * Kombiniert Loading-Platzhalter und Fehleranzeige in einer
+ * optimierten LazyColumn-Implementierung.
+ *
+ * @param modifier Modifier für das Layout
+ * @param contentPadding Padding für den Inhalt
+ * @param verticalArrangement Vertikale Anordnung der Elemente
+ * @param isLoading Gibt an, ob Daten geladen werden
+ * @param error Fehlermeldung (null = kein Fehler)
+ * @param content Lambda für den Listeninhalt
+ */
 @Composable
 fun PerformanceOptimizedLazyColumnWithError(
     modifier: Modifier = Modifier,

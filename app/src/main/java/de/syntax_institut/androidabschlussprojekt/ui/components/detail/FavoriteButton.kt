@@ -14,6 +14,22 @@ import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.R
 import kotlinx.coroutines.*
 
+/**
+ * Animierter Favoriten-Button mit Herz-Icon und verschiedenen Zuständen.
+ *
+ * Features:
+ * - Animierte Übergänge zwischen gefülltem und leerem Herz
+ * - Skalierungs- und Rotationsanimationen
+ * - Druck-Feedback mit Skalierung
+ * - Accessibility-Unterstützung
+ * - Anpassbare Animationen
+ *
+ * @param modifier Modifier für das Layout
+ * @param isFavorite Aktueller Favoriten-Status
+ * @param onFavoriteChanged Callback bei Statusänderung
+ * @param enabled Gibt an, ob der Button aktiv ist
+ * @param showAnimation Gibt an, ob Animationen angezeigt werden sollen
+ */
 @Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,

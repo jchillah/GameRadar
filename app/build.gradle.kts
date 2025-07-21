@@ -17,6 +17,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.kotlin.ksp)
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -87,9 +88,11 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics.ktx)
 
     // Core Android
-    implementation(libs.androidx.core.ktx)
+    // implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.ktx.v1131)
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -130,6 +133,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.navigation.testing.android)
+    implementation(libs.firebase.crashlytics.ktx)
     ksp(libs.androidx.room.compiler)
 
     // Paging
@@ -195,7 +199,9 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.media3.ui)
 
-    implementation(libs.play.services.ads)
     implementation(libs.androidx.lifecycle.process)
+
 }
+
+
 

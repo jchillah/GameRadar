@@ -9,6 +9,19 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import com.valentinilk.shimmer.*
 
+/**
+ * Animierter Shimmer-Platzhalter für Loading-Zustände.
+ *
+ * Features:
+ * - Shimmer-Animation für bessere UX
+ * - Platzhalter für Spielbild und Text
+ * - Material3 Theme-Integration
+ * - Responsive Layout
+ * - Window-basierte Shimmer-Grenzen
+ * - Optimierte Performance
+ *
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun ShimmerPlaceholder(modifier: Modifier = Modifier) {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)

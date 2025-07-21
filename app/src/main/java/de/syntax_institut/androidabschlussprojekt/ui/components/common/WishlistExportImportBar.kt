@@ -8,6 +8,17 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Export/Import-Bar für Wunschlisten mit bedingter Anzeige.
+ *
+ * Zeigt Export- und Import-Buttons an, wenn Launcher verfügbar sind,
+ * andernfalls eine Informationsnachricht.
+ *
+ * @param canUseLauncher Gibt an, ob ActivityResultLauncher verfügbar sind
+ * @param onExport Callback für Export-Aktion
+ * @param onImport Callback für Import-Aktion
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun WishlistExportImportBar(
     canUseLauncher: Boolean,

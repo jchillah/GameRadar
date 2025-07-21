@@ -7,56 +7,82 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import coil3.compose.*
-import coil3.request.*
-import coil3.size.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 
+/**
+ * Zeigt das Header-Bild eines Spiels mit anpassbarer Bildqualität und Fallback-Platzhalter.
+ *
+ * Features:
+ * - Dynamische Bildgrößen basierend auf ImageQuality-Einstellung
+ * - Crossfade-Animation beim Laden
+ * - Fallback-Platzhalter bei fehlenden Bildern
+ * - 16:9 Aspect Ratio für konsistente Darstellung
+ * - Optimierte Bildladung mit Coil
+ *
+ * @param imageUrl URL des Spielbildes (kann null oder leer sein)
+ * @param imageQuality Qualitätseinstellung für die Bildgröße (LOW, MEDIUM, HIGH)
+ */
 @Composable
-fun GameHeaderImage(imageUrl: String?, imageQuality: ImageQuality) {
+fun GameHeaderImage(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    imageQuality: ImageQuality,
+) {
     val context = LocalContext.current
-    val size = when (imageQuality) {
-        ImageQuality.LOW -> Size(400, 225)
-        ImageQuality.MEDIUM -> Size(800, 450)
-        ImageQuality.HIGH -> Size.ORIGINAL
+    var imageLoadStartTime by remember { mutableStateOf(0L) }
+
+    LaunchedEffect(imageUrl) {
+        imageLoadStartTime = System.currentTimeMillis()
+        PerformanceMonitor.incrementEventCounter("image_load_attempted")
     }
-    if (imageUrl.isNullOrBlank()) {
-        // Platzhalter anzeigen, wenn kein Bild vorhanden ist
+
+    if (imageUrl.isNotBlank()) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = stringResource(R.string.game_header_image),
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(MaterialTheme.shapes.medium),
+            contentScale = ContentScale.Crop,
+            onSuccess = {
+                val loadDuration = System.currentTimeMillis() - imageLoadStartTime
+                PerformanceMonitor.trackImageLoad(imageUrl, loadDuration, true, 0)
+                PerformanceMonitor.incrementEventCounter("image_load_success")
+            },
+            onError = {
+                val loadDuration = System.currentTimeMillis() - imageLoadStartTime
+                PerformanceMonitor.trackImageLoad(imageUrl, loadDuration, false, 0)
+                PerformanceMonitor.incrementEventCounter("image_load_error")
+            }
+        )
+    } else {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9f)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .clip(MaterialTheme.shapes.medium),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.BrokenImage,
-                contentDescription = stringResource(R.string.game_headerimage_no_image),
+                contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(64.dp)
+                modifier = Modifier.size(48.dp)
             )
         }
-    } else {
-        Image(
-            painter = rememberAsyncImagePainter(
-                ImageRequest.Builder(context)
-                    .data(imageUrl)
-                    .size(size)
-                    .crossfade(true)
-                    .build()
-            ),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9f),
-            contentScale = ContentScale.Crop,
-        )
     }
 }
 

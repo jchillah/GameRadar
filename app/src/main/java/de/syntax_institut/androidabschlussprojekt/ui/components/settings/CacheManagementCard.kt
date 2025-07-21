@@ -11,13 +11,37 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.viewmodels.*
 import kotlinx.coroutines.*
 import org.koin.androidx.compose.*
 
+/**
+ * Cache-Management-Karte mit Statistiken, Fortschrittsbalken und Aktions-Buttons.
+ *
+ * Zeigt detaillierte Informationen über den Cache-Status an:
+ * - Anzahl gespeicherter Spiele
+ * - Speicherverbrauch in MB
+ * - Letzte Synchronisation
+ * - Cache-Nutzung als Fortschrittsbalken
+ * - Sync- und Clear-Cache-Buttons
+ * - RewardedAd-Buttons für Nicht-Pro-User
+ *
+ * Features:
+ * - Pro-User-Status-Erkennung
+ * - RewardedAd-Integration für Freischaltung
+ * - Dynamische Button-Texte je nach Freischaltungsstatus
+ * - Snackbar-Feedback für gesperrte Features
+ * - Tooltip-Integration für bessere UX
+ *
+ * @param modifier Modifier für das Layout der Karte
+ * @param cacheSize Anzahl der im Cache gespeicherten Spiele
+ * @param maxCacheSize Maximale Anzahl der Spiele im Cache
+ * @param lastSyncTime Zeitstempel der letzten Synchronisation (null = nie)
+ * @param onClearCache Callback für das Leeren des Caches
+ * @param onOptimizeCache Callback für die Cache-Optimierung (optional)
+ */
 @Composable
 fun CacheManagementCard(
         modifier: Modifier = Modifier,
@@ -27,15 +51,13 @@ fun CacheManagementCard(
         onClearCache: () -> Unit,
         onOptimizeCache: () -> Unit = {},
 ) {
-        val safeMaxCacheSize = if (maxCacheSize == 0) 1 else maxCacheSize
         val settingsViewModel: SettingsViewModel = koinViewModel()
-        val isProUser by settingsViewModel.proStatus.collectAsState()
-        val adsEnabled by settingsViewModel.adsEnabled.collectAsState()
+    val settingsState by settingsViewModel.uiState.collectAsState()
 
-        var isCacheOptimizeUnlocked by rememberSaveable { mutableStateOf(isProUser) }
+    var isSyncUnlocked by rememberSaveable { mutableStateOf(false) }
         val snackbarHostState = remember { SnackbarHostState() }
         val coroutineScope = rememberCoroutineScope()
-        val rewardedAdCacheRewardText = stringResource(R.string.rewarded_ad_cache_reward_text)
+    val rewardedAdSyncRewardText = stringResource(R.string.rewarded_ad_sync_reward_text)
 
         Card(
                 modifier = modifier.fillMaxWidth(),
@@ -103,22 +125,52 @@ fun CacheManagementCard(
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
-                                                text =
-                                                        "${(cacheSize.toFloat() / safeMaxCacheSize * 100).toInt()}%",
+                                            text = "${settingsState.cacheUsagePercentage}%",
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 fontWeight = FontWeight.Medium,
-                                                color = MaterialTheme.colorScheme.primary
+                                            color =
+                                                if (settingsState.isCacheFull)
+                                                    MaterialTheme.colorScheme.error
+                                                else MaterialTheme.colorScheme.primary
                                         )
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 LinearProgressIndicator(
-                                        progress = { cacheSize.toFloat() / safeMaxCacheSize },
-                                        modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(8.dp),
-                                        color = MaterialTheme.colorScheme.primary,
+                                    progress = { settingsState.cacheUsagePercentage / 100f },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(8.dp),
+                                    color =
+                                        if (settingsState.isCacheFull)
+                                            MaterialTheme.colorScheme.error
+                                        else MaterialTheme.colorScheme.primary,
                                         trackColor = MaterialTheme.colorScheme.surfaceVariant
                                 )
+
+                            // Cache-Full-Warnung
+                            if (settingsState.isCacheFull) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Warning,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text =
+                                            stringResource(
+                                                R.string.cache_full_warning
+                                            ),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            }
                         }
 
                         // Aktions-Buttons
@@ -128,17 +180,17 @@ fun CacheManagementCard(
                         ) {
                                 OutlinedButton(
                                         onClick = {
-                                                if (isProUser || isCacheOptimizeUnlocked) {
+                                            if (isSyncUnlocked) {
                                                         onOptimizeCache()
                                                 } else {
                                                         coroutineScope.launch {
                                                                 snackbarHostState.showSnackbar(
-                                                                        rewardedAdCacheRewardText
+                                                                    rewardedAdSyncRewardText
                                                                 )
                                                         }
                                                 }
                                         },
-                                        enabled = isProUser || isCacheOptimizeUnlocked,
+                                    enabled = isSyncUnlocked,
                                         modifier = Modifier.weight(1f),
                                         colors =
                                                 ButtonDefaults.outlinedButtonColors(
@@ -177,23 +229,45 @@ fun CacheManagementCard(
                                         Text(stringResource(R.string.clear_cache))
                                 }
                         }
-                        if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
-                                RewardedAdButton(
-                                        adUnitId = "ca-app-pub-3940256099942544/5224354917",
-                                        adsEnabled = adsEnabled,
-                                        isProUser = isProUser,
-                                        rewardText =
-                                                stringResource(
-                                                        R.string.rewarded_ad_cache_reward_text
-                                                ),
-                                        onReward = { isCacheOptimizeUnlocked = true }
-                                )
+
+                    // Rewarded Ad Buttons für Freischaltung
+                    if (settingsState.adsEnabled) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            // Rewarded Ad für Synchronisation
+                            RewardedAdButton(
+                                adUnitId = "ca-app-pub-3940256099942544/5224354917",
+                                adsEnabled = settingsState.adsEnabled,
+                                rewardText =
+                                    if (isSyncUnlocked)
+                                        stringResource(
+                                            R.string
+                                                .rewarded_ad_sync_unlocked_text
+                                        )
+                                    else rewardedAdSyncRewardText,
+                                onReward = { isSyncUnlocked = true }
+                            )
+
+
                         }
+                    }
+
                         SnackbarHost(hostState = snackbarHostState)
                 }
         }
 }
 
+/**
+ * Einzelnes Cache-Statistik-Element mit Icon, Wert und Label.
+ *
+ * Zeigt eine einzelne Cache-Metrik in einem vertikalen Layout an:
+ * - Icon oben
+ * - Wert in der Mitte (fett)
+ * - Label unten (kleiner Text)
+ *
+ * @param icon Das Icon für die Statistik
+ * @param label Das Label/der Name der Statistik
+ * @param value Der Wert der Statistik als String
+ */
 @Composable
 private fun CacheStatItem(
         icon: androidx.compose.ui.graphics.vector.ImageVector,
@@ -224,6 +298,12 @@ private fun CacheStatItem(
         }
 }
 
+/**
+ * Preview für die CacheManagementCard.
+ *
+ * Zeigt eine Vorschau der CacheManagementCard mit Beispieldaten an. Verwendet für die Entwicklung
+ * und das Testing der UI-Komponente.
+ */
 @Composable
 @Preview(showBackground = true)
 fun CacheManagementCardPreview() {

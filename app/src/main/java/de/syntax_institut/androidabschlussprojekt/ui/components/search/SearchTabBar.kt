@@ -6,6 +6,20 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Tab-Bar für verschiedene Suchkategorien.
+ *
+ * Features:
+ * - Drei Tabs: Alle, Neu veröffentlicht, Top bewertet
+ * - Material3 TabRow-Design
+ * - Lokalisierte Tab-Titel
+ * - Einzeilige Textbegrenzung mit Ellipsis
+ * - Callback für Tab-Wechsel
+ * - Accessibility-Unterstützung
+ *
+ * @param selectedTab Index des ausgewählten Tabs (0-2)
+ * @param onTabSelected Callback bei Tab-Wechsel
+ */
 @Composable
 fun SearchTabBar(selectedTab: Int, onTabSelected: (Int) -> Unit) {
     val tabTitles =

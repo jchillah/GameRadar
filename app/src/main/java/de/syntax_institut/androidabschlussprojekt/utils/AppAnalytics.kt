@@ -112,6 +112,13 @@ object AppAnalytics {
             context?.let { putString("context", it) }
         }
         analytics?.logEvent("app_error", bundle)
+
+        // Crashlytics Error Recording
+        CrashlyticsHelper.recordUiError(
+            context ?: "AppAnalytics",
+            "trackError",
+            error
+        )
     }
 
     /** Trackt das Aktivieren/Deaktivieren von Crashlytics. */
