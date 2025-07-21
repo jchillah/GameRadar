@@ -3,7 +3,13 @@ package de.syntax_institut.androidabschlussprojekt.di
 import de.syntax_institut.androidabschlussprojekt.domain.usecase.*
 import org.koin.dsl.*
 
+/**
+ * DI-Modul für alle UseCases der App.
+ *
+ * Stellt alle Anwendungsfälle (UseCases) für Favoriten, Spiele, Wunschliste, Cache, Plattformen, Genres usw. bereit.
+ */
 val useCaseModule = module {
+    // Favoriten-UseCases
     single { AddFavoriteUseCase(get()) }
     single { RemoveFavoriteUseCase(get()) }
     single { ToggleFavoriteUseCase(get()) }
@@ -14,14 +20,14 @@ val useCaseModule = module {
     single { SearchFavoritesUseCase(get()) }
     single { SyncFavoritesWithApiUseCase(get()) }
     single { GetFavoriteCountUseCase(get()) }
+    // Spiele-UseCases
     single { LoadGamesUseCase(get()) }
     single { GetGameDetailUseCase(get()) }
     single { GetPlatformsUseCase(get()) }
     single { GetGenresUseCase(get()) }
     single { ClearCacheUseCase(get()) }
     single { GetCacheSizeUseCase(get()) }
-
-    // Wishlist UseCases
+    // Wunschlisten-UseCases
     single { AddWishlistGameUseCase(get()) }
     single { RemoveWishlistGameUseCase(get()) }
     single { ToggleWishlistGameUseCase(get()) }

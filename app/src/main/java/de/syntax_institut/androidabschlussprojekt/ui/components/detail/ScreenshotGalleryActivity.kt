@@ -31,8 +31,10 @@ import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import kotlin.math.*
 
 /**
- * Fullscreen Activity für die Screenshot-Galerie.
- * Verwendet modernes Edge-to-Edge-API für echtes Fullscreen.
+ * Activity für die Fullscreen-Screenshot-Galerie.
+ *
+ * Wird für die Anzeige von Screenshots im Vollbildmodus verwendet. Unterstützt Swipe, Zoom und
+ * Edge-to-Edge. Startbar über [ScreenshotGalleryActivity.start].
  */
 class ScreenshotGalleryActivity : ComponentActivity() {
 
@@ -47,11 +49,12 @@ class ScreenshotGalleryActivity : ComponentActivity() {
             startIndex: Int = 0,
             imageQuality: ImageQuality = ImageQuality.HIGH,
         ) {
-            val intent = Intent(context, ScreenshotGalleryActivity::class.java).apply {
-                putStringArrayListExtra(EXTRA_SCREENSHOTS, ArrayList(screenshots))
-                putExtra(EXTRA_START_INDEX, startIndex)
-                putExtra(EXTRA_IMAGE_QUALITY, imageQuality.title)
-            }
+            val intent =
+                Intent(context, ScreenshotGalleryActivity::class.java).apply {
+                    putStringArrayListExtra(EXTRA_SCREENSHOTS, ArrayList(screenshots))
+                    putExtra(EXTRA_START_INDEX, startIndex)
+                    putExtra(EXTRA_IMAGE_QUALITY, imageQuality.title)
+                }
             context.startActivity(intent)
         }
     }
@@ -70,8 +73,15 @@ class ScreenshotGalleryActivity : ComponentActivity() {
 
         val screenshots = intent.getStringArrayListExtra(EXTRA_SCREENSHOTS) ?: arrayListOf()
         val startIndex = intent.getIntExtra(EXTRA_START_INDEX, 0)
-        val imageQualityName = intent.getStringExtra(EXTRA_IMAGE_QUALITY) ?: ImageQuality.HIGH.title
-        val imageQuality = ImageQuality.valueOf(imageQualityName)
+        val imageQualityName = intent.getStringExtra(EXTRA_IMAGE_QUALITY) ?: ImageQuality.HIGH.name
+        val imageQuality =
+            try {
+                // Versuche zuerst Enum-Name (LOW, MEDIUM, HIGH)
+                ImageQuality.valueOf(imageQualityName)
+            } catch (e: Exception) {
+                // Fallback: Versuche displayName ("Niedrig", "Mittel", "Hoch")
+                ImageQuality.fromDisplayName(imageQualityName)
+            }
 
         setContent {
             MyAppTheme {
@@ -112,68 +122,77 @@ class ScreenshotGalleryActivity : ComponentActivity() {
         var offsetY by remember { mutableFloatStateOf(0f) }
         val context = LocalContext.current
 
-        val animatedScale by animateFloatAsState(
+        val animatedScale by
+        animateFloatAsState(
             targetValue = scale,
             animationSpec = tween(300),
             label = "scale"
         )
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(Unit) {
-                        detectTransformGestures { _, pan, zoom, _ ->
-                            val newScale = (scale * zoom).coerceIn(0.5f..5f)
-                            scale = newScale
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            detectTransformGestures { _, pan, zoom, _ ->
+                                val newScale = (scale * zoom).coerceIn(0.5f..5f)
+                                scale = newScale
 
-                            val maxOffset = (newScale - 1f) * 500f
-                            val newOffsetX = (offsetX + pan.x).coerceIn(-maxOffset..maxOffset)
-                            val newOffsetY = (offsetY + pan.y).coerceIn(-maxOffset..maxOffset)
-                            offsetX = newOffsetX
-                            offsetY = newOffsetY
-                        }
-                    }
-                    .pointerInput(Unit) {
-                        detectTapGestures(
-                            onDoubleTap = {
-                                if (scale > 1f) {
-                                    scale = 1f
-                                    offsetX = 0f
-                                    offsetY = 0f
-                                } else {
-                                    scale = 2f
-                                }
+                                val maxOffset = (newScale - 1f) * 500f
+                                val newOffsetX =
+                                    (offsetX + pan.x).coerceIn(
+                                        -maxOffset..maxOffset
+                                    )
+                                val newOffsetY =
+                                    (offsetY + pan.y).coerceIn(
+                                        -maxOffset..maxOffset
+                                    )
+                                offsetX = newOffsetX
+                                offsetY = newOffsetY
                             }
-                        )
-                    }
+                        }
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onDoubleTap = {
+                                    if (scale > 1f) {
+                                        scale = 1f
+                                        offsetX = 0f
+                                        offsetY = 0f
+                                    } else {
+                                        scale = 2f
+                                    }
+                                }
+                            )
+                        }
             ) {
-                val size = when (imageQuality) {
-                    ImageQuality.LOW -> Size(400, 240)
-                    ImageQuality.MEDIUM -> Size(800, 480)
-                    ImageQuality.HIGH -> Size.ORIGINAL
-                }
+                val size =
+                    when (imageQuality) {
+                        ImageQuality.LOW -> Size(400, 240)
+                        ImageQuality.MEDIUM -> Size(800, 480)
+                        ImageQuality.HIGH -> Size.ORIGINAL
+                    }
 
                 if (screenshots.isNotEmpty() && currentIndex < screenshots.size) {
                     SubcomposeAsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(screenshots[currentIndex])
-                            .size(size)
-                            .crossfade(true)
-                            .build(),
+                        model =
+                            ImageRequest.Builder(context)
+                                .data(screenshots[currentIndex])
+                                .size(size)
+                                .crossfade(true)
+                                .build(),
                         contentDescription = "Screenshot ${currentIndex + 1}",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer(
-                                scaleX = animatedScale,
-                                scaleY = animatedScale,
-                                translationX = offsetX,
-                                translationY = offsetY
-                            ),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .graphicsLayer(
+                                    scaleX = animatedScale,
+                                    scaleY = animatedScale,
+                                    translationX = offsetX,
+                                    translationY = offsetY
+                                ),
                         contentScale = ContentScale.Fit,
                         loading = {
                             Box(
@@ -196,9 +215,7 @@ class ScreenshotGalleryActivity : ComponentActivity() {
                                     .background(Color.Black),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Icon(
                                         imageVector = Icons.Default.BrokenImage,
                                         contentDescription = null,
@@ -221,39 +238,39 @@ class ScreenshotGalleryActivity : ComponentActivity() {
             // Swipe-Gesten für Navigation (nur wenn nicht gezoomt)
             if (scale <= 1f) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .pointerInput(Unit) {
-                            detectDragGestures { change, dragAmount ->
-                                change.consume()
-                                val x = dragAmount.x
-                                val y = dragAmount.y
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .pointerInput(Unit) {
+                                detectDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    val x = dragAmount.x
+                                    val y = dragAmount.y
 
-                                // Horizontale Swipe für Navigation
-                                if (abs(x) > abs(y) && abs(x) > 100f) {
-                                    if (x > 0 && currentIndex > 0) {
-                                        // Swipe nach rechts -> vorheriges Bild
-                                        currentIndex--
-                                        scale = 1f
-                                        offsetX = 0f
-                                        offsetY = 0f
-                                    } else if (x < 0 && currentIndex < screenshots.size - 1) {
-                                        // Swipe nach links -> nächstes Bild
-                                        currentIndex++
-                                        scale = 1f
-                                        offsetX = 0f
-                                        offsetY = 0f
+                                    // Horizontale Swipe für Navigation
+                                    if (abs(x) > abs(y) && abs(x) > 100f) {
+                                        if (x > 0 && currentIndex > 0) {
+                                            // Swipe nach rechts -> vorheriges Bild
+                                            currentIndex--
+                                            scale = 1f
+                                            offsetX = 0f
+                                            offsetY = 0f
+                                        } else if (x < 0 && currentIndex < screenshots.size - 1
+                                        ) {
+                                            // Swipe nach links -> nächstes Bild
+                                            currentIndex++
+                                            scale = 1f
+                                            offsetX = 0f
+                                            offsetY = 0f
+                                        }
                                     }
                                 }
                             }
-                        }
                 )
             }
 
             // Navigation Buttons
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 // Zurück Button (links)
                 if (currentIndex > 0) {
                     IconButton(
@@ -316,21 +333,29 @@ class ScreenshotGalleryActivity : ComponentActivity() {
                 // Bild-Indikator (unten)
                 if (screenshots.size > 1) {
                     Row(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 32.dp),
+                        modifier =
+                            Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(bottom = 32.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         repeat(screenshots.size) { index ->
                             Box(
-                                modifier = Modifier
-                                    .size(8.dp)
-                                    .background(
-                                        color = if (index == currentIndex) Color.White else Color.White.copy(
-                                            alpha = 0.5f
-                                        ),
-                                        shape = androidx.compose.foundation.shape.CircleShape
-                                    )
+                                modifier =
+                                    Modifier
+                                        .size(8.dp)
+                                        .background(
+                                            color =
+                                                if (index == currentIndex)
+                                                    Color.White
+                                                else
+                                                    Color.White.copy(
+                                                        alpha = 0.5f
+                                                    ),
+                                            shape =
+                                                androidx.compose.foundation
+                                                    .shape.CircleShape
+                                        )
                             )
                         }
                     }

@@ -6,7 +6,10 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 
-/** Mapper für die Konvertierung zwischen Game und FavoriteGameEntity. */
+/**
+ * Mapper für die Konvertierung zwischen Game und FavoriteGameEntity.
+ * Bietet Funktionen zum Umwandeln von Domain-Modelle in Datenbank-Entities und umgekehrt.
+ */
 object FavoriteGameMapper {
     private val moshi = MoshiProvider.moshi
 
@@ -68,7 +71,11 @@ object FavoriteGameMapper {
             Constants.EMPTY_JSON_ARRAY
         }
 
-    /** Game zu FavoriteGameEntity konvertieren. */
+    /**
+     * Wandelt ein Game-Domainmodell in eine FavoriteGameEntity um.
+     * @receiver Game Das Domainmodell
+     * @return Das entsprechende FavoriteGameEntity für die Datenbank
+     */
     fun Game.toFavoriteEntity(): FavoriteGameEntity =
         FavoriteGameEntity(
             id = id,
@@ -92,7 +99,11 @@ object FavoriteGameMapper {
             movies = toJsonMovieList(movies)
         )
 
-    /** FavoriteGameEntity zu Game konvertieren. */
+    /**
+     * Wandelt eine FavoriteGameEntity in ein Game-Domainmodell um.
+     * @receiver FavoriteGameEntity Das Entity-Objekt aus der Datenbank
+     * @return Das entsprechende Game-Domainmodell
+     */
     fun FavoriteGameEntity.toGame(): Game =
         Game(
             id = id,

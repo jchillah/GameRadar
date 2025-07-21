@@ -7,6 +7,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.res.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Dialog zur Bestätigung des Löschens aller Favoriten.
+ *
+ * Zeigt einen Warn-Dialog mit Titel, Beschreibung, Bestätigungs- und Abbrechen-Button.
+ *
+ * @param onConfirm Callback, wenn das Löschen bestätigt wird
+ * @param onDismiss Callback, wenn der Dialog abgebrochen wird
+ */
 @Composable
 fun DeleteFavoritesDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(

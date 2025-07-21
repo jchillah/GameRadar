@@ -7,6 +7,17 @@ import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
 
+/**
+ * Hilfsfunktion zur Überprüfung auf neue Spiele und Aktualisierung der SharedPreferences.
+ *
+ * Diese Funktion fragt die neuesten Spiele von der API ab, vergleicht sie mit den zuletzt bekannten IDs/Slugs
+ * und aktualisiert die gespeicherten Werte in den SharedPreferences. Sie gibt eine Liste der neu gefundenen Spiele zurück.
+ *
+ * @param api Instanz der RawgApi für die Netzwerkanfrage
+ * @param prefs SharedPreferences zum Speichern der letzten bekannten Spiele
+ * @param count Anzahl der zu prüfenden Spiele (Standard: 10)
+ * @return Liste der neu gefundenen Spiele
+ */
 suspend fun checkForNewGamesAndUpdatePrefs(
     api: RawgApi,
     prefs: SharedPreferences,

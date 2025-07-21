@@ -14,6 +14,26 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Einstellungs-Item mit Dropdown für Auswahloptionen.
+ *
+ * Features:
+ * - Icon, Titel und Untertitel
+ * - Dropdown-Menü mit Auswahloptionen
+ * - Ausgewählte Option-Highlighting
+ * - Material3 Design-System
+ * - Theme-adaptive Farben
+ * - Accessibility-Unterstützung
+ * - Callback für Wertänderungen
+ * - Verbesserte Dropdown-Positionierung
+ *
+ * @param icon Icon für die Einstellung
+ * @param title Titel der Einstellung
+ * @param subtitle Beschreibung der Einstellung
+ * @param selectedValue Aktuell ausgewählter Wert
+ * @param onValueChange Callback bei Wertänderung
+ * @param options Liste der verfügbaren Optionen
+ */
 @Composable
 internal fun SettingsDropdownItem(
     icon: ImageVector,

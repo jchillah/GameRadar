@@ -13,6 +13,23 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Einstellungs-Item mit Button-Funktionalität für Aktionen.
+ *
+ * Features:
+ * - Icon, Titel und Untertitel
+ * - Klickbare Zeile mit Feedback
+ * - Chevron-Right-Icon für Navigation
+ * - Material3 Design-System
+ * - Theme-adaptive Farben
+ * - Accessibility-Unterstützung
+ * - Callback für Klick-Aktionen
+ *
+ * @param icon Icon für die Einstellung
+ * @param title Titel der Einstellung
+ * @param subtitle Beschreibung der Einstellung
+ * @param onClick Callback beim Klick auf das Item
+ */
 @Composable
 fun SettingsButtonItem(
     icon: ImageVector,

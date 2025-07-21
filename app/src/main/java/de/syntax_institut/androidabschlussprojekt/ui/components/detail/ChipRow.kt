@@ -11,6 +11,16 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Zeigt eine Liste von Chips in einer horizontal scrollbaren Reihe an.
+ *
+ * Verwendet horizontalScroll für horizontales Scrollen bei vielen Chips
+ * und zeigt AssistChips für jede Liste von Strings an.
+ * Zeigt eine "Keine Daten"-Nachricht an, wenn die Liste leer ist.
+ *
+ * @param items Liste der anzuzeigenden Strings
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun ChipRow(
     items: List<String>,

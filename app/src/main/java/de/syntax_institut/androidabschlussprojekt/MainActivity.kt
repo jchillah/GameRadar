@@ -1,100 +1,63 @@
 package de.syntax_institut.androidabschlussprojekt
 
-import android.app.*
+import android.*
 import android.content.*
 import android.content.pm.*
-import android.graphics.*
 import android.os.*
 import androidx.activity.*
 import androidx.activity.compose.*
 import androidx.activity.result.contract.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.navigation.compose.*
-import de.syntax_institut.androidabschlussprojekt.data.repositories.*
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
-import de.syntax_institut.androidabschlussprojekt.ui.theme.*
-import org.koin.android.ext.android.*
-
-// import de.syntax_institut.androidabschlussprojekt.data.local.GameDatabase
+import androidx.core.content.*
+import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.*
 
 /**
- * MainActivity
- * Einstiegspunkt der App.
+ * Einstiegspunkt der App. Setzt das UI-Root und behandelt Deep Links und Berechtigungen. Optimiert
+ * für Performance und minimale Frame-Drops.
  */
 class MainActivity : ComponentActivity() {
-    private val gameRepository: GameRepository by inject()
+    // Launcher für die Notification-Berechtigung
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // Berechtigung erteilt: App kann Benachrichtigungen senden
+                AppLogger.d("MainActivity", "Notification-Berechtigung erteilt")
+            } else {
+                // Berechtigung verweigert: Nutzer informieren
+                AppLogger.d("MainActivity", "Notification-Berechtigung verweigert")
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TEMPORÄR: Datenbank-Reset für Entwicklung/Migration
-        // TODO: ENTFERNE DIESEN AUFRUF NACH DEM ERSTEN ERFOLGREICHEN START!
-        // GameDatabase.clearDatabase(this)
-        enableEdgeToEdge()
-        createNotificationChannel(this)
-        val requestPermissionLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            // TODO: Handle permission granted or denied with a Snackbar
+
+        // Performance-Monitoring für Activity-Start
+        PerformanceMonitor.startTimer("main_activity_startup")
+        PerformanceMonitor.incrementEventCounter("main_activity_opened")
+
+        // Systemsprache für LocaleManager verwenden (asynchron)
+        lifecycleScope.launch(Dispatchers.IO) {
+            val systemLocale = LocaleManager.getSystemLocale(this@MainActivity)
+            AppLogger.d("MainActivity", "System locale: ${systemLocale.language}")
+
+            // Crashlytics Custom Keys setzen
+            CrashlyticsHelper.setCustomKey("main_activity_created", true)
+            CrashlyticsHelper.setCustomKey("system_language", systemLocale.language)
+
+            // Analytics-Tracking
+            AppAnalytics.trackEvent(
+                "main_activity_opened",
+                mapOf("system_language" to systemLocale.language)
+            )
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-        setContent {
-            LocalizedApp {
-                val navController = rememberNavController()
-                var pendingSlug by remember { mutableStateOf<String?>(null) }
-                var pendingGameId by remember { mutableStateOf<Int?>(null) }
-                val snackbarHostState = remember { SnackbarHostState() }
-                MyAppTheme {
-                    Box(Modifier.fillMaxSize()) {
-                        App(
-                        )
-                        SnackbarHost(hostState = snackbarHostState)
-                    }
-                }
-                // Deep Link Intent beim Start prüfen
-                LaunchedEffect(Unit) {
-                    val slug =
-                        intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
-                    if (slug != null) {
-                        pendingSlug = slug
-                    }
-                }
-                // Deep Link Intent bei erneutem Öffnen prüfen
-                LaunchedEffect(intent) {
-                    val slug =
-                        intent.data?.takeIf { it.scheme == "myapp" && it.host == "game" }?.lastPathSegment
-                    if (slug != null) {
-                        pendingSlug = slug
-                    }
-                }
-                // Wenn ein Slug gesetzt wurde, suche die GameId
-                LaunchedEffect(pendingSlug) {
-                    pendingSlug?.let { slug ->
-                        val id = gameRepository.getGameIdBySlug(slug)
-                        if (id != null) {
-                            pendingGameId = id
-                        } else {
-                            snackbarHostState.showSnackbar("Spiel nicht gefunden: $slug")
-                        }
-                        pendingSlug = null
-                    }
-                }
-                LaunchedEffect(pendingGameId) {
-                    pendingGameId?.let { id ->
-                        navController.navigate(
-                            de.syntax_institut.androidabschlussprojekt.navigation.Routes.detail(id)
-                        )
-                        pendingGameId = null
-                    }
-                }
-            }
-        }
+
+        // UI sofort setzen, um Frame-Drops zu minimieren
+        setContent { AppRoot() }
+
+        val startupDuration = PerformanceMonitor.endTimer("main_activity_startup")
+        PerformanceMonitor.trackUiRendering("MainActivity", startupDuration)
+        askNotificationPermission()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -102,19 +65,27 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
     }
 
-    private fun createNotificationChannel(context: Context) {
-        val channel = NotificationChannel(
-            "new_games",
-            "Neue Spiele",
-            NotificationManager.IMPORTANCE_DEFAULT
-        ).apply {
-            description = "Benachrichtigungen über neue Spiele"
-            enableLights(true)
-            lightColor = Color.GREEN
-            enableVibration(true)
+    /** Fragt die Notification-Berechtigung ab Android 13+ zur Laufzeit an. */
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                        PackageManager.PERMISSION_GRANTED -> {
+                    // Berechtigung bereits erteilt
+                    AppLogger.d("MainActivity", "Notification-Berechtigung bereits erteilt")
+                }
+
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                    // TODO: Zeige dem Nutzer eine Erklärung, warum die Berechtigung benötigt wird
+                    // Für Demo direkt anfragen:
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+
+                else -> {
+                    // Direkt anfragen
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
         }
-        val notificationManager: NotificationManager =
-            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
     }
 }

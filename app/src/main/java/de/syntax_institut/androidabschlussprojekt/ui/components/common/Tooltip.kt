@@ -17,7 +17,20 @@ import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Tooltip-Komponente für Hilfestellungen und zusätzliche Informationen.
- * Folgt Material Design Guidelines für Tooltips.
+ *
+ * Features:
+ * - Material Design Guidelines-konforme Tooltips
+ * - Animierte Ein-/Ausblendung
+ * - Anpassbare Farben und Icons
+ * - Accessibility-Unterstützung
+ * - Responsive Design mit maximaler Breite
+ * - Toggle-Funktionalität per Klick
+ *
+ * @param text Anzuzeigender Tooltip-Text
+ * @param modifier Modifier für das Layout
+ * @param icon Icon für den Tooltip-Trigger
+ * @param backgroundColor Hintergrundfarbe des Tooltips
+ * @param textColor Textfarbe des Tooltips
  */
 @Composable
 fun Tooltip(
@@ -68,7 +81,20 @@ fun Tooltip(
 }
 
 /**
- * Erweiterte Tooltip-Komponente mit Positionierung.
+ * Erweiterte Tooltip-Komponente mit anpassbarer Positionierung.
+ *
+ * Features:
+ * - Vier Positionierungsoptionen (TOP, BOTTOM, LEFT, RIGHT)
+ * - Richtungsabhängige Animationen
+ * - Automatische Offset-Berechnung
+ * - Material Design Guidelines
+ * - Accessibility-Unterstützung
+ *
+ * @param text Anzuzeigender Tooltip-Text
+ * @param modifier Modifier für das Layout
+ * @param position Position des Tooltips relativ zum Trigger
+ * @param backgroundColor Hintergrundfarbe des Tooltips
+ * @param textColor Textfarbe des Tooltips
  */
 @Composable
 fun PositionedTooltip(
@@ -139,6 +165,9 @@ fun PositionedTooltip(
     }
 }
 
+/**
+ * Verfügbare Positionen für PositionedTooltip.
+ */
 enum class TooltipPosition {
     TOP, BOTTOM, LEFT, RIGHT
 }

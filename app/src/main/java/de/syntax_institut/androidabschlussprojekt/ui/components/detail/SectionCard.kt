@@ -9,6 +9,14 @@ import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Card-Komponente für Sektionen im Detail-Screen.
+ *
+ * Zeigt einen Titel und beliebigen Inhalt in einer Card mit Padding an.
+ *
+ * @param title Titel der Sektion
+ * @param content Composable-Content für die Sektion
+ */
 @Composable
 fun SectionCard(
     title: String,

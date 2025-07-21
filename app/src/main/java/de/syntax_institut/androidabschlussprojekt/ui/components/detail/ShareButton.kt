@@ -11,6 +11,15 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Button zum Teilen eines Spiels über das Android-Sharesheet.
+ *
+ * Öffnet das System-Share-Menü mit vorbereitetem Text und Link zum Spiel.
+ *
+ * @param gameTitle Titel des Spiels
+ * @param gameUrl URL zum Spiel (z.B. RAWG-Link)
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun ShareButton(
     gameTitle: String,

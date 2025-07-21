@@ -19,7 +19,8 @@
         android:theme="@style/Theme.AndroidAbschlussprojekt"
         tools:targetApi="33">
 
-        <activity
+
+    <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AndroidAbschlussprojekt">

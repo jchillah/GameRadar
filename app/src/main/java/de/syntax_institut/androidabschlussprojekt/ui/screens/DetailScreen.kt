@@ -31,9 +31,9 @@ import org.koin.androidx.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
+    modifier: Modifier = Modifier,
     gameId: Int,
     navController: NavHostController,
-    modifier: Modifier = Modifier,
     vm: DetailViewModel = koinViewModel(key = "detail_$gameId"),
 ) {
     val state by vm.uiState.collectAsState()
@@ -41,18 +41,50 @@ fun DetailScreen(
     val emptyString = ""
     val scrollState = rememberScrollState()
     val settingsViewModel: SettingsViewModel = koinViewModel()
-    val imageQuality by settingsViewModel.imageQuality.collectAsState()
-    val shareGamesEnabled by settingsViewModel.shareGamesEnabled.collectAsState()
+    val settingsState by settingsViewModel.uiState.collectAsState()
+    val imageQuality = settingsState.imageQuality
+    val shareGamesEnabled = settingsState.shareGamesEnabled
 
+    // Stelle sicher, dass die korrekte gameId verwendet wird
     LaunchedEffect(gameId) {
+        AppLogger.d("DetailScreen", "DetailScreen geladen für gameId: $gameId")
         AppAnalytics.trackScreenView("DetailScreen")
         AppAnalytics.trackEvent("game_viewed", mapOf("game_id" to gameId))
         PerformanceMonitor.startTimer("detail_screen_load")
+        PerformanceMonitor.incrementEventCounter("detail_screen_opened")
+        PerformanceMonitor.trackNavigation(
+            "previous_screen",
+            "DetailScreen",
+            System.currentTimeMillis()
+        )
+        CrashlyticsHelper.setCustomKey("detail_screen_game_id", gameId)
+        CrashlyticsHelper.setCustomKey("current_screen", "DetailScreen")
     }
+
+    // Überwache Änderungen der gameId
+    LaunchedEffect(gameId) {
+        // Stelle sicher, dass das ViewModel die korrekte gameId verwendet
+        if (state.game?.id != gameId) {
+            AppLogger.d("DetailScreen", "gameId geändert von ${state.game?.id} zu $gameId")
+        }
+    }
+
     LaunchedEffect(state.game) {
         state.game?.let {
-            PerformanceMonitor.endTimer("detail_screen_load")
+            val loadDuration = PerformanceMonitor.endTimer("detail_screen_load")
             PerformanceMonitor.trackMemoryUsage("DetailScreen")
+            PerformanceMonitor.trackApiCall("game_detail", loadDuration, true, 0)
+        }
+    }
+
+    // Performance-Tracking beim Beenden des Screens
+    DisposableEffect(Unit) {
+        onDispose {
+            PerformanceMonitor.trackUiRendering("DetailScreen", System.currentTimeMillis())
+
+            // Performance-Statistiken abrufen und loggen
+            val performanceStats = PerformanceMonitor.getPerformanceStats()
+            AppLogger.d("DetailScreen", "Performance Stats: $performanceStats")
         }
     }
 
@@ -65,14 +97,19 @@ fun DetailScreen(
                 onRefresh = {
                     vm.refresh()
                     AppAnalytics.trackUserAction("cache_cleared", gameId)
+                    CrashlyticsHelper.setCustomKey("detail_refresh_attempted", true)
                 },
                 onToggleFavorite = {
                     vm.toggleFavorite()
                     AppAnalytics.trackUserAction("toggle_favorite", gameId)
+                    CrashlyticsHelper.setCustomKey("detail_favorite_toggle_attempted", true)
                 },
                 shareGamesEnabled = shareGamesEnabled,
                 isInWishlist = state.isInWishlist,
-                onToggleWishlist = { vm.toggleWishlist() }
+                onToggleWishlist = {
+                    vm.toggleWishlist()
+                    CrashlyticsHelper.setCustomKey("detail_wishlist_toggle_attempted", true)
+                }
             )
         }
         Column(modifier = Modifier
@@ -193,22 +230,51 @@ fun DetailScreen(
                         }
                     }
                     SectionCard(stringResource(R.string.game_trailers)) {
+                        // Logge Movies für Debugging
+                        LaunchedEffect(game.movies) {
+                            AppLogger.d(
+                                "DetailScreen",
+                                "Movies für ${game.title}: ${game.movies.size} Movies"
+                            )
+                            AppLogger.d(
+                                "DetailScreen",
+                                "Game-Objekt Details: ID=${game.id}, Title=${game.title}, Movies=${game.movies}"
+                            )
+                            game.movies.forEach { movie ->
+                                AppLogger.d(
+                                    "DetailScreen",
+                                    "Movie: ${movie.name}, ID: ${movie.id}, URL: ${
+                                        movie.urlMax?.take(
+                                            50
+                                        )
+                                    }..."
+                                )
+                            }
+                        }
+
                         TrailerGallery(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 movies = game.movies,
                                 onTrailerClick = { movie ->
                                     movie.urlMax?.let {
+                                        AppAnalytics.trackEvent(
+                                            "trailer_played",
+                                            mapOf(
+                                                "game_id" to gameId,
+                                                "trailer_name" to movie.name,
+                                                "trailer_id" to movie.id
+                                            )
+                                        )
                                         TrailerPlayerActivity.start(context, it, movie.name)
                                     }
                                 },
                             showEmptyState = true,
-                            gameHeaderImageUrl = game.imageUrl // Fallback für Thumbnails
+                            gameHeaderImageUrl = game.imageUrl
                         )
                     }
                     SectionCard(stringResource(R.string.game_website)) {
                         WebsiteSection(game.website, game.id)
                     }
-                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
         }

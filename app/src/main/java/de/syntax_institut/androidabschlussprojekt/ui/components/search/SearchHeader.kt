@@ -10,6 +10,20 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Header-Komponente für den Suchbildschirm mit Titel und Filter-Button.
+ *
+ * Features:
+ * - Suchtitel in Headline-Typografie
+ * - Filter-Button mit Icon
+ * - Responsive Layout mit SpaceBetween
+ * - Material3 Design-System
+ * - Accessibility-Unterstützung
+ * - Einzeilige Textbegrenzung
+ *
+ * @param modifier Modifier für das Layout
+ * @param onFilterClick Callback für Filter-Button-Klicks
+ */
 @Composable
 fun SearchHeader(modifier: Modifier = Modifier, onFilterClick: () -> Unit) {
     Row(

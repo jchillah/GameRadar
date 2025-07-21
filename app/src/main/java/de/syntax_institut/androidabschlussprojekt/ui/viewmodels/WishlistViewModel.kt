@@ -10,6 +10,13 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
+/**
+ * ViewModel für die Wunschliste. Kapselt alle UI-States, Datenoperationen und Export/Import-Logik
+ * für die Wishlist.
+ *
+ * Wird von [WishlistScreen] verwendet und stellt alle Funktionen für das Hinzufügen, Entfernen,
+ * Exportieren und Importieren von Wunschlistenspielen bereit.
+ */
 class WishlistViewModel(
     private val addWishlistGameUseCase: AddWishlistGameUseCase,
     private val removeWishlistGameUseCase: RemoveWishlistGameUseCase,
@@ -73,8 +80,26 @@ class WishlistViewModel(
                     game
                 )
             ) {
-                is Resource.Success -> _error.value = null
-                is Resource.Error -> _error.value = result.message
+                is Resource.Success -> {
+                    _error.value = null
+                    // Analytics-Tracking
+                    AppAnalytics.trackGameInteraction(game.id.toString(), "add_to_wishlist")
+                    AppAnalytics.trackUserAction("wishlist_added", game.id)
+                }
+
+                is Resource.Error -> {
+                    _error.value = result.message
+                    // Error-Tracking
+                    CrashlyticsHelper.recordWishlistError(
+                        "add_to_wishlist",
+                        game.id,
+                        result.message ?: "Unknown error"
+                    )
+                    AppAnalytics.trackError(
+                        "Failed to add to wishlist: ${result.message}",
+                        "WishlistViewModel"
+                    )
+                }
                 else -> {}
             }
             _isLoading.value = false
@@ -90,8 +115,26 @@ class WishlistViewModel(
                     gameId
                 )
             ) {
-                is Resource.Success -> _error.value = null
-                is Resource.Error -> _error.value = result.message
+                is Resource.Success -> {
+                    _error.value = null
+                    // Analytics-Tracking
+                    AppAnalytics.trackGameInteraction(gameId.toString(), "remove_from_wishlist")
+                    AppAnalytics.trackUserAction("wishlist_removed", gameId)
+                }
+
+                is Resource.Error -> {
+                    _error.value = result.message
+                    // Error-Tracking
+                    CrashlyticsHelper.recordWishlistError(
+                        "remove_from_wishlist",
+                        gameId,
+                        result.message ?: "Unknown error"
+                    )
+                    AppAnalytics.trackError(
+                        "Failed to remove from wishlist: ${result.message}",
+                        "WishlistViewModel"
+                    )
+                }
                 else -> {}
             }
             _isLoading.value = false
@@ -107,8 +150,26 @@ class WishlistViewModel(
                     game
                 )
             ) {
-                is Resource.Success -> _error.value = null
-                is Resource.Error -> _error.value = result.message
+                is Resource.Success -> {
+                    _error.value = null
+                    // Analytics-Tracking
+                    AppAnalytics.trackGameInteraction(game.id.toString(), "toggle_wishlist")
+                    AppAnalytics.trackUserAction("wishlist_toggled", game.id)
+                }
+
+                is Resource.Error -> {
+                    _error.value = result.message
+                    // Error-Tracking
+                    CrashlyticsHelper.recordWishlistError(
+                        "toggle_wishlist",
+                        game.id,
+                        result.message ?: "Unknown error"
+                    )
+                    AppAnalytics.trackError(
+                        "Failed to toggle wishlist: ${result.message}",
+                        "WishlistViewModel"
+                    )
+                }
                 else -> {}
             }
             _isLoading.value = false
@@ -123,8 +184,30 @@ class WishlistViewModel(
                     getApplication<Application>().applicationContext
                 )
             ) {
-                is Resource.Success -> _error.value = null
-                is Resource.Error -> _error.value = result.message
+                is Resource.Success -> {
+                    _error.value = null
+                    // Analytics-Tracking
+                    AppAnalytics.trackUserAction("wishlist_cleared_all")
+                    AppAnalytics.trackCacheOperation(
+                        "clear_wishlist",
+                        _wishlistGames.value.size,
+                        true
+                    )
+                }
+
+                is Resource.Error -> {
+                    _error.value = result.message
+                    // Error-Tracking
+                    CrashlyticsHelper.recordWishlistError(
+                        "clear_all",
+                        0,
+                        result.message ?: "Unknown error"
+                    )
+                    AppAnalytics.trackError(
+                        "Failed to clear wishlist: ${result.message}",
+                        "WishlistViewModel"
+                    )
+                }
                 else -> {}
             }
             _isLoading.value = false
@@ -133,30 +216,71 @@ class WishlistViewModel(
 
     suspend fun isInWishlist(gameId: Int): Boolean = isInWishlistUseCase(gameId)
 
-    suspend fun getWishlistCount(): Int = getWishlistCountUseCase()
+    suspend fun getWishlistGameById(gameId: Int): Game? {
+        return getWishlistGameByIdUseCase(gameId)
+    }
 
-    fun searchWishlist(query: String): StateFlow<List<Game>> {
-        val result = MutableStateFlow<List<Game>>(emptyList())
-        viewModelScope.launch {
-            searchWishlistGamesUseCase(query).collect { games -> result.value = games }
-        }
-        return result
+    suspend fun getWishlistCount(): Int {
+        return getWishlistCountUseCase()
+    }
+
+    fun searchWishlistGames(query: String): Flow<List<Game>> {
+        return searchWishlistGamesUseCase(query)
     }
 
     fun exportWishlistToUri(context: Context, uri: Uri) {
-        viewModelScope.launch { _exportResult.value = exportWishlistToUriUseCase(context, uri) }
+        viewModelScope.launch {
+            _exportResult.value = exportWishlistToUriUseCase(context, uri)
+            // Analytics-Tracking
+            when (_exportResult.value) {
+                is Resource.Success -> {
+                    AppAnalytics.trackCacheOperation(
+                        "export_wishlist",
+                        _wishlistGames.value.size,
+                        true
+                    )
+                    AppAnalytics.trackUserAction("wishlist_exported")
+                }
+
+                is Resource.Error -> {
+                    AppAnalytics.trackCacheOperation(
+                        "export_wishlist",
+                        _wishlistGames.value.size,
+                        false
+                    )
+                    AppAnalytics.trackError("Failed to export wishlist", "WishlistViewModel")
+                }
+
+                else -> {}
+            }
+        }
     }
 
     fun importWishlistFromUri(context: Context, uri: Uri) {
-        viewModelScope.launch { _importResult.value = importWishlistFromUriUseCase(context, uri) }
-    }
-
-    // Entferne die ungenutzte Funktion getWishlistGameById
-    // Passe getWishlistGameById an, damit das Ergebnis im State landet
-    fun loadWishlistGameById(gameId: Int) {
         viewModelScope.launch {
-            val game = getWishlistGameByIdUseCase(gameId)
-            setDetailGame(game)
+            _importResult.value = importWishlistFromUriUseCase(context, uri)
+            // Analytics-Tracking
+            when (_importResult.value) {
+                is Resource.Success -> {
+                    AppAnalytics.trackCacheOperation(
+                        "import_wishlist",
+                        _wishlistGames.value.size,
+                        true
+                    )
+                    AppAnalytics.trackUserAction("wishlist_imported")
+                }
+
+                is Resource.Error -> {
+                    AppAnalytics.trackCacheOperation(
+                        "import_wishlist",
+                        _wishlistGames.value.size,
+                        false
+                    )
+                    AppAnalytics.trackError("Failed to import wishlist", "WishlistViewModel")
+                }
+
+                else -> {}
+            }
         }
     }
 }

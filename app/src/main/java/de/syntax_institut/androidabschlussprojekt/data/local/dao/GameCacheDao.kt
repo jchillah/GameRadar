@@ -7,88 +7,110 @@ import kotlinx.coroutines.flow.*
 
 /**
  * DAO für Game-Cache Operationen.
+ * Bietet Methoden zum Cachen, Abrufen, Löschen und Prüfen von Spielen im lokalen Cache.
  */
 @Dao
 interface GameCacheDao {
-
     /**
-     * Spiel in Cache speichern oder aktualisieren.
+     * Speichert oder aktualisiert ein Spiel im Cache.
+     * @param game Das zu speichernde GameCacheEntity
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGame(game: GameCacheEntity)
 
     /**
-     * Mehrere Spiele in Cache speichern.
+     * Speichert mehrere Spiele im Cache.
+     * @param games Die zu speichernden GameCacheEntity-Objekte
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGames(games: List<GameCacheEntity>)
-    
+
     /**
-     * Spiel aus Cache abrufen.
+     * Gibt ein Spiel aus dem Cache anhand der ID zurück.
+     * @param gameId Die ID des gesuchten Spiels
+     * @return Das gefundene GameCacheEntity oder null
      */
     @Query("SELECT * FROM " + Constants.GAME_CACHE_TABLE + " WHERE id = :gameId")
     suspend fun getGameById(gameId: Int): GameCacheEntity?
-    
+
     /**
-     * Alle Spiele aus Cache abrufen.
+     * Gibt alle Spiele aus dem Cache als Flow zurück.
+     * @return Flow mit einer Liste aller GameCacheEntity-Objekte
      */
     @Query("SELECT * FROM " + Constants.GAME_CACHE_TABLE + " ORDER BY cachedAt DESC")
     fun getAllCachedGames(): Flow<List<GameCacheEntity>>
-    
+
     /**
-     * Spiele nach Suchquery abrufen.
+     * Gibt Spiele aus dem Cache anhand eines Suchquerys zurück.
+     * @param query Der Suchbegriff
+     * @return Flow mit einer Liste der gefundenen GameCacheEntity-Objekte
      */
     @Query("SELECT * FROM " + Constants.GAME_CACHE_TABLE + " WHERE searchQuery = :query ORDER BY cachedAt DESC")
     fun getGamesByQuery(query: String): Flow<List<GameCacheEntity>>
-    
+
     /**
-     * Spiele nach Suchquery und Filter abrufen.
+     * Gibt Spiele aus dem Cache anhand eines Suchquerys und Filter-Hash zurück.
+     * @param query Der Suchbegriff
+     * @param filterHash Der Filter-Hash
+     * @return Flow mit einer Liste der gefundenen GameCacheEntity-Objekte
      */
     @Query("SELECT * FROM " + Constants.GAME_CACHE_TABLE + " WHERE searchQuery = :query AND filterHash = :filterHash ORDER BY cachedAt DESC")
     fun getGamesByQueryAndFilter(query: String, filterHash: String): Flow<List<GameCacheEntity>>
-    
+
     /**
-     * Spiel aus Cache entfernen.
+     * Entfernt ein Spiel anhand der ID aus dem Cache.
+     * @param gameId Die ID des zu entfernenden Spiels
      */
     @Query("DELETE FROM " + Constants.GAME_CACHE_TABLE + " WHERE id = :gameId")
     suspend fun removeGame(gameId: Int)
-    
+
     /**
-     * Alle Spiele aus Cache entfernen.
+     * Entfernt alle Spiele aus dem Cache.
      */
     @Query("DELETE FROM " + Constants.GAME_CACHE_TABLE)
     suspend fun clearAllGames()
-    
+
     /**
-     * Alte Cache-Einträge entfernen (älter als maxAge).
+     * Entfernt alte Cache-Einträge, die älter als maxAge sind.
+     * @param maxAge Zeitstempel, älter als dieser Wert wird gelöscht
      */
     @Query("DELETE FROM " + Constants.GAME_CACHE_TABLE + " WHERE cachedAt < :maxAge")
     suspend fun clearOldCache(maxAge: Long)
-    
+
     /**
-     * Anzahl der gecachten Spiele.
+     * Gibt die Anzahl der gecachten Spiele zurück.
+     * @return Die Anzahl der gespeicherten Spiele
      */
     @Query("SELECT COUNT(*) FROM " + Constants.GAME_CACHE_TABLE)
     suspend fun getCacheSize(): Int
-    
+
     /**
-     * Prüfen ob Spiel im Cache vorhanden ist.
+     * Prüft, ob ein Spiel im Cache vorhanden ist.
+     * @param gameId Die ID des zu prüfenden Spiels
+     * @return true, wenn das Spiel im Cache ist, sonst false
      */
     @Query("SELECT EXISTS(SELECT 1 FROM " + Constants.GAME_CACHE_TABLE + " WHERE id = :gameId)")
     suspend fun isGameCached(gameId: Int): Boolean
-    
+
     /**
-     * Prüfen ob Suchquery im Cache vorhanden ist.
+     * Prüft, ob ein Suchquery im Cache vorhanden ist.
+     * @param query Der Suchbegriff
+     * @return true, wenn der Query im Cache ist, sonst false
      */
     @Query("SELECT EXISTS(SELECT 1 FROM " + Constants.GAME_CACHE_TABLE + " WHERE searchQuery = :query)")
     suspend fun isQueryCached(query: String): Boolean
-    
+
     /**
-     * Ältesten Cache-Zeitstempel abrufen.
+     * Gibt den ältesten Cache-Zeitstempel zurück.
+     * @return Der älteste Zeitstempel oder null
      */
     @Query("SELECT MIN(cachedAt) FROM " + Constants.GAME_CACHE_TABLE)
     suspend fun getOldestCacheTime(): Long?
 
+    /**
+     * Entfernt abgelaufene Spiele aus dem Cache.
+     * @param timestamp Zeitstempel, älter als dieser Wert wird gelöscht
+     */
     @Query("DELETE FROM " + Constants.GAME_CACHE_TABLE + " WHERE cachedAt < :timestamp")
     suspend fun deleteExpiredGames(timestamp: Long)
 } 

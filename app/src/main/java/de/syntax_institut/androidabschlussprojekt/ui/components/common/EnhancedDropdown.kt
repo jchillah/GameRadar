@@ -15,7 +15,22 @@ import de.syntax_institut.androidabschlussprojekt.ui.components.common.models.*
 
 /**
  * Erweiterte Dropdown-Komponente mit Icons, Trennlinien und verbesserter UX.
- * Folgt Material Design Guidelines für Dropdown-Menüs.
+ *
+ * Features:
+ * - Material Design Guidelines-konforme Dropdown-Menüs
+ * - Icon-Unterstützung für bessere Visualisierung
+ * - Trennlinien zwischen Optionen
+ * - Ausgewählte Option-Highlighting
+ * - Placeholder-Text für leere Auswahl
+ * - Accessibility-Unterstützung
+ * - Responsive Design
+ *
+ * @param modifier Modifier für das Layout
+ * @param selectedValue Aktuell ausgewählter Wert
+ * @param onValueChange Callback bei Wertänderung
+ * @param options Liste der verfügbaren Optionen
+ * @param enabled Gibt an, ob die Dropdown aktiv ist
+ * @param placeholder Platzhalter-Text für leere Auswahl
  */
 @Composable
 fun EnhancedDropdown(

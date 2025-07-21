@@ -11,13 +11,24 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Kopfzeile für den Favoriten-Screen mit Titel und Button zum Löschen aller Favoriten.
+ *
+ * @param modifier Modifier für das Layout
+ * @param hasFavorites Gibt an, ob Favoriten vorhanden sind
+ * @param onDeleteAllClick Callback für das Löschen aller Favoriten
+ * @param deleteAllContentDescription ContentDescription für den Delete-Button (optional)
+ */
 @Composable
 fun FavoritesHeader(
     modifier: Modifier = Modifier,
     hasFavorites: Boolean,
     onDeleteAllClick: () -> Unit,
+    deleteAllContentDescription: String? = null,
 ) {
-    val deleteAllContentDescription = stringResource(R.string.dialog_delete_all_favorites_title)
+    val deleteAllContentDescriptionFinal =
+        deleteAllContentDescription
+            ?: stringResource(R.string.dialog_delete_all_favorites_title)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -40,7 +51,9 @@ fun FavoritesHeader(
                     ),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 modifier =
-                    Modifier.semantics { contentDescription = deleteAllContentDescription }
+                    Modifier.semantics {
+                        contentDescription = deleteAllContentDescriptionFinal
+                    }
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,

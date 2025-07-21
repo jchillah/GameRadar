@@ -14,6 +14,26 @@ import androidx.navigation.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 
+/**
+ * Obere Zeile des Detail-Screens mit Navigation und Aktions-Buttons.
+ *
+ * Enthält:
+ * - Zurück-Button für Navigation
+ * - Spieltitel (mit Ellipsis bei langen Titeln)
+ * - Refresh-Button
+ * - Share-Button (wenn aktiviert)
+ * - Favoriten-Button
+ * - Wunschlisten-Button
+ *
+ * @param game Das anzuzeigende Spiel (kann null sein)
+ * @param isFavorite Gibt an, ob das Spiel in den Favoriten ist
+ * @param navController Navigation Controller für Zurück-Navigation
+ * @param onRefresh Callback für Refresh-Aktion
+ * @param onToggleFavorite Callback für Favoriten-Toggle
+ * @param shareGamesEnabled Gibt an, ob Sharing aktiviert ist
+ * @param isInWishlist Gibt an, ob das Spiel in der Wunschliste ist
+ * @param onToggleWishlist Callback für Wunschlisten-Toggle
+ */
 @Composable
 internal fun DetailTopRow(
     game: Game?,

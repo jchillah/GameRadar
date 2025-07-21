@@ -1,14 +1,10 @@
-# GameFinder 🎮
+# GameRadar 🎮
 
-**Entdecke deine nächste Gaming-Leidenschaft – modern, schnell, fehlerrobust.**
+GameRadar ist eine moderne Android-App zur Suche, Verwaltung und Analyse von Videospielen. Die App
+nutzt die RAWG-API und bietet Favoriten, Wunschliste, Filter, Statistiken und viele
+Einstellungsmöglichkeiten.
 
-GameFinder ist eine moderne Android-App, um neue Spiele zu entdecken, zu filtern, zu bewerten und
-Favoriten zu speichern. Entwickelt mit **Jetpack Compose**, **MVVM**, **Room** und der **RAWG-API
-** – für ein konsistentes, performantes und fehlerfreies Nutzererlebnis.
-
----
-
-## Highlights
+## Highlights ✨
 
 - **Edge-to-Edge-Design:** Inhalte beginnen direkt unter der Statusleiste, keine doppelten AppBars,
   keine verschachtelten Scaffold-Strukturen.
@@ -30,21 +26,16 @@ Favoriten zu speichern. Entwickelt mit **Jetpack Compose**, **MVVM**, **Room** u
 
 ---
 
-## Screenshots
+## Screenshots 🏞️
 
-Hier ein Überblick über die wichtigsten App-Bereiche im Entwickler Modus:
-
-| Startscreen               | Suche                     | Detailansicht              |
-|---------------------------|---------------------------|----------------------------|
-| ![Start](img/screen1.png) | ![Suche](img/screen2.png) | ![Detail](img/screen3.png) |
-
-| Favoriten                     | Einstellungen                     | Dark Mode                     | Fehlerfall                 |
-|-------------------------------|-----------------------------------|-------------------------------|----------------------------|
-| ![Favoriten](img/screen4.png) | ![Einstellungen](img/screen5.png) | ![Dark Mode](img/screen6.png) | ![Fehler](img/screen7.png) |
+| Suche                           | Favoriten                     | Wunschliste                       | Einstellungen                     |
+|---------------------------------|-------------------------------|-----------------------------------|-----------------------------------|
+| ![Suche](img/screen1.png)       | ![Favoriten](img/screen2.png) | ![Wunschliste](img/screen3.png)   | ![Einstellungen](img/screen4.png) |
+| ![Statistiken](img/screen5.png) | ![Detail](img/screen6.png)    | ![Tablet-Layout](img/screen7.png) | ![Export/Import](img/screen8.png) |
 
 ---
 
-## Features
+## Features ➳
 
 - 🔍 **Spielsuche** nach Titel, Plattform, Genre, Bewertung
 - 🏷️ **Filter & Sortierung** (Plattform, Genre, Bewertung, Erscheinungsjahr)
@@ -63,7 +54,7 @@ Hier ein Überblick über die wichtigsten App-Bereiche im Entwickler Modus:
 
 ---
 
-## Technischer Aufbau
+## Technischer Aufbau 💻
 
 ### Projektstruktur (MVVM + Compose)
 
@@ -85,6 +76,8 @@ de.syntax_institut.androidabschlussprojekt
 ├── utils            # Hilfsklassen (z. B. Resource.kt, NetworkUtils)
 └── services         # z. B. Background-Tasks
 ```
+
+---
 
 ### Datenhaltung & API
 
@@ -116,14 +109,28 @@ de.syntax_institut.androidabschlussprojekt
   API-/Netzwerkfehler? → Globale ErrorCard mit Retry
 - **Null-Safety:**  Alle Datenzugriffe sind null-sicher, keine Crashes durch fehlende Felder
 - **Logging:**  Navigation und Datenübergaben werden geloggt (z. B. gameId bei Detailaufruf)
-- **Keine komplexen Objekte in Navigation:**  Es werden nur primitive Typen (Int, String) übergeben
+- **Keine komplexen Objekte in Navigation:**  Es werden nur primitive Typen (Int, String, Boolean)
+  übergeben
+
+---
+
+## Werbung, Pro-Status & Rewarded Ads
+
+- Die App verwendet Google AdMob für Banner- und Rewarded-Ads.
+- **Nicht-Pro-User:** Werbung ist immer aktiviert, Statistiken und Export werden nach dem Ansehen
+  einer Rewarded Ad freigeschaltet.
+- **Pro-User:** Kann Werbung in den Einstellungen freiwillig aktivieren. Ist Werbung deaktiviert,
+  sind Statistiken und Export immer verfügbar. Ist Werbung aktiviert, werden diese Features wie bei
+  Nicht-Pro-Usern nach einer Rewarded Ad freigeschaltet.
+- Es werden ausschließlich Test-IDs für AdMob verwendet (keine Gefahr für das AdMob-Konto beim
+  Testen).
 
 ---
 
 ## Setup
 
 1. **API Key** erstellen: [RAWG API Docs](https://rawg.io/apidocs)
-2. Key in `local.properties` eintragen: `RAWG_API_KEY=dein_key`
+2. Key in `local.properties` eintragen: `API_KEY=dein_key`
 3. Projekt in Android Studio öffnen und ausführen
 
 ---
@@ -144,10 +151,8 @@ de.syntax_institut.androidabschlussprojekt
 ## Lizenz
 
 MIT License – Siehe [LICENSE](LICENSE) für weitere Informationen.
-
----
-
-**Tipp:**  
-Das Projekt ist ein modernes Compose-Vorzeigeprojekt – ideal als Lern- und Referenzbasis für saubere
-Android-Architektur!
+- Android Studio Hedgehog oder neuer
+- Projekt klonen
+- API_KEY in `local.properties` eintragen: `API_KEY=...any key...`
+- Projekt öffnen und auf ein Gerät/Emulator ausführen
 

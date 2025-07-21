@@ -10,6 +10,16 @@ import androidx.compose.ui.unit.*
 import com.google.accompanist.flowlayout.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Zeigt eine Liste von Chips in einem Flow-Layout an.
+ *
+ * Verwendet FlowRow für automatisches Umbruch-Verhalten und
+ * zeigt AssistChips für jede Liste von Strings an.
+ * Zeigt eine "Keine Daten"-Nachricht an, wenn die Liste leer ist.
+ *
+ * @param items Liste der anzuzeigenden Strings
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun ChipFlowRow(
     items: List<String>,

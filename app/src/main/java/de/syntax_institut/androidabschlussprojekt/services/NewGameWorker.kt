@@ -15,7 +15,13 @@ import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import org.koin.core.component.*
 
-
+/**
+ * Worker für das periodische Abrufen und Benachrichtigen über neue Spiele. Nutzt WorkManager und
+ * Koin für Dependency Injection.
+ *
+ * @param appContext Der Anwendungskontext
+ * @param workerParams Parameter für den Worker
+ */
 class NewGameWorker(
     appContext: Context,
     workerParams: WorkerParameters,
@@ -23,8 +29,15 @@ class NewGameWorker(
 
     private val gameRepository: GameRepository by inject()
 
+    /**
+     * Führt die Hintergrundarbeit aus, um neue Spiele zu prüfen und ggf. eine Benachrichtigung zu
+     * senden.
+     */
     override suspend fun doWork(): Result {
         try {
+            PerformanceMonitor.startTimer("new_game_worker_execution")
+            PerformanceMonitor.incrementEventCounter("new_game_worker_runs")
+
             AppLogger.d(
                 Constants.NEW_GAME_WORKER_NAME,
                 "[DEBUG] ${Constants.NEW_GAME_WORKER_NAME} gestartet"
@@ -35,11 +48,15 @@ class NewGameWorker(
                     Constants.NEW_GAME_WORKER_NAME,
                     "[DEBUG] Notifications deaktiviert – Abbruch"
                 )
+                PerformanceMonitor.endTimer("new_game_worker_execution")
                 return Result.success()
             }
 
             val prefs =
-                applicationContext.getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
+                applicationContext.getSharedPreferences(
+                    Constants.PREFS_NAME,
+                    Context.MODE_PRIVATE
+                )
             val newGames = gameRepository.checkForNewGamesAndUpdatePrefs(prefs, count = 10)
 
             AppLogger.d(
@@ -49,7 +66,16 @@ class NewGameWorker(
 
             if (newGames.isNotEmpty()) {
                 sendNewGamesNotification(applicationContext, newGames)
+                PerformanceMonitor.incrementEventCounter("new_games_notifications_sent")
             }
+
+            val executionDuration = PerformanceMonitor.endTimer("new_game_worker_execution")
+            PerformanceMonitor.trackApiCall(
+                "new_games_check",
+                executionDuration,
+                true,
+                newGames.size
+            )
 
             AppLogger.i(
                 Constants.NEW_GAME_WORKER_NAME,
@@ -62,6 +88,7 @@ class NewGameWorker(
                 "Fehler im ${Constants.NEW_GAME_WORKER_NAME}",
                 e
             )
+            PerformanceMonitor.trackApiCall("new_games_check", 0, false, 0)
             return Result.failure()
         }
     }
@@ -72,21 +99,32 @@ class NewGameWorker(
     }
 
     private fun buildPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        val intent =
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+
+        return try {
+            PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        } catch (e: Exception) {
+            AppLogger.e(Constants.NEW_GAME_WORKER_NAME, "Error creating PendingIntent", e)
+            // Fallback ohne Flags
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
-        return PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
     }
 
     private fun sendNewGamesNotification(context: Context, newGames: List<Game>) {
         try {
+            // Prüfe Berechtigungen vor dem Senden
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+                    PackageManager.PERMISSION_GRANTED
+                ) {
                     AppLogger.d(
                         Constants.NEW_GAME_WORKER_NAME,
                         "[DEBUG] Keine Notification-Berechtigung für neue Spiele"
@@ -94,18 +132,26 @@ class NewGameWorker(
                     return
                 }
             }
+
             val notificationManager =
                 context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val pendingIntent = buildPendingIntent(context)
+
             // Bündel-Notification für mehrere neue Spiele
             val inboxStyle = NotificationCompat.InboxStyle()
-            for (game in newGames) {
+            for (game in newGames.take(5)) { // Begrenze auf 5 Spiele
                 inboxStyle.addLine(game.title)
             }
+
             val notification =
-                NotificationCompat.Builder(applicationContext, Constants.NOTIFICATION_CHANNEL_ID)
+                NotificationCompat.Builder(
+                    applicationContext,
+                    Constants.NOTIFICATION_CHANNEL_ID
+                )
                     .setSmallIcon(R.drawable.ic_dialog_info)
-                    .setContentTitle(context.getString(R.string.notification_new_games_title))
+                    .setContentTitle(
+                        context.getString(R.string.notification_new_games_title)
+                    )
                     .setContentText(
                         context.getString(
                             R.string.notification_new_games_text,
@@ -115,7 +161,8 @@ class NewGameWorker(
                     .setStyle(inboxStyle)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
 
             notificationManager.notify(Constants.NEW_GAME_NOTIFICATION_ID, notification.build())
             AppLogger.d(
@@ -126,4 +173,4 @@ class NewGameWorker(
             AppLogger.e(Constants.NEW_GAME_WORKER_NAME, "Fehler beim Senden der Notification", e)
         }
     }
-} 
+}

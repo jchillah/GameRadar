@@ -15,6 +15,27 @@ import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 
+/**
+ * Hauptinhalt für Suchergebnisse mit Paging und verschiedenen Zuständen.
+ *
+ * Features:
+ * - Paging-basierte Spielergebnisse
+ * - Loading-States mit Shimmer-Platzhaltern
+ * - Error-Handling mit Retry-Funktion
+ * - Empty-State bei keinen Ergebnissen
+ * - Optimierte LazyColumn-Performance
+ * - Favoriten- und Wunschlisten-Integration
+ * - Anpassbare Bildqualität
+ * - Accessibility-Unterstützung
+ *
+ * @param pagingItems Paging-Items für die Spielergebnisse
+ * @param onGameClick Callback beim Klick auf ein Spiel
+ * @param modifier Modifier für das Layout
+ * @param imageQuality Qualitätseinstellung für Spielbilder
+ * @param favoriteIds Set der favorisierten Spiel-IDs
+ * @param wishlistIds Set der Wunschlisten-Spiel-IDs
+ * @param onWishlistChanged Callback bei Wunschlisten-Änderungen
+ */
 @Composable
 fun SearchResultContent(
     pagingItems: LazyPagingItems<Game>,
@@ -86,7 +107,11 @@ fun SearchResultContent(
                                     .fillMaxWidth()
                                     .padding(vertical = 16.dp),
                                 contentAlignment = Alignment.Center
-                            ) { LoadingState(modifier = Modifier.size(32.dp)) }
+                            ) {
+                                Loading(
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
                         }
                     }
                     item { Spacer(modifier = Modifier.height(16.dp)) }

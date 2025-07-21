@@ -8,7 +8,26 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-/** ViewModel für Spieldetails. */
+/**
+ * ViewModel für die Spieldetailansicht mit Favoriten- und Wunschlistenverwaltung.
+ *
+ * Features:
+ * - Laden und Anzeigen von Spieldetails aus der API
+ * - Favoriten-Toggle-Funktionalität
+ * - Wunschlisten-Toggle-Funktionalität
+ * - Benutzerbewertungen
+ * - Refresh-Funktionalität
+ * - Analytics-Tracking und Crashlytics-Integration
+ * - Fehlerbehandlung und Loading-States
+ *
+ * @param getGameDetailUseCase UseCase für das Laden von Spieldetails
+ * @param toggleFavoriteUseCase UseCase für das Umschalten der Favoriten
+ * @param isFavoriteUseCase UseCase für die Favoriten-Prüfung
+ * @param toggleWishlistGameUseCase UseCase für das Umschalten der Wunschliste
+ * @param isInWishlistUseCase UseCase für die Wunschlisten-Prüfung
+ * @param savedStateHandle SavedStateHandle für die Spiel-ID
+ * @param application Application-Instanz
+ */
 class DetailViewModel(
     private val getGameDetailUseCase: GetGameDetailUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
@@ -29,12 +48,15 @@ class DetailViewModel(
         CrashlyticsHelper.setCustomKey("detail_screen_game_id", gameId)
         CrashlyticsHelper.setCustomKey("current_screen", "DetailScreen")
 
+        AppLogger.d("DetailViewModel", "DetailViewModel initialisiert für gameId: $gameId")
         loadGameDetail()
     }
 
     private fun loadGameDetail() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+
+            AppLogger.d("DetailViewModel", "Lade Spieldetails für gameId: $gameId")
 
             try {
                 CrashlyticsHelper.setCustomKey("detail_loading_started", true)
@@ -46,6 +68,20 @@ class DetailViewModel(
                         val isFavorite = isFavoriteUseCase(gameId)
                         val isInWishlist = isInWishlistUseCase(gameId)
 
+                        // Prüfe, ob die geladenen Daten zur gameId gehören
+                        if (game?.id != gameId) {
+                            AppLogger.w(
+                                "DetailViewModel",
+                                "Falsche gameId geladen: erwartet $gameId, erhalten ${game?.id}"
+                            )
+                            _uiState.value =
+                                _uiState.value.copy(
+                                    isLoading = false,
+                                    error = "Falsche Spieldaten geladen"
+                                )
+                            return@launch
+                        }
+
                         CrashlyticsHelper.setCustomKey("detail_loading_success", true)
                         CrashlyticsHelper.setCustomKey("game_title", game?.title ?: "")
                         CrashlyticsHelper.setCustomKey("game_rating", game?.rating?.toInt() ?: 0)
@@ -54,6 +90,11 @@ class DetailViewModel(
                             game?.screenshots?.size ?: 0
                         )
                         CrashlyticsHelper.setCustomKey("movies_count", game?.movies?.size ?: 0)
+
+                        AppLogger.d(
+                            "DetailViewModel",
+                            "Spieldetails erfolgreich geladen für gameId: $gameId"
+                        )
 
                         _uiState.value =
                             _uiState.value.copy(
@@ -67,6 +108,11 @@ class DetailViewModel(
                         CrashlyticsHelper.setCustomKey("detail_loading_error", true)
                         CrashlyticsHelper.setCustomKey("detail_error_message", result.message ?: "")
 
+                        AppLogger.e(
+                            "DetailViewModel",
+                            "Fehler beim Laden der Spieldetails für gameId: $gameId - ${result.message}"
+                        )
+
                         _uiState.value =
                             _uiState.value.copy(isLoading = false, error = result.message)
                     }
@@ -77,6 +123,12 @@ class DetailViewModel(
             } catch (e: Exception) {
                 CrashlyticsHelper.setCustomKey("detail_loading_exception", e.javaClass.simpleName)
                 CrashlyticsHelper.setCustomKey("detail_exception_message", e.message ?: "Unknown")
+
+                AppLogger.e(
+                    "DetailViewModel",
+                    "Exception beim Laden der Spieldetails für gameId: $gameId",
+                    e
+                )
 
                 _uiState.value =
                     _uiState.value.copy(

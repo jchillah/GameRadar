@@ -10,7 +10,17 @@ import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
 /**
- * Zeigt die Beschreibung eines Spiels.
+ * Zeigt die Beschreibung eines Spiels mit Fallback-Text.
+ *
+ * Features:
+ * - Anzeige der Spielbeschreibung in lesbarer Formatierung
+ * - Fallback-Text bei fehlender Beschreibung
+ * - Material3 Typography für konsistente Darstellung
+ * - Responsive Layout mit Spacer
+ * - Null-Safety für optionale Beschreibungen
+ *
+ * @param description Die Spielbeschreibung (kann null sein)
+ * @param modifier Modifier für das Layout
  */
 @Composable
 fun GameDescription(description: String?, modifier: Modifier = Modifier) {

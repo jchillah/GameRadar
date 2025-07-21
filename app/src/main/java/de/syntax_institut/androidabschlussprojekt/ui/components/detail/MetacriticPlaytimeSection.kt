@@ -10,6 +10,16 @@ import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
+/**
+ * Zeigt Metacritic-Bewertung und Spielzeit eines Spiels an.
+ *
+ * Zeigt entweder die Metacritic-Bewertung und/oder Spielzeit an
+ * oder einen Platzhalter, wenn keine Daten verfügbar sind.
+ *
+ * @param metacritic Metacritic-Bewertung (0-100) oder null
+ * @param playtime Spielzeit in Stunden oder null
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun MetacriticPlaytimeSection(metacritic: Int?, playtime: Int?, modifier: Modifier = Modifier) {
     if (metacritic == null && playtime == null) {

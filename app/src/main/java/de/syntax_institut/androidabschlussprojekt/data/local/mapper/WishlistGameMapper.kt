@@ -5,6 +5,10 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 
+/**
+ * Mapper für die Konvertierung zwischen WishlistGameEntity und Game.
+ * Bietet Funktionen zum Umwandeln von Datenbank-Entities in Domain-Modelle und umgekehrt.
+ */
 object WishlistGameMapper {
     private val moshi = MoshiProvider.moshi
     private val stringListAdapter =
@@ -16,6 +20,11 @@ object WishlistGameMapper {
             Types.newParameterizedType(List::class.java, Movie::class.java)
         )
 
+    /**
+     * Wandelt eine WishlistGameEntity in ein Game-Domainmodell um.
+     * @receiver WishlistGameEntity Das Entity-Objekt aus der Datenbank
+     * @return Das entsprechende Game-Domainmodell
+     */
     fun WishlistGameEntity.toGame(): Game =
         Game(
             id = id,
@@ -32,6 +41,11 @@ object WishlistGameMapper {
             movies = movieListAdapter.fromJson(movies) ?: emptyList()
         )
 
+    /**
+     * Wandelt ein Game-Domainmodell in eine WishlistGameEntity um.
+     * @receiver Game Das Domainmodell
+     * @return Das entsprechende WishlistGameEntity für die Datenbank
+     */
     fun Game.toWishlistEntity(): WishlistGameEntity =
         WishlistGameEntity(
             id = id,

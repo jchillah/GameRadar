@@ -9,7 +9,20 @@ import androidx.compose.ui.tooling.preview.*
 import de.syntax_institut.androidabschlussprojekt.R
 
 /**
- * Zeigt die wichtigsten Metadaten eines Spiels (Titel, Release, Rating).
+ * Zeigt die wichtigsten Metadaten eines Spiels in einer strukturierten Ansicht.
+ *
+ * Features:
+ * - Spieltitel in großer Typografie
+ * - Release-Datum mit lokalisiertem Format
+ * - Bewertung mit Dezimalstellen
+ * - Material3 Typography-System
+ * - Responsive Layout
+ * - Accessibility-freundliche Struktur
+ *
+ * @param title Titel des Spiels
+ * @param releaseDate Release-Datum als String
+ * @param rating Bewertung als Double (0.0 - 5.0)
+ * @param modifier Modifier für das Layout
  */
 @Composable
 fun GameMetaInfo(

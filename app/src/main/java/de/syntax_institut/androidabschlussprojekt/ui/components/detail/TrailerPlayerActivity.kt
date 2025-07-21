@@ -1,5 +1,6 @@
 package de.syntax_institut.androidabschlussprojekt.ui.components.detail
 
+// Kein expliziter R-Import nötig, stringResource(R.string.action_close) reicht
 import android.content.*
 import android.os.*
 import androidx.activity.*
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.*
+import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.viewinterop.*
 import androidx.core.view.*
@@ -21,10 +23,14 @@ import androidx.media3.exoplayer.*
 import androidx.media3.ui.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
+import de.syntax_institut.androidabschlussprojekt.utils.*
 
 /**
- * Fullscreen Activity für den Trailer-Player.
- * Verwendet modernes Edge-to-Edge-API für echtes Fullscreen.
+ * Vollbild-Activity für das Abspielen von Trailern mit ExoPlayer.
+ *
+ * Diese Activity zeigt einen Trailer im Fullscreen-Modus an und blendet Systemleisten aus.
+ *
+ * @constructor Erstellt eine neue TrailerPlayerActivity.
  */
 class TrailerPlayerActivity : ComponentActivity() {
 
@@ -34,26 +40,43 @@ class TrailerPlayerActivity : ComponentActivity() {
         private const val EXTRA_VIDEO_URL = "video_url"
         private const val EXTRA_VIDEO_TITLE = "video_title"
 
+        /**
+         * Startet die TrailerPlayerActivity mit der angegebenen Video-URL und optionalem Titel.
+         *
+         * @param context Context zum Starten der Activity
+         * @param videoUrl Die URL des abzuspielenden Videos
+         * @param videoTitle Der Titel des Videos (optional)
+         */
         fun start(context: Context, videoUrl: String, videoTitle: String = "Trailer") {
-            val intent = Intent(context, TrailerPlayerActivity::class.java).apply {
-                putExtra(EXTRA_VIDEO_URL, videoUrl)
-                putExtra(EXTRA_VIDEO_TITLE, videoTitle)
-            }
+            val intent =
+                Intent(context, TrailerPlayerActivity::class.java).apply {
+                    putExtra(EXTRA_VIDEO_URL, videoUrl)
+                    putExtra(EXTRA_VIDEO_TITLE, videoTitle)
+                    // Füge FLAG_ACTIVITY_NEW_TASK hinzu, um den Crash zu verhindern
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
             context.startActivity(intent)
         }
     }
 
+    /** Initialisiert die Activity und setzt das Fullscreen-Layout. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Edge-to-Edge aktivieren
+        // Performance-Monitoring für Trailer-Player
+        PerformanceMonitor.startTimer("trailer_player_startup")
+        PerformanceMonitor.incrementEventCounter("trailer_player_opened")
+
         enableEdgeToEdge()
-
-        // Systemleisten ausblenden für echtes Fullscreen
         hideSystemUi()
-
         val videoUrl = intent.getStringExtra(EXTRA_VIDEO_URL) ?: ""
         val videoTitle = intent.getStringExtra(EXTRA_VIDEO_TITLE) ?: "Trailer"
+
+        // Analytics-Tracking für Trailer-Player
+        AppAnalytics.trackEvent(
+            "trailer_player_opened",
+            mapOf("video_title" to videoTitle, "video_url_length" to videoUrl.length)
+        )
 
         setContent {
             MyAppTheme {
@@ -61,6 +84,12 @@ class TrailerPlayerActivity : ComponentActivity() {
                     videoUrl = videoUrl,
                     videoTitle = videoTitle,
                     onClose = {
+                        val startupDuration =
+                            PerformanceMonitor.endTimer("trailer_player_startup")
+                        PerformanceMonitor.trackUiRendering(
+                            "TrailerPlayerActivity",
+                            startupDuration
+                        )
                         releasePlayer()
                         finish()
                     }
@@ -90,6 +119,7 @@ class TrailerPlayerActivity : ComponentActivity() {
         releasePlayer()
     }
 
+    /** Blendet die Systemleisten für echtes Fullscreen aus. */
     private fun hideSystemUi() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).let { controller ->
@@ -99,6 +129,7 @@ class TrailerPlayerActivity : ComponentActivity() {
         }
     }
 
+    /** Gibt den ExoPlayer frei und räumt Ressourcen auf. */
     private fun releasePlayer() {
         player?.let { exoPlayer ->
             try {
@@ -106,51 +137,181 @@ class TrailerPlayerActivity : ComponentActivity() {
                 exoPlayer.clearMediaItems()
                 exoPlayer.release()
             } catch (_: Exception) {
-                // Ignoriere Fehler beim Release
+                // Fehler beim Release ignorieren
             }
         }
         player = null
     }
 
+    /**
+     * Zeigt den Trailer-Player im Fullscreen an.
+     *
+     * @param videoUrl Die URL des Videos
+     * @param videoTitle Der Titel des Videos
+     * @param onClose Callback zum Schließen des Players
+     */
     @Composable
     private fun TrailerPlayerScreen(
         videoUrl: String,
         videoTitle: String,
         onClose: () -> Unit,
     ) {
+        var playbackError by remember { mutableStateOf<String?>(null) }
+        var retryKey by remember { mutableIntStateOf(0) }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-        ) {
-            // ExoPlayer View
-            AndroidView(
-                factory = { ctx ->
-                    PlayerView(ctx).apply {
-                        player = ExoPlayer.Builder(ctx).build().also { exoPlayer ->
-                            player = exoPlayer
-                            val mediaItem = MediaItem.fromUri(videoUrl)
-                            exoPlayer.setMediaItem(mediaItem)
-                            exoPlayer.prepare()
-                            exoPlayer.playWhenReady = true
+        // releasePlayer immer im onDispose aufrufen
+        DisposableEffect(Unit) { onDispose { releasePlayer() } }
 
-                            // Player Event Listener für bessere Kontrolle
-                            exoPlayer.addListener(object : Player.Listener {
-                                override fun onPlaybackStateChanged(playbackState: Int) {
-                                    super.onPlaybackStateChanged(playbackState)
-                                    if (playbackState == Player.STATE_ENDED) {
-                                        // Video beendet - Activity schließen
-                                        finish()
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)) {
+            if (playbackError == null) {
+                AndroidView(
+                    factory = { ctx ->
+                        PlayerView(ctx).apply {
+                            player =
+                                this@TrailerPlayerActivity.player
+                                    ?: ExoPlayer.Builder(ctx).build().also {
+                                            exoPlayer,
+                                        ->
+                                        this@TrailerPlayerActivity.player = exoPlayer
+                                        val mediaItem = MediaItem.fromUri(videoUrl)
+                                        exoPlayer.setMediaItem(mediaItem)
+                                        exoPlayer.prepare()
+                                        exoPlayer.playWhenReady = true
+                                        exoPlayer.addListener(
+                                            object : Player.Listener {
+                                                override fun onPlaybackStateChanged(
+                                                    playbackState: Int,
+                                                ) {
+                                                    super.onPlaybackStateChanged(
+                                                        playbackState
+                                                    )
+                                                    if (playbackState ==
+                                                        Player.STATE_ENDED
+                                                    ) {
+                                                        releasePlayer()
+                                                        finish()
+                                                    }
+                                                }
+
+                                                override fun onPlayerError(
+                                                    error: PlaybackException,
+                                                ) {
+                                                    // Robuste Fehlerbehandlung für
+                                                    // Emulator-Probleme
+                                                    val errorMessage =
+                                                        when {
+                                                            error.errorCode ==
+                                                                    PlaybackException
+                                                                        .ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
+                                                                    error.cause is
+                                                                            java.net.UnknownHostException ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "Unable to resolve host"
+                                                                        ) ==
+                                                                    true -> {
+                                                                "Trailer kann nicht geladen werden. Bitte überprüfe deine Internetverbindung."
+                                                            }
+
+                                                            error.errorCode ==
+                                                                    PlaybackException
+                                                                        .ERROR_CODE_IO_BAD_HTTP_STATUS ||
+                                                                    error.errorCode ==
+                                                                    PlaybackException
+                                                                        .ERROR_CODE_IO_FILE_NOT_FOUND -> {
+                                                                "Trailer ist nicht verfügbar oder wurde entfernt."
+                                                            }
+
+                                                            error.cause?.message
+                                                                ?.contains(
+                                                                    "DRM"
+                                                                ) == true ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "Security level L1"
+                                                                        ) ==
+                                                                    true ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "GoldfishH264Helper"
+                                                                        ) ==
+                                                                    true ||
+                                                                    error.cause
+                                                                        ?.message
+                                                                        ?.contains(
+                                                                            "decodeHeader"
+                                                                        ) ==
+                                                                    true -> {
+                                                                "Trailer kann auf diesem Gerät nicht abgespielt werden (Emulator-Beschränkung)."
+                                                            }
+
+                                                            else -> {
+                                                                "Fehler beim Abspielen des Trailers: ${error.localizedMessage ?: "Unbekannter Fehler"}"
+                                                            }
+                                                        }
+                                                    playbackError = errorMessage
+
+                                                    // Logging für Debugging
+                                                    AppLogger.e(
+                                                        "TrailerPlayer",
+                                                        "Playback error: ${error.errorCode} - ${error.localizedMessage}"
+                                                    )
+
+                                                    // Crashlytics Error Recording
+                                                    CrashlyticsHelper.recordUiError(
+                                                        "TrailerPlayerActivity",
+                                                        "ExoPlayer",
+                                                        "Playback error: ${error.errorCode} - ${error.localizedMessage}"
+                                                    )
+                                                }
+                                            }
+                                        )
                                     }
-                                }
-                            })
                         }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                // Fehleranzeige mit Retry
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Error,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(64.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(R.string.trailer_playback_error),
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(horizontal = 32.dp),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Button(
+                        onClick = {
+                            playbackError = null
+                            retryKey++
+                        }
+                    ) {
+                        Icon(Icons.Default.Refresh, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.action_retry))
                     }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
-
+                }
+            }
             // Schließen Button
             IconButton(
                 onClick = {
@@ -168,7 +329,6 @@ class TrailerPlayerActivity : ComponentActivity() {
                     modifier = Modifier.size(32.dp)
                 )
             }
-
             // Titel (optional)
             if (videoTitle.isNotBlank()) {
                 Text(
@@ -182,4 +342,4 @@ class TrailerPlayerActivity : ComponentActivity() {
             }
         }
     }
-} 
+}

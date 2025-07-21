@@ -8,7 +8,16 @@ import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 
-/** Room Database für die App. Enthält Tabellen für Favoriten und Offline-Cache-Funktionalität. */
+/**
+ * Room-Datenbank für die App. Enthält Tabellen für Favoriten, Wunschliste, Game-Cache und
+ * Detail-Cache. Bietet Zugriff auf alle DAOs und verwaltet Migrationen.
+ *
+ * @constructor Erstellt eine Instanz der GameDatabase
+ * @property favoriteGameDao DAO für Favoriten-Spiele
+ * @property gameCacheDao DAO für gecachte Spiele
+ * @property gameDetailCacheDao DAO für gecachte Spieldetails
+ * @property wishlistGameDao DAO für die Wunschliste
+ */
 @Database(
     entities =
         [
@@ -21,15 +30,29 @@ import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 )
 abstract class GameDatabase : RoomDatabase() {
 
+    /** DAO für Favoriten-Spiele. */
     abstract fun favoriteGameDao(): FavoriteGameDao
+
+    /** DAO für gecachte Spiele. */
     abstract fun gameCacheDao(): GameCacheDao
+
+    /** DAO für gecachte Spieldetails. */
     abstract fun gameDetailCacheDao(): GameDetailCacheDao
+
+    /** DAO für die Wunschliste. */
     abstract fun wishlistGameDao(): WishlistGameDao
 
     companion object {
         @Volatile
         private var INSTANCE: GameDatabase? = null
 
+        /**
+         * Gibt die Singleton-Instanz der Datenbank zurück. Erstellt die Datenbank, falls sie noch
+         * nicht existiert.
+         *
+         * @param context Anwendungskontext
+         * @return Instanz der GameDatabase
+         */
         fun getDatabase(context: Context): GameDatabase {
             return INSTANCE
                 ?: synchronized(this) {
@@ -48,7 +71,7 @@ abstract class GameDatabase : RoomDatabase() {
 
         /**
          * Migration von Version 1 zu Version 2: Fügt die Tabelle wishlist_games hinzu und das
-         * movies Feld zur game_cache Tabelle
+         * movies Feld zur game_cache Tabelle.
          */
         private val MIGRATION_1_2 =
             object : Migration(1, 2) {
@@ -79,7 +102,7 @@ abstract class GameDatabase : RoomDatabase() {
                 }
             }
 
-        /** Migration von Version 2 zu Version 3: Fügt die game_detail_cache Tabelle hinzu */
+        /** Migration von Version 2 zu Version 3: Fügt die game_detail_cache Tabelle hinzu. */
         private val MIGRATION_2_3 =
             object : Migration(2, 3) {
                 override fun migrate(db: SupportSQLiteDatabase) {
@@ -112,7 +135,11 @@ abstract class GameDatabase : RoomDatabase() {
                 }
             }
 
-        /** Löscht die Datenbank und erstellt sie neu. Nützlich bei Migrationsproblemen. */
+        /**
+         * Löscht die Datenbank und erstellt sie neu. Nützlich bei Migrationsproblemen.
+         *
+         * @param context Anwendungskontext
+         */
         fun clearDatabase(context: Context) {
             synchronized(this) {
                 INSTANCE?.close()

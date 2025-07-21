@@ -2,6 +2,7 @@ package de.syntax_institut.androidabschlussprojekt.data.repositories
 
 import android.content.*
 import androidx.paging.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
@@ -12,6 +13,19 @@ import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.flow.*
 
+/**
+ * PagingSource für die Spieleliste.
+ * Lädt Spiele seitenweise aus der API und verwendet einen lokalen Cache als Fallback.
+ *
+ * @param api Instanz der RawgApi für Netzwerkanfragen
+ * @param gameCacheDao DAO für den lokalen Spiele-Cache
+ * @param context Anwendungskontext (für Netzwerkprüfung)
+ * @param query Suchbegriff
+ * @param platforms Plattform-Filter (optional)
+ * @param genres Genre-Filter (optional)
+ * @param ordering Sortierreihenfolge (optional)
+ * @param rating Bewertungsfilter (optional)
+ */
 class GamePagingSource(
     private val api: RawgApi,
     private val gameCacheDao: GameCacheDao,
@@ -22,6 +36,12 @@ class GamePagingSource(
     private val ordering: String?,
     private val rating: Float?,
 ) : PagingSource<Int, Game>() {
+    /**
+     * Lädt eine Seite von Spielen, verwendet Cache als Fallback.
+     *
+     * @param params Paging-Parameter (z.B. Seitengröße, Schlüssel)
+     * @return LoadResult mit einer Seite von Spielen oder einem Fehler
+     */
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Game> {
         val page = params.key ?: 1
         val filterHash = NetworkUtils.createFilterHash(platforms, genres, ordering, rating)
@@ -56,7 +76,7 @@ class GamePagingSource(
                     nextKey = null
                 )
             } else {
-                return LoadResult.Error(Exception("Fehler beim Laden der Spiele: Kein Netzwerk und kein Cache verfügbar"))
+                return LoadResult.Error(Exception(context.getString(R.string.error_games_no_network_cache)))
             }
         }
         // API-Call
@@ -119,7 +139,7 @@ class GamePagingSource(
                         nextKey = null
                     )
                 } else {
-                    LoadResult.Error(Exception("Serverfehler"))
+                    LoadResult.Error(Exception(context.getString(R.string.error_server)))
                 }
             }
         } catch (e: Exception) {
@@ -140,14 +160,19 @@ class GamePagingSource(
             } else {
                 LoadResult.Error(
                     Exception(
-                        // Ursprünglich: ErrorHandler.handleException(e, "Serverfehler")
-                        // Jetzt: Nur einfacher Fehlertext, keine Compose-Funktion!
-                        "Serverfehler: " + (e.localizedMessage ?: "Unbekannter Fehler")
+                        context.getString(R.string.error_server) + ": " + (e.localizedMessage
+                            ?: context.getString(R.string.error_unknown))
                     )
                 )
             }
         }
     }
 
+    /**
+     * Gibt den Schlüssel für das Refresh der PagingSource zurück.
+     *
+     * @param state Aktueller PagingState
+     * @return Immer 1 (erste Seite)
+     */
     override fun getRefreshKey(state: PagingState<Int, Game>): Int? = 1
 }

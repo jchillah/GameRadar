@@ -12,6 +12,28 @@ import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
 
+/**
+ * Zeigt eine horizontale Reihe aktiver Filter als Chips an und ermöglicht das Entfernen einzelner Filter.
+ *
+ * Features:
+ * - Plattform-, Genre-, Bewertungs- und Sortier-Filter als Chips
+ * - Entfernen einzelner Filter per Klick
+ * - "Alle Filter zurücksetzen"-Chip
+ * - Dynamische Anzeige nur bei aktiven Filtern
+ *
+ * @param modifier Modifier für das Layout
+ * @param selectedPlatformIds IDs der ausgewählten Plattformen
+ * @param selectedGenreIds IDs der ausgewählten Genres
+ * @param allPlatforms Liste aller verfügbaren Plattformen
+ * @param allGenres Liste aller verfügbaren Genres
+ * @param rating Mindestbewertung (0 = kein Filter)
+ * @param ordering Sortierreihenfolge (leer = kein Filter)
+ * @param onRemovePlatform Callback zum Entfernen einer Plattform
+ * @param onRemoveGenre Callback zum Entfernen eines Genres
+ * @param onRemoveRating Callback zum Entfernen des Bewertungsfilters
+ * @param onRemoveOrdering Callback zum Entfernen des Sortierfilters
+ * @param onClearAll Callback zum Zurücksetzen aller Filter
+ */
 @Composable
 fun ActiveFiltersRow(
     modifier: Modifier = Modifier,

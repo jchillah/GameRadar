@@ -7,10 +7,11 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.draw.*
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
-import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
 import coil3.compose.*
 import coil3.request.*
@@ -20,6 +21,30 @@ import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.detail.*
 
+/**
+ * Einzelnes Spiel-Item für Listen und Suchergebnisse.
+ *
+ * Features:
+ * - Spielbild mit anpassbarer Qualität und Loading-States
+ * - Spieltitel, Release-Datum und Bewertung
+ * - Favoriten-Status mit Herz-Icon
+ * - Wunschlisten-Status mit Stern-Icon
+ * - Löschen-Button für Favoriten/Wunschliste
+ * - Material3 Card-Design
+ * - Responsive Layout
+ * - Accessibility-Unterstützung
+ * - Crossfade-Animation für Bilder
+ *
+ * @param game Das anzuzeigende Spiel
+ * @param onClick Callback beim Klick auf das Spiel
+ * @param onDelete Optionaler Callback zum Löschen des Spiels
+ * @param imageQuality Qualitätseinstellung für das Spielbild
+ * @param isFavorite Gibt an, ob das Spiel in den Favoriten ist
+ * @param showFavoriteIcon Gibt an, ob das Favoriten-Icon angezeigt werden soll
+ * @param isInWishlist Gibt an, ob das Spiel in der Wunschliste ist
+ * @param onWishlistChanged Optionaler Callback bei Wunschlisten-Änderung
+ * @param showWishlistButton Gibt an, ob der Wunschlisten-Button angezeigt werden soll
+ */
 @Composable
 fun GameItem(
         game: Game,
@@ -36,9 +61,14 @@ fun GameItem(
 
         Card(
                 modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onClick() },
-                elevation = CardDefaults.cardElevation(4.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .clickable { onClick() },
+            elevation = CardDefaults.cardElevation(8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            shape = MaterialTheme.shapes.medium
         ) {
                 Row(
                         modifier = Modifier.padding(16.dp),
@@ -61,17 +91,19 @@ fun GameItem(
                                 contentScale = ContentScale.Crop,
                                 modifier =
                                         Modifier
-                                                .width(160.dp)
-                                                .aspectRatio(16f / 9f)
-                                                .background(
-                                                        MaterialTheme.colorScheme.surfaceVariant
-                                                ),
+                                            .width(120.dp)
+                                            .aspectRatio(16f / 9f)
+                                            .clip(MaterialTheme.shapes.small)
+                                            .background(
+                                                MaterialTheme.colorScheme.surfaceVariant
+                                            ),
                                 loading = {
                                         Box(
                                                 modifier =
                                                         Modifier
-                                                                .width(160.dp)
-                                                                .aspectRatio(16f / 9f),
+                                                            .width(120.dp)
+                                                            .aspectRatio(16f / 9f)
+                                                            .clip(MaterialTheme.shapes.small),
                                                 contentAlignment = Alignment.Center
                                         ) { Loading(modifier = Modifier.size(24.dp)) }
                                 },
@@ -79,12 +111,13 @@ fun GameItem(
                                         Box(
                                                 modifier =
                                                         Modifier
-                                                                .width(160.dp)
-                                                                .aspectRatio(16f / 9f)
-                                                                .background(
-                                                                        MaterialTheme.colorScheme
-                                                                                .surfaceVariant
-                                                                ),
+                                                            .width(120.dp)
+                                                            .aspectRatio(16f / 9f)
+                                                            .clip(MaterialTheme.shapes.small)
+                                                            .background(
+                                                                MaterialTheme.colorScheme
+                                                                    .surfaceVariant
+                                                            ),
                                                 contentAlignment = Alignment.Center
                                         ) {
                                                 Icon(
@@ -102,8 +135,12 @@ fun GameItem(
                         Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                         text = game.title,
-                                        style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
                                 )
+                            Spacer(modifier = Modifier.height(4.dp))
                                 game.releaseDate?.let {
                                         Text(
                                                 text =
@@ -112,108 +149,67 @@ fun GameItem(
                                                                         .game_release_date_search_gameitem,
                                                                 it
                                                         ),
-                                                fontSize = 12.sp
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                 }
+                            Spacer(modifier = Modifier.height(2.dp))
                                 Text(
                                         text =
                                                 stringResource(
                                                         R.string.game_rating_search_gameitem,
                                                         game.rating
                                                 ),
-                                        fontSize = 12.sp
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                         }
 
+                    // Action-Buttons
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         // Herz-Icon für Favoritenstatus
                         if (showFavoriteIcon) {
-                                Icon(
-                                        imageVector =
-                                                if (isFavorite) Icons.Default.Favorite
-                                                else Icons.Default.FavoriteBorder,
-                                        contentDescription =
-                                                if (isFavorite)
-                                                        stringResource(R.string.favorite_marked)
-                                                else stringResource(R.string.favorite_not_marked),
-                                        tint =
-                                                if (isFavorite) MaterialTheme.colorScheme.primary
-                                                else MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.size(28.dp)
-                                )
+                            Icon(
+                                imageVector =
+                                    if (isFavorite) Icons.Default.Favorite
+                                    else Icons.Default.FavoriteBorder,
+                                contentDescription =
+                                    if (isFavorite)
+                                        stringResource(R.string.favorite_marked)
+                                    else stringResource(R.string.favorite_not_marked),
+                                tint =
+                                    if (isFavorite) MaterialTheme.colorScheme.primary
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
                         // Wishlist-Button (Stern)
                         if (showWishlistButton && onWishlistChanged != null) {
-                                WishlistButton(
-                                        isInWishlist = isInWishlist,
-                                        onWishlistChanged = onWishlistChanged,
-                                        modifier = Modifier.size(28.dp)
-                                )
+                            WishlistButton(
+                                isInWishlist = isInWishlist,
+                                onWishlistChanged = onWishlistChanged,
+                                modifier = Modifier.size(24.dp)
+                            )
                         }
                         // Löschen-Button nur anzeigen, wenn onDelete nicht null ist
                         onDelete?.let { deleteFunction ->
-                                IconButton(onClick = { deleteFunction() }) {
-                                        Icon(
-                                                imageVector = Icons.Default.Delete,
-                                                contentDescription =
-                                                        stringResource(R.string.favorite_delete),
-                                                tint = MaterialTheme.colorScheme.error
-                                        )
-                                }
+                            IconButton(
+                                onClick = { deleteFunction() },
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription =
+                                        stringResource(R.string.favorite_delete),
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
                         }
+                    }
                 }
         }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GameItemPreview() {
-        val game =
-                Game(
-                        id = 1,
-                        title = "Sample Game",
-                        releaseDate = "2021-01-01",
-                        rating = 4.5F,
-                        imageUrl = "https://example.com/game_image.jpg",
-                        description = "This is a sample game description.",
-                        slug = "sample-game",
-                        metacritic = 80,
-                        website = "https://example.com",
-                        esrbRating = "E",
-                        genres = listOf("Action", "Adventure"),
-                        platforms = listOf("PC", "PS5"),
-                        developers = listOf("Sample Dev"),
-                        publishers = listOf("Sample Pub"),
-                        tags = listOf("Indie", "Open World"),
-                        screenshots = listOf("https://example.com/screenshot1.jpg"),
-                        stores = listOf("Steam"),
-                        playtime = 15
-                )
-        GameItem(game = game, onClick = {})
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GameItemWithDeletePreview() {
-        val game =
-                Game(
-                        id = 1,
-                        title = "Sample Game",
-                        releaseDate = "2021-01-01",
-                        rating = 4.5F,
-                        imageUrl = "https://example.com/game_image.jpg",
-                        description = "This is a sample game description.",
-                        slug = "sample-game",
-                        metacritic = 80,
-                        website = "https://example.com",
-                        esrbRating = "E",
-                        genres = listOf("Action", "Adventure"),
-                        platforms = listOf("PC", "PS5"),
-                        developers = listOf("Sample Dev"),
-                        publishers = listOf("Sample Pub"),
-                        tags = listOf("Indie", "Open World"),
-                        screenshots = listOf("https://example.com/screenshot1.jpg"),
-                        stores = listOf("Steam"),
-                        playtime = 15
-                )
-        GameItem(game = game, onClick = {}, onDelete = {})
 }

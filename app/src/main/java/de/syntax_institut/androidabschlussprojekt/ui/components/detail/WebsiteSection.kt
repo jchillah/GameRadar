@@ -14,6 +14,19 @@ import androidx.core.net.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.utils.*
 
+/**
+ * Zeigt einen Button zum Öffnen der offiziellen Website eines Spiels oder einen Platzhalter, wenn keine Website vorhanden ist.
+ *
+ * Features:
+ * - Prüft, ob eine gültige Website-URL vorhanden ist
+ * - Öffnet die Website im Browser bei Klick
+ * - Zeigt einen Platzhaltertext und ein Icon, wenn keine Website verfügbar ist
+ * - Analytics-Tracking beim Öffnen der Website
+ *
+ * @param website Die Website-URL des Spiels (kann null oder leer sein)
+ * @param gameId Die ID des Spiels (für Analytics)
+ * @param modifier Modifier für das Layout
+ */
 @Composable
 fun WebsiteSection(website: String?, gameId: Int, modifier: Modifier = Modifier) {
     val context = LocalContext.current

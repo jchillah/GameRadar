@@ -12,6 +12,16 @@ import androidx.compose.ui.unit.*
 import de.syntax_institut.androidabschlussprojekt.R
 
 
+/**
+ * Dialog für die Benutzerbewertung eines Spiels mit Stern-System.
+ *
+ * Zeigt 5 Sterne zur Bewertung an, die interaktiv ausgewählt werden können.
+ * Die Sterne sind golden gefärbt, wenn sie ausgewählt sind.
+ *
+ * @param currentRating Aktuelle Bewertung (0.0 - 5.0)
+ * @param onRatingChanged Callback bei Bewertungsänderung
+ * @param onDismiss Callback beim Schließen des Dialogs
+ */
 @Composable
 fun RatingDialog(
     currentRating: Float,
