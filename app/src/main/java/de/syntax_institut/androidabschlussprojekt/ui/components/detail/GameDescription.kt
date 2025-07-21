@@ -7,7 +7,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.tooling.preview.*
 import androidx.compose.ui.unit.*
-import de.syntax_institut.androidabschlussprojekt.*
+import de.syntax_institut.androidabschlussprojekt.R
 
 /**
  * Zeigt die Beschreibung eines Spiels mit Fallback-Text.
