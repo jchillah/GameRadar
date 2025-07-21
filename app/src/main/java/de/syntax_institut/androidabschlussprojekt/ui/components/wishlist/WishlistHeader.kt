@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common.wishlist
+package de.syntax_institut.androidabschlussprojekt.ui.components.wishlist
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*

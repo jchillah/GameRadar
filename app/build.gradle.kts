@@ -200,8 +200,6 @@ dependencies {
     implementation(libs.media3.ui)
 
     implementation(libs.androidx.lifecycle.process)
-
+    implementation(libs.glide)
 }
-
-
 

@@ -23,7 +23,7 @@ import javax.inject.*
 class GameRepository
 @Inject
 constructor(
-    private val api: RawgApi,
+    val api: RawgApi,
     private val gameCacheDao: GameCacheDao,
     private val gameDetailCacheDao: GameDetailCacheDao,
     private val context: Context,
@@ -281,6 +281,24 @@ constructor(
             .flow
     }
 
+    /**
+     * Lädt eine Liste von Spielen zu einem bestimmten Genre (Name, nicht ID!)
+     * @param genreName Name des Genres (z.B. "Action")
+     * @return Liste von Game-Objekten (max. 20)
+     */
+    suspend fun getGamesByGenre(genreName: String): List<Game> {
+        return try {
+            val response = api.searchGames(genres = genreName, page = 1, pageSize = 20)
+            if (response.isSuccessful) {
+                response.body()?.results?.map { it.toDomain() } ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
     /** Cache verwalten */
     suspend fun clearCache() {
         AppLogger.d("GameRepository", "Lösche gesamten Cache")
@@ -366,7 +384,6 @@ constructor(
                     else -> context.getString(R.string.error_server_code, exception.code())
                 }
             }
-
             is IOException -> context.getString(R.string.error_network_check)
             else -> defaultMessage
         }

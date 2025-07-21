@@ -5,6 +5,7 @@ agp = "8.9.3"
 androidxCoreKtx = "1.13.1"
 coreKtxVersion = "1.12.0"
 firebaseBom = "33.16.0"
+glide = "4.16.0"
 javaxInject = "1"
 koinTestVersion = "3.5.3"
 koinTestJunit4Version = "3.5.3"
@@ -115,6 +116,7 @@ androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 insert-koin-koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinTestJunit4Version" }
 insert-koin-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinTestVersion" }
 javax-inject = { module = "javax.inject:javax.inject", version.ref = "javaxInject" }

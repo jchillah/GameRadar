@@ -16,6 +16,7 @@ import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
 import org.koin.compose.*
+import java.util.*
 import java.util.concurrent.*
 
 /**
@@ -61,6 +62,30 @@ fun AppRoot() {
                 Constants.NEW_GAME_WORKER_NAME,
                 ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
+            )
+            // RecommendationWorker täglich um 10 Uhr
+            val now = Calendar.getInstance()
+            val target =
+                Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 10)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                    if (before(now)) add(Calendar.DAY_OF_YEAR, 1)
+                }
+            val initialDelay = target.timeInMillis - now.timeInMillis
+            val recommendationRequest =
+                PeriodicWorkRequestBuilder<RecommendationWorker>(24, TimeUnit.HOURS)
+                    .setInitialDelay(
+                        initialDelay,
+                        java.util.concurrent.TimeUnit.MILLISECONDS
+                    )
+                    .addTag("RecommendationWorker")
+                    .build()
+            workManager.enqueueUniquePeriodicWork(
+                "RecommendationWorker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                recommendationRequest
             )
         }
     }

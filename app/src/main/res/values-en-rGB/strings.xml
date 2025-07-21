@@ -472,4 +472,7 @@
     <string name="error_games_no_network_cache">Fehler beim Laden der Spiele: Kein Netzwerk und kein Cache verfügbar</string>
     <string name="error_output_stream">Konnte OutputStream nicht öffnen</string>
     <string name="error_input_stream">Konnte InputStream nicht öffnen</string>
+    <string name="notification_channel_recommendation">Recommendations</string>
+    <string name="notification_recommendation_title">Recommendation from genre %1$s</string>
+    <string name="notification_recommendation_text">Our tip for you: %1$s</string>
 </resources>
