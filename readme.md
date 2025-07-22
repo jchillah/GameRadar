@@ -23,7 +23,7 @@
 <p align="center">
   <!-- Optional: Demo Video Button -->
   <a href="https://your-demo-video-link-here" target="_blank" rel="noopener noreferrer" style="text-decoration:none; margin-right: 1rem;">
-    📱 App Demo Video
+    📱 App Demo Video folgt in kürze!
   </a>
 
   <!-- Optional: APK Download Button -->
