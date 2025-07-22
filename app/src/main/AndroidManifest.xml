@@ -36,9 +36,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="myapp"
+                    android:pathPattern="/.*"
                     android:host="game"
-                    android:pathPattern="/.*" />
+                    android:scheme="myapp" />
             </intent-filter>
         </activity>
 

@@ -6,7 +6,7 @@ import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.GameCacheEntity
+import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toDetailCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toGame
@@ -16,24 +16,23 @@ import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
 import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
 import de.syntax_institut.androidabschlussprojekt.utils.*
+import kotlinx.coroutines.flow.*
+import retrofit2.*
 import java.io.*
 import java.net.*
 import javax.inject.*
-import kotlin.collections.emptyList
-import kotlinx.coroutines.flow.*
-import retrofit2.*
 
 class GameRepository
 @Inject
 constructor(
-        val api: RawgApi,
-        private val gameCacheDao: GameCacheDao,
-        private val gameDetailCacheDao: GameDetailCacheDao,
-        private val context: Context,
+    val api: RawgApi,
+    private val gameCacheDao: GameCacheDao,
+    private val gameDetailCacheDao: GameDetailCacheDao,
+    private val context: Context,
 ) {
 
     private val prefs: SharedPreferences =
-            context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
+        context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
 
     private val lastSyncTimeKey = Constants.LAST_SYNC_TIME
 
@@ -63,87 +62,87 @@ constructor(
             AppLogger.d("GameRepository", "Game Detail Response Code: ${gameResponse.code()}")
             AppLogger.d("GameRepository", "Movies Response Code: ${moviesResponse.code()}")
             AppLogger.d(
-                    "GameRepository",
-                    "Screenshots Response Code: ${screenshotsResponse.code()}"
+                "GameRepository",
+                "Screenshots Response Code: ${screenshotsResponse.code()}"
             )
 
             if (gameResponse.isSuccessful) {
                 val gameDto = gameResponse.body()
                 if (gameDto != null) {
                     AppLogger.d(
-                            "GameRepository",
-                            "Game Detail erfolgreich geladen: ${gameDto.name}"
+                        "GameRepository",
+                        "Game Detail erfolgreich geladen: ${gameDto.name}"
                     )
 
                     // Lade Movies, falls verfügbar
                     val movies =
-                            if (moviesResponse.isSuccessful) {
-                                val moviesBody = moviesResponse.body()
-                                AppLogger.d("GameRepository", "Movies Response Body: $moviesBody")
-                                val moviesList =
-                                        moviesBody?.results?.map { it.toDomain() } ?: emptyList()
+                        if (moviesResponse.isSuccessful) {
+                            val moviesBody = moviesResponse.body()
+                            AppLogger.d("GameRepository", "Movies Response Body: $moviesBody")
+                            val moviesList =
+                                moviesBody?.results?.map { it.toDomain() } ?: emptyList()
+                            AppLogger.d(
+                                "GameRepository",
+                                "Movies erfolgreich geladen: ${moviesList.size} Movies"
+                            )
+                            // Logge Details für jedes Movie
+                            moviesList.forEach { movie ->
                                 AppLogger.d(
-                                        "GameRepository",
-                                        "Movies erfolgreich geladen: ${moviesList.size} Movies"
-                                )
-                                // Logge Details für jedes Movie
-                                moviesList.forEach { movie ->
-                                    AppLogger.d(
-                                            "GameRepository",
-                                            "Movie: ${movie.name}, ID: ${movie.id}, Preview: ${
+                                    "GameRepository",
+                                    "Movie: ${movie.name}, ID: ${movie.id}, Preview: ${
                                         movie.preview?.take(
                                             50
                                         )
                                     }..."
-                                    )
-                                }
-                                moviesList
-                            } else {
-                                AppLogger.w(
-                                        "GameRepository",
-                                        "Movies API fehlgeschlagen: ${moviesResponse.code()} - ${moviesResponse.message()}"
                                 )
-                                // Logge Response-Body für Debugging
-                                try {
-                                    val errorBody = moviesResponse.errorBody()?.string()
-                                    AppLogger.w(
-                                            "GameRepository",
-                                            "Movies API Error Body: $errorBody"
-                                    )
-                                } catch (e: Exception) {
-                                    AppLogger.w(
-                                            "GameRepository",
-                                            "Konnte Movies Error Body nicht lesen: ${e.message}"
-                                    )
-                                }
-                                emptyList()
                             }
+                            moviesList
+                        } else {
+                            AppLogger.w(
+                                "GameRepository",
+                                "Movies API fehlgeschlagen: ${moviesResponse.code()} - ${moviesResponse.message()}"
+                            )
+                            // Logge Response-Body für Debugging
+                            try {
+                                val errorBody = moviesResponse.errorBody()?.string()
+                                AppLogger.w(
+                                    "GameRepository",
+                                    "Movies API Error Body: $errorBody"
+                                )
+                            } catch (e: Exception) {
+                                AppLogger.w(
+                                    "GameRepository",
+                                    "Konnte Movies Error Body nicht lesen: ${e.message}"
+                                )
+                            }
+                            emptyList()
+                        }
 
                     // Lade Screenshots, falls verfügbar
                     val screenshots =
-                            if (screenshotsResponse.isSuccessful) {
-                                val screenshotsBody = screenshotsResponse.body()
-                                val screenshotsList =
-                                        screenshotsBody?.results?.map { it.image } ?: emptyList()
-                                AppLogger.d(
+                        if (screenshotsResponse.isSuccessful) {
+                            val screenshotsBody = screenshotsResponse.body()
+                            val screenshotsList =
+                                screenshotsBody?.results?.map { it.image } ?: emptyList()
+                            AppLogger.d(
+                                "GameRepository",
+                                "Screenshots erfolgreich geladen: ${screenshotsList.size} Screenshots"
+                            )
+                            screenshotsList
+                        } else {
+                            AppLogger.w(
                                         "GameRepository",
-                                        "Screenshots erfolgreich geladen: ${screenshotsList.size} Screenshots"
-                                )
-                                screenshotsList
-                            } else {
-                                AppLogger.w(
-                                        "GameRepository",
-                                        "Screenshots API fehlgeschlagen: ${screenshotsResponse.code()} - ${screenshotsResponse.message()}"
-                                )
-                                emptyList()
-                            }
+                                "Screenshots API fehlgeschlagen: ${screenshotsResponse.code()} - ${screenshotsResponse.message()}"
+                            )
+                            emptyList()
+                        }
 
                     // Logge Fallback-Screenshots
                     val fallbackScreenshots =
-                            gameDto.shortScreenshots?.map { it.image } ?: emptyList()
+                        gameDto.shortScreenshots?.map { it.image } ?: emptyList()
                     AppLogger.d(
-                            "GameRepository",
-                            "Fallback Screenshots verfügbar: ${fallbackScreenshots.size}"
+                        "GameRepository",
+                        "Fallback Screenshots verfügbar: ${fallbackScreenshots.size}"
                     )
 
                     // Kombiniere Spieldaten mit Movies und Screenshots
@@ -151,11 +150,11 @@ constructor(
 
                     AppLogger.d(
                             "GameRepository",
-                            "Finale Screenshots: ${finalScreenshots.size}, Finale Movies: ${movies.size}"
+                        "Finale Screenshots: ${finalScreenshots.size}, Finale Movies: ${movies.size}"
                     )
 
                     val game =
-                            gameDto.toDomain().copy(movies = movies, screenshots = finalScreenshots)
+                        gameDto.toDomain().copy(movies = movies, screenshots = finalScreenshots)
 
                     // Cache das Spiel
                     gameDetailCacheDao.insertGameDetail(game.toDetailCacheEntity())
@@ -168,8 +167,8 @@ constructor(
                     Resource.Success(game)
                 } else {
                     AppLogger.e(
-                            "GameRepository",
-                            "Game Detail Response Body ist null für Game ID: $gameId"
+                        "GameRepository",
+                        "Game Detail Response Body ist null für Game ID: $gameId"
                     )
                     PerformanceMonitor.trackApiCall("game_detail", 0, false, 0)
                     PerformanceMonitor.incrementEventCounter("game_detail_empty_response")
@@ -177,10 +176,10 @@ constructor(
                 }
             } else {
                 val errorMessage =
-                        ErrorHandler.handle(HttpException(gameResponse), "GameRepository")
+                    ErrorHandler.handle(HttpException(gameResponse), "GameRepository")
                 AppLogger.e(
                         "GameRepository",
-                        "Game Detail API fehlgeschlagen: ${gameResponse.code()} - ${gameResponse.message()}"
+                    "Game Detail API fehlgeschlagen: ${gameResponse.code()} - ${gameResponse.message()}"
                 )
                 PerformanceMonitor.trackApiCall("game_detail", 0, false, 0)
                 PerformanceMonitor.incrementEventCounter("game_detail_http_error")
@@ -189,9 +188,9 @@ constructor(
         } catch (e: Exception) {
             val errorMessage = ErrorHandler.handle(e, "GameRepository")
             AppLogger.e(
-                    "GameRepository",
-                    "Exception beim Laden der Spieldetails für Game ID: $gameId",
-                    e
+                "GameRepository",
+                "Exception beim Laden der Spieldetails für Game ID: $gameId",
+                e
             )
             PerformanceMonitor.trackApiCall("game_detail", 0, false, 0)
             PerformanceMonitor.incrementEventCounter("game_detail_exception")
@@ -207,9 +206,9 @@ constructor(
             if (response.isSuccessful) {
                 response.body()?.let { platformResponse ->
                     val platforms =
-                            platformResponse.platforms.map { platformDto ->
-                                Platform(id = platformDto.id, name = platformDto.name)
-                            }
+                        platformResponse.platforms.map { platformDto ->
+                            Platform(id = platformDto.id, name = platformDto.name)
+                        }
                     CrashlyticsHelper.setCustomKey("platforms_count", platforms.size)
                     return Resource.Success(platforms)
                 }
@@ -217,13 +216,13 @@ constructor(
             } else {
                 CrashlyticsHelper.setCustomKey("platforms_error_code", response.code())
                 return Resource.Error(
-                        context.getString(R.string.error_platforms_api, response.code())
+                    context.getString(R.string.error_platforms_api, response.code())
                 )
             }
         } catch (e: Exception) {
             CrashlyticsHelper.setCustomKey("platforms_exception", e.javaClass.simpleName)
             return Resource.Error(
-                    handleException(e, context.getString(R.string.error_network_check))
+                handleException(e, context.getString(R.string.error_network_check))
             )
         } finally {
             PerformanceMonitor.endTimer("api_getPlatforms")
@@ -238,9 +237,9 @@ constructor(
             if (response.isSuccessful) {
                 response.body()?.let { genreResponse ->
                     val genres =
-                            genreResponse.genres.map { genreDto ->
-                                Genre(id = genreDto.id, name = genreDto.name)
-                            }
+                        genreResponse.genres.map { genreDto ->
+                            Genre(id = genreDto.id, name = genreDto.name)
+                        }
                     CrashlyticsHelper.setCustomKey("genres_count", genres.size)
                     return Resource.Success(genres)
                 }
@@ -252,7 +251,7 @@ constructor(
         } catch (e: Exception) {
             CrashlyticsHelper.setCustomKey("genres_exception", e.javaClass.simpleName)
             return Resource.Error(
-                    handleException(e, context.getString(R.string.error_network_check))
+                handleException(e, context.getString(R.string.error_network_check))
             )
         } finally {
             PerformanceMonitor.endTimer("api_getGenres")
@@ -260,28 +259,28 @@ constructor(
     }
 
     fun getPagedGames(
-            query: String,
-            platforms: String? = null,
-            genres: String? = null,
-            ordering: String? = null,
-            rating: Float? = null,
+        query: String,
+        platforms: String? = null,
+        genres: String? = null,
+        ordering: String? = null,
+        rating: Float? = null,
     ): Flow<PagingData<Game>> {
         return Pager(
-                        config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-                        pagingSourceFactory = {
-                            GamePagingSource(
-                                    api,
-                                    gameCacheDao,
-                                    context,
-                                    query,
-                                    platforms,
-                                    genres,
-                                    ordering,
-                                    rating
-                            )
-                        }
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = {
+                GamePagingSource(
+                    api,
+                    gameCacheDao,
+                    context,
+                    query,
+                    platforms,
+                    genres,
+                    ordering,
+                    rating
                 )
-                .flow
+            }
+        )
+            .flow
     }
 
     /**
@@ -339,9 +338,9 @@ constructor(
 
             // Crashlytics Error Recording
             CrashlyticsHelper.recordCacheError(
-                    "optimize_cache",
-                    gameCacheDao.getCacheSize(),
-                    e.message ?: "Unknown error"
+                "optimize_cache",
+                gameCacheDao.getCacheSize(),
+                e.message ?: "Unknown error"
             )
         }
     }
@@ -392,8 +391,8 @@ constructor(
      * alle neuen Spiele zurück und aktualisiert die gespeicherten Werte.
      */
     suspend fun checkForNewGamesAndUpdatePrefs(
-            prefs: SharedPreferences,
-            count: Int = 10,
+        prefs: SharedPreferences,
+        count: Int = 10,
     ): List<Game> {
         return checkForNewGamesAndUpdatePrefs(api, prefs, count)
     }

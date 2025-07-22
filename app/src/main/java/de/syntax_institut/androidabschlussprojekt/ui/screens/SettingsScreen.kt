@@ -123,13 +123,17 @@ fun SettingsScreen(
         }
 
         Column(
-                modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                modifier = modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
                 // Loading-Indikator wenn Einstellungen geladen werden
                 if (settingsState.isLoading) {
                         Box(
-                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
                                 contentAlignment = Alignment.Center
                         ) { CircularProgressIndicator() }
                 }
@@ -137,7 +141,9 @@ fun SettingsScreen(
                 // Error-Anzeige wenn Fehler aufgetreten sind
                 settingsState.error?.let { error ->
                         Card(
-                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
                                 colors =
                                         CardDefaults.cardColors(
                                                 containerColor =
@@ -155,7 +161,8 @@ fun SettingsScreen(
                 if (BuildConfig.DEBUG) {
                         Card(
                                 modifier =
-                                        Modifier.fillMaxWidth()
+                                        Modifier
+                                                .fillMaxWidth()
                                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                                 elevation = CardDefaults.cardElevation(4.dp),
                                 colors =
@@ -402,7 +409,9 @@ fun SettingsScreen(
                                                 containerColor = MaterialTheme.colorScheme.error,
                                                 contentColor = MaterialTheme.colorScheme.onError
                                         ),
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                                modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp)
                         ) {
                                 Icon(
                                         imageVector = Icons.Default.Restore,

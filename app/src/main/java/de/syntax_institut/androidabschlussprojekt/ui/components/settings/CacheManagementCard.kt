@@ -138,7 +138,9 @@ fun CacheManagementCard(
                                 Spacer(modifier = Modifier.height(4.dp))
                                 LinearProgressIndicator(
                                         progress = { settingsState.cacheUsagePercentage / 100f },
-                                        modifier = Modifier.fillMaxWidth().height(8.dp),
+                                        modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(8.dp),
                                         color =
                                                 if (settingsState.isCacheFull)
                                                         MaterialTheme.colorScheme.error
