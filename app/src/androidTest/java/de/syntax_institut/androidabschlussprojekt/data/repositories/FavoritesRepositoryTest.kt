@@ -40,7 +40,6 @@ class FavoritesRepositoryTest {
                         api = mockk(),
                         gameCacheDao = mockk(),
                         context = ApplicationProvider.getApplicationContext(),
-                        favoriteGameDao = mockk(),
                         gameDetailCacheDao = mockk()
                     )
             )

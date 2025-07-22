@@ -1,6 +1,47 @@
-# GameRadar  <img src="img/app_icon.png" width="750" />
+<!-- Projekt-Badges oben -->
+<p align="center">
+  <img src="img/app_icon.png" width="150" alt="GameRadar App Icon" />
+</p>
 
+<h1 align="center" style="font-size: 2.8rem;">🎮 GameRadar 🎮</h1>
 
+<p align="center">
+  <a href="https://developer.android.com" target="_blank" rel="noopener noreferrer">
+    <img alt="Android" src="https://img.shields.io/badge/Platform-Android-green?logo=android" />
+  </a>
+  <a href="https://kotlinlang.org" target="_blank" rel="noopener noreferrer">
+    <img alt="Kotlin" src="https://img.shields.io/badge/Language-Kotlin-7F52FF?logo=kotlin" />
+  </a>
+  <a href="https://developer.android.com/jetpack/compose" target="_blank" rel="noopener noreferrer">
+    <img alt="Jetpack Compose" src="https://img.shields.io/badge/UI-Jetpack%20Compose-6200EE?logo=jetpack-compose" />
+  </a>
+  <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">
+    <img alt="MIT License" src="https://img.shields.io/badge/License-MIT-green" />
+  </a>
+</p>
+
+<p align="center">
+  <!-- Optional: Demo Video Button -->
+  <a href="https://your-demo-video-link-here" target="_blank" rel="noopener noreferrer" style="text-decoration:none; margin-right: 1rem;">
+    📱 App Demo Video
+  </a>
+
+  <!-- Optional: APK Download Button -->
+  <a href="https://your-apk-download-link-here" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+    📦 Download APK
+  </a>
+</p>
+
+<meta name="description" content="GameRadar – Moderne Android-App zur Suche, Verwaltung und Analyse von Videospielen mit RAWG-API, Favoriten, Wunschliste, Filter, Statistiken, Export/Import und Jetpack Compose UI." />
+
+<!-- Open Graph für bessere Vorschau bei Link-Sharing -->
+<meta property="og:title" content="GameRadar – Videospiel-Such-App für Android" />
+<meta property="og:description" content="Suche, favorisiere und analysiere über 350.000 Spiele mit RAWG-API. Modernes UI mit Jetpack Compose, Offline-Cache und mehr." />
+<meta property="og:image" content="https://deine-domain.de/img/app_icon.png" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://deine-domain.de/" />
+
+---
 GameRadar ist eine moderne Android-App zur Suche, Verwaltung und Analyse von Videospielen. Die App
 nutzt die RAWG-API und bietet Favoriten, Wunschliste, Filter, Statistiken, Export/Import und viele
 Einstellungsmöglichkeiten.
