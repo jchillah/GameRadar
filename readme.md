@@ -215,16 +215,11 @@ de.syntax_institut.androidabschlussprojekt
 - [x] Fehlerbehandlung pro Feld (statt global)
 - [x] Logging für Navigation und Fehler
 - [x] Erweiterte Paging-Unterstützung
-- [x] SettingsScreen mit allen wichtigen App-Optionen
-- [x] Firebase-Integration für Sync & Analytics
+- [x] SettingsScreen mit allen wichtigen App-Optionen(noch in Entwicklung)
+- [x] Firebase-Integration für Sync & Analytics(noch in Entwicklung)
 
 ---
 
 ## Lizenz
 
 MIT License – Siehe [LICENSE](LICENSE) für weitere Informationen.
-
-- Android Studio Hedgehog oder neuer
-- Projekt klonen
-- API_KEY in `local.properties` eintragen: `API_KEY=...any key...`
-- Projekt öffnen und auf ein Gerät/Emulator ausführen
