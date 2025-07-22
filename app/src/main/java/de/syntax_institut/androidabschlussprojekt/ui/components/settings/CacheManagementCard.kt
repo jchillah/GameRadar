@@ -50,14 +50,15 @@ fun CacheManagementCard(
         lastSyncTime: Long?,
         onClearCache: () -> Unit,
         onOptimizeCache: () -> Unit = {},
+        onSyncCache: () -> Unit = {},
 ) {
         val settingsViewModel: SettingsViewModel = koinViewModel()
-    val settingsState by settingsViewModel.uiState.collectAsState()
+        val settingsState by settingsViewModel.uiState.collectAsState()
 
-    var isSyncUnlocked by rememberSaveable { mutableStateOf(false) }
+        var isSyncUnlocked by rememberSaveable { mutableStateOf(false) }
         val snackbarHostState = remember { SnackbarHostState() }
         val coroutineScope = rememberCoroutineScope()
-    val rewardedAdSyncRewardText = stringResource(R.string.rewarded_ad_sync_reward_text)
+        val rewardedAdSyncRewardText = stringResource(R.string.rewarded_ad_sync_reward_text)
 
         Card(
                 modifier = modifier.fillMaxWidth(),
@@ -125,52 +126,50 @@ fun CacheManagementCard(
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Text(
-                                            text = "${settingsState.cacheUsagePercentage}%",
+                                                text = "${settingsState.cacheUsagePercentage}%",
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 fontWeight = FontWeight.Medium,
-                                            color =
-                                                if (settingsState.isCacheFull)
-                                                    MaterialTheme.colorScheme.error
-                                                else MaterialTheme.colorScheme.primary
+                                                color =
+                                                        if (settingsState.isCacheFull)
+                                                                MaterialTheme.colorScheme.error
+                                                        else MaterialTheme.colorScheme.primary
                                         )
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 LinearProgressIndicator(
-                                    progress = { settingsState.cacheUsagePercentage / 100f },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(8.dp),
-                                    color =
-                                        if (settingsState.isCacheFull)
-                                            MaterialTheme.colorScheme.error
-                                        else MaterialTheme.colorScheme.primary,
+                                        progress = { settingsState.cacheUsagePercentage / 100f },
+                                        modifier = Modifier.fillMaxWidth().height(8.dp),
+                                        color =
+                                                if (settingsState.isCacheFull)
+                                                        MaterialTheme.colorScheme.error
+                                                else MaterialTheme.colorScheme.primary,
                                         trackColor = MaterialTheme.colorScheme.surfaceVariant
                                 )
 
-                            // Cache-Full-Warnung
-                            if (settingsState.isCacheFull) {
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Warning,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.error,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(
-                                        text =
-                                            stringResource(
-                                                R.string.cache_full_warning
-                                            ),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.error
-                                    )
+                                // Cache-Full-Warnung
+                                if (settingsState.isCacheFull) {
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                                Icon(
+                                                        imageVector = Icons.Default.Warning,
+                                                        contentDescription = null,
+                                                        tint = MaterialTheme.colorScheme.error,
+                                                        modifier = Modifier.size(16.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(4.dp))
+                                                Text(
+                                                        text =
+                                                                stringResource(
+                                                                        R.string.cache_full_warning
+                                                                ),
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.error
+                                                )
+                                        }
                                 }
-                            }
                         }
 
                         // Aktions-Buttons
@@ -180,17 +179,17 @@ fun CacheManagementCard(
                         ) {
                                 OutlinedButton(
                                         onClick = {
-                                            if (isSyncUnlocked) {
-                                                        onOptimizeCache()
+                                                if (isSyncUnlocked) {
+                                                        onSyncCache()
                                                 } else {
                                                         coroutineScope.launch {
                                                                 snackbarHostState.showSnackbar(
-                                                                    rewardedAdSyncRewardText
+                                                                        rewardedAdSyncRewardText
                                                                 )
                                                         }
                                                 }
                                         },
-                                    enabled = isSyncUnlocked,
+                                        enabled = isSyncUnlocked,
                                         modifier = Modifier.weight(1f),
                                         colors =
                                                 ButtonDefaults.outlinedButtonColors(
@@ -205,9 +204,37 @@ fun CacheManagementCard(
                                                 modifier = Modifier.size(16.dp)
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
-                                        Text(stringResource(R.string.sync_favorites))
+                                        Text("Mit API synchronisieren")
                                 }
-
+                                OutlinedButton(
+                                        onClick = {
+                                                if (isSyncUnlocked) {
+                                                        onOptimizeCache()
+                                                } else {
+                                                        coroutineScope.launch {
+                                                                snackbarHostState.showSnackbar(
+                                                                        rewardedAdSyncRewardText
+                                                                )
+                                                        }
+                                                }
+                                        },
+                                        enabled = isSyncUnlocked,
+                                        modifier = Modifier.weight(1f),
+                                        colors =
+                                                ButtonDefaults.outlinedButtonColors(
+                                                        contentColor =
+                                                                MaterialTheme.colorScheme.primary
+                                                )
+                                ) {
+                                        Icon(
+                                                imageVector = Icons.Default.Build,
+                                                contentDescription =
+                                                        stringResource(R.string.optimize_cache),
+                                                modifier = Modifier.size(16.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(stringResource(R.string.optimize_cache))
+                                }
                                 Button(
                                         onClick = onClearCache,
                                         modifier = Modifier.weight(1f),
@@ -230,26 +257,24 @@ fun CacheManagementCard(
                                 }
                         }
 
-                    // Rewarded Ad Buttons für Freischaltung
-                    if (settingsState.adsEnabled) {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            // Rewarded Ad für Synchronisation
-                            RewardedAdButton(
-                                adUnitId = "ca-app-pub-3940256099942544/5224354917",
-                                adsEnabled = settingsState.adsEnabled,
-                                rewardText =
-                                    if (isSyncUnlocked)
-                                        stringResource(
-                                            R.string
-                                                .rewarded_ad_sync_unlocked_text
+                        // Rewarded Ad Buttons für Freischaltung
+                        if (settingsState.adsEnabled) {
+                                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        // Rewarded Ad für Synchronisation
+                                        RewardedAdButton(
+                                                adUnitId = "ca-app-pub-3940256099942544/5224354917",
+                                                adsEnabled = settingsState.adsEnabled,
+                                                rewardText =
+                                                        if (isSyncUnlocked)
+                                                                stringResource(
+                                                                        R.string
+                                                                                .rewarded_ad_sync_unlocked_text
+                                                                )
+                                                        else rewardedAdSyncRewardText,
+                                                onReward = { isSyncUnlocked = true }
                                         )
-                                    else rewardedAdSyncRewardText,
-                                onReward = { isSyncUnlocked = true }
-                            )
-
-
+                                }
                         }
-                    }
 
                         SnackbarHost(hostState = snackbarHostState)
                 }
@@ -312,6 +337,7 @@ fun CacheManagementCardPreview() {
                 maxCacheSize = 100000,
                 lastSyncTime = System.currentTimeMillis(),
                 onClearCache = {},
-                onOptimizeCache = {}
+                onOptimizeCache = {},
+                onSyncCache = {}
         )
 }

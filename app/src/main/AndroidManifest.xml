@@ -19,24 +19,26 @@
         android:theme="@style/Theme.AndroidAbschlussprojekt"
         tools:targetApi="33">
 
-
-    <activity
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AndroidAbschlussprojekt">
+
+            <!-- Launcher Intent: sichtbar im App-Drawer -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
 
+            <!-- Deep-Link Intent -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
+                    android:scheme="myapp"
                     android:host="game"
-                    android:pathPattern="/.*"
-                    android:scheme="myapp" />
+                    android:pathPattern="/.*" />
             </intent-filter>
         </activity>
 
@@ -55,5 +57,4 @@
             android:theme="@style/Theme.AndroidAbschlussprojekt" />
 
     </application>
-
 </manifest>

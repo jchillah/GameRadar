@@ -98,6 +98,7 @@
     <string name="cache_info_text">%1$s</string>
     <string name="cache_info_content_description">Cache-Info</string>
     <string name="sync_favorites">Synchronisieren</string>
+    <string name="sync_with_api">Mit API synchronisieren</string>
     <string name="cache_label">Cache: %1$d/%2$s Spiele</string>
 
     <!-- About Section -->
@@ -475,4 +476,5 @@
     <string name="notification_channel_recommendation">Empfehlungen</string>
     <string name="notification_recommendation_title">Empfehlung aus dem Genre %1$s</string>
     <string name="notification_recommendation_text">Unser Tipp für dich: %1$s</string>
+    <string name="optimize_cache">Cache optimieren</string>
 </resources>

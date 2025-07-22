@@ -123,17 +123,13 @@ fun SettingsScreen(
         }
 
         Column(
-                modifier = modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
                 // Loading-Indikator wenn Einstellungen geladen werden
                 if (settingsState.isLoading) {
                         Box(
-                                modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
                                 contentAlignment = Alignment.Center
                         ) { CircularProgressIndicator() }
                 }
@@ -141,9 +137,7 @@ fun SettingsScreen(
                 // Error-Anzeige wenn Fehler aufgetreten sind
                 settingsState.error?.let { error ->
                         Card(
-                                modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
                                 colors =
                                         CardDefaults.cardColors(
                                                 containerColor =
@@ -161,8 +155,7 @@ fun SettingsScreen(
                 if (BuildConfig.DEBUG) {
                         Card(
                                 modifier =
-                                        Modifier
-                                                .fillMaxWidth()
+                                        Modifier.fillMaxWidth()
                                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                                 elevation = CardDefaults.cardElevation(4.dp),
                                 colors =
@@ -290,6 +283,48 @@ fun SettingsScreen(
                                                 )
                                         }
                                 }
+                        },
+                        onSyncCache = {
+                                coroutineScope.launch {
+                                        try {
+                                                PerformanceMonitor.startTimer(
+                                                        "cache_sync_operation"
+                                                )
+                                                gameRepository.syncCacheWithApi()
+                                                val syncDuration =
+                                                        PerformanceMonitor.endTimer(
+                                                                "cache_sync_operation"
+                                                        )
+                                                PerformanceMonitor.trackCachePerformance(
+                                                        "cache_sync",
+                                                        settingsState.cacheSize,
+                                                        1.0f,
+                                                        syncDuration
+                                                )
+                                                val cacheStats = gameRepository.getCacheStats()
+                                                val lastSyncTime = gameRepository.getLastSyncTime()
+                                                val recommendedMaxSize =
+                                                        CacheUtils
+                                                                .calculateRecommendedMaxCacheSize()
+                                                viewModel.updateCacheStats(
+                                                        cacheSize = cacheStats.count,
+                                                        maxCacheSize = recommendedMaxSize,
+                                                        lastSyncTime = lastSyncTime
+                                                )
+                                                snackbarHostState.showSnackbar(
+                                                        "Cache erfolgreich mit API synchronisiert"
+                                                )
+                                        } catch (e: Exception) {
+                                                viewModel.setError(
+                                                        "Fehler bei der Cache-Synchronisation: ${e.message}"
+                                                )
+                                                PerformanceMonitor.trackApiCall(
+                                                        "cache_sync",
+                                                        0,
+                                                        false
+                                                )
+                                        }
+                                }
                         }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -367,9 +402,7 @@ fun SettingsScreen(
                                                 containerColor = MaterialTheme.colorScheme.error,
                                                 contentColor = MaterialTheme.colorScheme.onError
                                         ),
-                                modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp)
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                         ) {
                                 Icon(
                                         imageVector = Icons.Default.Restore,
