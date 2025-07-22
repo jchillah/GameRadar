@@ -27,7 +27,7 @@
   </a>
 
   <!-- Optional: APK Download Button -->
-  <a href="https://your-apk-download-link-here" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+  <a href="(https://github.com/jchillah/GameRadar/releases/download/<tag>/GameRadar.apk)" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
     📦 Download APK
   </a>
 </p>
@@ -42,6 +42,7 @@
 <meta property="og:url" content="https://deine-domain.de/" />
 
 ---
+
 GameRadar ist eine moderne Android-App zur Suche, Verwaltung und Analyse von Videospielen. Die App
 nutzt die RAWG-API und bietet Favoriten, Wunschliste, Filter, Statistiken, Export/Import und viele
 Einstellungsmöglichkeiten.
