@@ -27,7 +27,7 @@
   </a>
 
   <!-- Optional: APK Download Button -->
-  <a href="(https://github.com/jchillah/GameRadar/releases/download/GameRadarv1.0.0/GameRadar.apk)" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+  <a href="https://github.com/jchillah/GameRadar/releases/download/GameRadarv1.0.0/GameRadar.apk" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
     📦 Download APK
   </a>
 </p>
