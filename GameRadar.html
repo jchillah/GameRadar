@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>GameRadar - Pitch Deck</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 1024px;
+            height: 768px;
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 60px;
+            display: none;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* PowerPoint-style header */
+        .slide-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 60px;
+            color: white;
+        }
+
+        .slide-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .slide-content {
+            margin-top: 80px;
+            height: calc(100% - 80px);
+            padding: 40px 0;
+        }
+
+        /* Title slide specific */
+        .title-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title-slide .logo {
+            font-size: 6rem;
+            margin-bottom: 30px;
+        }
+
+        .title-slide h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .title-slide .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .title-slide .company-info {
+            position: absolute;
+            bottom: 40px;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        /* Content slides */
+        .slide h2 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .slide h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .slide p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        /* Two column layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            height: 100%;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Feature boxes */
+        .feature-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .feature-box h4 {
+            color: #667eea;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .feature-box p {
+            font-size: 1rem;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        /* Stats grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-top: 4px solid #667eea;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        /* Tech stack */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .tech-item {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Bullet points */
+        .bullet-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 25px;
+            margin: 12px 0;
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+
+        .bullet-list li::before {
+            content: "●";
+            color: #667eea;
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        /* Mobile mockups */
+        .mockup-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .phone-mockup {
+            width: 150px;
+            height: 280px;
+            background: #2d3748;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen-header {
+            height: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .screen-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .app-item {
+            height: 25px;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 0.6rem;
+            color: #495057;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Navigation */
+        .slide-nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        /* Problem/Solution layout */
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            height: 100%;
+        }
+
+        .problem-side {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 8px solid #e53e3e;
+        }
+
+        .solution-side {
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 8px solid #38a169;
+        }
+
+        .problem-side h3 {
+            color: #c53030;
+        }
+
+        .solution-side h3 {
+            color: #2f855a;
+        }
+
+        /* Architecture diagram */
+        .arch-diagram {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+        }
+
+        .arch-layer {
+            background: white;
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .arch-layer h4 {
+            color: #667eea;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .arch-layer p {
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .cta-section h3 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .slide {
+                width: 90vw;
+                height: 70vh;
+                padding: 40px;
+            }
+            
+            .slide-header {
+                padding: 0 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px;
+            }
+            
+            .two-column,
+            .problem-solution {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-grid,
+            .tech-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .title-slide h1 {
+                font-size: 2.5rem;
+            }
+            
+            .slide h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="presentation-container">
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">8</span>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active title-slide">
+        <div class="logo">🎮</div>
+        <h1>GameRadar</h1>
+        <div class="subtitle">Die ultimative Gaming-App für Android</div>
+        <div class="company-info">
+            Entwickelt von jchillah • Open Source • MIT License
+        </div>
+    </div>
+
+    <!-- Slide 2: Problem -->
+    <div class="slide">
+        <div class="slide-header">
+            <h1>Das Problem</h1>
+        </div>
+        <div class="slide-content">
+            <div class="problem-solution">
+                <div class="problem-side">
+                    <h3>❌ Aktuelle Herausforderungen</h3>
+                    <ul class="bullet-list">
+                        <li>Gaming-Bibliotheken sind über verschiedene Plattformen verstreut</li>
+                        <li>Keine zentrale Verwaltung von Wunschlisten</li>
+                        <li>Fehlende Offline-Funktionalität</li>
+                        <li>Komplizierte, veraltete Benutzeroberflächen</li>
+                        <li>Mangelnde Personalisierung und Statistiken</li>
+                    </ul>
+                </div>
+                <div class="mockup-container">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="screen-header">Verstreute Apps</div>
+                            <div class="screen-content">
+                                <div class="app-item">Steam</div>
+                                <div class="app-item">Epic Games</div>
+                                <div class="app-item">PlayStation</div>
+                                <div class="app-item">Xbox</div>
+                                <div class="app-item">Origin</div>
+                                <div class="app-item">Uplay</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Solution -->
+    <div class="slide">
+        <div class="slide-header">
+            <h1>Unsere Lösung</h1>
+        </div>
+        <div class="slide-content">
+            <div class="problem-solution">
+                <div class="solution-side">
+                    <h3>✅ GameRadar bietet</h3>
+                    <ul class="bullet-list">
+                        <li>Eine App für 350.000+ Spiele</li>
+                        <li>Intelligente Favoriten- & Wunschlistenverwaltung</li>
+                        <li>Vollständige Offline-Funktionalität</li>
+                        <li>Moderne Jetpack Compose UI</li>
+                        <li>Persönliche Statistiken & Analytics</li>
+                    </ul>
+                </div>
+                <div class="mockup-container">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="screen-header">GameRadar</div>
+                            <div class="screen-content">
+                                <div class="app-item">🔍 350k+ Spiele</div>
+                                <div class="app-item">⭐ Favoriten</div>
+                                <div class="app-item">📊 Statistiken</div>
+                                <div class="app-item">⚡ Offline</div>
+                                <div class="app-item">🌓 Dark Mode</div>
+                                <div class="app-item">📤 Export</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Key Features -->
+    <div class="slide">
+        <div class="slide-header">
+            <h1>Hauptfunktionen</h1>
+        </div>
+        <div class="slide-content">
+            <div class="two-column">
+                <div class="column">
+                    <div class="feature-box">
+                        <h4>🔍 Intelligente Spielsuche</h4>
+                        <p>Durchsuche über 350.000 Spiele mit erweiterten Filtern für Plattform,
+                            Genre, Bewertung und Release-Datum</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>⭐ Favoriten & Wunschliste</h4>
+                        <p>Verwalte deine Lieblingsspiele offline mit Room-Database. Export/Import
+                            als JSON für Backup</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>📱 Modern UI/UX</h4>
+                        <p>Edge-to-Edge Design mit Jetpack Compose, Dark/Light Mode und Material
+                            Design 3</p>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="feature-box">
+                        <h4>📊 Statistiken & Analytics</h4>
+                        <p>Analysiere deine Spielvorlieben mit detaillierten Charts und
+                            personalisierten Empfehlungen</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>⚡ Offline-First</h4>
+                        <p>Alle wichtigen Daten werden lokal gecacht für blitzschnelle Performance
+                            auch ohne Internet</p>
+                    </div>
+                    <div class="feature-box">
+                        <h4>🔧 Erweiterte Einstellungen</h4>
+                        <p>Umfassender Settings-Screen für Design, Sprache, Bildqualität und
+                            Benachrichtigungen</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Technical Architecture -->
+    <div class="slide">
+        <div class="slide-header">
+            <h1>Technische Architektur</h1>
+        </div>
+        <div class="slide-content">
+            <h3>MVVM/MVI Hybrid-Architektur</h3>
+            <div class="arch-diagram">
+                <div class="arch-layer">
+                    <h4>🎨 Presentation Layer</h4>
+                    <p>Jetpack Compose UI, Screens, Components, ViewModels</p>
+                </div>
+                <div class="arch-layer">
+                    <h4>🔄 Domain Layer</h4>
+                    <p>Geschäftslogik, Domain-Modelle, Use Cases</p>
+                </div>
+                <div class="arch-layer">
+                    <h4>📊 Data Layer</h4>
+                    <p>Repository-Pattern, Room (lokal), Retrofit (remote)</p>
+                </div>
+                <div class="arch-layer">
+                    <h4>🔌 Infrastructure</h4>
+                    <p>Dependency Injection (Koin), Navigation, Utils</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Tech Stack -->
+    <div class="slide">
+        <div class="slide-header">
+            <h1>Technologie Stack</h1>
+        </div>
+        <div class="slide-content">
+            <h3>Moderne Android-Entwicklung</h3>
+            <div class="tech-grid">
+                <div class="tech-item">Kotlin</div>
+                <div class="tech-item">Jetpack Compose</div>
+                <div class="tech-item">Room Database</div>
+                <div class="tech-item">Retrofit</div>
+                <div class="tech-item">MVVM/MVI</div>
+                <div class="tech-item">Koin DI</div>
+                <div class="tech-item">Coroutines</div>
+                <div class="tech-item">Navigation</div>
+                <div class="tech-item">Coil</div>
+                <div class="tech-item">Moshi</div>
+                <div class="tech-item">AdMob</div>
+                <div class="tech-item">Firebase</div>
+            </div>
+
+            <div class="two-column" style="margin-top: 40px;">
+                <div class="column">
+                    <h3>🌐 RAWG API Integration</h3>
+                    <ul class="bullet-list">
+                        <li>350.000+ Spiele verfügbar</li>
+                        <li>Erweiterte Filter & Suche</li>
+                        <li>Metacritic Bewertungen</li>
+                        <li>Screenshots & Trailer</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>💾 Offline-Funktionalität</h3>
+                    <ul class="bullet-list">
+                        <li>Room Database für Caching</li>
+                        <li>Favoriten offline verfügbar</li>
+                        <li>JSON Export/Import</li>
+                        <li>Null-Safety & Error Handling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Market & Stats -->
+    <div class="slide">
+        <div class="slide-header">
+            <h1>Zahlen & Fakten</h1>
+        </div>
+        <div class="slide-content">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">350k+</span>
+                    <div class="stat-label">Verfügbare Spiele</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">19</span>
+                    <div class="stat-label">Gaming-Plattformen</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <div class="stat-label">Genres</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <div class="stat-label">Offline-fähig</div>
+                </div>
+            </div>
+
+            <div class="two-column">
+                <div class="column">
+                    <h3>🎯 Zielgruppe</h3>
+                    <ul class="bullet-list">
+                        <li>Gaming-Enthusiasten aller Altersgruppen</li>
+                        <li>Sammler und Organisatoren</li>
+                        <li>Mobile-first Nutzer</li>
+                        <li>Open-Source Community</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>💰 Monetarisierung</h3>
+                    <ul class="bullet-list">
+                        <li>Freemium-Modell mit Pro-Version</li>
+                        <li>Google AdMob Integration</li>
+                        <li>Rewarded Ads für Premium Features</li>
+                        <li>Keine Datenverkäufe oder Tracking</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Call to Action -->
+    <div class="slide">
+        <div class="slide-header">
+            <h1>Bereit loszulegen?</h1>
+        </div>
+        <div class="slide-content">
+            <div class="cta-section">
+                <h3>GameRadar ist jetzt verfügbar!</h3>
+                <p style="font-size: 1.3rem; margin-bottom: 30px;">Open Source, Modern,
+                    Offline-fähig</p>
+                <a class="download-btn"
+                   href="https://github.com/jchillah/GameRadar/releases/download/GameRadarv1.0.0/GameRadar.apk">📦 APK herunterladen</a>
+                <a class="download-btn" href="https://github.com/jchillah/GameRadar">💻 GitHub
+                    Repository</a>
+            </div>
+
+            <div class="two-column" style="margin-top: 40px;">
+                <div class="column">
+                    <h3>🚀 Nächste Schritte</h3>
+                    <ul class="bullet-list">
+                        <li>Play Store Veröffentlichung</li>
+                        <li>Firebase Cloud-Sync</li>
+                        <li>Community Features</li>
+                        <li>iOS Version (React Native)</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>📞 Kontakt</h3>
+                    <ul class="bullet-list">
+                        <li>GitHub: @jchillah</li>
+                        <li>Lizenz: MIT Open Source</li>
+                        <li>Plattform: Android 7.0+</li>
+                        <li>Sprachen: Deutsch, Englisch</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="slide-nav">
+    <button class="nav-btn" onclick="previousSlide()">◀ Zurück</button>
+    <button class="nav-btn primary" onclick="nextSlide()">Weiter ▶</button>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    document.getElementById('total-slides').textContent = totalSlides;
+
+    function showSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (n + totalSlides) % totalSlides;
+        slides[currentSlide].classList.add('active');
+        document.getElementById('current-slide').textContent = currentSlide + 1;
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function previousSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault();
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            previousSlide();
+        }
+    });
+
+    // Touch navigation for mobile
+    let startX = null;
+
+    document.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+    });
+
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('touchend', function(e) {
+        if (startX === null) return;
+
+        const endX = e.changedTouches[0].clientX;
+        const diffX = startX - endX;
+
+        if (Math.abs(diffX) > 50) {
+            if (diffX > 0) {
+                nextSlide();
+            } else {
+                previousSlide();
+            }
+        }
+
+        startX = null;
+    });
+
+    // Auto-advance option (uncomment to enable)
+    // setInterval(nextSlide, 10000); // 10 seconds per slide
+</script>
+</body>
+</html>
