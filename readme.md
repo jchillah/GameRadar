@@ -1,6 +1,6 @@
 <!-- Projekt-Badges oben -->
 <p align="center">
-  <img src="img/app_icon.png" width="150" alt="GameRadar App Icon" />
+  <img src="img/app_icon.png" width="250" alt="GameRadar App Icon" />
 </p>
 
 <h1 align="center" style="font-size: 2.8rem;">🎮 GameRadar 🎮</h1>
