@@ -9,8 +9,10 @@ import androidx.activity.compose.*
 import androidx.activity.result.contract.*
 import androidx.core.content.*
 import androidx.lifecycle.*
+import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.*
+import org.koin.android.ext.android.*
 
 /**
  * Einstiegspunkt der App. Setzt das UI-Root und behandelt Deep Links und Berechtigungen. Optimiert
@@ -29,30 +31,63 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    private val settingsRepository: SettingsRepository by inject()
+    private var currentLanguage: String = "system"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Performance-Monitoring für Activity-Start
         PerformanceMonitor.startTimer("main_activity_startup")
         PerformanceMonitor.incrementEventCounter("main_activity_opened")
 
-        // Systemsprache für LocaleManager verwenden (asynchron)
+        // Set the correct locale based on saved settings
+        lifecycleScope.launch {
+            settingsRepository.language.collect { newLanguage ->
+                if (newLanguage != currentLanguage) {
+                    AppLogger.d(
+                        "MainActivity",
+                        "Language changed from $currentLanguage to $newLanguage"
+                    )
+                    currentLanguage = newLanguage
+
+                    // Update locale and recreate activity
+                    (application as GameRadarApp).updateLocale(this@MainActivity, newLanguage)
+
+                    // Recreate activity to apply language changes
+                    recreate()
+                }
+            }
+        }
+
         lifecycleScope.launch(Dispatchers.IO) {
             val systemLocale = LocaleManager.getSystemLocale(this@MainActivity)
             AppLogger.d("MainActivity", "System locale: ${systemLocale.language}")
+            AppLogger.d("MainActivity", "App language: $currentLanguage")
 
-            // Crashlytics Custom Keys setzen
             CrashlyticsHelper.setCustomKey("main_activity_created", true)
             CrashlyticsHelper.setCustomKey("system_language", systemLocale.language)
+            currentLanguage?.let {
+                CrashlyticsHelper.setCustomKey("app_language", it)
+            }
 
-            // Analytics-Tracking
             AppAnalytics.trackEvent(
                 "main_activity_opened",
-                mapOf("system_language" to systemLocale.language)
+                mapOf(
+                    "system_language" to systemLocale.language,
+                    "app_language" to (currentLanguage ?: "system")
+                )
             )
         }
 
-        // UI sofort setzen, um Frame-Drops zu minimieren
+        // Initial language setup
+        lifecycleScope.launch {
+            val savedLanguage = settingsRepository.language.value
+            if (savedLanguage != "system") {
+                (application as GameRadarApp).updateLocale(this@MainActivity, savedLanguage)
+            }
+            currentLanguage = savedLanguage
+        }
+
         setContent { AppRoot() }
 
         val startupDuration = PerformanceMonitor.endTimer("main_activity_startup")
@@ -71,18 +106,21 @@ class MainActivity : ComponentActivity() {
             when {
                 ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                         PackageManager.PERMISSION_GRANTED -> {
-                    // Berechtigung bereits erteilt
                     AppLogger.d("MainActivity", "Notification-Berechtigung bereits erteilt")
                 }
 
                 shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                    // TODO: Zeige dem Nutzer eine Erklärung, warum die Berechtigung benötigt wird
-                    // Für Demo direkt anfragen:
-                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    android.app.AlertDialog.Builder(this)
+                        .setTitle(R.string.notification_permission_title)
+                        .setMessage(R.string.notification_permission_rationale)
+                        .setPositiveButton(R.string.ok) { e, msg ->
+                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                        .setNegativeButton(R.string.cancel, null)
+                        .show()
                 }
 
                 else -> {
-                    // Direkt anfragen
                     requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }

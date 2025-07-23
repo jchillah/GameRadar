@@ -33,7 +33,8 @@ val repositoryModule = module {
             api = get(),
             gameCacheDao = get(),
             context = get(),
-            gameDetailCacheDao = get()
+            gameDetailCacheDao = get(),
+            favoriteGameDao = get()
         )
     }
     single { FavoritesRepository(get(), get()) }

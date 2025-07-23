@@ -6,27 +6,23 @@ import androidx.paging.*
 import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.local.dao.*
-import de.syntax_institut.androidabschlussprojekt.data.local.entities.*
-import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameCacheMapper.toCacheEntity
+import de.syntax_institut.androidabschlussprojekt.data.local.mapper.FavoriteGameMapper.toGame
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toDetailCacheEntity
 import de.syntax_institut.androidabschlussprojekt.data.local.mapper.GameDetailCacheMapper.toGame
 import de.syntax_institut.androidabschlussprojekt.data.local.models.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.*
 import de.syntax_institut.androidabschlussprojekt.data.remote.mapper.*
 import de.syntax_institut.androidabschlussprojekt.domain.models.*
-import de.syntax_institut.androidabschlussprojekt.domain.models.Platform
 import de.syntax_institut.androidabschlussprojekt.utils.*
 import kotlinx.coroutines.flow.*
-import retrofit2.*
-import java.io.*
-import java.net.*
 import javax.inject.*
 
 class GameRepository
 @Inject
 constructor(
-    val api: RawgApi,
+    private val api: RawgApi,
     private val gameCacheDao: GameCacheDao,
+    private val favoriteGameDao: FavoriteGameDao,
     private val gameDetailCacheDao: GameDetailCacheDao,
     private val context: Context,
 ) {
@@ -34,168 +30,330 @@ constructor(
     private val prefs: SharedPreferences =
         context.getSharedPreferences("game_repo_prefs", Context.MODE_PRIVATE)
 
-    private val lastSyncTimeKey = Constants.LAST_SYNC_TIME
+    private val lastSyncTime = Constants.LAST_SYNC_TIME
 
     suspend fun getGameDetail(gameId: Int): Resource<Game> {
-        return try {
-            PerformanceMonitor.startTimer("game_detail_api_call")
-            AppLogger.d("GameRepository", "Lade Spieldetails für Game ID: $gameId")
+        PerformanceMonitor.startTimer("api_getGameDetail")
+        // Setze Custom Key für besseres Crashlytics-Tracking
+        CrashlyticsHelper.setCustomKey("current_game_id", gameId)
+        CrashlyticsHelper.setCustomKey("operation", "get_game_detail")
 
-            // Prüfe zuerst den Cache
-            val cachedGame = gameDetailCacheDao.getGameDetailById(gameId)
-            if (cachedGame != null) {
-                val game = cachedGame.toGame()
-                val apiDuration = PerformanceMonitor.endTimer("game_detail_api_call")
-                PerformanceMonitor.trackApiCall("game_detail_cache", apiDuration, true, 0)
-                PerformanceMonitor.incrementEventCounter("game_detail_cache_hit")
-                AppLogger.d("GameRepository", "Spieldetails aus Cache geladen für Game ID: $gameId")
-                return Resource.Success(game)
-            }
+        AppLogger.d("GameRepository", "[DEBUG] getGameDetail() aufgerufen für ID: $gameId")
+        AppLogger.i("GameRepository", "getGameDetail() aufgerufen für ID: $gameId")
+        AppLogger.d("GameRepository", "Lade Spieldetails für ID: $gameId")
 
-            // Lade Spieldetails, Movies und Screenshots parallel
-            AppLogger.d("GameRepository", "Starte parallele API-Calls für Game ID: $gameId")
-            val gameResponse = api.getGameDetail(gameId)
-            val moviesResponse = api.getGameMovies(gameId)
-            val screenshotsResponse = api.getGameScreenshots(gameId)
-
-            // Logge Response-Status für alle API-Calls
-            AppLogger.d("GameRepository", "Game Detail Response Code: ${gameResponse.code()}")
-            AppLogger.d("GameRepository", "Movies Response Code: ${moviesResponse.code()}")
+        // NEU: Prüfe zuerst, ob das Spiel ein Favorit ist
+        val favorite = favoriteGameDao.getFavoriteById(gameId)
+        if (favorite != null) {
+            CrashlyticsHelper.setCustomKey("data_source", "favorites")
             AppLogger.d(
                 "GameRepository",
-                "Screenshots Response Code: ${screenshotsResponse.code()}"
+                "[DEBUG] Favorit gefunden für $gameId – lade aus Favoriten-Tabelle"
             )
+            AppLogger.i(
+                "GameRepository",
+                "Favorit gefunden für $gameId – lade aus Favoriten-Tabelle"
+            )
+            PerformanceMonitor.endTimer("api_getGameDetail")
+            return Resource.Success(favorite.toGame())
+        }
 
-            if (gameResponse.isSuccessful) {
-                val gameDto = gameResponse.body()
-                if (gameDto != null) {
-                    AppLogger.d(
-                        "GameRepository",
-                        "Game Detail erfolgreich geladen: ${gameDto.name}"
-                    )
+        // Prüfe zuerst den Detail-Cache
+        val cachedDetail = gameDetailCacheDao.getGameDetailById(gameId)
+        AppLogger.d(
+            "GameRepository",
+            "[DEBUG] cachedDetail: ${cachedDetail != null}, Screenshots: ${cachedDetail?.toGame()?.screenshots?.size ?: 0}"
+        )
+        if (cachedDetail != null && NetworkUtils.isCacheValid(cachedDetail.detailCachedAt)) {
+            CrashlyticsHelper.setCustomKey("data_source", "detail_cache")
+            CrashlyticsHelper.setCustomKey(
+                "cache_age_hours",
+                ((System.currentTimeMillis() - cachedDetail.detailCachedAt) / (1000 * 60 * 60))
+                    .toInt()
+            )
+            AppLogger.d("GameRepository", "[DEBUG] Gültiger Detail-Cache gefunden für $gameId")
+            AppLogger.i("GameRepository", "Gültiger Detail-Cache gefunden für $gameId")
+            val game = cachedDetail.toGame()
+            AppLogger.d("GameRepository", "Gecachte Screenshots: ${game.screenshots.size}")
+            AppLogger.d("GameRepository", "Gecachte Website: '${game.website}'")
+            PerformanceMonitor.endTimer("api_getGameDetail")
+            return Resource.Success(game)
+        }
 
-                    // Lade Movies, falls verfügbar
-                    val movies =
-                        if (moviesResponse.isSuccessful) {
-                            val moviesBody = moviesResponse.body()
-                            AppLogger.d("GameRepository", "Movies Response Body: $moviesBody")
-                            val moviesList =
-                                moviesBody?.results?.map { it.toDomain() } ?: emptyList()
+        // Wenn kein Netzwerk verfügbar und Detail-Cache vorhanden, verwende Cache auch wenn
+        // abgelaufen
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            CrashlyticsHelper.setCustomKey("network_available", false)
+            CrashlyticsHelper.setCustomKey("data_source", "offline_cache")
+            AppLogger.d(
+                "GameRepository",
+                "[DEBUG] Kein Netzwerk, prüfe Offline-Detail-Cache für $gameId"
+            )
+            AppLogger.i("GameRepository", "Kein Netzwerk verfügbar für $gameId")
+            PerformanceMonitor.endTimer("api_getGameDetail")
+            return if (cachedDetail != null) {
+                val game = cachedDetail.toGame()
+                AppLogger.d(
+                    "GameRepository",
+                    "Offline-Detail-Cache Screenshots: ${game.screenshots.size}"
+                )
+                Resource.Success(game)
+            } else {
+                Resource.Error(
+                    "Fehler beim Laden der Screenshots: Kein Netzwerk und kein Cache verfügbar"
+                )
+            }
+        }
+
+        val result =
+            try {
+                CrashlyticsHelper.setCustomKey("data_source", "api")
+                CrashlyticsHelper.setCustomKey("network_available", true)
+                AppLogger.d(
+                    "GameRepository",
+                    "[DEBUG] Starte API-Call für Spieldetails $gameId"
+                )
+                AppLogger.i("GameRepository", "Starte API-Call für Spieldetails $gameId")
+                val resp = api.getGameDetail(gameId)
+
+                if (resp.isSuccessful) {
+                    AppLogger.i("GameRepository", "API-Call erfolgreich für $gameId")
+                    resp.body()?.let { gameDto ->
+                        AppLogger.d(
+                            "GameRepository",
+                            "[DEBUG] API-Response erhalten: ${gameDto.name}"
+                        )
+                        AppLogger.d(
+                            "GameRepository",
+                            "[DEBUG] API-Response Screenshots: ${gameDto.shortScreenshots?.size ?: 0}"
+                        )
+                        AppLogger.d(
+                            "GameRepository",
+                            "API Website: '${gameDto.website}' (Typ: ${if (gameDto.website == null) "null" else "'${gameDto.website}'"})"
+                        )
+                        gameDto.shortScreenshots?.forEachIndexed { index, screenshot ->
                             AppLogger.d(
                                 "GameRepository",
-                                "Movies erfolgreich geladen: ${moviesList.size} Movies"
+                                "API Screenshot $index: ${screenshot.image}"
                             )
-                            // Logge Details für jedes Movie
-                            moviesList.forEach { movie ->
+                        }
+
+                        // Lade Screenshots separat, da sie nicht automatisch mitgeliefert
+                        // werden
+                        val screenshots =
+                            try {
                                 AppLogger.d(
                                     "GameRepository",
-                                    "Movie: ${movie.name}, ID: ${movie.id}, Preview: ${
-                                        movie.preview?.take(
-                                            50
-                                        )
-                                    }..."
+                                    "[DEBUG] Lade separate Screenshots für $gameId"
                                 )
-                            }
-                            moviesList
-                        } else {
-                            AppLogger.w(
-                                "GameRepository",
-                                "Movies API fehlgeschlagen: ${moviesResponse.code()} - ${moviesResponse.message()}"
-                            )
-                            // Logge Response-Body für Debugging
-                            try {
-                                val errorBody = moviesResponse.errorBody()?.string()
-                                AppLogger.w(
+                                val screenshotsResp =
+                                    api.getGameScreenshots(gameId, BuildConfig.API_KEY)
+                                if (screenshotsResp.isSuccessful) {
+                                    val screenshotResponse = screenshotsResp.body()
+                                    screenshotResponse?.results?.map { it.image }
+                                        ?: emptyList()
+                                } else {
+                                    CrashlyticsHelper.setCustomKey(
+                                        "screenshots_error_code",
+                                        screenshotsResp.code()
+                                    )
+                                    AppLogger.w(
+                                        "GameRepository",
+                                        "Fehler beim Laden der Screenshots: ${screenshotsResp.code()}"
+                                    )
+                                    emptyList()
+                                }
+                            } catch (e: Exception) {
+                                CrashlyticsHelper.setCustomKey(
+                                    "screenshots_error",
+                                    e.javaClass.simpleName
+                                )
+                                AppLogger.e(
                                     "GameRepository",
-                                    "Movies API Error Body: $errorBody"
+                                    "[ERROR] Exception beim Laden der Screenshots",
+                                    e
+                                )
+                                emptyList()
+                            }
+
+                        AppLogger.d(
+                            "GameRepository",
+                            "[DEBUG] Separate Screenshots geladen: ${screenshots.size}"
+                        )
+
+                        // Lade Movies/Trailer separat
+                        val movies =
+                            try {
+                                AppLogger.d(
+                                    "GameRepository",
+                                    "[DEBUG] Lade separate Movies für $gameId"
+                                )
+                                val moviesResp =
+                                    api.getGameMovies(gameId, BuildConfig.API_KEY)
+                                if (moviesResp.isSuccessful) {
+                                    val movieResponse = moviesResp.body()
+                                    val movieList =
+                                        movieResponse?.results?.map { it.toDomain() }
+                                            ?: emptyList()
+                                    AppLogger.d(
+                                        "GameRepository",
+                                        "[DEBUG] Movies API Response: ${movieResponse?.count ?: 0} Movies gefunden"
+                                    )
+                                    AppLogger.d(
+                                        "GameRepository",
+                                        "[DEBUG] Movies konvertiert: ${movieList.size} Movies"
+                                    )
+                                    movieList.forEachIndexed { index, movie ->
+                                        AppLogger.d(
+                                            "GameRepository",
+                                            "[DEBUG] Movie $index: ${movie.name} (ID: ${movie.id})"
+                                        )
+                                    }
+                                    movieList
+                                } else {
+                                    CrashlyticsHelper.setCustomKey(
+                                        "movies_error_code",
+                                        moviesResp.code()
+                                    )
+                                    AppLogger.w(
+                                        "GameRepository",
+                                        "Fehler beim Laden der Movies: ${moviesResp.code()}"
+                                    )
+                                    emptyList()
+                                }
+                            } catch (e: Exception) {
+                                CrashlyticsHelper.setCustomKey(
+                                    "movies_error",
+                                    e.javaClass.simpleName
+                                )
+                                AppLogger.e(
+                                    "GameRepository",
+                                    "[ERROR] Exception beim Laden der Movies",
+                                    e
+                                )
+                                emptyList()
+                            }
+
+                        AppLogger.d(
+                            "GameRepository",
+                            "[DEBUG] Separate Movies geladen: ${movies.size}"
+                        )
+
+                        // Prüfe, ob bereits Screenshots und Movies im Detail-Cache vorhanden
+                        // sind
+                        val existingScreenshots =
+                            cachedDetail?.toGame()?.screenshots ?: emptyList()
+                        val existingMovies = cachedDetail?.toGame()?.movies ?: emptyList()
+
+                        val game =
+                            gameDto.toDomain()
+                                .copy(
+                                    screenshots =
+                                        screenshots.ifEmpty {
+                                            existingScreenshots
+                                        },
+                                    movies = movies.ifEmpty { existingMovies }
+                                )
+                        // Cache das Spiel im Detail-Cache
+                        val cachedGame = cachedDetail?.toGame()
+                        val mergedGame =
+                            if (cachedGame != null) {
+                                game.copy(
+                                    screenshots =
+                                        game.screenshots.ifEmpty {
+                                            cachedGame.screenshots
+                                        },
+                                    movies = game.movies.ifEmpty { cachedGame.movies }
+                                )
+                            } else {
+                                game
+                            }
+                        // Nur speichern, wenn sich etwas geändert hat
+                        if (cachedGame == null || mergedGame != cachedGame) {
+                            try {
+                                AppLogger.d(
+                                    "GameRepository",
+                                    "Versuche Detail-Spiel zu cachen: ${mergedGame.title} (ID: ${mergedGame.id})"
+                                )
+                                gameDetailCacheDao.insertGameDetail(
+                                    mergedGame.toDetailCacheEntity()
+                                )
+                                AppLogger.d(
+                                    "GameRepository",
+                                    "Detail-Spiel gecacht: ${mergedGame.title} (ID: ${mergedGame.id})"
                                 )
                             } catch (e: Exception) {
-                                AppLogger.w(
+                                CrashlyticsHelper.setCustomKey(
+                                    "cache_error",
+                                    e.javaClass.simpleName
+                                )
+                                AppLogger.e(
                                     "GameRepository",
-                                    "Konnte Movies Error Body nicht lesen: ${e.message}"
+                                    "Fehler beim Cachen im Detail-Cache: ${e.localizedMessage}",
+                                    e
                                 )
                             }
-                            emptyList()
                         }
-
-                    // Lade Screenshots, falls verfügbar
-                    val screenshots =
-                        if (screenshotsResponse.isSuccessful) {
-                            val screenshotsBody = screenshotsResponse.body()
-                            val screenshotsList =
-                                screenshotsBody?.results?.map { it.image } ?: emptyList()
-                            AppLogger.d(
-                                "GameRepository",
-                                "Screenshots erfolgreich geladen: ${screenshotsList.size} Screenshots"
-                            )
-                            screenshotsList
-                        } else {
-                            AppLogger.w(
-                                        "GameRepository",
-                                "Screenshots API fehlgeschlagen: ${screenshotsResponse.code()} - ${screenshotsResponse.message()}"
-                            )
-                            emptyList()
-                        }
-
-                    // Logge Fallback-Screenshots
-                    val fallbackScreenshots =
-                        gameDto.shortScreenshots?.map { it.image } ?: emptyList()
-                    AppLogger.d(
-                        "GameRepository",
-                        "Fallback Screenshots verfügbar: ${fallbackScreenshots.size}"
-                    )
-
-                    // Kombiniere Spieldaten mit Movies und Screenshots
-                    val finalScreenshots = screenshots.ifEmpty { fallbackScreenshots }
-
-                    AppLogger.d(
+                        AppLogger.i(
                             "GameRepository",
-                        "Finale Screenshots: ${finalScreenshots.size}, Finale Movies: ${movies.size}"
-                    )
+                            "Detail-Spiel wird gecacht: ${mergedGame.screenshots.size} Screenshots für $gameId"
+                        )
 
-                    val game =
-                        gameDto.toDomain().copy(movies = movies, screenshots = finalScreenshots)
-
-                    // Cache das Spiel
-                    gameDetailCacheDao.insertGameDetail(game.toDetailCacheEntity())
-                    AppLogger.d("GameRepository", "Spieldetails gecacht für Game ID: $gameId")
-
-                    val apiDuration = PerformanceMonitor.endTimer("game_detail_api_call")
-                    PerformanceMonitor.trackApiCall("game_detail", apiDuration, true, 0)
-                    PerformanceMonitor.incrementEventCounter("game_detail_success")
-
-                    Resource.Success(game)
+                        Resource.Success(mergedGame)
+                    }
+                        ?: Resource.Error("Leere Antwort von der API")
                 } else {
+                    CrashlyticsHelper.setCustomKey("api_error_code", resp.code())
                     AppLogger.e(
                         "GameRepository",
-                        "Game Detail Response Body ist null für Game ID: $gameId"
+                        "[ERROR] API-Fehler: ${resp.code()} für $gameId"
                     )
-                    PerformanceMonitor.trackApiCall("game_detail", 0, false, 0)
-                    PerformanceMonitor.incrementEventCounter("game_detail_empty_response")
-                    Resource.Error("Spieldaten konnten nicht geladen werden")
+                    AppLogger.i("GameRepository", "API-Fehler: ${resp.code()} für $gameId")
+                    // Fallback auf Detail-Cache wenn API fehlschlägt
+                    if (cachedDetail != null) {
+                        CrashlyticsHelper.setCustomKey("fallback_to_cache", true)
+                        val game = cachedDetail.toGame()
+                        AppLogger.d(
+                            "GameRepository",
+                            "Fallback-Detail-Cache Screenshots: ${game.screenshots.size}"
+                        )
+                        Resource.Success(game)
+                    } else {
+                        Resource.Error(
+                            "Fehler beim Laden der Screenshots: Serverfehler ${resp.code()}"
+                        )
+                    }
                 }
-            } else {
-                val errorMessage =
-                    ErrorHandler.handle(HttpException(gameResponse), "GameRepository")
-                AppLogger.e(
-                        "GameRepository",
-                    "Game Detail API fehlgeschlagen: ${gameResponse.code()} - ${gameResponse.message()}"
+            } catch (e: Exception) {
+                CrashlyticsHelper.setCustomKey("exception_type", e.javaClass.simpleName)
+                CrashlyticsHelper.setCustomKey("exception_message", e.message ?: "Unknown")
+                CrashlyticsHelper.recordException(e)
+                AppLogger.e("GameRepository", "Netzwerkfehler", e)
+                AppLogger.i(
+                    "GameRepository",
+                    "Netzwerkfehler für $gameId: ${e.localizedMessage}"
                 )
-                PerformanceMonitor.trackApiCall("game_detail", 0, false, 0)
-                PerformanceMonitor.incrementEventCounter("game_detail_http_error")
-                Resource.Error(errorMessage)
+                // Fallback auf Detail-Cache bei Netzwerkfehler
+                if (cachedDetail != null) {
+                    CrashlyticsHelper.setCustomKey("fallback_to_cache", true)
+                    val game = cachedDetail.toGame()
+                    AppLogger.d(
+                        "GameRepository",
+                        "Error-Detail-Cache Screenshots: ${game.screenshots.size}"
+                    )
+                    Resource.Success(game)
+                } else {
+                    CrashlyticsHelper.recordException(e)
+                    Resource.Error(
+                        handleException(
+                            e,
+                            "Fehler beim Laden der Screenshots: Netzwerkfehler ${e.localizedMessage}"
+                        )
+                    )
+                }
             }
-        } catch (e: Exception) {
-            val errorMessage = ErrorHandler.handle(e, "GameRepository")
-            AppLogger.e(
-                "GameRepository",
-                "Exception beim Laden der Spieldetails für Game ID: $gameId",
-                e
-            )
-            PerformanceMonitor.trackApiCall("game_detail", 0, false, 0)
-            PerformanceMonitor.incrementEventCounter("game_detail_exception")
-            Resource.Error(errorMessage)
-        }
+        PerformanceMonitor.endTimer("api_getGameDetail")
+        return result
     }
 
     suspend fun getPlatforms(): Resource<List<Platform>> {
@@ -210,23 +368,28 @@ constructor(
                             Platform(id = platformDto.id, name = platformDto.name)
                         }
                     CrashlyticsHelper.setCustomKey("platforms_count", platforms.size)
-                    return Resource.Success(platforms)
-                }
-                return Resource.Error(context.getString(R.string.error_platforms_no_data))
+                    Resource.Success(platforms)
+                } ?: Resource.Error(
+                    "Fehler beim Laden der Plattformen: Keine Plattformdaten verfügbar"
+                )
             } else {
                 CrashlyticsHelper.setCustomKey("platforms_error_code", response.code())
                 return Resource.Error(
-                    context.getString(R.string.error_platforms_api, response.code())
+                    "Fehler beim Laden der Plattformen: API-Fehler ${response.code()}"
                 )
             }
         } catch (e: Exception) {
             CrashlyticsHelper.setCustomKey("platforms_exception", e.javaClass.simpleName)
             return Resource.Error(
-                handleException(e, context.getString(R.string.error_network_check))
+                handleException(
+                    e,
+                    "Fehler beim Laden der Plattformen: Netzwerkfehler ${e.localizedMessage}"
+                )
             )
         } finally {
             PerformanceMonitor.endTimer("api_getPlatforms")
         }
+        return Resource.Success(emptyList())
     }
 
     suspend fun getGenres(): Resource<List<Genre>> {
@@ -241,21 +404,26 @@ constructor(
                             Genre(id = genreDto.id, name = genreDto.name)
                         }
                     CrashlyticsHelper.setCustomKey("genres_count", genres.size)
-                    return Resource.Success(genres)
-                }
-                return Resource.Error(context.getString(R.string.error_genres_no_data))
+                    Resource.Success(genres)
+                } ?: Resource.Error(
+                    "Fehler beim Laden der Genres: Keine Genres verfügbar"
+                )
             } else {
                 CrashlyticsHelper.setCustomKey("genres_error_code", response.code())
-                return Resource.Error(context.getString(R.string.error_genres_api, response.code()))
+                return Resource.Error("Fehler beim Laden der Genres: API-Fehler ${response.code()}")
             }
         } catch (e: Exception) {
             CrashlyticsHelper.setCustomKey("genres_exception", e.javaClass.simpleName)
             return Resource.Error(
-                handleException(e, context.getString(R.string.error_network_check))
+                handleException(
+                    e,
+                    "Fehler beim Laden der Genres: Netzwerkfehler ${e.localizedMessage}"
+                )
             )
         } finally {
             PerformanceMonitor.endTimer("api_getGenres")
         }
+        return Resource.Success(emptyList())
     }
 
     fun getPagedGames(
@@ -283,24 +451,6 @@ constructor(
             .flow
     }
 
-    /**
-     * Lädt eine Liste von Spielen zu einem bestimmten Genre (Name, nicht ID!)
-     * @param genreName Name des Genres (z.B. "Action")
-     * @return Liste von Game-Objekten (max. 20)
-     */
-    suspend fun getGamesByGenre(genreName: String): List<Game> {
-        return try {
-            val response = api.searchGames(genres = genreName, page = 1, pageSize = 20)
-            if (response.isSuccessful) {
-                response.body()?.results?.map { it.toDomain() } ?: emptyList()
-            } else {
-                emptyList()
-            }
-        } catch (_: Exception) {
-            emptyList()
-        }
-    }
-
     /** Cache verwalten */
     suspend fun clearCache() {
         AppLogger.d("GameRepository", "Lösche gesamten Cache")
@@ -313,77 +463,76 @@ constructor(
     }
 
     /**
-     * Cache optimieren - entferne alte Einträge.
-     *
-     * Entfernt abgelaufene Cache-Einträge und aktualisiert die Synchronisationszeit. Behandelt
-     * Fehler mit Crashlytics-Integration für bessere Observability.
-     *
-     * Features:
-     * - Automatische Bereinigung alter Cache-Einträge
-     * - Aktualisierung der letzten Synchronisationszeit
-     * - Robuste Fehlerbehandlung mit Crashlytics
-     * - Logging für Debugging und Monitoring
+     * Gets cache statistics as a map of key-value pairs
+     * @return Map containing cache statistics
      */
-    suspend fun optimizeCache() {
-        try {
-            CrashlyticsHelper.setCustomKey("cache_optimize_attempted", true)
-            CacheUtils.optimizeCache(gameCacheDao)
-            setLastSyncTime(System.currentTimeMillis())
-            CrashlyticsHelper.setCustomKey("cache_optimize_success", true)
-            AppLogger.d("GameRepository", "Cache erfolgreich optimiert")
-        } catch (e: Exception) {
-            CrashlyticsHelper.setCustomKey("cache_optimize_error", true)
-            CrashlyticsHelper.setCustomKey("cache_optimize_exception", e.javaClass.simpleName)
-            AppLogger.e("GameRepository", "Fehler bei der Cache-Optimierung", e)
+    suspend fun getCacheStatsMap(): Map<String, Any> {
+        val stats = getCacheStats()
+        return mapOf(
+            "count" to stats.count,
+            "size" to stats.size,
+            "lastUpdated" to (getLastSyncTime() ?: 0L)
+        )
+    }
 
-            // Crashlytics Error Recording
-            CrashlyticsHelper.recordCacheError(
-                "optimize_cache",
-                gameCacheDao.getCacheSize(),
-                e.message ?: "Unknown error"
-            )
+    /**
+     * Gets games by genre from the API.
+     * @param genre The genre to filter games by
+     * @return List of games matching the genre
+     */
+    suspend fun getGamesByGenre(genre: String): List<Game> {
+        return try {
+            val response = api.searchGames(genres = genre, pageSize = 20, page = 1)
+            response.body()?.results?.map { gameDto -> gameDto.toDomain() } ?: emptyList()
+        } catch (e: Exception) {
+            AppLogger.e("GameRepository", "Error getting games by genre: ${e.message}")
+            emptyList()
         }
     }
 
-    /** Cache-Statistiken abrufen */
+    /** Cache optimieren - entferne alte Einträge */
+    suspend fun optimizeCache() {
+        CacheUtils.optimizeCache(gameCacheDao)
+        setLastSyncTime(System.currentTimeMillis())
+    }
+
+    /**
+     * Get detailed cache statistics including size, last updated, and other metrics.
+     * @return CacheStats object containing detailed cache statistics
+     */
     suspend fun getCacheStats(): CacheStats {
         return CacheUtils.getCacheStats(gameCacheDao)
     }
 
-    /**
-     * Synchronisiert alle Spiele im lokalen Cache mit der RAWG-API. Holt für jedes gespeicherte
-     * Spiel die aktuellen Daten und aktualisiert den Cache. Setzt nach Abschluss die letzte
-     * Sync-Zeit.
-     */
-    suspend fun syncCacheWithApi() {
-        try {
-            val cachedGames: List<GameCacheEntity> =
-                gameCacheDao.getAllCachedGames().firstOrNull() ?: emptyList()
-            for (entity in cachedGames) {
-                val response = api.getGameDetail(entity.id)
-                if (response.isSuccessful) {
-                    val apiGameDto = response.body()
-                    if (apiGameDto != null) {
-                        // Prüfe, ob toCacheEntity Parameter braucht, sonst einfach so:
-                        val updatedEntity = apiGameDto.toDomain().toCacheEntity()
-                        gameCacheDao.insertGame(updatedEntity)
-                    }
-                }
-            }
-            setLastSyncTime(System.currentTimeMillis())
-            AppLogger.d("GameRepository", "Cache erfolgreich mit API synchronisiert")
-        } catch (e: Exception) {
-            AppLogger.e("GameRepository", "Fehler bei Cache-Sync mit API", e)
-        }
-    }
-
     fun getLastSyncTime(): Long? {
-        val value = prefs.getLong(lastSyncTimeKey, -1L)
+        val value = prefs.getLong(lastSyncTime, -1L)
         return if (value > 0) value else null
     }
 
     private fun setLastSyncTime(timestamp: Long) {
-        prefs.edit { putLong(lastSyncTimeKey, timestamp) }
+        prefs.edit { putLong(lastSyncTime, timestamp) }
+    }
+
+    /** Sucht die GameId anhand eines Slugs. Erst im Cache, dann in Favoriten, dann per API. */
+    suspend fun getGameIdBySlug(slug: String): Int? {
+        // 1. Suche im Cache
+        val cachedGames = gameCacheDao.getAllCachedGames().firstOrNull() ?: emptyList()
+        cachedGames.forEach { entity -> if (entity.slug == slug) return entity.id }
+        // 2. Suche in Favoriten
+        val favoriteGames = favoriteGameDao.getAllFavorites().firstOrNull() ?: emptyList()
+        favoriteGames.forEach { entity -> if (entity.slug == slug) return entity.id }
+        // 3. Suche per API (RAWG unterstützt Suche nach Slug nicht direkt, aber als Fallback kann
+        // man die Such-API nutzen)
+        return try {
+            val response = api.searchGames(query = slug)
+            if (response.isSuccessful) {
+                val game = response.body()?.results?.find { it.slug == slug }
+                game?.id
+            } else null
+        } catch (e: Exception) {
+            AppLogger.e("GameRepository", "Fehler beim Suchen der GameId per API", e)
+            null
+        }
     }
 
     /**
@@ -403,17 +552,18 @@ constructor(
      */
     private fun handleException(exception: Exception, defaultMessage: String): String {
         return when (exception) {
-            is UnknownHostException -> context.getString(R.string.error_no_connection)
-            is SocketTimeoutException -> context.getString(R.string.error_timeout)
-            is HttpException -> {
+            is java.net.UnknownHostException -> "Keine Internetverbindung verfügbar"
+            is java.net.SocketTimeoutException -> "Zeitüberschreitung bei der Verbindung"
+            is retrofit2.HttpException -> {
                 when (exception.code()) {
-                    404 -> context.getString(R.string.error_not_found)
-                    500 -> context.getString(R.string.error_server_retry)
-                    503 -> context.getString(R.string.error_service_unavailable)
-                    else -> context.getString(R.string.error_server_code, exception.code())
+                    404 -> "Daten nicht gefunden"
+                    500 -> "Serverfehler - bitte versuchen Sie es später erneut"
+                    503 -> "Service temporär nicht verfügbar"
+                    else -> "Serverfehler (${exception.code()})"
                 }
             }
-            is IOException -> context.getString(R.string.error_network_check)
+
+            is java.io.IOException -> "Netzwerkfehler - überprüfen Sie Ihre Verbindung"
             else -> defaultMessage
         }
     }

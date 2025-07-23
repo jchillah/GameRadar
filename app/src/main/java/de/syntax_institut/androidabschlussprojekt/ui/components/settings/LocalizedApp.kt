@@ -1,4 +1,4 @@
-package de.syntax_institut.androidabschlussprojekt.ui.components.common
+package de.syntax_institut.androidabschlussprojekt.ui.components.settings
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.*

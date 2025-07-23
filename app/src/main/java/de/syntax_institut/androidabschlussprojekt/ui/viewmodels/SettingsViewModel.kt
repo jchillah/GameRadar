@@ -134,28 +134,47 @@ class SettingsViewModel(private val settingsRepository: SettingsRepository) : Vi
     /**
      * Setzt die Spracheinstellung. Aktualisiert sowohl Repository als auch UI-State.
      *
-     * @param lang Die Sprachkennung (z.B. "de", "en")
+     * @param lang Die Sprachkennung ("system", "de", "en")
      */
     fun setLanguage(lang: String) {
-        // Prüfe, ob die Sprache unterstützt wird
-        if (LocaleManager.isLanguageSupported(lang)) {
-            settingsRepository.setLanguage(lang)
-            _uiState.value = _uiState.value.copy(language = lang)
-            CrashlyticsHelper.setCustomKey("app_language", lang)
-            AppLogger.d("SettingsViewModel", "Language set: $lang")
+        viewModelScope.launch {
+            try {
+                // Prüfe, ob die Sprache unterstützt wird
+                if (LocaleManager.isLanguageSupported(lang) || lang == "system") {
+                    // Aktualisiere die Sprache im Repository
+                    settingsRepository.setLanguage(lang)
 
-            // Analytics-Tracking
-            AppAnalytics.trackUserAction("language_setting_changed")
-            AppAnalytics.trackPerformanceMetric("language_code", lang.length, "characters")
+                    // Aktualisiere den UI-State
+                    _uiState.update { it.copy(language = lang) }
 
-            // Logge die Sprachänderung für Debugging
-            AppLogger.i("SettingsViewModel", "Sprache erfolgreich geändert zu: $lang")
-        } else {
-            AppLogger.w("SettingsViewModel", "Unsupported language: $lang")
-            CrashlyticsHelper.setCustomKey("unsupported_language", lang)
+                    // Logging und Tracking
+                    CrashlyticsHelper.setCustomKey("app_language", lang)
+                    AppLogger.d("SettingsViewModel", "Sprache geändert zu: $lang")
 
-            // Error-Tracking
-            AppAnalytics.trackError("Unsupported language: $lang", "SettingsViewModel")
+                    // Analytics-Tracking
+                    AppAnalytics.trackUserAction("language_changed")
+                    AppAnalytics.trackPerformanceMetric("language_code", lang.length, "characters")
+
+                    // Logge die Sprachänderung für Debugging
+                    AppLogger.i("SettingsViewModel", "Sprache erfolgreich geändert zu: $lang")
+
+                    // Update the repository and let the flow handle the emission
+                    settingsRepository.setLanguage(lang)
+                } else {
+                    AppLogger.w("SettingsViewModel", "Unsupported language: $lang")
+                    CrashlyticsHelper.setCustomKey("unsupported_language", lang)
+
+                    // Error-Tracking
+                    AppAnalytics.trackError("Unsupported language: $lang", "SettingsViewModel")
+                }
+            } catch (e: Exception) {
+                AppLogger.e("SettingsViewModel", "Fehler beim Ändern der Sprache", e)
+                CrashlyticsHelper.recordException(e)
+                AppAnalytics.trackError(
+                    "Error changing language: ${e.message}",
+                    "SettingsViewModel"
+                )
+            }
         }
     }
 

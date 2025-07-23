@@ -17,27 +17,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidAbschlussprojekt"
+        tools:replace="android:icon,android:roundIcon"
         tools:targetApi="33">
+
+        <!-- AdMob App-ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-7269049262039376~5468693297" />
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AndroidAbschlussprojekt">
-
-            <!-- Launcher Intent: sichtbar im App-Drawer -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
             <!-- Deep-Link Intent -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:pathPattern="/.*"
                     android:host="game"
+                    android:pathPattern="/.*"
                     android:scheme="myapp" />
             </intent-filter>
         </activity>
@@ -57,4 +64,5 @@
             android:theme="@style/Theme.AndroidAbschlussprojekt" />
 
     </application>
+
 </manifest>

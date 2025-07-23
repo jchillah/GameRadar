@@ -10,7 +10,6 @@ import de.syntax_institut.androidabschlussprojekt.data.*
 import de.syntax_institut.androidabschlussprojekt.data.repositories.*
 import de.syntax_institut.androidabschlussprojekt.navigation.*
 import de.syntax_institut.androidabschlussprojekt.services.*
-import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.settings.*
 import de.syntax_institut.androidabschlussprojekt.ui.theme.*
 import de.syntax_institut.androidabschlussprojekt.utils.*
@@ -78,7 +77,7 @@ fun AppRoot() {
                 PeriodicWorkRequestBuilder<RecommendationWorker>(24, TimeUnit.HOURS)
                     .setInitialDelay(
                         initialDelay,
-                        java.util.concurrent.TimeUnit.MILLISECONDS
+                        TimeUnit.MILLISECONDS
                     )
                     .addTag("RecommendationWorker")
                     .build()

@@ -9,6 +9,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.unit.*
+import de.syntax_institut.androidabschlussprojekt.*
 import de.syntax_institut.androidabschlussprojekt.R
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.*
 import de.syntax_institut.androidabschlussprojekt.ui.components.common.models.*
@@ -30,6 +31,11 @@ fun SectionLanguage(
                 DropdownOption(code, name, Icons.Default.Language)
             }
         }
+
+    // Aktuelle Sprache auswählen
+    val currentLanguageOption = remember(language, languageOptions) {
+        languageOptions.find { it.value == language } ?: languageOptions.first()
+    }
 
     Column(modifier = modifier.padding(16.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -56,20 +62,32 @@ fun SectionLanguage(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Finde die aktuelle Sprache
-        val currentLanguageOption =
-            languageOptions.find { it.value == language } ?: languageOptions.first()
-
         EnhancedDropdown(
             modifier = Modifier.padding(top = 8.dp),
             selectedValue = currentLanguageOption.label,
             onValueChange = { selectedLabel ->
                 // Finde den Sprachcode basierend auf dem ausgewählten Label
-                val selectedCode =
-                    languageOptions.find { it.label == selectedLabel }?.value
-                selectedCode?.let { onLanguageChange(it) }
+                val selectedCode = languageOptions.find { it.label == selectedLabel }?.value
+                selectedCode?.let {
+                    onLanguageChange(it)
+                    // Log zur Überprüfung
+                    android.util.Log.d("LanguageSelection", "Selected language: $it")
+                } ?: android.util.Log.e(
+                    "LanguageSelection",
+                    "No language code found for label: $selectedLabel"
+                )
             },
             options = languageOptions
         )
+
+        // Debug-Text anzeigen (kann später entfernt werden)
+        if (BuildConfig.DEBUG) {
+            Text(
+                text = "Current language code: $language",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.outline,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }

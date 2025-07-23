@@ -102,11 +102,11 @@ class FavoritesViewModel(
     }
 
     fun removeFavorite(context: Context, gameId: Int) {
-        AppLogger.d("FavoritesViewModel", "Entferne Favorit: $gameId")
+        AppLogger.d("FavoritesViewModel", "Entferne Favorit mit ID: $gameId")
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = removeFavoriteUseCase(context, gameId)) {
                 is Resource.Success -> {
-                    AppLogger.d("FavoritesViewModel", "Favorit entfernt: $gameId")
+                    AppLogger.d("FavoritesViewModel", "Favorit mit ID entfernt: $gameId")
                     // Analytics-Tracking
                     AppAnalytics.trackGameInteraction(gameId.toString(), "remove_from_favorites")
                     AppAnalytics.trackUserAction("favorite_removed", gameId)

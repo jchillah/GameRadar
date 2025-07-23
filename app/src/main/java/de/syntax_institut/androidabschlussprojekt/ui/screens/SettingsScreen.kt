@@ -69,12 +69,12 @@ fun SettingsScreen(
 
                 coroutineScope.launch {
                         try {
-                                val cacheStats = gameRepository.getCacheStats()
+                                val cacheStats = gameRepository.getCacheStatsMap()
                                 val lastSyncTime = gameRepository.getLastSyncTime()
                                 val recommendedMaxSize =
                                         CacheUtils.calculateRecommendedMaxCacheSize()
                                 viewModel.updateCacheStats(
-                                        cacheSize = cacheStats.count,
+                                        cacheSize = cacheStats["count"] as? Int ?: 0,
                                         maxCacheSize = recommendedMaxSize,
                                         lastSyncTime = lastSyncTime
                                 )
@@ -82,7 +82,7 @@ fun SettingsScreen(
                                 // Performance-Tracking für Cache-Operationen
                                 PerformanceMonitor.trackCachePerformance(
                                         "cache_stats_retrieval",
-                                        cacheStats.count,
+                                        cacheStats["count"] as? Int ?: 0,
                                         0.0f, // Default hit rate wenn nicht verfügbar
                                         System.currentTimeMillis()
                                 )
@@ -225,13 +225,14 @@ fun SettingsScreen(
                                                         clearDuration
                                                 )
 
-                                                val cacheStats = gameRepository.getCacheStats()
+                                                val cacheStats = gameRepository.getCacheStatsMap()
                                                 val lastSyncTime = gameRepository.getLastSyncTime()
                                                 val recommendedMaxSize =
                                                         CacheUtils
                                                                 .calculateRecommendedMaxCacheSize()
                                                 viewModel.updateCacheStats(
-                                                        cacheSize = cacheStats.count,
+                                                        cacheSize = cacheStats["count"] as? Int
+                                                                ?: 0,
                                                         maxCacheSize = recommendedMaxSize,
                                                         lastSyncTime = lastSyncTime
                                                 )
@@ -269,13 +270,14 @@ fun SettingsScreen(
                                                         optimizeDuration
                                                 )
 
-                                                val cacheStats = gameRepository.getCacheStats()
+                                                val cacheStats = gameRepository.getCacheStatsMap()
                                                 val lastSyncTime = gameRepository.getLastSyncTime()
                                                 val recommendedMaxSize =
                                                         CacheUtils
                                                                 .calculateRecommendedMaxCacheSize()
                                                 viewModel.updateCacheStats(
-                                                        cacheSize = cacheStats.count,
+                                                        cacheSize = cacheStats["count"] as? Int
+                                                                ?: 0,
                                                         maxCacheSize = recommendedMaxSize,
                                                         lastSyncTime = lastSyncTime
                                                 )
@@ -297,7 +299,27 @@ fun SettingsScreen(
                                                 PerformanceMonitor.startTimer(
                                                         "cache_sync_operation"
                                                 )
-                                                gameRepository.syncCacheWithApi()
+                                                // Sync cache by fetching a sample of games to refresh the cache
+                                                coroutineScope.launch {
+                                                        try {
+                                                                // Refresh cache by fetching a page of games
+                                                                // This will update the cache with fresh data
+                                                                val games =
+                                                                        gameRepository.getGamesByGenre(
+                                                                                ""
+                                                                        )
+
+                                                                // If we need to ensure the cache is updated, we can also trigger a refresh
+                                                                // of specific data like platforms and genres
+                                                                gameRepository.getPlatforms()
+                                                                gameRepository.getGenres()
+
+                                                                snackbarHostState.showSnackbar("Cache synchronized successfully")
+                                                        } catch (e: Exception) {
+                                                                // Handle error
+                                                                snackbarHostState.showSnackbar("Failed to sync cache: ${e.message ?: "Unknown error"}")
+                                                        }
+                                                }
                                                 val syncDuration =
                                                         PerformanceMonitor.endTimer(
                                                                 "cache_sync_operation"
@@ -308,13 +330,14 @@ fun SettingsScreen(
                                                         1.0f,
                                                         syncDuration
                                                 )
-                                                val cacheStats = gameRepository.getCacheStats()
+                                                val cacheStats = gameRepository.getCacheStatsMap()
                                                 val lastSyncTime = gameRepository.getLastSyncTime()
                                                 val recommendedMaxSize =
                                                         CacheUtils
                                                                 .calculateRecommendedMaxCacheSize()
                                                 viewModel.updateCacheStats(
-                                                        cacheSize = cacheStats.count,
+                                                        cacheSize = cacheStats["count"] as? Int
+                                                                ?: 0,
                                                         maxCacheSize = recommendedMaxSize,
                                                         lastSyncTime = lastSyncTime
                                                 )
@@ -357,6 +380,7 @@ fun SettingsScreen(
                 // Sprachsektion ausgelagert
                 SettingsSection(title = stringResource(R.string.language_section)) {
                         SectionLanguage(
+                                modifier = modifier,
                                 language = settingsState.language,
                                 onLanguageChange = viewModel::setLanguage
                         )

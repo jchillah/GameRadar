@@ -48,6 +48,8 @@
     <string name="system_language">Systemsprache</string>
 
     <!-- Notifications Section -->
+    <string name="notification_permission_title">Benachrichtigungen aktivieren</string>
+    <string name="notification_permission_rationale">Aktiviere Benachrichtigungen, um über neue Spiele, Updates und Angebote informiert zu werden. Du kannst diese Einstellung jederzeit in den Systemeinstellungen ändern.</string>
     <string name="notifications_section">Benachrichtigungen</string>
     <string name="push_notifications">Push-Benachrichtigungen</string>
     <string name="new_games_updates">Neue Spiele und Updates erhalten</string>
@@ -81,6 +83,9 @@
     <string name="cache_section_tooltip">Verwalte den lokalen Spiele-Cache</string>
     <string name="cache_full_warning">Cache ist fast voll! Bitte leere den Cache oder optimiere ihn.</string>
     <string name="clear_cache">Cache leeren</string>
+    <string name="clear_cache_description">Löscht alle zwischengespeicherten Daten</string>
+    <string name="sync_favorites_description">Favoriten mit API synchronisieren</string>
+    <string name="last_sync">Letzte Synchronisation</string>
     <string name="cache_stat_saved_games">Gespeicherte Spiele</string>
     <string name="cache_stat_storage">Speicherverbrauch</string>
     <string name="cache_stat_last_sync">Letzte Synchronisation</string>
@@ -165,7 +170,7 @@
     <string name="game_metacritic_playtime">Metacritic &amp; Spielzeit</string>
     <string name="game_metacritic_value">Metacritic: %1$d</string>
     <string name="game_playtime_value">Durchschnittliche Spielzeit: %1$d Stunden</string>
-    <string name="game_screenshots">Bildschirmfotos</string>
+    <string name="game_screenshots">Screenshots</string>
     <string name="game_trailers">Trailer</string>
     <string name="game_no_website">Keine Website verfügbar</string>
     <string name="game_playtime">Spielzeit</string>
@@ -296,12 +301,12 @@
     <string name="detail_share_game">Spiel teilen</string>
     <string name="detail_play">Abspielen</string>
     <string name="detail_previous_image">Vorheriges Bild</string>
-    <string name="detail_trailer_default">Video</string>
+    <string name="detail_trailer_default">Trailer</string>
     <string name="detail_no_description">Keine Beschreibung verfügbar.</string>
-    <string name="detail_no_trailers">Für dieses Spiel wurden keine Videos gefunden.</string>
+    <string name="detail_no_trailers">Für dieses Spiel wurden keine Trailer gefunden.</string>
     <string name="detail_trailer_play">Abspielen</string>
-    <string name="detail_screenshot_hint">Tippen Sie auf ein Bildschirmfoto für Vollbildansicht</string>
-    <string name="detail_no_screenshots">Für dieses Spiel wurden keine Bildschirmfotos gefunden.</string>
+    <string name="detail_screenshot_hint">Tippen Sie auf ein Bild für Vollbildansicht</string>
+    <string name="detail_no_screenshots">Für dieses Spiel wurden keine Screenshots gefunden.</string>
     <string name="detail_share_text">Schau dir dieses Spiel an: %1$s</string>
     <string name="detail_share_link">Oder im Browser: %1$s</string>
 
@@ -415,22 +420,21 @@
     <string name="analytics_enabled_description">Erlaube anonyme Nutzungsanalyse zur Verbesserung der App.</string>
     <string name="analytics_always_enabled_description">Analytics ist immer aktiviert, um die App kontinuierlich zu verbessern.</string>
     <string name="ads_section">Werbung</string>
-    <string name="ads_enabled">Werbung anzeigen</string>
     <string name="ads_enabled_description">Erlaube das Anzeigen von Banner-Werbung (AdMob). Unterstützt die Weiterentwicklung der App. Es werden keine personalisierten Daten verwendet.</string>
     <string name="pro_status_active">Pro-Version aktiv – werbefrei</string>
     <string name="pro_status_active_sub">Du unterstützt die Weiterentwicklung und siehst keine Werbung.</string>
     <string name="pro_status_inactive">Pro-Version nicht aktiv</string>
     <string name="pro_status_inactive_sub">Werbung wird angezeigt. Mit Pro-Version genießt du GameRadar werbefrei.</string>
     <string name="pro_status_upgrade">Upgrade</string>
-    <string name="pro_ads_switch_label">Werbung für Pro-User</string>
-    <string name="pro_ads_switch_desc">Pro-User können Werbung freiwillig aktivieren, um das Projekt zu unterstützen.</string>
+    <string name="pro_ads_switch_label">Ads anzeigen</string>
+    <string name="pro_ads_switch_desc">Erlaube Werbung, um die App zu unterstützen (freiwillig, auch als Pro-User).</string>
 
     <!-- Rewarded Ad Belohnungstexte -->
     <string name="rewarded_ad_reward_text">1 Tag werbefrei als Belohnung!</string>
-    <string name="rewarded_ad_favorites_reward_text">Export der Favoriten für diese Sitzung freigeschaltet!</string>
-    <string name="rewarded_ad_wishlist_reward_text">Export der Wunschliste für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_favorites_reward_text">Favoriten-Export freischalten</string>
+    <string name="rewarded_ad_wishlist_reward_text">Wunschlisten-Export freischalten</string>
     <string name="rewarded_ad_detail_reward_text">Exklusive Statistiken freischalten</string>
-    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung für diese Sitzung freigeschaltet!</string>
+    <string name="rewarded_ad_cache_reward_text">Cache-Optimierung freischalten</string>
     <string name="rewarded_ad_sync_reward_text">Synchronisation für diese Sitzung freigeschaltet!</string>
     <string name="rewarded_ad_cache_unlocked_text">Cache-Optimierung bereits freigeschaltet!</string>
     <string name="rewarded_ad_sync_unlocked_text">Synchronisation bereits freigeschaltet!</string>
@@ -447,6 +451,17 @@
 
     <!-- Werbung -->
     <string name="ads_section_tooltip">Hier kannst du Werbung aktivieren oder deaktivieren.</string>
+
+    <!-- AdMob -->
+    <string name="ads_enabled">Aktiviert</string>
+    <string name="ads_disabled">Deaktiviert</string>
+    <string name="watch_ad">Werbung ansehen</string>
+    <string name="ad_failed">Werbung konnte nicht geladen werden</string>
+    <string name="try_again">Erneut versuchen</string>
+    <string name="rewarded_ad_loaded">Belohnung bereit</string>
+    <string name="rewarded_ad_failed">Belohnung nicht verfügbar</string>
+    <string name="rewarded_ad_received">Belohnung erhalten!</string>
+    <string name="rewarded_ad_dismissed">Werbung geschlossen</string>
 
     <!-- Export/Import Sektion -->
     <string name="export_section">Export/Import</string>
@@ -477,4 +492,14 @@
     <string name="notification_recommendation_title">Empfehlung aus dem Genre %1$s</string>
     <string name="notification_recommendation_text">Unser Tipp für dich: %1$s</string>
     <string name="optimize_cache">Cache optimieren</string>
+    <string name="favorites_deleted">Favoriten entfernt</string>
+    <string name="export_success">Favoriten exportiert</string>
+    <string name="export_failed">exportieren der Favoriten fehlgeschlagen</string>
+    <string name="import_success">Favoriten import</string>
+    <string name="import_failed">Favoriten import fehlgeschlagen</string>
+    <string name="wishlist_clear_all_success">löschen erfolgreich</string>
+    <string name="loading_wishlist">Wunschliste wird geladen…</string>
+    <string name="ok">ok</string>
+    <string name="cancel">abbrechen</string>
+    <string name="select_language">Systemsprache</string>
 </resources>

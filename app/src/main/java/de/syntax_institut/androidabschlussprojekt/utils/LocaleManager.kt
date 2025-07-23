@@ -25,37 +25,40 @@ object LocaleManager {
 
     /** Erstellt einen Context mit der angegebenen Sprache. */
     fun createLocalizedContext(context: Context, languageCode: String): Context {
-        return when (languageCode) {
+        AppLogger.d("LocaleManager", "createLocalizedContext called with language: $languageCode")
+
+        val locale = when (languageCode) {
             LANGUAGE_SYSTEM -> {
                 // System: Verwende die Systemsprache
                 val systemLocale = getSystemLocale(context)
-                AppLogger.d(
-                    "LocaleManager",
-                    "Erstelle Context für Systemsprache: ${systemLocale.language}"
-                )
-                updateResources(context, systemLocale)
+                AppLogger.d("LocaleManager", "Verwende Systemsprache: ${systemLocale.language}")
+                systemLocale
             }
-
             LANGUAGE_GERMAN -> {
-                AppLogger.d("LocaleManager", "Erstelle Context für Deutsch")
-                updateResources(context, Locale.GERMAN)
+                AppLogger.d("LocaleManager", "Verwende Deutsch")
+                Locale.GERMAN
             }
-
             LANGUAGE_ENGLISH -> {
-                AppLogger.d("LocaleManager", "Erstelle Context für Englisch")
-                updateResources(context, Locale.ENGLISH)
+                AppLogger.d("LocaleManager", "Verwende Englisch")
+                Locale.ENGLISH
             }
-
             else -> {
                 AppLogger.w("LocaleManager", "Unbekannte Sprache: $languageCode, verwende Standard")
-                context
+                return context
             }
         }
+
+        return updateResources(context, locale)
     }
 
     /** Erhält die Systemsprache des Geräts. */
     fun getSystemLocale(context: Context): Locale {
-        return context.resources.configuration.locales[0]
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.resources.configuration.locales[0]
+        } else {
+            @Suppress("DEPRECATION")
+            context.resources.configuration.locale
+        }
     }
 
     /** Gibt die verfügbaren Sprachen für die UI zurück. */
@@ -68,16 +71,40 @@ object LocaleManager {
         return availableLanguages.containsKey(languageCode)
     }
 
-    /** Aktualisiert die Ressourcen mit der neuen Locale. */
+    /**
+     * Aktualisiert die Ressourcen mit der neuen Locale.
+     * Diese Methode stellt sicher, dass die Sprachänderung sofort wirksam wird.
+     */
     private fun updateResources(context: Context, locale: Locale): Context {
         Locale.setDefault(locale)
 
-        val configuration = Configuration(context.resources.configuration)
-        configuration.setLocales(LocaleList(locale))
+        val resources = context.resources
+        val configuration = Configuration(resources.configuration)
 
-        val localizedContext = context.createConfigurationContext(configuration)
-        AppLogger.d("LocaleManager", "Context erstellt für Locale: ${locale.language}")
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            setSystemLocale(configuration, locale)
+            context.createConfigurationContext(configuration)
+        } else {
+            setSystemLocaleLegacy(configuration, locale)
+            resources.updateConfiguration(
+                configuration,
+                resources.displayMetrics
+            )
+            context
+        }.also {
+            AppLogger.d("LocaleManager", "Locale aktualisiert auf: ${locale.language}")
+        }
+    }
 
-        return localizedContext
+    @Suppress("DEPRECATION")
+    private fun setSystemLocaleLegacy(config: Configuration, locale: Locale) {
+        config.locale = locale
+    }
+
+    private fun setSystemLocale(config: Configuration, locale: Locale) {
+        config.setLocale(locale)
+        val localeList = LocaleList(locale)
+        LocaleList.setDefault(localeList)
+        config.setLocales(localeList)
     }
 }

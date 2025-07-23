@@ -14,10 +14,10 @@ import com.google.firebase.analytics.*
  */
 object AppAnalytics {
     private var analytics: FirebaseAnalytics? = null
-    private var analyticsEnabled: Boolean = false
+    private var analyticsEnabled: Boolean = true
 
     /** Initialisiert das Analytics-Objekt. Im Application-Objekt aufrufen. */
-    fun init(context: Context, enabled: Boolean = false) {
+    fun init(context: Context, enabled: Boolean = true) {
         analytics = FirebaseAnalytics.getInstance(context)
         analyticsEnabled = enabled
     }

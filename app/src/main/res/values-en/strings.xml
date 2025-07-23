@@ -27,13 +27,12 @@
     <string name="favorites_title">My Favorites</string>
     <string name="favorites_empty_title">No Favorites</string>
     <string name="favorites_empty_message">You haven\'t saved any favorites yet.</string>
-    <string name="favorites_empty_offline">You are offline. Your favorites will be shown once you\'re back online.</string>
+    <string name="favorites_empty_offline">You are offline. Your favorites will be displayed once you\'re back online.</string>
     <string name="discover_games">Discover games</string>
     <string name="favorites_export_import">Favorites Export/Import</string>
     <string name="favorites_export">Export favorites list</string>
     <string name="favorites_import">Import favorites list</string>
     <string name="export_import_preview_unavailable">Export/Import not available in preview</string>
-    <string name="favorites_export_filename">favorites_export.json</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>
@@ -42,10 +41,10 @@
     <!-- Language Section -->
     <string name="language_section">Language</string>
     <string name="app_language">App Language</string>
-    <string name="app_language_description">User interface language</string>
-    <string name="language_german">Deutsch</string>
+    <string name="app_language_description">Language of the user interface</string>
+    <string name="language_german">German</string>
     <string name="language_english">English</string>
-    <string name="system_language">System Language</string>
+    <string name="system_language">System language</string>
 
     <!-- Notifications Section -->
     <string name="notifications_section">Notifications</string>
@@ -58,13 +57,13 @@
     <string name="gaming_mode_description">Optimized display for gaming</string>
     <string name="performance_mode">Performance Mode</string>
     <string name="performance_mode_description">Faster loading times</string>
-    <string name="auto_refresh">Auto-Refresh</string>
-    <string name="auto_refresh_description">Automatic data refresh</string>
+    <string name="auto_refresh">Auto Refresh</string>
+    <string name="auto_refresh_description">Automatically refresh data</string>
 
     <!-- Display Section -->
     <string name="display_section">Display</string>
-    <string name="dark_mode">Dark Theme</string>
-    <string name="dark_mode_description">Enable Dark Mode</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="dark_mode_description">Enable dark mode</string>
     <string name="image_quality">Image Quality</string>
     <string name="image_quality_high">High</string>
     <string name="image_quality_medium">Medium</string>
@@ -78,17 +77,11 @@
 
     <!-- Cache Management -->
     <string name="cache_section">Cache Management</string>
-    <string name="cache_section_tooltip">Manage local game cache</string>
     <string name="cache_full_warning">Cache is almost full! Please clear or optimize the cache.</string>
     <string name="clear_cache">Clear Cache</string>
-    <string name="cache_stat_saved_games">Saved Games</string>
-    <string name="cache_stat_storage">Storage Usage</string>
-    <string name="cache_stat_last_sync">Last Sync</string>
-    <string name="cache_stat_today">Today</string>
-    <string name="cache_stat_never">Never</string>
-    <string name="cache_stat_usage">Cache Usage</string>
-
-    <!-- Cache Performance -->
+    <string name="clear_cache_description">Deletes all cached data</string>
+    <string name="sync_favorites_description">Sync favorites with API</string>
+    <string name="last_sync">Last Sync</string>
     <string name="cache_unlimited">∞</string>
     <string name="cache_performance_critical">Performance critical</string>
     <string name="cache_performance_warning">Performance limited</string>
@@ -100,21 +93,29 @@
     <string name="sync_favorites">Synchronize</string>
     <string name="sync_with_api">Sync with API</string>
     <string name="cache_label">Cache: %1$d/%2$s games</string>
+    <!-- CacheManagementCard: Tooltip and Stats -->
+    <string name="cache_section_tooltip">Manage, optimize, and clear the cache here.</string>
+    <string name="cache_stat_saved_games">Saved Games</string>
+    <string name="cache_stat_storage">Storage Usage</string>
+    <string name="cache_stat_last_sync">Last Sync</string>
+    <string name="cache_stat_today">Today</string>
+    <string name="cache_stat_never">Never</string>
+    <string name="cache_stat_usage">Cache Usage</string>
 
     <!-- About Section -->
     <string name="about_section">About the App</string>
     <string name="about_app">About GameRadar</string>
     <string name="about_app_description">Your ultimate gaming database with over 350,000 games from the RAWG API.</string>
     <string name="about_app_features">Features:</string>
-    <string name="about_app_feature_search">🔍 Advanced game search</string>
-    <string name="about_app_feature_favorites">⭐ Favorites management</string>
-    <string name="about_app_feature_offline">📱 Offline cache</string>
-    <string name="about_app_feature_gaming">🎮 Gaming features</string>
+    <string name="about_app_feature_search">🔍 Advanced Game Search</string>
+    <string name="about_app_feature_favorites">⭐ Favorites Management</string>
+    <string name="about_app_feature_offline">📱 Offline Cache</string>
+    <string name="about_app_feature_gaming">🎮 Gaming Features</string>
     <string name="about_app_feature_darkmode">🌙 Dark Mode</string>
     <string name="about_app_community">Developed with ❤️ for the gaming community</string>
     <string name="app_version">Version 1.0.0</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="privacy_policy_description">Read privacy policy</string>
+    <string name="privacy_policy_description">Read the privacy policy</string>
     <string name="contact_support">Contact Support</string>
     <string name="contact_support_description">Send email to support</string>
     <string name="contact_support_subject">GameRadar Support</string>
@@ -123,10 +124,9 @@
     <!-- Database Management -->
     <string name="database_section">Database Management</string>
     <string name="reset_database">Reset Database</string>
-    <string name="reset_database_description">Deletes all favorites and cache data</string>
+    <string name="reset_database_description">Deletes all favorites and cached data</string>
     <string name="reset_database_dialog_title">Reset Database</string>
     <string name="reset_database_dialog_text">Do you really want to delete all favorites and cache data? This action cannot be undone.</string>
-    <!-- Note after database reset that restart is recommended -->
     <string name="reset_database_restart_hint">The app database has been reset. Please restart the app to avoid errors.</string>
 
     <!-- Common Actions -->
@@ -138,17 +138,14 @@
     <string name="action_close">Close</string>
 
     <!-- Error Messages -->
-    <string name="error_unknown">Unknown error</string>
-    <string name="error_network_message">Network error</string>
-    <string name="error_no_connection">No internet connection</string>
+    <string name="error_unknown">Unknown Error</string>
+    <string name="error_network_message">Network Error</string>
+    <string name="error_no_connection">No Internet Connection</string>
     <string name="error_check_connection">Check your connection and try again</string>
     <string name="error_load_data">Error loading data</string>
     <string name="error_save_data">Error saving data</string>
-    <string name="error_card_default_title">Error occurred</string>
+    <string name="error_card_default_title">An error occurred</string>
     <string name="error_game_load_failed">Failed to load game data</string>
-    <string name="error_no_platform_data">No platform data available</string>
-    <string name="error_api">API Error: </string>
-    <string name="error_no_genre_data">No genre data available</string>
 
     <!-- Game Details -->
     <string name="game_header_image">Game header image</string>
@@ -192,33 +189,36 @@
     <string name="time_hours_ago">%1$d hours ago</string>
     <string name="time_days_ago">%1$d days ago</string>
 
+    <!-- Notifications -->
     <string name="notification_new_games_title">New games available!</string>
-    <string name="notification_new_games_text">%1$d new games were found.</string>
+    <string name="notification_new_games_text">%1$d new games found.</string>
     <string name="gaming_features_section">Gaming Features</string>
     <string name="design_section">Design</string>
     <string name="about_app_section">About the App</string>
     <string name="database_management_section">Database Management</string>
     <string name="online_mode">Online Mode</string>
-    <string name="cache_offline_data">Use cached data (%1$d games available)</string>
-    <string name="cache_sync_auto">Data is automatically synchronized</string>
+    <string name="cache_offline_data">Using cached data (%1$d games available)</string>
+    <string name="cache_sync_auto">Data syncs automatically</string>
     <string name="last_sync_time">Last sync: %1$s</string>
-    <string name="privacy_policy_title">GameRadar Privacy Policy</string>
-    <string name="privacy_policy_date">As of: %1$s</string>
-    <string name="privacy_section_1_title">1. Data Collection</string>
-    <string name="privacy_section_1_content">GameRadar only collects data necessary for app functionality. This includes your search queries, favorites, and app settings, which are stored locally on your device.</string>
-    <string name="privacy_section_2_title">2. External Services</string>
-    <string name="privacy_section_2_content">The app uses the RAWG API for game data. This API does not collect personal data from you. All API requests are made anonymously without personal identification.</string>
-    <string name="privacy_section_3_title">3. Local Storage</string>
-    <string name="privacy_section_3_content">Your favorites, search history, and settings are stored exclusively locally on your device. This data is not transmitted to external servers.</string>
-    <string name="privacy_section_4_title">4. Cache Data</string>
-    <string name="privacy_section_4_content">The app stores game data in local cache to improve performance. This data can be deleted at any time via settings.</string>
-    <string name="privacy_section_5_title">5. Analytics</string>
-    <string name="privacy_section_5_content">GameRadar collects anonymous usage data to improve the app. This data contains no personal information and is used only for internal purposes.</string>
-    <string name="privacy_section_6_title">6. Your Rights</string>
-    <string name="privacy_section_6_content">You have the right to delete all your data by using the app settings. All data is stored locally and can be completely removed.</string>
-    <string name="privacy_policy_contact">For privacy questions, contact us at: %1$s</string>
 
-    <!-- Filter/ActiveFiltersRow -->
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_title">GameRadar Privacy Policy</string>
+    <string name="privacy_policy_date">Effective: %1$s</string>
+    <string name="privacy_section_1_title">1. Data Collection</string>
+    <string name="privacy_section_1_content">GameRadar only collects the data necessary for the app\'s functionality. This includes your search queries, favorites, and app settings stored locally on your device.</string>
+    <string name="privacy_section_2_title">2. External Services</string>
+    <string name="privacy_section_2_content">The app uses the RAWG API for game data. This API does not collect any personal data from you. All API requests are made anonymously without personal identification.</string>
+    <string name="privacy_section_3_title">3. Local Storage</string>
+    <string name="privacy_section_3_content">Your favorites, search history, and settings are stored exclusively on your device. This data is not transferred to any external servers.</string>
+    <string name="privacy_section_4_title">4. Cache Data</string>
+    <string name="privacy_section_4_content">The app stores game data in a local cache to improve performance. This data can be deleted anytime via the settings.</string>
+    <string name="privacy_section_5_title">5. Analytics</string>
+    <string name="privacy_section_5_content">GameRadar collects anonymous usage data to improve the app. This data does not include any personal information and is used solely for internal purposes.</string>
+    <string name="privacy_section_6_title">6. Your Rights</string>
+    <string name="privacy_section_6_content">You have the right to delete all your data by using the app settings. All data is stored locally and can be fully removed.</string>
+    <string name="privacy_policy_contact">For privacy-related inquiries, contact us at: %1$s</string>
+
+    <!-- Filters -->
     <string name="filter_remove_platform">Remove platform filter</string>
     <string name="filter_remove_genre">Remove genre filter</string>
     <string name="filter_remove_rating">Remove rating filter</string>
@@ -233,27 +233,27 @@
     <string name="filter_ordering_name_desc">Name (Z-A)</string>
     <string name="filter_reset_all">Reset all filters</string>
 
-    <!-- Filter/FilterBottomSheet -->
+    <!-- Filter Bottom Sheet -->
     <string name="filter_select_platforms">Select platforms</string>
     <string name="filter_selected_platforms">%1$d platform(s) selected</string>
     <string name="filter_select_genres">Select genres</string>
     <string name="filter_selected_genres">%1$d genre(s) selected</string>
     <string name="filter_min_rating">Minimum rating: %1$d★</string>
     <string name="filter_sorting">Sorting</string>
-    <string name="filter_select_sorting">Select sorting</string>
-    <string name="filter_apply">Apply filters</string>
+    <string name="filter_select_sorting">Choose sorting</string>
+    <string name="filter_apply">Apply filter</string>
     <string name="error_load_platforms">Error loading platforms</string>
     <string name="error_load_genres">Error loading genres</string>
 
-    <!-- Search/GameItem -->
+    <!-- Search GameItem -->
     <string name="favorite_marked">Marked as favorite</string>
     <string name="favorite_not_marked">Not marked as favorite</string>
     <string name="favorite_delete">Remove favorite</string>
     <string name="favorite_add">Add to favorites</string>
     <string name="favorite_remove">Remove favorite</string>
 
-    <!-- Error texts & UI texts from Constants.kt -->
-    <string name="error_unknown_default">An unknown error has occurred</string>
+    <!-- Error & UI Text from Constants.kt -->
+    <string name="error_unknown_default">An unknown error occurred</string>
     <string name="error_add_favorite">Error adding favorite</string>
     <string name="error_remove_favorite">Error removing favorite</string>
     <string name="error_toggle_favorite">Error toggling favorite</string>
@@ -261,13 +261,18 @@
     <string name="error_no_connection_and_no_cache">No connection and no cache available</string>
     <string name="error_server">Server error: </string>
     <string name="error_network">Network error: </string>
+    <string name="error_no_platform_data">No platform data available</string>
+    <string name="error_api">API error: </string>
+    <string name="error_no_genre_data">No genre data available</string>
+
+    <!-- Others -->
     <string name="email">michael.winkler.developer@gmail.com</string>
     <string name="notification_channel_name">New Games</string>
     <string name="notification_channel_desc">Notifications about new games</string>
     <string name="ui_dark_mode">Dark Mode</string>
     <string name="ui_dark_mode_desc">Enable dark mode for the app interface.</string>
 
-    <!-- Test notification (debug only) -->
+    <!-- Test Notification (Debug Only) -->
     <string name="notification_title_test">Test Notification</string>
     <string name="notification_text_test">This is a test notification.</string>
     <string name="test_new_game_notification">Send test notification</string>
@@ -293,20 +298,20 @@
     <string name="detail_game_stats">Game Statistics</string>
     <string name="detail_playtime">Playtime</string>
     <string name="detail_metacritic">Metacritic</string>
-    <string name="detail_share_game">Share game</string>
+    <string name="detail_share_game">Share Game</string>
     <string name="detail_play">Play</string>
     <string name="detail_previous_image">Previous image</string>
     <string name="detail_trailer_default">Trailer</string>
     <string name="detail_no_description">No description available.</string>
     <string name="detail_no_trailers">No trailers found for this game.</string>
     <string name="detail_trailer_play">Play</string>
-    <string name="detail_screenshot_hint">Tap on an image for fullscreen view</string>
+    <string name="detail_screenshot_hint">Tap an image for full screen</string>
     <string name="detail_no_screenshots">No screenshots found for this game.</string>
     <string name="detail_share_text">Check out this game: %1$s</string>
-    <string name="detail_share_link">Or in browser: %1$s</string>
+    <string name="detail_share_link">Or in the browser: %1$s</string>
 
     <!-- Common UI Elements -->
-    <string name="ui_empty_state">Empty State</string>
+    <string name="ui_empty_state">Empty state</string>
     <string name="ui_info_show">Show info</string>
     <string name="ui_help_show">Show help</string>
     <string name="ui_tooltip_positioning">Tooltip with positioning</string>
@@ -329,7 +334,7 @@
     <string name="preview_sample_dev">Sample Dev</string>
     <string name="preview_sample_pub">Sample Pub</string>
     <string name="preview_sample_description">This is a sample game description.</string>
-    <string name="preview_sectioncard_content">This is example content for a SectionCard.</string>
+    <string name="preview_sectioncard_content">This is sample content for a SectionCard.</string>
     <string name="preview_genre_action">Action</string>
     <string name="preview_genre_adventure">Adventure</string>
     <string name="preview_genre_rpg">RPG</string>
@@ -380,14 +385,14 @@
     <string name="preview_tooltip_text">This is a helpful tooltip with additional information.</string>
     <string name="preview_tooltip_positioned_text">Tooltip with positioning</string>
     <string name="preview_item_index">Item %1$d</string>
-    <string name="preview_error_message">An error has occurred</string>
-    <string name="preview_game_image_url">https://example.com/game-image.jpg</string>
+    <string name="preview_error_message">An error occurred</string>
+    <string name="preview_game_image_url">https://media.rawg.io/media/games/4fb/4fb548e4816c84d1d70f1a228fb167cc.jpg</string>
     <string name="preview_settings_section_title">General</string>
-    <string name="preview_settings_section_content">Example content for a SettingsSection.</string>
+    <string name="preview_settings_section_content">Sample content for a SettingsSection.</string>
     <string name="preview_settings_button_title">About the App</string>
     <string name="preview_settings_button_subtitle">Version 1.0.0</string>
     <string name="preview_settings_dropdown_title">Language</string>
-    <string name="preview_settings_dropdown_subtitle">Select app language</string>
+    <string name="preview_settings_dropdown_subtitle">Choose app language</string>
     <string name="preview_settings_dropdown_selected">German</string>
     <string name="wishlist_tab">Wishlist</string>
     <string name="wishlist_empty_title">No wishlist games</string>
@@ -413,14 +418,13 @@
     <string name="analytics_section">Analytics</string>
     <string name="analytics_enabled">Enable analytics</string>
     <string name="analytics_enabled_description">Allow anonymous usage analytics to improve the app.</string>
-    <string name="analytics_always_enabled_description">Analytics is always enabled to continuously improve the app.</string>
     <string name="ads_section">Ads</string>
     <string name="ads_enabled">Show ads</string>
-    <string name="ads_enabled_description">Allow banner ads (AdMob). Supports further development. No personalized data is used.</string>
+    <string name="ads_enabled_description">Allow the display of banner ads (AdMob). Supports further development of the app. No personalized data is used.</string>
     <string name="pro_status_active">Pro version active – ad-free</string>
-    <string name="pro_status_active_sub">You support development and see no ads.</string>
+    <string name="pro_status_active_sub">Thank you for supporting further development. No ads are shown.</string>
     <string name="pro_status_inactive">Pro version not active</string>
-    <string name="pro_status_inactive_sub">Ads are shown. Upgrade to Pro for ad-free GameRadar.</string>
+    <string name="pro_status_inactive_sub">Ads are shown. Enjoy GameRadar ad-free with the Pro version.</string>
     <string name="pro_status_upgrade">Upgrade</string>
     <string name="pro_ads_switch_label">Ads for Pro users</string>
     <string name="pro_ads_switch_desc">Pro users can voluntarily enable ads to support the project.</string>
@@ -448,6 +452,16 @@
     <!-- Ads -->
     <string name="ads_section_tooltip">Here you can enable or disable ads.</string>
 
+    <!-- AdMob -->
+    <string name="ads_disabled">Ads disabled</string>
+    <string name="watch_ad">Watch Ad</string>
+    <string name="ad_failed">ad failed</string>
+    <string name="try_again">Try again</string>
+    <string name="rewarded_ad_loaded">rewarded ad loaded</string>
+    <string name="rewarded_ad_failed">rewarded ad failed</string>
+    <string name="rewarded_ad_received">rewarded ad received</string>
+    <string name="rewarded_ad_dismissed">rewarded ad dismissed</string>
+
     <!-- Export/Import Section -->
     <string name="export_section">Export/Import</string>
     <string name="export_section_tooltip">Export or import your favorites and wishlist.</string>
@@ -456,25 +470,15 @@
     <string name="export">Export</string>
     <string name="export_unlocked">Unlocked</string>
     <string name="trailer_playback_error">Error playing trailer.</string>
-    <string name="error_timeout">Connection timed out</string>
-    <string name="error_not_found">Data not found</string>
-    <string name="error_server_retry">Server error – please try again later</string>
-    <string name="error_service_unavailable">Service temporarily unavailable</string>
-    <string name="error_server_code">Server error (%1$d)</string>
-    <string name="error_network_check">Network error – please check your connection</string>
-    <string name="error_movies_load">Error loading movies: %1$s</string>
-    <string name="error_empty_api_response">Empty API response</string>
-    <string name="error_screenshots_server">Error loading screenshots: server error %1$d</string>
-    <string name="error_screenshots_network">Error loading screenshots: network error %1$s</string>
-    <string name="error_platforms_no_data">Error loading platforms: no platform data available</string>
-    <string name="error_platforms_api">Error loading platforms: API error %1$d</string>
-    <string name="error_genres_no_data">Error loading genres: no genres available</string>
-    <string name="error_genres_api">Error loading genres: API error %1$d</string>
-    <string name="error_games_no_network_cache">Error loading games: no network and no cache available</string>
-    <string name="error_output_stream">Could not open OutputStream</string>
-    <string name="error_input_stream">Could not open InputStream</string>
-    <string name="notification_channel_recommendation">Recommendations</string>
-    <string name="notification_recommendation_title">Recommendation from genre %1$s</string>
-    <string name="notification_recommendation_text">Our tip for you: %1$s</string>
-    <string name="optimize_cache">Optimize cache</string>
-</resources>
+    <string name="favorites_deleted">Favorites deleted</string>
+    <string name="export_success">Favorites exported</string>
+    <string name="export_failed">Favorites export failed</string>
+    <string name="import_success">Favorites imported</string>
+    <string name="import_failed">Favorites import failed</string>
+    <string name="wishlist_clear_all_success">Wishlist cleared</string>
+    <string name="loading_wishlist">Loading wishlist…</string>
+    <string name="ok">accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="select_language">Systemsprache</string>
+
+</resources> 

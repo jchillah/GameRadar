@@ -477,4 +477,14 @@
     <string name="notification_recommendation_title">Recommendation from genre %1$s</string>
     <string name="notification_recommendation_text">Our tip for you: %1$s</string>
     <string name="optimize_cache">Optimize cache</string>
+    <string name="favorites_deleted">Favoriten entfernt</string>
+    <string name="export_success">Favoriten exportiert</string>
+    <string name="export_failed">exportieren der Favoriten fehlgeschlagen</string>
+    <string name="import_success">Favoriten import</string>
+    <string name="import_failed">Favoriten import fehlgeschlagen</string>
+    <string name="wishlist_clear_all_success">löschen erfolgreich</string>
+    <string name="loading_wishlist">Wunschliste wird geladen…</string>
+    <string name="ok">ok</string>
+    <string name="cancel">abbrechen</string>
+    <string name="select_language">Systemsprache</string>
 </resources>

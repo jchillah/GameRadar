@@ -18,6 +18,7 @@ plugins {
     alias(libs.plugins.kotlin.ksp)
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -89,6 +90,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics.ktx)
+
+    // AdMob
+    implementation(libs.play.services.ads)
 
     // Core Android
     // implementation(libs.androidx.core.ktx)
