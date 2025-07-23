@@ -33,6 +33,7 @@
     <string name="favorites_export">Export favorites list</string>
     <string name="favorites_import">Import favorites list</string>
     <string name="export_import_preview_unavailable">Export/Import not available in preview</string>
+    <string name="favorites_export_filename">export_favorites.json</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>
@@ -48,6 +49,8 @@
 
     <!-- Notifications Section -->
     <string name="notifications_section">Notifications</string>
+    <string name="notification_permission_title">Enable notifications</string>
+    <string name="notification_permission_rationale">Enable notifications to receive updates and notifications about new games.</string>
     <string name="push_notifications">Push Notifications</string>
     <string name="new_games_updates">Receive new games and updates</string>
 
@@ -415,6 +418,7 @@
     <string name="wishlist_full_details">Full details</string>
 
     <!-- Analytics Section -->
+    <string name="analytics_always_enabled_description">Analytics will always be enabled.</string>
     <string name="analytics_section">Analytics</string>
     <string name="analytics_enabled">Enable analytics</string>
     <string name="analytics_enabled_description">Allow anonymous usage analytics to improve the app.</string>
@@ -469,6 +473,27 @@
     <string name="export_wishlist">Export wishlist</string>
     <string name="export">Export</string>
     <string name="export_unlocked">Unlocked</string>
+    <string name="error_timeout">timeout</string>
+    <string name="error_not_found">data not found</string>
+    <string name="error_server_retry">server error, retry</string>
+    <string name="error_service_unavailable">service unavailable</string>
+    <string name="error_server_code">server error, code: (%1$d)</string>
+    <string name="error_network_check">check network connection</string>
+    <string name="error_movies_load">failed to load Movies: %1$s</string>
+    <string name="error_empty_api_response">empty API response</string>
+    <string name="error_screenshots_server">failed to load Screenshots: server error %1$d</string>
+    <string name="error_screenshots_network">failed to load Screenshots: Network error %1$s</string>
+    <string name="error_platforms_no_data">failed to load Platforms: no data available</string>
+    <string name="error_platforms_api">failed to load Platforms: API-issue %1$d</string>
+    <string name="error_genres_no_data">failed to load Genres: no data available</string>
+    <string name="error_genres_api">failed to load Genres: API-issue %1$d</string>
+    <string name="error_games_no_network_cache">failed to load Games: no network or cache available</string>
+    <string name="error_output_stream">failed to write to output stream</string>
+    <string name="error_input_stream">failed to read from input stream</string>
+    <string name="notification_channel_recommendation">recommendations</string>
+    <string name="notification_recommendation_title">recommends the following genre: %1$s</string>
+    <string name="notification_recommendation_text">our recommendations for you are: %1$s</string>
+    <string name="optimize_cache">optimize cache</string>
     <string name="trailer_playback_error">Error playing trailer.</string>
     <string name="favorites_deleted">Favorites deleted</string>
     <string name="export_success">Favorites exported</string>
@@ -479,6 +504,5 @@
     <string name="loading_wishlist">Loading wishlist…</string>
     <string name="ok">accept</string>
     <string name="cancel">Cancel</string>
-    <string name="select_language">Systemsprache</string>
-
+    <string name="select_language">system language</string>
 </resources> 

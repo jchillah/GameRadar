@@ -453,7 +453,7 @@
     <string name="ads_section_tooltip">Hier kannst du Werbung aktivieren oder deaktivieren.</string>
 
     <!-- AdMob -->
-    <string name="ads_enabled">Aktiviert</string>
+    <string name="ads_enabled">Aktivieren</string>
     <string name="ads_disabled">Deaktiviert</string>
     <string name="watch_ad">Werbung ansehen</string>
     <string name="ad_failed">Werbung konnte nicht geladen werden</string>

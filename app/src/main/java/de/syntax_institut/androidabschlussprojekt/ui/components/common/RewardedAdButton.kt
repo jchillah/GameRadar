@@ -191,7 +191,7 @@ fun RewardedAdButton(
         // Debug info for ad status
         if (adsEnabled) {
             Text(
-                text = "Werbung: $adsEnabledText",
+                text = "Export: $adsEnabledText",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)
