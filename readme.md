@@ -220,6 +220,12 @@ de.syntax_institut.androidabschlussprojekt
 
 ---
 
+## Kontakt
+Für Fragen, Feedback oder Beiträge kontaktiere bitte:
+Michael.Winkler.Developer@gmail.com
+
+---
+
 ## Lizenz
 
 MIT License – Siehe [LICENSE](LICENSE) für weitere Informationen.
