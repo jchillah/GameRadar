@@ -19,7 +19,6 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
  * When clicked, it loads and shows a rewarded ad, and calls the onReward callback
  * when the user successfully watches the ad.
  *
- * @param adUnitId The ad unit ID for the rewarded ad
  * @param adsEnabled Whether ads are enabled in the app
  * @param modifier Modifier for the button
  * @param rewardText Text to show when the reward is granted
@@ -30,7 +29,6 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
  */
 @Composable
 fun RewardedAdButton(
-    adUnitId: String,
     adsEnabled: Boolean,
     modifier: Modifier = Modifier,
     rewardText: String = "Feature freigeschaltet!",
@@ -47,7 +45,7 @@ fun RewardedAdButton(
 
     // Create or get the RewardedAdManager
     val rewardedAdManager = remember {
-        RewardedAdManager(context, adUnitId.takeIf { it.isNotBlank() })
+        RewardedAdManager(context)
     }
 
     // Strings
@@ -58,20 +56,21 @@ fun RewardedAdButton(
     val tryAgainText = stringResource(R.string.try_again)
 
     // Handle ad loading and showing
-    LaunchedEffect(adUnitId, adsEnabled) {
+    LaunchedEffect(adsEnabled) {
         if (adsEnabled) {
             isLoading = true
             try {
                 // Preload the ad when the component is first composed
                 rewardedAdManager.loadRewardedAd(
-                    adUnitId = adUnitId,
                     onAdLoaded = {
                         isLoading = false
                         errorMessage = null
+                        AppLogger.d("RewardedAdButton", "Ad loaded successfully")
                     },
                     onAdFailedToLoad = { error ->
                         isLoading = false
                         errorMessage = error
+                        AppLogger.e("RewardedAdButton", "Ad failed to load: $error")
                         onAdFailedToLoad(error)
                     }
                 )
@@ -81,6 +80,9 @@ fun RewardedAdButton(
                 isLoading = false
                 onAdFailedToLoad(e.message ?: "Unknown error")
             }
+        } else {
+            // Don't load ads if disabled
+            isLoading = false
         }
     }
 
@@ -144,7 +146,6 @@ fun RewardedAdButton(
                     // If ad is not loaded, try to load it
                     isLoading = true
                     rewardedAdManager.loadRewardedAd(
-                        adUnitId = adUnitId,
                         onAdLoaded = {
                             isLoading = false
                             // Retry showing the ad after it's loaded

@@ -75,6 +75,11 @@ obj/
 .idea/gradle.xml
 .idea/jarRepositories.xml
 .idea/navEditor.xml
+.idea/appInsightsSettings.xml
+.idea/deploymentTargetSelector.xml
+
+# Baseline Profiles (generated during build)
+app/release/baselineProfiles/
 # Legacy Eclipse project files
 .classpath
 .project
@@ -106,3 +111,7 @@ fabric.properties
 
 /.kotlin/sessions/*
 google-services.json
+
+# Android Keystore
+key.properties
+.DS_Store

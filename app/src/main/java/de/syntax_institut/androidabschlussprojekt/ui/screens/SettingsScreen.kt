@@ -196,6 +196,9 @@ fun SettingsScreen(
                                         checked = settingsState.adsEnabled,
                                         onCheckedChange = { viewModel.setAdsEnabled(it) }
                                 )
+
+                                // AdMob Status Card
+                                AdStatusCard()
                         }
                 }
                 Spacer(modifier = Modifier.height(8.dp))

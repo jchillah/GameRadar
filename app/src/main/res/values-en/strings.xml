@@ -98,6 +98,10 @@
     <string name="cache_label">Cache: %1$d/%2$s games</string>
     <!-- CacheManagementCard: Tooltip and Stats -->
     <string name="cache_section_tooltip">Manage, optimize, and clear the cache here.</string>
+    
+    <!-- AdMob Status -->
+    <string name="ad_status_title">Ad Status</string>
+    <string name="test_ads_explanation">Test ads are displayed because the app has not been published in the Google Play Store yet. After publication, real ads will be displayed automatically.</string>
     <string name="cache_stat_saved_games">Saved Games</string>
     <string name="cache_stat_storage">Storage Usage</string>
     <string name="cache_stat_last_sync">Last Sync</string>

@@ -69,8 +69,7 @@ fun FavoritesScreen(
     val coroutineScope = rememberCoroutineScope()
 
     // Resources
-    val statsRewardText = stringResource(R.string.rewarded_ad_stats_reward_text)
-    val exportRewardText = stringResource(R.string.rewarded_ad_favorites_reward_text)
+    // Removed unused variables
     val exportFilename = "favorites_export_${System.currentTimeMillis()}.json"
     val isOnline by NetworkUtils.observeNetworkStatus(context)
         .collectAsState(initial = NetworkUtils.isNetworkAvailable(context))
@@ -255,7 +254,6 @@ private fun FavoritesScreenContent(
 
             if (settingsState.adsEnabled) {
                 RewardedAdButton(
-                    adUnitId = "ca-app-pub-3940256099942544/5224354917",
                     adsEnabled = settingsState.adsEnabled,
                     rewardText = stringResource(R.string.rewarded_ad_favorites_reward_text),
                     onReward = onExportReward
@@ -368,7 +366,6 @@ private fun StatisticsSection(
         if (isAdsEnabled && !isStatsUnlocked) {
             Spacer(modifier = Modifier.width(8.dp))
             RewardedAdButton(
-                adUnitId = "ca-app-pub-3940256099942544/5224354917",
                 adsEnabled = isAdsEnabled,
                 rewardText = statsRewardText,
                 onReward = onReward

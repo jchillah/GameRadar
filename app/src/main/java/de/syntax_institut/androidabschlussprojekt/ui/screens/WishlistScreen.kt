@@ -113,7 +113,7 @@ fun WishlistScreen(
         adsEnabled = adsEnabled,
         imageQuality = imageQuality,
         canUseLauncher = canUseLauncher,
-        isExportUnlocked = isExportUnlocked,
+        // Removed unused parameter
         showDeleteConfirmation = showDeleteConfirmation,
         detailGame = detailGame,
         sheetState = sheetState,
@@ -205,7 +205,7 @@ private fun WishlistScreenContent(
     adsEnabled: Boolean,
     imageQuality: ImageQuality,
     canUseLauncher: Boolean,
-    isExportUnlocked: Boolean,
+    // Removed unused parameter
     showDeleteConfirmation: Boolean,
     detailGame: Game?,
     sheetState: SheetState,
@@ -241,7 +241,6 @@ private fun WishlistScreenContent(
             if ((!isProUser && adsEnabled) || BuildConfig.DEBUG) {
                 RewardedAdButton(
                     modifier = Modifier.fillMaxWidth(),
-                    adUnitId = "ca-app-pub-3940256099942544/5224354917",
                     adsEnabled = adsEnabled,
                     rewardText = rewardedAdWishlistRewardText,
                     onReward = onReward,

@@ -264,7 +264,6 @@ fun CacheManagementCard(
                                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                         // Rewarded Ad für Synchronisation
                                         RewardedAdButton(
-                                                adUnitId = "ca-app-pub-3940256099942544/5224354917",
                                                 adsEnabled = settingsState.adsEnabled,
                                                 rewardText =
                                                         if (isSyncUnlocked)

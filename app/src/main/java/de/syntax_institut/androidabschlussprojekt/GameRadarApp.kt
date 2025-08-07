@@ -22,7 +22,31 @@ class GameRadarApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // Initialize Koin
+        startKoin {
+            androidContext(this@GameRadarApp)
+            modules(
+                networkModule,
+                repositoryModule,
+                useCaseModule,
+                viewModelModule
+            )
+        }
 
+        // Initialize AdMob
+        MobileAds.initialize(this) {
+            AppLogger.d("GameRadarApp", "AdMob initialized successfully")
+        }
+
+        // Echte Ads aktivieren für Produktion
+        AdMobManager(this).forceUseRealAds()
+
+        // Add test device for development (comment out for production)
+        // val testDeviceIds = listOf("33BE2250B43518CCDA7DE426D04EE231")
+        // val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+        // MobileAds.setRequestConfiguration(configuration)
+        
         // Setze das korrekte Locale, falls bereits eine Einstellung gespeichert ist
         val settingsRepository = SettingsRepository(applicationContext)
         val savedLanguage = settingsRepository.language.value
@@ -32,16 +56,16 @@ class GameRadarApp : Application() {
         }
 
         // Koin Dependency Injection initialisieren
-        startKoin {
-            androidLogger()
-            androidContext(this@GameRadarApp)
-            modules(
-                networkModule,
-                repositoryModule,
-                useCaseModule,
-                viewModelModule
-            )
-        }
+        // startKoin {
+        //     androidLogger()
+        //     androidContext(this@GameRadarApp)
+        //     modules(
+        //         networkModule,
+        //         repositoryModule,
+        //         useCaseModule,
+        //         viewModelModule
+        //     )
+        // }
 
         // Performance-Monitoring für App-Start
         PerformanceMonitor.startTimer("app_startup")
@@ -79,37 +103,37 @@ class GameRadarApp : Application() {
     }
 
     /**
-     * Aktualisiert das App-Locale und erstellt die Activity neu
+     * Aktualisiert das Locale der App
      */
     fun updateLocale(context: Context, languageCode: String) {
-        AppLogger.d("GameRadarApp", "Updating locale to: $languageCode")
-
-        val locale = when (languageCode) {
-            "de" -> Locale.GERMAN
-            "en" -> Locale.ENGLISH
-            "system" -> LocaleManager.getSystemLocale(context)
-            else -> Locale.getDefault()
+        // Verwende moderne Locale API statt deprecated Constructor
+        val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Locale.forLanguageTag(languageCode)
+        } else {
+            @Suppress("DEPRECATION")
+            Locale(languageCode)
         }
-
-        // Update locale for the application context
         Locale.setDefault(locale)
 
-        val resources = context.resources
-        val config = Configuration(resources.configuration)
-
+        val config = Configuration(context.resources.configuration)
+        
         // Update configuration based on Android version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             config.setLocale(locale)
+            // Verwende createConfigurationContext() statt updateConfiguration()
             context.createConfigurationContext(config)
         } else {
             @Suppress("DEPRECATION")
             config.locale = locale
-            resources.updateConfiguration(config, resources.displayMetrics)
+            // Nur für ältere Android-Versionen (API < 17)
+            @Suppress("DEPRECATION")
+            context.resources.updateConfiguration(config, context.resources.displayMetrics)
         }
 
-        // Update the application context
-        if (context != this) {
-            resources.updateConfiguration(config, resources.displayMetrics)
+        // Update the application context nur für ältere Android-Versionen
+        if (context != this && Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            @Suppress("DEPRECATION")
+            context.resources.updateConfiguration(config, context.resources.displayMetrics)
         }
 
         // Set RTL layout direction based on language

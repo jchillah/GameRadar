@@ -9,6 +9,14 @@ if (localPropertiesFile.exists()) {
 }
 
 val apiKey = localProperties.getProperty("API_KEY") ?: ""
+val admobAppId = localProperties.getProperty("ADMOB_APP_ID") ?: ""
+
+// Lade Keystore-Konfiguration
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
 
 plugins {
     alias(libs.plugins.android.application)
@@ -43,29 +51,35 @@ android {
     defaultConfig {
         applicationId = "de.syntax_institut.androidabschlussprojekt"
         minSdk = 26
-        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     signingConfigs {
         create("release") {
-            // Für Debug/Entwicklung verwenden wir automatische Signierung
-            storeFile = file("debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as String?
         }
     }
 
     buildTypes {
-        debug { buildConfigField("String", "API_KEY", "\"$apiKey\"") }
-        release {
-            isMinifyEnabled = false
+        debug {
             buildConfigField("String", "API_KEY", "\"$apiKey\"")
+            buildConfigField("String", "ADMOB_APP_ID", "\"$admobAppId\"")
+        }
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            buildConfigField("String", "API_KEY", "\"$apiKey\"")
+            buildConfigField("String", "ADMOB_APP_ID", "\"$admobAppId\"")
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -82,7 +96,8 @@ android {
         buildConfig = true
         compose = true
     }
-    @Suppress("UnstableApiUsage") composeOptions { kotlinCompilerExtensionVersion = "1.5.15" }
+    @Suppress("UnstableApiUsage")
+    composeOptions { kotlinCompilerExtensionVersion = "1.5.15" }
 }
 
 dependencies {

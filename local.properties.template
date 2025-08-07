@@ -1,0 +1,32 @@
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# Location of the SDK. This is only used by Gradle.
+# For customization when using a Version Control System, please read the
+# header note.
+
+# Android SDK Location
+sdk.dir=/path/to/your/android/sdk
+
+# API Keys
+API_KEY=your_rawg_api_key_here
+
+# AdMob Configuration
+# Diese IDs werden automatisch aus local.properties gelesen
+# Ersetze diese mit deinen echten IDs aus dem AdMob Dashboard
+ADMOB_APP_ID=ca-app-pub-XXXXXXXXXX~YYYYYYYYYY
+ADMOB_REWARDED_AD_UNIT_ID=ca-app-pub-XXXXXXXXXX/YYYYYYYYYY
+ADMOB_BANNER_AD_UNIT_ID=ca-app-pub-XXXXXXXXXX/YYYYYYYYYY
+
+# Instructions:
+# 1. Kopiere diese Datei zu local.properties
+# 2. Ersetze die Platzhalter mit deinen echten IDs aus dem AdMob Dashboard
+# 3. Die App liest automatisch die IDs aus local.properties
+# 4. Falls local.properties nicht verfügbar ist, werden Fallback-IDs verwendet
+# 5. Füge local.properties zu .gitignore hinzu (bereits vorhanden)
+# 6. Verwende niemals echte IDs in öffentlichen Repositories
+
+# Beispiel für echte IDs:
+# ADMOB_APP_ID=ca-app-pub-7269049262039376~5468693297
+# ADMOB_REWARDED_AD_UNIT_ID=ca-app-pub-7269049262039376/9026235286
+# ADMOB_BANNER_AD_UNIT_ID=ca-app-pub-7269049262039376/8962672016 

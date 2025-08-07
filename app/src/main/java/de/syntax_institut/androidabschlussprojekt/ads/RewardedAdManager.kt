@@ -9,35 +9,28 @@ import de.syntax_institut.androidabschlussprojekt.utils.*
  * Manages loading and showing of rewarded ads.
  *
  * @param context The application context
- * @param testAdUnitId Optional test ad unit ID for development
  */
-class RewardedAdManager(
-    private val context: Context,
-    private val testAdUnitId: String? = null,
-) {
+class RewardedAdManager(private val context: Context) {
     private var rewardedAd: RewardedAd? = null
     private var isLoadingAd = false
     private var loadCallback: com.google.android.gms.ads.rewarded.RewardedAdLoadCallback? = null
+    private val adMobManager = AdMobManager(context)
 
     companion object {
         private const val TAG = "RewardedAdManager"
-
-        // Test ad unit ID - replace with your actual ad unit ID in production
-        const val TEST_REWARDED_AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
     }
 
     /**
      * Loads a rewarded ad asynchronously.
      *
-     * @param adUnitId The ad unit ID to load the ad from
      * @param onAdLoaded Callback when the ad is loaded
      * @param onAdFailedToLoad Callback when the ad fails to load
      */
     fun loadRewardedAd(
-        adUnitId: String = testAdUnitId ?: TEST_REWARDED_AD_UNIT_ID,
         onAdLoaded: (() -> Unit)? = null,
         onAdFailedToLoad: ((String) -> Unit)? = null,
     ) {
+        val adUnitId = adMobManager.getRewardedAdUnitId()
         if (isLoadingAd || isAdAvailable()) {
             AppLogger.d(TAG, "Ad is already loading or loaded")
             return
@@ -56,6 +49,21 @@ class RewardedAdManager(
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 AppLogger.e(TAG, "Rewarded ad failed to load: ${loadAdError.message}")
+
+                // Prüfe, ob es ein "Publisher data not found" Fehler ist
+                val errorMessage = loadAdError.message ?: ""
+                if (errorMessage.contains("Publisher data not found") ||
+                    errorMessage.contains("Account not approved yet")
+                ) {
+                    // Wechsel zu Test-Ads
+                    adMobManager.switchToTestAds()
+                    AppLogger.w(TAG, "Switching to test ads due to publisher data not found")
+
+                    // Versuche es erneut mit Test-Ads
+                    loadRewardedAd(onAdLoaded, onAdFailedToLoad)
+                    return
+                }
+                
                 isLoadingAd = false
                 loadCallback = null
                 onAdFailedToLoad?.invoke(loadAdError.message ?: "Unknown error")
@@ -125,8 +133,8 @@ class RewardedAdManager(
     /**
      * Preloads a rewarded ad.
      */
-    fun preloadAd(adUnitId: String = testAdUnitId ?: TEST_REWARDED_AD_UNIT_ID) {
-        loadRewardedAd(adUnitId)
+    fun preloadAd() {
+        loadRewardedAd()
     }
 
     /**

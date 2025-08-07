@@ -98,6 +98,10 @@
     <string name="cache_performance_critical">Performance kritisch</string>
     <string name="cache_performance_warning">Performance eingeschränkt</string>
     <string name="cache_performance_optimal">Performance optimal</string>
+
+    <!-- AdMob Status -->
+    <string name="ad_status_title">Werbung Status</string>
+    <string name="test_ads_explanation">Test-Werbung wird angezeigt, da die App noch nicht im Google Play Store veröffentlicht wurde. Nach der Veröffentlichung wird automatisch echte Werbung angezeigt.</string>
     <string name="cache_content_description">Cache</string>
     <string name="cache_info_title">Cache-Info</string>
     <string name="cache_info_text">%1$s</string>

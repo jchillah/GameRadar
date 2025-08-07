@@ -201,9 +201,24 @@ de.syntax_institut.androidabschlussprojekt
 
 ## Setup
 
-1. **API Key** erstellen: [RAWG API Docs](https://rawg.io/apidocs)
-2. Key in `local.properties` eintragen: `API_KEY=dein_key`
-3. Projekt in Android Studio öffnen und ausführen
+1. **API Keys konfigurieren:**
+    - **RAWG API Key** erstellen: [RAWG API Docs](https://rawg.io/apidocs)
+    - **AdMob Keys** (optional für Release): [AdMob Console](https://admob.google.com)
+
+2. **local.properties konfigurieren:**
+   ```properties
+   # RAWG API Key (erforderlich)
+   API_KEY=dein_rawg_api_key_hier
+   
+   # AdMob Configuration (optional für Release)
+   ADMOB_APP_ID=ca-app-pub-XXXXXXXXXX~XXXXXXXXXX
+   ADMOB_REWARDED_AD_UNIT_ID=ca-app-pub-XXXXXXXXXX/XXXXXXXXXX
+   ADMOB_BANNER_AD_UNIT_ID=ca-app-pub-XXXXXXXXXX/XXXXXXXXXX
+   ```
+
+3. **Projekt in Android Studio öffnen und ausführen**
+
+**⚠️ Wichtig:** Die `local.properties` Datei wird nicht committet und enthält sensitive Daten!
 
 ---
 
